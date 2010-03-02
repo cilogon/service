@@ -1,0 +1,161 @@
+/* Basic elements */
+html {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font: sans-serif;
+  color: #030;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+}
+p {
+  margin-top: 0;
+  text-align: justify;
+}
+a {
+  color: #363;
+}
+a:link {
+  text-decoration: underline:
+  color: #363;
+}
+a:visited {
+  text-decoration: underline;
+  color: #333;
+}
+a:hover, a:active {
+  text-decoration: underline;
+  color: #696;
+}
+acronym {
+  border-bottom: none;
+}
+
+/* Specific divs */
+#container {
+}
+
+/* The "CILogon Service" header at the top of each page */
+#logoHeader {
+  background: transparent url("/images/cilogon-gradient.jpg") repeat-y top right;
+  height: 80px;
+  width: 100%;
+  min-width: 600px;
+  font-family: sans-serif;
+}
+#logoHeader h1 {
+  background: transparent url("/images/cilogon-logo-60x60.png") no-repeat top left;
+  margin-top: 10px;
+  margin-left: 10px;
+  width: 60px;
+  height: 60px;
+  float: left;
+}
+#logoHeader h1 span {
+  display: none;
+}
+#logoHeader h2 {
+  float: left;
+  color: #030;
+  position: relative;
+  font-size: 300%;
+  margin-left: 10px;
+  margin-top: 10px;
+  width: 9em;
+  font-style: italic;
+  font-weight: bold;
+}
+#logoHeader h2 span {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+}
+
+#logoHeader h2 span.raised {
+  top: 2px;
+  left: 2px;
+  color: #696;
+  clear: all;
+}
+
+#pageHeader {
+  border-style: double;
+  border-color: #696;
+  text-align: center;
+  margin: 1em 2em 1em 2em;
+  background-color: #f5fff5;
+}
+#pageHeader h1 {
+  font-size: x-large;
+}
+#pageHeader h1 span {
+}
+#pageHeader h2 {
+  font-size: large;
+}
+#pageHeader h2 span {
+}
+
+#summary {
+  margin: 2em 2em 2em 2em;
+}
+
+/* Contact Form on requestidp.php page */
+#contactForm {
+  padding: 0 2em 0 2em;
+}
+#contactForm legend span {
+  position: absolute;
+  margin-left: 1em;
+  margin-top: 0.5em;
+  padding: 0;
+  font-size: 110%;
+  font-weight: bold;
+}
+#contactForm fieldset {
+  margin: 1.5em 0 0 0;
+  padding: 0;
+  float: left;
+  clear: both;
+  width: 100%;
+  min-width: 600px;
+  margin: 0 0 -1em 0;
+  padding: 0 0 1em 0;
+  border: none;
+  background-color: #ded;
+}
+#contactForm fieldset label {
+  float: left;
+  width: 10em;
+  margin-right: 1em;
+  text-align: right;
+}
+#contactForm fieldset ol {
+  padding: 1em 1em 0 1em;
+  list-style: none;
+}
+#contactForm fieldset li {
+  float: left;
+  clear: left;
+  padding-bottom: 1em;
+}
+#contactForm fieldset input.submit {
+  margin-left: 2em;
+  font-weight: bold;
+  font-size: 110%;
+  color: #030;
+  background-color: #aba;
+}
+#contactForm fieldset input.text {
+  font-size: 100%;
+}
+#contactForm fieldset textarea {
+  font-family: sans-serif;
+}
+#contactForm fieldset.submit span.fixerror {
+  color: #c00;
+  font-weight: bold;
+  margin-left: 4em;
+}
