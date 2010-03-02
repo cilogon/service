@@ -81,10 +81,22 @@ class csrf {
      * You must call this method before you output any HTML.            *
      ********************************************************************/
     function setTheCookie() {
-        if (!isset($_COOKIE[$this->getTokenName()])) {
-            setcookie($this->getTokenName(),$this->getTokenValue(),
-                      0,'/','',true);
+        setcookie($this->getTokenName(),$this->getTokenValue(),0,'/','',true);
+    }
+
+    /********************************************************************
+     * Function  : getTheCookie                                         *
+     * Returns   : The current value of the CSRF cookie, or empty       *
+     *             string if it has not been set.                       *
+     * Returns the value of the CSRF cookie if it has been set, or      *
+     * returns an empty string otherwise.                               *
+     ********************************************************************/
+    public static function getTheCookie() {
+        $retval = '';
+        if (isset($_COOKIE[csrf::$tokenname])) {
+            $retval = $_COOKIE[csrf::$tokenname];
         }
+        return $retval;
     }
 
     /********************************************************************
@@ -111,11 +123,8 @@ class csrf {
     public static function isCookieEqualToForm() {
         $retval = false;  // Assume csrf values don't match
 
-        $csrfcookievalue = "";
+        $csrfcookievalue = csrf::getTheCookie();
         $csrfformvalue = "";
-        if (isset($_COOKIE[csrf::$tokenname])) {
-            $csrfcookievalue = $_COOKIE[csrf::$tokenname];
-        }
         if (isset($_POST[csrf::$tokenname])) {
             $csrfformvalue = $_POST[csrf::$tokenname];
         }
