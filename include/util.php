@@ -78,4 +78,21 @@ function redirect($to,$code=301)
     exit(0);
 }
 
+/************************************************************************
+ * Function  : getPostVar                                               *
+ * Parameter : The $_POST variable to query.                            *
+ * Returns   : The value of the $_POST variable or empty string if      *
+ *             that variable is not set.                                *
+ * This function queries a given $_POST variable (which is set when     *
+ * the user submits a form, for example) and returns the value.         *
+ ************************************************************************/
+function getPostVar($post) 
+{ 
+    $retval = '';
+    if (isset($_POST[$post])) {
+        $retval = $_POST[$post];
+    }
+    return $retval;
+}
+
 ?>
