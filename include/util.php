@@ -79,6 +79,22 @@ function redirect($to,$code=301)
 }
 
 /************************************************************************
+ * Function  : getServerVar                                             *
+ * Parameter : The $_SERVER variable to query.                          *
+ * Returns   : The value of the $_SERVER variable or empty string if    *
+ *             that variable is not set.                                *
+ * This function queries a given $_SERVER variable (which is set by     *
+ * the Apache server) and returns the value.                            *
+ ************************************************************************/
+function getServerVar($serv) {
+    $retval = '';
+    if (isset($_SERVER[$serv])) {
+        $retval = $_SERVER[$serv];
+    }
+    return $retval;
+}
+
+/************************************************************************
  * Function  : getPostVar                                               *
  * Parameter : The $_POST variable to query.                            *
  * Returns   : The value of the $_POST variable or empty string if      *
@@ -91,6 +107,22 @@ function getPostVar($post)
     $retval = '';
     if (isset($_POST[$post])) {
         $retval = $_POST[$post];
+    }
+    return $retval;
+}
+
+/************************************************************************
+ * Function  : getCookieVar                                             *
+ * Parameter : The $_COOKIE variable to query.                          *
+ * Returns   : The value of the $_COOKIE variable or empty string if    *
+ *             that variable is not set.                                *
+ * This function returns the value of a given cookie.                   *
+ ************************************************************************/
+function getCookieVar($cookie) 
+{ 
+    $retval = '';
+    if (isset($_COOKIE[$cookie])) {
+        $retval = $_COOKIE[$cookie];
     }
     return $retval;
 }
