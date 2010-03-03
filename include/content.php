@@ -19,12 +19,12 @@ function printHeader($title='',$extra='')
     global $csrf;
     $csrf->setTheCookie();
 
-    echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head><title>' . $title . '</title> 
     <meta http-equiv="content-type" 
-          content="text/html; charset=iso-8859-1" />
+          content="text/html; charset=utf-8" />
     <script type="text/javascript" src="/include/secutil.js"></script>
     <style type="text/css" media="all">
         @import "/include/cilogon.css";
@@ -61,7 +61,6 @@ function printFooter($footer='')
     }
 
     echo '
-    <br clear="all">
     <div class="footer">
     </div> <!-- Close "footer" div    -->
     </div> <!-- Close "container" div -->
