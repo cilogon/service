@@ -227,7 +227,7 @@ class whitelist {
      ********************************************************************/
     function add($entityID) {
         $retval = false;  // Assume add to list failed
-        if (!$this->exists($entityID)) {
+        if ((strlen($entityID) > 0) && (!$this->exists($entityID))) {
             $this->whitearray[$entityID] = 1;
             $retval = true;
         }
