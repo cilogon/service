@@ -98,7 +98,7 @@ acronym {
 #pageHeader h2 span {
 }
 
-#summary {
+#summaryDiv {
   margin: 2em 2em 2em 2em;
 }
 
@@ -115,7 +115,6 @@ acronym {
   font-weight: bold;
 }
 #contactForm fieldset {
-  margin: 1.5em 0 0 0;
   padding: 0;
   float: left;
   clear: both;
@@ -159,3 +158,53 @@ acronym {
   font-weight: bold;
   margin-left: 4em;
 }
+
+#attributesDiv {
+  margin: 0 2em 0 2em;
+  min-width: 600px;
+  border: none;
+  background-color: #ded;
+}
+#attributesDiv table {
+  margin-left: 2em;
+  margin-right: 2em;
+  margin-bottom: 1em;
+}
+
+#resultsDiv {
+  margin: 0 2em 0 2em;
+  min-width: 600px;
+  border: none;
+}
+
+#buttonDiv {
+  border-style: double;
+  border-color: #696;
+  text-align: center;
+  background-color: #f5fff5;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+#buttonDiv input.submit {
+  font-weight: bold;
+  font-size: 110%;
+  color: #030;
+  background-color: #aba;
+}
+
+a.tooltip img {border-style:none;}
+a.tooltip b {display:none;}
+a.tooltip:hover {border:0; position:relative; z-index:500;
+    text-decoration:none;}
+a.tooltip:hover b {display:block; position:absolute; top:20px; left:-100px;
+    padding:5px; font-weight:normal; color:#000; border:1px solid #00c;
+    background:#eef; width:200px;}
+a.tooltip:hover b em.outer {position:absolute; left:0; top:-8px; width:0;
+    height:0; display:block; background:transparent;
+    border-left:7px dashed transparent; border-right:7px dashed transparent; 
+    border-bottom:7px solid #00c; overflow:hidden; z-index:100;}
+a.tooltip:hover b em.inner {position:absolute; left:0; top:-7px; width:0;
+    height:0; display:block; background:transparent; 
+    border-left:7px dashed transparent; border-right:7px dashed transparent; 
+    border-bottom:7px solid #eef; overflow:hidden; z-index:100;}
+
