@@ -1,9 +1,7 @@
 <?php
 
 require_once("whitelist.php");
-
-/* Be sure to declare "global $shibarray" when using it in other files. */
-$shibarray = array();
+require_once("util.php");
 
 /* The full file path location of the local InCommon metadata XML file. */
 define('INCOMMON_METADATA','/etc/shibboleth/InCommon-metadata.xml');
@@ -17,33 +15,37 @@ define('INCOMMON_METADATA','/etc/shibboleth/InCommon-metadata.xml');
  *              to the given IdP will be set, such as the pretty-print  *
  *              name of the organization, the organization's home page, *
  *              and IdP contact information.                            *
- * Returns    : True if the following shibboleth attributes have been   *
- *              provided by the IdP: HTTP_SHIB_IDENTITY_PROVIDER,       *
- *              HTTP_REMOTE_USER (which can be ePPN or ePTID),          *
- *              HTTP_GIVENNAME, HTTP_SN (last name), and HTTP_MAIL.     *
- *              False if any of these have not been set by the IdP.     *
- * Side Effect: The global $shibarray is populated with various         *
- *              shibboleth session environment variables.               *
- * This function populates the global $shibarray with two types of      *
- * Shibboleth information.  The first set of info is specific to the    *
- * user's current shib session, such as remote_user.  The second set    *
+ * Returns    : An array containing the various shibboleth attributes   *
+ *              for the current Shibboleth session.  The keys of the    *
+ *              array are "pretty print" names of the various attribute *
+ *              value names (such as "User Identifier" for REMOTE_USER) *
+ *              and the values of the array are the actual Shibboleth   *
+ *              session values.                                         *
+ * This function returns an array with two types of Shibboleth          *
+ * information.  The first set of info is specific to the user's        *
+ * current Shibboleth session, such as REMOTE_USER.  The second set     *
  * of info reads info from the passed-in metadata file specific to the  *
- * IdP, such as the pretty-print name of the IdP.  If all of the shib   *
- * attributes needed for the cilogon.org service are present, then      *
- * the function returns true.                                           *
+ * IdP, such as the pretty-print name of the IdP.                       *
  ************************************************************************/
 function getShibInfo($metadata=INCOMMON_METADATA)
 {
-    $retval = false;  // Assume not all necessary shib attributes are set
+    $shibarray = array();  /* Array to be returned */
 
-    /* First, set all of the shib attributes to empty values. */
-    global $shibarray;
-    $shibarray['Identity Provider'] = '';
-    $shibarray['User Identifier'] = '';
-    $shibarray['First Name'] = '';
-    $shibarray['Last Name'] = '';
-    $shibarray['Email Address'] = '';
-    $shibarray['Level of Assurance'] = '';
+    /* Set the first set of info, namely those shib attributes which *
+     * were given by the IdP when the user authenticated.            */
+    $shibarray['Identity Provider']=getServerVar('HTTP_SHIB_IDENTITY_PROVIDER');
+    $shibarray['User Identifier'] = getServerVar('HTTP_REMOTE_USER');
+    $shibarray['ePPN'] = getServerVar('HTTP_EPPN');
+    $shibarray['ePTID'] = getServerVar('HTTP_TARGETED_ID');
+    $shibarray['First Name'] = getServerVar('HTTP_GIVENNAME');
+    $shibarray['Last Name'] = getServerVar('HTTP_SN');
+    $shibarray['Email Address'] = getServerVar('HTTP_MAIL');
+    $shibarray['Level of Assurance'] = getServerVar('HTTP_ASSURANCE');
+
+    /* Next, read in the metadata file and search for attributes     *
+     * for the given IdP.  This includes values such as the          *
+     * display name for the IdP, the home page of the organization,  *
+     * and contact info for if there is a problem.                   */
     $shibarray['Organization Name'] = '';
     $shibarray['Home Page'] = '';
     $shibarray['Technical Name'] = '';
@@ -51,31 +53,6 @@ function getShibInfo($metadata=INCOMMON_METADATA)
     $shibarray['Administrative Name'] = '';
     $shibarray['Administrative Address'] = '';
 
-    /* Next, set the first set of info, namely those shib attributes *
-     * which were given by the IdP when the user authenticated.      */
-    if (isset($_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'])) {
-      $shibarray['Identity Provider'] = $_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'];
-    };
-    if (isset($_SERVER['HTTP_REMOTE_USER'])) {
-      $shibarray['User Identifier'] = $_SERVER['HTTP_REMOTE_USER'];
-    }
-    if (isset($_SERVER['HTTP_GIVENNAME'])) {
-      $shibarray['First Name'] = $_SERVER['HTTP_GIVENNAME'];
-    }
-    if (isset($_SERVER['HTTP_SN'])) {
-      $shibarray['Last Name'] = $_SERVER['HTTP_SN'];
-    }
-    if (isset($_SERVER['HTTP_MAIL'])) {
-      $shibarray['Email Address'] = $_SERVER['HTTP_MAIL'];
-    }
-    if (isset($_SERVER['HTTP_ASSURANCE'])) {
-      $shibarray['Level of Assurance'] = $_SERVER['HTTP_ASSURANCE'];
-    }
-
-    /* Next, read in the metadata file and search for attributes     *
-     * for the given IdP.  This includes values such as the          *
-     * display name for the IdP, the home page of the organization,  *
-     * and contact info for if there is a problem.                   */
     if (is_readable($metadata)) {
         $xmlstr = @file_get_contents($metadata);
         if (strlen($xmlstr) > 0) {
@@ -126,17 +103,7 @@ function getShibInfo($metadata=INCOMMON_METADATA)
         }
     }
 
-    /* Finally, check to see if all of the shib attributes required  *
-     * for the cilogon.org service have been set.                    */
-    if ((strlen($shibarray['Identity Provider']) > 0) &&
-        (strlen($shibarray['User Identifier']) > 0) &&
-        (strlen($shibarray['First Name']) > 0) &&
-        (strlen($shibarray['Last Name']) > 0) &&
-        (strlen($shibarray['Email Address']) > 0)) {
-        $retval = true;
-    }
-
-    return $retval;
+    return $shibarray;
 }
 
 /************************************************************************
@@ -194,7 +161,7 @@ function getInCommonIdPs($metadata=INCOMMON_METADATA,
         $white->read();
     }
 
-    /* Next, attempt to read in the specified metadata file    *
+    /* Next, attempt to read in the specified metadata file to *
      * create an XPATH query.  If the metadata file parameter  *
      * is 'null', then set it to the default InCommon metadata *
      * XML file.  This is useful for setting the whitelist     *
@@ -235,7 +202,7 @@ function getInCommonIdPs($metadata=INCOMMON_METADATA,
              * whitelisted IdPs if necessary.  Notice that the  *
              * entityIDs are in the odd numbered array elements *
              * and the display names are in the even numbered   *
-             * elements, so increment through the array by 2s.  */
+             * elements, so increment through the array by 2.   */
             for ($i = 0; $i < count($result); $i += 2) {
                 $entityID = (string)$result[$i]->entityID;
                 if (($white == null) || (!$white->exists($entityID))) {
@@ -259,7 +226,8 @@ function getInCommonIdPs($metadata=INCOMMON_METADATA,
  * speaking, the cookies are not deleted, rather they are set to empty  *
  * values with expired times.                                           *
  ************************************************************************/
-function deleteShibCookies() {
+function deleteShibCookies() 
+{
     while (list ($key,$val) = each ($_COOKIE)) {
         if (strncmp($key,"_shib", strlen("_shib")) == 0) {
             setcookie($key,'',time()-3600,'/','',true);
