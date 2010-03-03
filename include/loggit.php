@@ -1,6 +1,7 @@
 <?php
 
 require_once('Log.php');
+require_once('util.php');
 
 class loggit {
 
@@ -33,12 +34,8 @@ class loggit {
     function __construct($logtype='syslog',$email='help@cilogon.org')
     {
         $ident = '';
-        if (isset($_SERVER['SERVER_NAME'])) {
-            $ident .= $_SERVER['SERVER_NAME'];
-        }
-        if (isset($_SERVER['REQUEST_URI'])) {
-            $ident .= $_SERVER['REQUEST_URI'];
-        }
+        $ident = getServerVar('SERVER_NAME') . ' ' .
+                 getServerVar('REQUEST_URI');
 
         $this->logger = &Log::singleton($logtype,
             ($logtype=='syslog' ? 'LOG_SYSLOG' : $email), $ident);
