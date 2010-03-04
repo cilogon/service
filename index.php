@@ -25,12 +25,14 @@ if (strlen(getCookieVar('godirect')) > 0) {
 } elseif ($submit == LOGIN_BUTTON_TEXT) {
     /* If the user clicked the "Log in to your IdP" button, then       *
      * set the cookie for the "Go directly to your IdP" (if necessary) *
-     * and then redirect to the $secureurl script.                     */
+     * and then go directly to the $secureurl script.  Since the       *
+     * $secureurl is in a Shibboleth protected directory, the WAYF     *
+     * will be invoked if there is no Shibboleth authentication yet.   */
     $godirect = intval(getPostVar('godirect'));
     if ($godirect > 0) {
         setcookie('godirect',$godirect,time()+60*60*24*$godirect,'/','',true);
     }
-    redirectToSecure($serviceurl);
+    header("Location: $serviceurl");
 } else { 
     /* Default action - simply print the main Login page */
     printLoginPage();
