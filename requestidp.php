@@ -73,39 +73,35 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
                           $selectIdP='',$otherIdP='',$comments='') 
 {
     global $validator;
-
-    $csrf = new csrf();
-    $csrf->setTheCookie();
+    global $csrf;
 
     $goterror = false;  /* Did we find any errors in the form? */
 
-    $idps = getInCommonIdPs();
+    $incommon = new incommon();
+    $whitelist = new whitelist();
+    $idps = $incommon->getNoWhitelist($whitelist);
 
-    printHeader('Request Identity Provider');
+    printHeader('Request Home Organization');
 
     echo '
     <div id="pageHeader">
-      <h1><span>Request Identity Provider</span></h1>
-      <h2><span>Help Us Add Your Organization To Our Service</span></h2>
+      <h1><span>Request Home Organization</span></h1>
+      <h2><span>Help Us Add Support For Your Organization</span></h2>
     </div>
 
     <div id="summaryDiv">
       <p class="p1"><span>Thank you for your interest in the CILogon Service.
-        The CILogon Service Provider (<acronym 
-        title="Service Provider">SP</acronym>) is a member of the <a
+        The CILogon Service is a member of the <a
         target="_blank" href="http://www.incommonfederation.org/">InCommon
         Federation</a>, which brings together over 200 educational
         institutions and professional organizations.  However, before you can
-        utilize the CILogon Service, your organization\'s Identity Provider
-        (<acronym title="Identity Provider">IdP</acronym>) must release
+        utilize the CILogon Service, your organization must release
         specific user attributes to our site.</span></p>
       <p class="p2"><span>You can help us by letting us know that you are
         interested in using our service.  Please enter your contact
         information and select your organization below.  We will contact
         the appropriate administrators in an effort to have your
-        organizations\'s <acronym title="Identity Provider">IdP</acronym>
-        operate with our <acronym 
-        title="Service Provider">SP</acronym>.</span></p>
+        organizations operate with our CILogon Service.</span></p>
     </div>
 
     <div id="contactForm">
@@ -140,10 +136,10 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
       </ol>
       </fieldset>
       <fieldset>
-      <legend><span>Identity Provider</span></legend>
+      <legend><span>Home Organization</span></legend>
       <ol>
       <li>
-      <label for="selectIdP">Select an IdP</label>
+      <label for="selectIdP">Select an Organization</label>
       <select name="selectIdP" id="selectIdP" class="select">
       <option value="' . DEFAULT_OPTION_TEXT . '"';
 
@@ -176,12 +172,17 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
     echo '
       </li>
       <li>
-      <label for="otherIdP">Other IdP</label>
+      <label for="otherIdP">Don\'t See It? Enter Here</label>
       <input id="otherIdP" name="otherIdP" class="text" type="text" 
        size="50" maxlength="80" value="' . $otherIdP . '" />
       </li>
+      </ol>
+      </fieldset>
+      <fieldset>
+      <legend><span>Additional Information (Optional)</span></legend>
+      <ol>
       <li>
-      <label for="comments">(Optional) Comments</label>
+      <label for="comments">Please tell us more about yourself and your interest in the CILogon Service</label>
       <textarea id="comments" name="comments" class="textarea" 
       cols="50" rows="5">' .  $comments . '</textarea>
       </li>
@@ -233,7 +234,7 @@ Other IdP     = $otherIdP
 Comments      = $comments
 ");
 
-    printHeader('Identity Provider Requested');
+    printHeader('Home Organization Requested');
 
     echo '
     <div id="pageHeader">
@@ -242,20 +243,13 @@ Comments      = $comments
     </div>
 
     <div id="summaryDiv">
-      <p class="p1"><span>Thank you!  Your request for a new Identity
-      Provider has been sent to the CILogon Service development team.
+      <p class="p1"><span>Thank you!  Your request has been sent to the
+      CILogon Service team.
       We will contact the appropriate administrators at your organization
-      and ask that they release the necessary attributes to our Service
-      Provider (<acronym title="Service Provider">SP</acronym>).</span></p>
-      <p class="p2"><span>Please allow several business days for your
-      organization\'s administrators to reply to your request.  We will
-      contact you as soon as we have any information.  Thank you again for
-      your request.</span></p>
-      <p class="p3"><span>If you have any further questions, please
+      and contact you as soon as we have any information. </span></p>
+      <p class="p2"><span>If you have any further questions, please
       contact us at <a
-      href="mailto:info@cilogon.org">info@cilogon.org</a>.  You can now <a
-      href="https://cilogon.org/">return to the main CILogon Service
-      page</a>.</span></p>
+      href="mailto:help@cilogon.org">help@cilogon.org</a>.</span></p>
     </div>
     ';
 
