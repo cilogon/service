@@ -1,6 +1,7 @@
 <?php
 
 require_once("autoloader.php");
+require_once("util.php");
 
 /* The csrf token object to set the CSRF cookie and print the hidden */
 /* CSRF form element.  Be sure to do "global $csrf" to use it.       */
@@ -62,10 +63,67 @@ function printFooter($footer='')
 
     echo '
     <div class="footer">
+    <p class="p1">The <a target="_blank"
+    href="http://www.cilogon.org/service">CILogon Service</a> is funded by
+    the <a target="_blank" href="http://www.nsf.gov/">National Science
+    Foundation</a> under grant numbers <a target="_blank"
+    href="http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0850557">0850557</a>
+    and <a target="_blank"
+    href="http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0943633">0943633</a>.</p>
+    <p class="p2">This site uses software from the <a target="_blank"
+    href="http://myproxy.teragrid.org/">MyProxy</a> and <a target="_blank"
+    href="http://gridshib.globus.org/">GridShib</a> projects.</p>
+    <p class="p3">Please send any questions or comments about this
+    site to <a
+    href="mailto:help@teragrid.org">help&nbsp;&amp;&nbsp;cilogon.org</a>.</p>
     </div> <!-- Close "footer" div    -->
     </div> <!-- Close "container" div -->
     </body>
     </html>
+    ';
+}
+
+/************************************************************************
+ * Function   : printWAYF                                               *
+ * This function prints the whitelisted IdPs in a <select> form element *
+ * which can be printed on the main login page to allow the user to     *
+ * select "Where Are You From?".  This function checks to see if a      *
+ * cookie for the 'providerId' had been set previously, so that the     *
+ * last used IdP is selected in the list.                               *
+ ************************************************************************/
+function printWAYF() 
+{
+    $incommon = new incommon();
+    $white = new whitelist();
+    $idps = $incommon->getOnlyWhitelist($whitelist);
+    $providerId = getCookieVar('providerId');
+
+    echo '
+    <div id="wayf">
+      <div id="boxheader">
+        Select Your Organization
+      </div>
+      <form action="secure/getuser.php" method="post" class="wayfForm">
+      <fieldset>
+      <select name="providerId" id="selectIdP">
+    ';
+
+    foreach ($idps as $entityId => $idpName) {
+        echo '<option value="' . $entityId . '"';
+        if ($entityId == $providerId) {
+            echo ' selected';
+        }
+        echo '>' . $idpName . '</option>' . "\n";
+    }
+
+    echo '
+      </select>
+      <label
+      for="keepidp">Remember&nbsp;this&nbsp;selection</label>&nbsp;<input
+      type="checkbox" name="keepidp" id="keepidp" />
+      </fieldset>
+      </form>
+    </div>
     ';
 }
 
