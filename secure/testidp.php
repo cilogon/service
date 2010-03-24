@@ -23,12 +23,10 @@ if (strlen($submit) > 0) {
 if ($submit == 'Add Your IdP to CILogon') {
     /* Add the current IdP entityID to the WAYF whitelist and reload */
     $white = new whitelist();
-    if ($white->read()) {
-        $entityID = getServerVar('HTTP_SHIB_IDENTITY_PROVIDER');
-        if ($white->add($entityID)) {
-            if ($white->write()) {
-                $white->reload();
-            }
+    $entityID = getServerVar('HTTP_SHIB_IDENTITY_PROVIDER');
+    if ($white->add($entityID)) {
+        if ($white->write()) {
+            $white->reload();
         }
     }
 }
@@ -150,6 +148,7 @@ function printTestPage()
 
     $gotattrs = ($gotattrs && 
                  printErrorOrOkayIcon($shibarray['Email Address']));
+
     echo '
             </td>
           </tr>
