@@ -192,6 +192,27 @@ acronym {
   background-color: #aba;
 }
 
+div.footer {
+  clear: both;
+  border: solid thin #888;
+  padding: 2px;
+  color: #888;
+}
+
+div.footer p {
+  text-align: center;
+  font-size: x-small;
+  margin: 0px;
+}
+
+div.footer.p1 a:link {
+  color #ff9;
+  font-size: large;
+}
+
+div.footer p a:visited {
+  color #ff9;
+}
 a.tooltip img {border-style:none;}
 a.tooltip b {display:none;}
 a.tooltip:hover {border:0; position:relative; z-index:500;
