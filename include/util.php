@@ -1,8 +1,5 @@
 <?php
 
-ini_set('session.cookie_secure',true);
-if (session_id() == "") session_start();
-
 /************************************************************************
  * Function  : redirect                                                 *
  * Parameters: (1) The new URL or local file to redirect to             *
