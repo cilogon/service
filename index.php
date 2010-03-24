@@ -1,6 +1,7 @@
 <?php
 
 require_once('include/autoloader.php');
+require_once('include/session.php');
 require_once('include/content.php');
 require_once('include/util.php');
 
