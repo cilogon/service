@@ -5,6 +5,7 @@ require_once('include/session.php');
 require_once('include/content.php');
 require_once('include/util.php');
 
+
 /* The full URL of the Shibboleth protected service script.            */
 $serviceurl = 'https://cilogon.org/secure/env3.php';
 
