@@ -20,7 +20,8 @@ function autoloader($className) {
         '',
         'classes/',
         'include/',
-        '../include/'
+        '../include/',
+        '../../include/'
     );
 
     /* Add your file naming formats here. */
