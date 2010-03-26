@@ -5,24 +5,43 @@
  * Description: This class creates and manages CSRF (cross-site request *
  *              forgery) values.  Upon creation of a new csrf object,   *
  *              a random value is created that can be (a) stored in a   *
- *              cookie and (b) written to a hidden form element.        *
- *              There is also a static function to see if a previously  *
- *              set csrf cookie value matches a form-submitted csrf     *
- *              element.  Note that cookies must be set before any      *
- *              HTML is output.                                         *
+ *              cookie and (b) written to a hidden form element or      *
+ *              saved to a PHP session.  There are static functions to  *
+ *              see if a previously set csrf cookie value matches a     *
+ *              form-submitted csrf element or PHP session value.       *
+ *              Note that cookies must be set before any HTML is        *
+ *              printed out.                                            *
  *                                                                      *
  * Example usage:                                                       *
+ *    // Set cookie and output hidden element in HTML <form> block      *
  *    require_once('csrf.php');                                         *
  *    $csrf = new csrf();                                               *
  *    $csrf->setTheCookie();                                            *
  *    // Output an HTML <form> block                                    *
  *    echo $csrf->getHiddenFormElement();                               *
+ *    // Close </form> block                                            *
  *                                                                      *
  *    // When user submits the form, first check for csrf equality      *
  *    if (csrf::isCookieEqualToForm()) {                                *
  *        // Form submission is okay - process it                       *
  *    } else {                                                          *
  *        csrf::deleteTheCookie();                                      *
+ *    }                                                                 *
+ *                                                                      *
+ *    // Alternatively, set cookie and PHP session value and compare    *
+ *    require_once('csrf.php');                                         *
+ *    session_start();                                                  *
+ *    $csrf = new csrf();                                               *
+ *    $csrf->setTheCookie();                                            *
+ *    $csrf->setTheSession();                                           *
+ *                                                                      *
+ *    // When the user (re)loads the page, check for csrf equality      *
+ *    session_start();                                                  *
+ *    if (csrf::isCookieEqualToSession()) {                             *
+ *        // Session csrf value was okay - process as normal            *
+ *    } else {                                                          *
+ *        csrf::deleteTheCookie();                                      *
+ *        csrf::deleteTheSession();                                     *
  *    }                                                                 *
  ************************************************************************/
 
@@ -136,6 +155,65 @@ class csrf {
 
         return retval;
     }
+
+    /********************************************************************
+     * Function  : setTheSession                                        *
+     * Sets a value in the PHP session csrf tokenname and tokenvalue.   *
+     * You must have a valid PHP session (e.g. by calling               *
+     * session_start()) before you call this method.                    *
+     ********************************************************************/
+    function setTheSession() {
+        $_SESSION[$this->getTokenName()] = $this->getTokenValue();
+    }
+
+    /********************************************************************
+     * Function  : getTheSession                                        *
+     * Returns   : The current value of the CSRF in the PHP session,    *
+     *             or empty string if it has not been set.              *
+     * Returns the value of the CSRF token as set in the PHP session,   *
+     * or returns an empty string otherwise.                            *
+     ********************************************************************/
+    public static function getTheSession() {
+        $retval = '';
+        if (isset($_SESSION[csrf::$tokenname])) {
+            $retval = $_SESSION[csrf::$tokenname];
+        }
+        return $retval;
+    }
+
+    /********************************************************************
+     * Function  : deleteTheSession                                     *
+     * Deletes the csrf value from the PHP session.                     *
+     ********************************************************************/
+    public static function deleteTheSession() {
+        unset($_SESSION[csrf::$tokenname]);
+    }
+
+    /********************************************************************
+     * Function  : isCookieEqualToSession                               *
+     * Return    : True if the csrf cookie value matches the csrf value *
+     *             in the PHP session, false otherwise.                 *
+     * This is a convenience method which compares the value of a       *
+     * previously set csrf cookie to the csrf value in the current      *
+     * PHP session.  If the two values are equal (and non-empty), then  *
+     * this returns true and you can continue processing.  Otherwise,   *
+     * false is returned and you should assume that the session was not *
+     * initialized properly.                                            *
+     ********************************************************************/
+    public static function isCookieEqualToSession() {
+        $retval = false;  // Assume csrf values don't match
+
+        $csrfcookievalue = csrf::getTheCookie();
+        $csrfsesionvalue = csrf::getTheSession();
+        if ((strlen($csrfcookievalue) > 0) &&
+            (strlen($csrfsesionvalue) > 0) &&
+            (strcmp($csrfcookievalue,$csrfsesionvalue) == 0)) {
+            $retval = true;
+        }
+
+        return retval;
+    }
+
 }
 
 ?>
