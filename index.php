@@ -1,9 +1,10 @@
 <?php
 
 require_once('include/autoloader.php');
-require_once('include/session.php');
 require_once('include/content.php');
 require_once('include/util.php');
+
+startPHPSession();
 
 /* The full URL of the Shibboleth protected service script.            */
 $serviceurl = 'https://cilogon.org/secure/env3.php';
@@ -75,13 +76,25 @@ function printLoginPage()
             <option value="7">For One Week</option>
             <option value="31">For One Month</option>
             <option value="365">For One Year</option>
-          </select>&nbsp;<a class="tooltip" href=""><img
+<!--
+          </select>&nbsp;<a class="tooltip" href="" 
+          onclick="return false;"><img
           src="images/infoIcon.png" alt="Help"
           width="14" height="14" /><b><em
           class="outer"></em><em class="inner"></em>If you select a value
           other than "Never", you can bypass this page and proceed directly
           to the last used IdP\'s authentication page. You will need to
           clear your browser\'s cookies to return here.</b></a>
+-->
+          </select>&nbsp;<a class="tt" href="" 
+          onclick="return false;"><img
+          src="images/infoIcon.png" alt="Help"
+          width="14" height="14" /><span class="tooltip"><span
+          class="tttop"></span><span class="ttmiddle">If you select a value
+          other than "Never", you can bypass this page and proceed directly
+          to the last used IdP\'s authentication page. You will need to
+          clear your browser\'s cookies to return here.</span><span
+          class="ttbottom"></span></span></a>
         </form>
       </div>
     </div>
