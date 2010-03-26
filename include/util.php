@@ -124,4 +124,37 @@ function getCookieVar($cookie)
     return $retval;
 }
 
+/************************************************************************
+ * Function  : getSessionVar                                            *
+ * Parameter : The $_SESSION variable to query.                         *
+ * Returns   : The value of the $_SESSION variable or empty string if   *
+ *             that variable is not set.                                *
+ * This function returns the value of a given PHP Session variable.     *
+ ************************************************************************/
+function getSessionVar($sess) 
+{ 
+    $retval = '';
+    if (isset($_SESSION[$sess])) {
+        $retval = $_SESSION[$sess];
+    }
+    return $retval;
+}
+
+/************************************************************************
+ * Function  : startPHPSession                                          *
+ * This function starts a secure PHP session and should be called at    *
+ * at the beginning of each script before any HTML is output.  It also  *
+ * does a trick of setting a 'lastaccess' time so that the $_SESSION    *
+ * variable does not expire without warning.                            *
+ ************************************************************************/
+function startPHPSession
+{
+    ini_set('session.cookie_secure',true);
+    if (session_id() == "") session_start();
+    if ((!isset($_SESSION['lastaccess']) || 
+        (time() - $_SESSION['lastaccess']) > 60 )) {
+        $_SESSION['lastaccess'] = time();
+    }
+}
+
 ?>
