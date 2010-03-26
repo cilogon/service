@@ -147,7 +147,7 @@ function getSessionVar($sess)
  * does a trick of setting a 'lastaccess' time so that the $_SESSION    *
  * variable does not expire without warning.                            *
  ************************************************************************/
-function startPHPSession
+function startPHPSession()
 {
     ini_set('session.cookie_secure',true);
     if (session_id() == "") session_start();
