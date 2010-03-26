@@ -24,12 +24,9 @@ function printHeader($title='',$extra='')
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head><title>' . $title . '</title> 
-    <meta http-equiv="content-type" 
-          content="text/html; charset=utf-8" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="/include/cilogon.css" />
     <script type="text/javascript" src="/include/secutil.js"></script>
-    <style type="text/css" media="all">
-        @import "/include/cilogon.css";
-    </style>
     ';
 
     if (strlen($extra) > 0) {
@@ -75,7 +72,7 @@ function printFooter($footer='')
     href="http://gridshib.globus.org/">GridShib</a> projects.</p>
     <p class="p3">Please send any questions or comments about this
     site to <a
-    href="mailto:help@teragrid.org">help&nbsp;&amp;&nbsp;cilogon.org</a>.</p>
+    href="mailto:help@teragrid.org">help&nbsp;@&nbsp;cilogon.org</a>.</p>
     </div> <!-- Close "footer" div    -->
     </div> <!-- Close "container" div -->
     </body>
