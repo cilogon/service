@@ -91,7 +91,7 @@ function printFooter($footer='')
 function printWAYF() 
 {
     $incommon = new incommon();
-    $white = new whitelist();
+    $whitelist = new whitelist();
     $idps = $incommon->getOnlyWhitelist($whitelist);
     $providerId = getCookieVar('providerId');
 
@@ -100,7 +100,8 @@ function printWAYF()
       <div id="boxheader">
         Select Your Organization
       </div>
-      <form action="secure/getuser.php" method="post" class="wayfForm">
+      <form action="' . getServerVar('SCRIPT_NAME') . 
+      '" method="post" class="wayfForm">
       <fieldset>
       <select name="providerId" id="selectIdP">
     ';
@@ -115,11 +116,28 @@ function printWAYF()
 
     echo '
       </select>
-      <label
-      for="keepidp">Remember&nbsp;this&nbsp;selection</label>&nbsp;<input
-      type="checkbox" name="keepidp" id="keepidp" />
+      <label for="keepidp">Remember this selection</label>
+      <input type="checkbox" name="keepidp" id="keepidp" />
+      <input type="submit" name="submit" class="submit" 
+      value="Logon" />
       </fieldset>
       </form>
+    </div>
+    ';
+}
+
+function printPageHeader($text) {
+    echo '
+    <div class="pageheader">
+    <div class="t">
+    <div class="b">
+    <div class="l">
+    <div class="r">
+      <div class="insideborder">' . $text . '</div>
+    </div>
+    </div>
+    </div>
+    </div>
     </div>
     ';
 }
