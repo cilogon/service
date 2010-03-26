@@ -4,7 +4,7 @@ html {
   padding: 0;
 }
 body {
-  font: sans-serif;
+  font-family: sans-serif;
   color: #030;
   background: #fff;
   margin: 0;
@@ -18,7 +18,7 @@ a {
   color: #363;
 }
 a:link {
-  text-decoration: underline:
+  text-decoration: underline;
   color: #363;
 }
 a:visited {
@@ -77,7 +77,7 @@ acronym {
   top: 2px;
   left: 2px;
   color: #696;
-  clear: all;
+  clear: both;
 }
 
 #pageHeader {
@@ -205,27 +205,165 @@ div.footer p {
   margin: 0px;
 }
 
-div.footer.p1 a:link {
-  color #ff9;
-  font-size: large;
+div.footer a:link {
+  color: #696;
+  text-decoration: none;
 }
 
-div.footer p a:visited {
-  color #ff9;
+div.footer a:visited {
+  color: #696;
+  text-decoration: none;
 }
-a.tooltip img {border-style:none;}
-a.tooltip b {display:none;}
-a.tooltip:hover {border:0; position:relative; z-index:500;
-    text-decoration:none;}
-a.tooltip:hover b {display:block; position:absolute; top:20px; left:-100px;
-    padding:5px; font-weight:normal; color:#000; border:1px solid #00c;
-    background:#eef; width:200px;}
-a.tooltip:hover b em.outer {position:absolute; left:0; top:-8px; width:0;
-    height:0; display:block; background:transparent;
-    border-left:7px dashed transparent; border-right:7px dashed transparent; 
-    border-bottom:7px solid #00c; overflow:hidden; z-index:100;}
-a.tooltip:hover b em.inner {position:absolute; left:0; top:-7px; width:0;
-    height:0; display:block; background:transparent; 
-    border-left:7px dashed transparent; border-right:7px dashed transparent; 
-    border-bottom:7px solid #eef; overflow:hidden; z-index:100;}
+
+div.t {
+  background-image: url("/images/t.jpg"); 
+  background-position: top left;
+  background-repeat: no-repeat;
+  padding-top: 5px; 
+  margin-top: 10px;
+  margin-left: 10%;
+}
+div.b {
+  background-image: url("/images/b.jpg"); 
+  background-position: bottom right;
+  background-repeat: no-repeat;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+  margin-right: 10%;
+}
+div.l {
+  background-image: url("/images/l.jpg"); 
+  background-position: top left;
+  background-repeat: no-repeat;
+  padding-left: 5px;
+}
+div.r {
+  background-image: url("/images/r.jpg"); 
+  background-position: bottom right;
+  background-repeat: no-repeat;
+  padding-right: 5px;
+}
+div.insideborder {
+  padding: 20px;
+  border: 1px solid #696;
+  text-align: center;
+  font-size: x-large;
+  background-color: #f5fff5;
+}
+
+/***** Begin "Tooltip" *****/
+/* You create a "tooltip" with the following html. */
+/* <a class="tooltip" href=""><img
+          src="images/infoIcon.png" alt="Help"
+          width="14" height="14" /><b><em
+          class="outer"></em><em class="inner"></em>If you select a value
+          other than "Never", you can bypass this page and proceed directly
+          to the last used IdP\'s authentication page. You will need to
+          clear your browser\'s cookies to return here.</b></a>
+*/
+a.tooltip img {
+  border-style:none;
+}
+a.tooltip b {
+  display:none;
+}
+a.tooltip:hover {
+  border:0; 
+  position:relative; 
+  z-index:500;
+  text-decoration:none;
+}
+a.tooltip:hover b {
+  display:block; 
+  position:absolute; 
+  top:20px; 
+  left:-100px;
+  padding:5px; 
+  font-weight:normal; 
+  color:#000; 
+  border:1px solid #00c;
+  background:#eef; 
+  width:200px;
+}
+a.tooltip:hover b em.outer {
+  position:absolute; 
+  left:0; 
+  top:-8px; 
+  width:0;
+  height:0; 
+  display:block; 
+  background:transparent;
+  border-left:7px dashed transparent; 
+  border-right:7px dashed transparent; 
+  border-bottom:7px solid #00c; 
+  overflow:hidden; 
+  z-index:100;
+}
+a.tooltip:hover b em.inner {
+  position:absolute; left:0; 
+  top:-7px; 
+  width:0;
+  height:0; 
+  display:block; 
+  background:transparent; 
+  border-left:7px dashed transparent; 
+  border-right:7px dashed transparent; 
+  border-bottom:7px solid #eef; 
+  overflow:hidden; 
+  z-index:100;
+}
+/***** End "Tooltip" *****/
+
+/*---------- bubble tooltip -----------*/
+a.tt {
+  position:relative;
+  z-index:24;
+  color:#3CA3FF;
+  /* font-weight:bold; */
+  text-decoration:none;
+  outline: none;
+}
+a.tt span { 
+  display: none; 
+}
+a.tt img {
+  border-style:none;
+}
+
+/*background:; ie hack, something must be changed in a for ie to execute it*/
+a.tt:hover { 
+  z-index:25; 
+  color: #aaaaff; 
+  background:;
+}
+a.tt:hover span.tooltip {
+  display:block;
+  position:absolute;
+  top:0px; 
+  left:-20px;
+  padding: 15px 0 0 0;
+  width:200px;
+  color: #030;
+  text-align: center;
+  filter: alpha(opacity:90);
+  KHTMLOpacity: 0.90;
+  MozOpacity: 0.90;
+  opacity: 0.90;
+}
+a.tt:hover span.tttop {
+  display: block;
+  padding: 30px 8px 0;
+  background: url("/images/bubble.gif") no-repeat top;
+}
+a.tt:hover span.ttmiddle { /* different middle bg for stretch */
+  display: block;
+  padding: 0 8px; 
+  background: url("/images/bubblefill.gif") repeat bottom; 
+}
+a.tt:hover span.ttbottom {
+  display: block;
+  padding:3px 8px 10px;
+  color: #548912;
+  background: url("/images/bubble.gif") no-repeat bottom;
+}
 
