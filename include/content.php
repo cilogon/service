@@ -116,8 +116,15 @@ function printWAYF()
 
     echo '
       </select>
-      <label for="keepidp">Remember this selection</label>
-      <input type="checkbox" name="keepidp" id="keepidp" />
+      <label for="keepidp" title="If you check this box, you can bypass this welcome page and proceed directly to your organization\'s authentication page. You will need to clear your brower\'s cookies to return here.">Remember this selection:</label>
+      <input type="checkbox" name="keepidp" id="keepidp" 
+          title="If you check this box, you can bypass this welcome page and proceed directly to your organization\'s authentication page. You will need to clear your brower\'s cookies to return here." />
+      <a href="" class="tip" onclick="return false;"><img 
+          src="/images/infoIcon.png" width="14" height="14" 
+          alt="Help" /><span>If you check this box, you can bypass this
+          welcome page and proceed directly to your Organization\'s
+          authentication page. You will need to clear your browser\'s
+          cookies to return here.</span></a>
       <input type="submit" name="submit" class="submit" 
       value="Logon" />
       </fieldset>
@@ -128,13 +135,11 @@ function printWAYF()
 
 function printPageHeader($text) {
     echo '
-    <div class="pageheader">
     <div class="t">
     <div class="b">
     <div class="l">
     <div class="r">
-      <div class="insideborder">' . $text . '</div>
-    </div>
+      <div class="titlebox">' . $text . '</div>
     </div>
     </div>
     </div>
