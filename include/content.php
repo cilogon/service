@@ -36,12 +36,13 @@ function printHeader($title='',$extra='')
     echo '
     </head>
 
-    <body id="cilogon-org">
-    <div id="containter">
-    <div id="logoHeader">
+    <body>
+    <div class="logoheader">
        <h1><span>[Icon]</span></h1>
-       <h2><span>CILogon Service</span><span class="raised">CILogon Service</span></h2>
+       <h2><span>CILogon Service</span><span 
+           class="raised">CILogon Service</span></h2>
     </div>
+    <div class="pagecontent">
      ';
 }
 
@@ -59,24 +60,45 @@ function printFooter($footer='')
     }
 
     echo '
+    <br class="clear" />
     <div class="footer">
-    <p class="p1">The <a target="_blank"
+    <p>The <a target="_blank"
     href="http://www.cilogon.org/service">CILogon Service</a> is funded by
     the <a target="_blank" href="http://www.nsf.gov/">National Science
-    Foundation</a> under grant numbers <a target="_blank"
-    href="http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0850557">0850557</a>
-    and <a target="_blank"
+    Foundation</a> under grant number <a target="_blank"
     href="http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0943633">0943633</a>.</p>
-    <p class="p2">This site uses software from the <a target="_blank"
+    <p>This site uses software from the <a target="_blank"
     href="http://myproxy.teragrid.org/">MyProxy</a> and <a target="_blank"
     href="http://gridshib.globus.org/">GridShib</a> projects.</p>
-    <p class="p3">Please send any questions or comments about this
+    <p>Please send any questions or comments about this
     site to <a
     href="mailto:help@teragrid.org">help&nbsp;@&nbsp;cilogon.org</a>.</p>
-    </div> <!-- Close "footer" div    -->
-    </div> <!-- Close "container" div -->
+    </div> <!-- Close "footer" div -->
+    </div> <!-- Close "pagecontent" div -->
     </body>
     </html>
+    ';
+}
+
+/************************************************************************
+ * Function  : printPageHeader                                          *
+ * Parameter : The text string to appear in the titlebox.               *
+ * This function prints a fancy formatted box with a single line of     *
+ * text, suitable for a titlebox on each web page (to appear just below *
+ * the page banner at the very top).  It prints a gradent border around *
+ * the four edges of the box and then outlines the inner box.           *
+ ************************************************************************/
+function printPageHeader($text) {
+    echo '
+    <div class="t">
+    <div class="b">
+    <div class="l">
+    <div class="r">
+    <div class="titlebox">' . $text . '</div>
+    </div>
+    </div>
+    </div>
+    </div>
     ';
 }
 
@@ -95,14 +117,18 @@ function printWAYF()
     $idps = $incommon->getOnlyWhitelist($whitelist);
     $providerId = getCookieVar('providerId');
 
+    $helptext = "By checking this box, you can bypass the welcome page on subsequent visits and proceed directly to your organization's authentication site. You will need to clear your brower's cookies to return here."; 
+
     echo '
-    <div id="wayf">
-      <div id="boxheader">
-        Select Your Organization
+    <div class="wayf">
+      <div class="boxheader">
+        Start Here
       </div>
       <form action="' . getServerVar('SCRIPT_NAME') . 
       '" method="post" class="wayfForm">
       <fieldset>
+      <p>
+      <label for="selectIdP" class="ontop">Select An Organization:</label>
       <select name="providerId" id="selectIdP">
     ';
 
@@ -116,33 +142,20 @@ function printWAYF()
 
     echo '
       </select>
-      <label for="keepidp" title="If you check this box, you can bypass this welcome page and proceed directly to your organization\'s authentication page. You will need to clear your brower\'s cookies to return here.">Remember this selection:</label>
-      <input type="checkbox" name="keepidp" id="keepidp" 
-          title="If you check this box, you can bypass this welcome page and proceed directly to your organization\'s authentication page. You will need to clear your brower\'s cookies to return here." />
-      <a href="" class="tip" onclick="return false;"><img 
-          src="/images/infoIcon.png" width="14" height="14" 
-          alt="Help" /><span>If you check this box, you can bypass this
-          welcome page and proceed directly to your Organization\'s
-          authentication page. You will need to clear your browser\'s
-          cookies to return here.</span></a>
-      <input type="submit" name="submit" class="submit" 
+      </p>
+      <p>
+      <label for="keepidp" title="' . $helptext . 
+      '" class="helpcursor">Remember this selection:</label>
+      <input type="checkbox" name="keepidp" id="keepidp" title="' . 
+          $helptext . '" class="helpcursor" />
+      </p>
+      <p>
+      <input type="submit" name="submit" class="submit helpcursor" 
+      title="Click to proceed to your selected organization\'s login page."
       value="Logon" />
+      </p>
       </fieldset>
       </form>
-    </div>
-    ';
-}
-
-function printPageHeader($text) {
-    echo '
-    <div class="t">
-    <div class="b">
-    <div class="l">
-    <div class="r">
-      <div class="titlebox">' . $text . '</div>
-    </div>
-    </div>
-    </div>
     </div>
     ';
 }
