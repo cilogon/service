@@ -83,63 +83,63 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
 
     printHeader('Request Home Organization');
 
+    printPageHeader('Request A New Organization');
     echo '
-    <div id="pageHeader">
-      <h1><span>Request Home Organization</span></h1>
-      <h2><span>Help Us Add Support For Your Organization</span></h2>
-    </div>
+    <div class="boxed">
+      <div class="boxheader">
+        Add Your Home Organization To The CILogon Service
+      </div>
+    <p>
+    Thank you for your interest in the CILogon Service.
+    The CILogon Service is a member of <a target="_blank"
+    href="http://www.incommonfederation.org/">InCommon</a>, a federation
+    of over 200 educational institutions and professional organizations.
+    However, before you can use the CILogon Service, your organization
+    must partner with the CILogon Service so as to release particular user
+    attributes.
+    </p>
+    <p>
+    You can help us by letting us know that you are
+    interested in using the CILogon Service.  Please enter your contact
+    information and select your organization below.  We will contact
+    the appropriate administrators in an effort to have your
+    organization partner with our CILogon Service.
+    </p>
 
-    <div id="summaryDiv">
-      <p class="p1"><span>Thank you for your interest in the CILogon Service.
-        The CILogon Service is a member of the <a
-        target="_blank" href="http://www.incommonfederation.org/">InCommon
-        Federation</a>, which brings together over 200 educational
-        institutions and professional organizations.  However, before you can
-        utilize the CILogon Service, your organization must release
-        specific user attributes to our site.</span></p>
-      <p class="p2"><span>You can help us by letting us know that you are
-        interested in using our service.  Please enter your contact
-        information and select your organization below.  We will contact
-        the appropriate administrators in an effort to have your
-        organizations operate with our CILogon Service.</span></p>
-    </div>
-
-    <div id="contactForm">
-      <form action="requestidp.php" method="post" class="requestForm">
+    <div class="contactform">
+      <form action="/requestidp/" method="post" class="requestform">
       <fieldset>
-      <legend><span>Contact Information</span></legend>
-      <ol>
-      <li>
-      <label for="yourName">Your Name</label>
+      <legend>Contact Information</legend>
+      <p>
+      <label for="yourName">Your Name:</label>
       <input id="yourName" name="yourName" class="text" type="text" 
        size="50" maxlength="80" value="' . $yourName . '" />';
 
     if (($verify) && (strlen($yourName) <= 2)) {
-        printErrorIcon();
+        printErrorIcon('Please enter your name.');
         $goterror = true;
     }
 
     echo '
-      </li>
-      <li>
-      <label for="emailAddr">Email Address</label>
+      </p>
+      <p>
+      <label for="emailAddr">Email Address:</label>
       <input id="emailAddr" name="emailAddr" class="text" type="text" 
        size="50" maxlength="80" value="' . $emailAddr . '" />';
 
     if (($verify) && (!$validator->check_email_address($emailAddr))) {
-        printErrorIcon();
+        printErrorIcon('Please enter a valid email address.');
         $goterror = true;
     }
 
     echo '
-      </li>
-      </ol>
+      </p>
       </fieldset>
+
       <fieldset>
-      <legend><span>Home Organization</span></legend>
-      <ol>
-      <li>
-      <label for="selectIdP">Select an Organization</label>
+      <legend>Home Organization</legend>
+      <p>
+      <label for="selectIdP">Select an Organization:</label>
       <select name="selectIdP" id="selectIdP" class="select">
       <option value="' . DEFAULT_OPTION_TEXT . '"';
 
@@ -165,31 +165,28 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
 
     if (($verify) && ($selectIdP == DEFAULT_OPTION_TEXT) &&
         (strlen($otherIdP) <= 2)) {
-        printErrorIcon();
+        printErrorIcon('Please select an organization or enter one below.');
         $goterror = true;
     }
 
     echo '
-      </li>
-      <li>
-      <label for="otherIdP">Don\'t See It? Enter Here</label>
+      </p>
+      <p>
+      <label for="otherIdP">Don\'t See It? Enter Here:</label>
       <input id="otherIdP" name="otherIdP" class="text" type="text" 
        size="50" maxlength="80" value="' . $otherIdP . '" />
-      </li>
-      </ol>
+      </p>
       </fieldset>
       <fieldset>
-      <legend><span>Additional Information (Optional)</span></legend>
-      <ol>
-      <li>
-      <label for="comments">Please tell us more about yourself and your interest in the CILogon Service</label>
+      <legend>Additional Information (Optional)</legend>
+      <p>
+      <label for="comments">Please tell us more about yourself and your interest in the CILogon Service:</label>
       <textarea id="comments" name="comments" class="textarea" 
       cols="50" rows="5">' .  $comments . '</textarea>
-      </li>
-      </ol>
+      </p>
       </fieldset>
       <fieldset class="submit">
-      <input class="submit" type="submit" name="submit" value="Submit"
+      <input class="submit" type="submit" id="submit" name="submit" value="Submit"
       />';
 
     if ($goterror) {
@@ -202,6 +199,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
       </fieldset>
     ' .  $csrf->getHiddenFormElement() . '
       </form>
+      </div>
     </div>
     ';
 
@@ -223,8 +221,11 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
 function printRequestSubmitted($yourName,$emailAddr,
                                $selectIdP,$otherIdP,$comments)
 {
-    $loggit = new loggit('mail','tfleury@illinois.edu');
-    $loggit->info("
+    $mailto   = 'tfleury@illinois.edu';
+    $mailfrom = 'From: info@cilogon.org' . "\r\n" .
+                'X-Mailer: PHP/' . phpversion();
+    $mailsubj = 'CILogon Service - Request New IdP';
+    $mailmsg  = "
 CILogon Service - New Identity Provider Request!
 ---------------
 Name          = $yourName
@@ -232,24 +233,26 @@ Email Address = $emailAddr
 Selected IdP  = $selectIdP
 Other IdP     = $otherIdP
 Comments      = $comments
-");
+";
+    mail($mailto,$mailsubj,$mailmsg,$mailfrom);
 
     printHeader('Home Organization Requested');
 
+    printPageHeader('Request Received');
     echo '
-    <div id="pageHeader">
-      <h1><span>Request Received</span></h1>
-      <h2><span>Thank You For Your Interest In the CILogon Service</span></h2>
-    </div>
-
-    <div id="summaryDiv">
-      <p class="p1"><span>Thank you!  Your request has been sent to the
-      CILogon Service team.
+    <div class="boxed">
+      <div class="boxheader">
+        Thank You For Your Interest In The CILogon Service
+      </div>
+      <p>
+      Thank you!  Your request has been sent to the CILogon Service team.
       We will contact the appropriate administrators at your organization
-      and contact you as soon as we have any information. </span></p>
-      <p class="p2"><span>If you have any further questions, please
-      contact us at <a
-      href="mailto:help@cilogon.org">help@cilogon.org</a>.</span></p>
+      and contact you as soon as we have any information.
+      </p>
+      <p>
+      If you have any further questions, please contact us at <a
+      href="mailto:help@cilogon.org">help@cilogon.org</a>.
+      </p>
     </div>
     ';
 
@@ -258,14 +261,17 @@ Comments      = $comments
 
 
 /************************************************************************
- * Function   : printErrorIcon                                          *
+ * Function  : printErrorIcon                                           *
+ * Parameter : The popup "title" text to be displayed when the mouse    *
+ *             cursor hovers over the error icon.                       *
  * This function prints out the HTML for the little error icon which    *
  * appears after any input fields that contain bad information.         *
  ************************************************************************/
-function printErrorIcon()
+function printErrorIcon($popuptext)
 {
-    echo '&nbsp;<img src="images/errorIcon.png" alt="&laquo; Error" 
-    title="Enter valid data" width="14" height="14" />';
+    echo '&nbsp;<span class="helpcursor"><img src="/images/errorIcon.png"
+    alt="&laquo; Error" title="' . $popuptext . 
+    '" width="14" height="14" /></span>';
 }
 
 ?>
