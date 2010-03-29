@@ -1,4 +1,4 @@
-/* Basic elements */
+/***** Begin basic elements *****/
 html {
   margin: 0;
   padding: 0;
@@ -16,14 +16,14 @@ p {
 }
 a {
   color: #363;
+  outline: none;
 }
 a:link {
   text-decoration: underline;
-  color: #363;
 }
 a:visited {
   text-decoration: underline;
-  color: #333;
+  color: #030; 
 }
 a:hover, a:active {
   text-decoration: underline;
@@ -32,20 +32,56 @@ a:hover, a:active {
 acronym {
   border-bottom: none;
 }
+/***** End basic elements *****/
 
-/* Specific divs */
-#container {
+/***** Begin a few misc elements *****/
+div.pagecontent {
+  margin-left: 2px;
+  margin-right: 2px;
+  min-width: 600px
 }
 
-/* The "CILogon Service" header at the top of each page */
-#logoHeader {
+div.boxed {
+  border: 1px solid #888;
+  min-width: 350px;
+  padding: 2px;
+}
+
+div.boxheader {
+  border: 1px solid #696;
+  text-align: center;
+  background-color: #cfc;
+  font-weight: bold;
+}
+
+br.clear {
+  clear: both;
+}
+
+.helpcursor {
+  cursor: help;
+}
+
+p.equation {
+  text-align: center;
+  font-weight: bold;
+  font-style: italic;
+}
+p.equation span {
+  border: 1px dotted #aca;
+  padding: 5px;
+}
+/***** End a few misc divs *****/
+
+/***** Begin the "CILogon Service" header at the top of each page *****/
+div.logoheader {
   background: transparent url("/images/cilogon-gradient.jpg") repeat-y top right;
   height: 80px;
   width: 100%;
   min-width: 600px;
   font-family: sans-serif;
 }
-#logoHeader h1 {
+div.logoheader h1 {
   background: transparent url("/images/cilogon-logo-60x60.png") no-repeat top left;
   margin-top: 10px;
   margin-left: 10px;
@@ -53,10 +89,10 @@ acronym {
   height: 60px;
   float: left;
 }
-#logoHeader h1 span {
+div.logoheader h1 span {
   display: none;
 }
-#logoHeader h2 {
+div.logoheader h2 {
   float: left;
   color: #030;
   position: relative;
@@ -67,154 +103,20 @@ acronym {
   font-style: italic;
   font-weight: bold;
 }
-#logoHeader h2 span {
+div.logoheader h2 span {
   position: absolute;
   top: 4px;
   left: 4px;
 }
-
-#logoHeader h2 span.raised {
+div.logoheader h2 span.raised {
   top: 2px;
   left: 2px;
   color: #696;
   clear: both;
 }
+/***** End the "CILogon Service" header at the top of each page *****/
 
-#pageHeader {
-  border-style: double;
-  border-color: #696;
-  text-align: center;
-  margin: 1em 2em 1em 2em;
-  background-color: #f5fff5;
-}
-#pageHeader h1 {
-  font-size: x-large;
-}
-#pageHeader h1 span {
-}
-#pageHeader h2 {
-  font-size: large;
-}
-#pageHeader h2 span {
-}
-
-#summaryDiv {
-  margin: 2em 2em 2em 2em;
-}
-
-/* Contact Form on requestidp.php page */
-#contactForm {
-  padding: 0 2em 0 2em;
-}
-#contactForm legend span {
-  position: absolute;
-  margin-left: 1em;
-  margin-top: 0.5em;
-  padding: 0;
-  font-size: 110%;
-  font-weight: bold;
-}
-#contactForm fieldset {
-  padding: 0;
-  float: left;
-  clear: both;
-  width: 100%;
-  min-width: 600px;
-  margin: 0 0 -1em 0;
-  padding: 0 0 1em 0;
-  border: none;
-  background-color: #ded;
-}
-#contactForm fieldset label {
-  float: left;
-  width: 10em;
-  margin-right: 1em;
-  text-align: right;
-}
-#contactForm fieldset ol {
-  padding: 1em 1em 0 1em;
-  list-style: none;
-}
-#contactForm fieldset li {
-  float: left;
-  clear: left;
-  padding-bottom: 1em;
-}
-#contactForm fieldset input.submit {
-  margin-left: 2em;
-  font-weight: bold;
-  font-size: 110%;
-  color: #030;
-  background-color: #aba;
-}
-#contactForm fieldset input.text {
-  font-size: 100%;
-}
-#contactForm fieldset textarea {
-  font-family: sans-serif;
-}
-#contactForm fieldset.submit span.fixerror {
-  color: #c00;
-  font-weight: bold;
-  margin-left: 4em;
-}
-
-#attributesDiv {
-  margin: 0 2em 0 2em;
-  min-width: 600px;
-  border: none;
-  background-color: #ded;
-}
-#attributesDiv table {
-  margin-left: 2em;
-  margin-right: 2em;
-  margin-bottom: 1em;
-}
-
-#resultsDiv {
-  margin: 0 2em 0 2em;
-  min-width: 600px;
-  border: none;
-}
-
-#buttonDiv {
-  border-style: double;
-  border-color: #696;
-  text-align: center;
-  background-color: #f5fff5;
-  padding-top: 1em;
-  padding-bottom: 1em;
-}
-#buttonDiv input.submit {
-  font-weight: bold;
-  font-size: 110%;
-  color: #030;
-  background-color: #aba;
-}
-
-div.footer {
-  clear: both;
-  border: solid thin #888;
-  padding: 2px;
-  color: #888;
-}
-
-div.footer p {
-  text-align: center;
-  font-size: x-small;
-  margin: 0px;
-}
-
-div.footer a:link {
-  color: #696;
-  text-decoration: none;
-}
-
-div.footer a:visited {
-  color: #696;
-  text-decoration: none;
-}
-
+/***** Begin PageHeader titlebox *****/
 div.t {
   background-image: url("/images/t.jpg"); 
   background-position: top left;
@@ -250,122 +152,32 @@ div.titlebox {
   font-size: x-large;
   background-color: #f5fff5;
 }
+/***** End PageHeader titlebox *****/
 
-/***** Begin "Tooltip" *****/
-/* You create a "tooltip" with the following html. */
-/* <a class="tooltip" href=""><img
-          src="images/infoIcon.png" alt="Help"
-          width="14" height="14" /><b><em
-          class="outer"></em><em class="inner"></em>If you select a value
-          other than "Never", you can bypass this page and proceed directly
-          to the last used IdP\'s authentication page. You will need to
-          clear your browser\'s cookies to return here.</b></a>
-*/
-a.tooltip img {
-  border-style:none;
-}
-a.tooltip b {
-  display:none;
-}
-a.tooltip:hover {
-  border:0; 
-  position:relative; 
-  z-index:500;
-  text-decoration:none;
-}
-a.tooltip:hover b {
-  display:block; 
-  position:absolute; 
-  top:20px; 
-  left:-100px;
-  padding:5px; 
-  font-weight:normal; 
-  color:#000; 
-  border:1px solid #00c;
-  background:#eef; 
-  width:200px;
-}
-a.tooltip:hover b em.outer {
-  position:absolute; 
-  left:0; 
-  top:-8px; 
-  width:0;
-  height:0; 
-  display:block; 
-  background:transparent;
-  border-left:7px dashed transparent; 
-  border-right:7px dashed transparent; 
-  border-bottom:7px solid #00c; 
-  overflow:hidden; 
-  z-index:100;
-}
-a.tooltip:hover b em.inner {
-  position:absolute; left:0; 
-  top:-7px; 
-  width:0;
-  height:0; 
-  display:block; 
-  background:transparent; 
-  border-left:7px dashed transparent; 
-  border-right:7px dashed transparent; 
-  border-bottom:7px solid #eef; 
-  overflow:hidden; 
-  z-index:100;
-}
-/***** End "Tooltip" *****/
-
-/*---------- bubble tooltip -----------*/
-a.tt {
-  position:relative;
-  z-index:24;
-  color:#3CA3FF;
-  /* font-weight:bold; */
-  text-decoration:none;
-  outline: none;
-}
-a.tt span { 
-  display: none; 
-}
-a.tt img {
-  border-style:none;
+/***** Begin page footer *****/
+div.footer {
+  border: 1px solid #888;
+  color: #888;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
-/*background:; ie hack, something must be changed in a for ie to execute it*/
-a.tt:hover { 
-  z-index:25; 
-  color: #aaaaff; 
-  background:;
-}
-a.tt:hover span.tooltip {
-  display:block;
-  position:absolute;
-  top:0px; 
-  left:-20px;
-  padding: 15px 0 0 0;
-  width:200px;
-  color: #030;
+div.footer p {
   text-align: center;
-  filter: alpha(opacity:90);
-  KHTMLOpacity: 0.90;
-  MozOpacity: 0.90;
-  opacity: 0.90;
+  font-size: x-small;
+  margin: 0px;
 }
-a.tt:hover span.tttop {
-  display: block;
-  padding: 30px 8px 0;
-  background: url("/images/bubble.gif") no-repeat top;
+
+div.footer a:link {
+  color: #696;
+  text-decoration: none;
 }
-a.tt:hover span.ttmiddle { /* different middle bg for stretch */
-  display: block;
-  padding: 0 8px; 
-  background: url("/images/bubblefill.gif") repeat bottom; 
+
+div.footer a:visited {
+  color: #696;
+  text-decoration: none;
 }
-a.tt:hover span.ttbottom {
-  display: block;
-  padding:3px 8px 10px;
-  color: #548912;
-  background: url("/images/bubble.gif") no-repeat bottom;
-}
+/***** End page footer *****/
 
 /***** Begin simple tooltip *****/
 a.tip {
@@ -373,9 +185,10 @@ a.tip {
   z-index: 24; 
   text-decoration: none;
   outline: none;
+  cursor: help;
 }
 a.tip img {
-  border-style:none;
+  border-style: none;
 }
 a.tip:hover {
   z-index: 25; 
@@ -394,7 +207,125 @@ a.tip:hover span {
   background-color: #cfc;
   color: #030;
   text-align: center;
+  border-radius: 8px;
   -moz-border-radius: 8px;    /* This works only in Camino/Firefox */
   -webkit-border-radius: 8px; /* This is just for Safari */
 }
 /***** End simple tooltip *****/
+
+/***** Begin WAYF list of whitelisted entityIDs *****/
+div.wayf {
+  border: 1px solid #888;
+  text-align: center;
+  float: right;
+  width: 38%;
+  min-width: 230px;
+  padding: 2px;
+  background: #eee;
+}
+.ontop {
+  display: block;
+}
+div.wayf fieldset {
+  text-align: center;
+  border: 0;
+  padding: 0;
+}
+div.wayf fieldset p {
+  margin-top: 1em;
+  text-align: center;
+}
+div.wayf fieldset input.submit {
+  font-weight: bold;
+  font-size: 110%;
+  color: #030;
+  background-color: #aba;
+}
+/***** End WAYF *****/
+
+/***** Begin Welcome page text *****/
+div.welcome {
+  border: 1px solid #888;
+  float: left;
+  width: 59%;
+  min-width: 350px;
+  padding: 2px;
+}
+div.welcome h2 {
+  font-size: medium;
+  color: #696;
+  font-weight: bold;
+}
+div.welcome p {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+/***** End Welcome page text *****/
+
+/***** Begin contactform on the requestidp page *****/
+div.contactform {
+  border: 1px solid #888;
+  margin: 2em;
+  background-color: #efe;
+}
+div.contactform label {
+  float: left;
+  width: 12em;
+  margin-right: 1em;
+  text-align: right;
+}
+div.contactform fieldset {
+  border: none;
+}
+div.contactform fieldset legend {
+  font-size: 110%;
+  font-weight: bold;
+  margin-top: 0.5em;
+  padding: 0;
+
+}
+div.contactform fieldset input.submit {
+  font-weight: bold;
+  font-size: 110%;
+  color: #030;
+  background-color: #aba;
+}
+div.contactform fieldset.submit span.fixerror {
+  color: #c00;
+  font-weight: bold;
+  margin-left: 2em;
+}
+/***** End contactform on the requestidp page *****/
+
+#attributesDiv {
+  margin: 0 2em 0 2em;
+  min-width: 600px;
+  border: none;
+  background-color: #ded;
+}
+#attributesDiv table {
+  margin-left: 2em;
+  margin-right: 2em;
+  margin-bottom: 1em;
+}
+
+#resultsDiv {
+  margin: 0 2em 0 2em;
+  min-width: 600px;
+  border: none;
+}
+
+#buttonDiv {
+  border: 1px double #696;
+  text-align: center;
+  background-color: #f5fff5;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+#buttonDiv input.submit {
+  font-weight: bold;
+  font-size: 110%;
+  color: #030;
+  background-color: #aba;
+}
+
