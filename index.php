@@ -50,55 +50,62 @@ function printLoginPage()
 {
     printHeader('Welcome to the CILogon Service');
 
+    printPageHeader('Welcome to the CILogon Service');
     echo '
-    <div id="pageHeader">
-      <h1><span>Welcome to the CILogon Service</span></h1>
-      <h2><span>Authenticate with Your Organization and Retrieve a
-      Credential</span></h2>
-    </div>
-
-    <div id="summaryDiv">
-      <p class="p1"><span>The CILogon Service allows users to authenticate
-      with their organization\'s Identity Provider (<acronym 
-      title="Identity Provider">IdP</acronym>) and obtain an X.509
-      credential for secure access to cyberinfrastructure (<acronym
-      title="CyberInfrastructure">CI</acronym>).</span></p>
-
-      <div id="buttonDiv">
-        <form action="' . basename(__FILE__) . '" method="post">
-          <input class="submit" type="submit" name="submit"
-                 value="' . LOGIN_BUTTON_TEXT . '" />
-          <p></p>
-          Go directly to your <acronym 
-          title="Identity Provider">IdP</acronym>:&nbsp;<select
-          name="godirect">
-            <option value="0" selected="selected">Never</option>
-            <option value="7">For One Week</option>
-            <option value="31">For One Month</option>
-            <option value="365">For One Year</option>
-<!--
-          </select>&nbsp;<a class="tooltip" href="" 
-          onclick="return false;"><img
-          src="images/infoIcon.png" alt="Help"
-          width="14" height="14" /><b><em
-          class="outer"></em><em class="inner"></em>If you select a value
-          other than "Never", you can bypass this page and proceed directly
-          to the last used IdP\'s authentication page. You will need to
-          clear your browser\'s cookies to return here.</b></a>
--->
-          </select>&nbsp;<a class="tt" href="" 
-          onclick="return false;"><img
-          src="images/infoIcon.png" alt="Help"
-          width="14" height="14" /><span class="tooltip"><span
-          class="tttop"></span><span class="ttmiddle">If you select a value
-          other than "Never", you can bypass this page and proceed directly
-          to the last used IdP\'s authentication page. You will need to
-          clear your browser\'s cookies to return here.</span><span
-          class="ttbottom"></span></span></a>
-        </form>
+    <div class="welcome">
+      <div class="boxheader">
+        About The CILogon Service
       </div>
+      <h2>What Is The CILogon Service?</h2>
+      <p>
+      The CILogon Service allows users to authenticate
+      with their home organization and obtain a
+      certificate for secure access to <a target="_blank"
+      href="http://www.nsf.gov/">NSF</a> <a target="_blank"
+      href="http://www.nsf.gov/oci">CyberInfrastructure</a> (<acronym
+      title="CyberInfrastructure">CI</acronym>) projects. Additional
+      information can be found at <a target="_blank"
+      href="http://www.cilogon.org/service">www.cilogon.org</a>.
+      </p>
+      <p class="equation">
+      <span>CILogon + Your Organization = Secure Access to 
+      <acronym title="National Science Foundation">NSF</acronym>
+      <acronym title="CyberInfrastructure">CI</acronym></span>
+      </p>
+      <h2>How Does The CILogon Service Work?</h2>
+      <p>
+      The CILogon Service is a member of <a target="_blank"
+      href="http://www.incommonfederation.org/">InCommon</a>, a formal
+      federation of over 200 universities, agencies, and organizations.
+      Many of these organizations maintain an authentication service to
+      provide their users with web single sign-on.  An InCommon organization
+      can partner with the CILogon Service to provide user information for
+      the purpose of issuing certificates.  These certificates can then be
+      used for accessing cyberinfrastructure resources.
+      </p>
+      <h2>How Do I Use The CILogon Service?</h2>
+      <p>
+      Select your organization from the drop-down list, then click the
+      &quot;Logon&quot; button.  You will be redirected to your
+      organization\'s login page.  After you authenticate with your
+      organization as you typically would, you will be redirected back to
+      the CILogon Service.  Then you will be able to fetch a
+      certificate for use with cyberinfrastructure resources.  
+      </p>
+      <h2>What If I Don\'t See My Organization Listed?</h2>
+      <p>
+      If you don\'t have an account with any of the organizations listed in
+      the drop-down list in the &quot;Start Here&quot; menu, you can
+      register for a free user account at <a target="_blank"
+      href="http://www.protectnetwork.org/">ProtectNetwork</a> for use with
+      the CILogon Service.  Alternatively, you can <a target="_blank"
+      href="requestidp">make a request for your organization</a> to appear
+      in the list of available organizations.
+      </p>
     </div>
     ';
+
+    printWAYF();
 
     printFooter();
 }
