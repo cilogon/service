@@ -3,10 +3,6 @@
 ini_set('session.cookie_secure',true);
 if (session_id() == "") session_start();
 
-if (isset($_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'])) {
-    $providerId = $_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'];
-    setcookie('providerId',$providerId,time()+60*60*24*365,'/','',true);
-}
 ?>
 
 <html>
@@ -125,26 +121,6 @@ The raw attribute response (<code>HTTP_SHIB_ATTRIBUTES</code>) is NOT filtered b
 <hr/>
 <br/>
 
-
-<b>$_REQUEST</b>
-<?php
-echo '<table>';
-foreach ($_REQUEST as $key => $value)
-{
-	echo '<tr>';
-	echo '<td>'.$key.'</td><td>'.$value.'</td>';
-	echo '</tr>';
-
-}
-echo '</table>'
-?>
-
-
-
-<br/>
-<hr/>
-<br/>
-
 <b>$_SERVER</b>
 <?php
 echo '<table>';
@@ -174,6 +150,92 @@ foreach ($_SESSION as $key => $value)
 }
 echo '</table>'
 ?>
+
+<br/>
+<hr/>
+<br/>
+
+<b>$_GET</b>
+<?php
+echo '<table>';
+foreach ($_GET as $key => $value)
+{
+	echo '<tr>';
+	echo '<td>'.$key.'</td><td>'.$value.'</td>';
+	echo '</tr>';
+
+}
+echo '</table>'
+?>
+
+<br/>
+<hr/>
+<br/>
+
+<b>$_POST</b>
+<?php
+echo '<table>';
+foreach ($_POST as $key => $value)
+{
+	echo '<tr>';
+	echo '<td>'.$key.'</td><td>'.$value.'</td>';
+	echo '</tr>';
+
+}
+echo '</table>'
+?>
+
+<br/>
+<hr/>
+<br/>
+
+<b>$_COOKIE</b>
+<?php
+echo '<table>';
+foreach ($_COOKIE as $key => $value)
+{
+	echo '<tr>';
+	echo '<td>'.$key.'</td><td>'.$value.'</td>';
+	echo '</tr>';
+
+}
+echo '</table>'
+?>
+
+<br/>
+<hr/>
+<br/>
+
+<b>$_REQUEST</b>
+<?php
+echo '<table>';
+foreach ($_REQUEST as $key => $value)
+{
+	echo '<tr>';
+	echo '<td>'.$key.'</td><td>'.$value.'</td>';
+	echo '</tr>';
+
+}
+echo '</table>'
+?>
+
+<br/>
+<hr/>
+<br/>
+
+<b>$_ENV</b>
+<?php
+echo '<table>';
+foreach ($_ENV as $key => $value)
+{
+	echo '<tr>';
+	echo '<td>'.$key.'</td><td>'.$value.'</td>';
+	echo '</tr>';
+
+}
+echo '</table>'
+?>
+
 
 <br/>
 <hr/>
