@@ -214,6 +214,38 @@ class csrf {
         return retval;
     }
 
+    /********************************************************************
+     * Function  : verifyCookieAndGetSubmit                             *
+     * Parameter : The name of a <form>'s "submit" button, defaults to  *
+     *             "submit".                                            *
+     * Return    : The value of the <form>'s clicked "submit" button if *
+     *             the csrf cookie matches the hidden form element, or  *
+     *             empty string otherwise.                              *
+     * This function assumes that the user has clicked a <form>'s       *
+     * "submit" button.  The function takes in the "name" attribute of  *
+     * the submit button, and returns the "value" of the submit button. *
+     * For example, if the form has a button like this:                 *
+     *     <input type="submit" name="mysubmit" value="Logon">          *
+     * You should then pass "mysubmit" as the parameter to this         *
+     * function, and "Logon" would be returend.  However, this function *
+     * also verifies that the csrf cookie matches the hidden csrf form  *
+     * element.  If not, then the returned string is the empty string,  *
+     * and the csrf cookie is deleted.                                  *
+     ********************************************************************/
+    public static function verifyCookieAndGetSubmit($submit='submit')
+    {
+        $retval = getPostVar($submit);
+        if (strlen($retval) > 0) { 
+            /* Check the CSRF protection cookie */
+            if (!csrf::isCookieEqualToForm()) {
+                /* ERROR! - CSRF cookie not equal to hidden form element! */
+                csrf::deleteTheCookie();
+                $retval = '';
+            }
+        }
+        return $retval;
+    }
+
 }
 
 ?>
