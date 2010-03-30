@@ -157,4 +157,21 @@ function startPHPSession()
     }
 }
 
+/************************************************************************
+ * Function  : getScriptDir                                             *
+ * This function returns the directory of the script that is currently  *
+ * running.  The returned directory is terminated by a '/' character.   *
+ ************************************************************************/
+function getScriptDir() {
+    $sn = getServerVar('SCRIPT_NAME');
+    $retval = dirname($sn);
+    if ($retval == '.') {
+        $retval = '';
+    }
+    if ((strlen($retval) == 0) || ($retval[strlen($retval)-1] != '/')) {
+        $retval .= '/';  // Append a slash if necessary
+    }
+    return $retval;
+}
+
 ?>
