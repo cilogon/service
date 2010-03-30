@@ -6,35 +6,47 @@ require_once('include/util.php');
 
 startPHPSession();
 
-/* The full URL of the Shibboleth protected service script.            */
-$serviceurl = 'https://cilogon.org/secure/env3.php';
+/* If the user clicked a "Submit" button, get the text of the button   *
+ * and verify the CSRF protection cookie.                              */
+$submit = csrf::verifyCookieAndGetSubmit();
 
-/* The text to be displayed on the "Log in to your IdP" button         */
-DEFINE('LOGIN_BUTTON_TEXT','Log in to your IdP and Get a Credential');
+/* The full URL of the Shibboleth-protected getuser script.            */
+$getuser = 'https://cilogon.org/secure/getuser/';
 
-/* If the user clicked a "Submit" button, get the text of the button.  */
-$submit = getPostVar('submit');
+/* "providerId" and "keepidp" can be set in cookies and/or by a form   *
+ * submit.  "providerId" corresonds to the user-selected Idp.          *
+ * "keepidp" corresponds to the "Remember this selection" checkbox and *
+ * allows the user to bypass the Welcome page on subsequent visits.    */
+$providerIdCookie = urldecode(getCookieVar('providerId'));
+$providerIdPost = getPostVar('providerId');
+$keepidpCookie = getCookieVar('keepidp');
+$keepidpPost = getPostVar('keepidp');
 
-/* The "providerId" cookie is set by the Shibboleth protected service  *
- * script.  It corresponds to the last authenticated IdP's entityID.   */
-$providerId = getCookieVar('providerId');
+/* Read in the whitelist of currently available IdPs.                  */
+$white = new whitelist();
 
-/* Check if the user had previously selected the "Go directly to       *
- * your IdP" option and if so, reroute through the local WAYF to get   *
- * to the $serviceurl script.                                          */
-if (strlen(getCookieVar('godirect')) > 0) {
-    redirectToSecure($serviceurl,$providerId);
-} elseif ($submit == LOGIN_BUTTON_TEXT) {
-    /* If the user clicked the "Log in to your IdP" button, then       *
-     * set the cookie for the "Go directly to your IdP" (if necessary) *
-     * and then go directly to the $secureurl script.  Since the       *
-     * $secureurl is in a Shibboleth protected directory, the WAYF     *
-     * will be invoked if there is no Shibboleth authentication yet.   */
-    $godirect = intval(getPostVar('godirect'));
-    if ($godirect > 0) {
-        setcookie('godirect',$godirect,time()+60*60*24*$godirect,'/','',true);
+/* If both the "keepidp" and the "providerId" cookies were set (and    *
+ * the providerId is a whitelisted IdP) then skip the Welcome page and *
+ * proceed to the getuser script.                                      */
+if ((strlen($providerIdCookie) > 0) && 
+    (strlen($keepidpCookie) > 0) &&
+    ($white->exists($providerIdCookie))) {
+    redirectToSecure($getuser,$providerIdCookie);
+
+/* Else, if the user clicked the WAYF "Logon" button on the Welcome    *
+ * page and the selected IdP is in the whitelist, then set cookies for *
+ * "providerId" and "keepidp" (if the checkbox was checked).  Then     *
+ * proceed to the getuser script.                                      */
+} elseif (($submit == "Logon") &&
+          (strlen($providerIdPost) > 0) &&
+          ($white->exists($providerIdPost))) {
+    setcookie('providerId',$providerIdPost,time()+60*60*24*365,'/','',true);
+    if (strlen($keepidpPost) > 0) {
+        setcookie('keepidp','checked',time()+60*60*24*365,'/','',true);
+    } else {
+        setcookie('keepidp','',time()-3600,'/','',true);
     }
-    header("Location: $serviceurl");
+    redirectToSecure($getuser,$providerIdPost);
 } else { 
     /* Default action - simply print the main Login page */
     printLoginPage();
@@ -113,31 +125,24 @@ function printLoginPage()
 /************************************************************************
  * Function   : redirectToSecure                                        *
  * Parameters : (1) The full URL of the Shibboleth protected script.    *
- *              (2) (Optional) A urlencoded entityID of the             *
- *                  authenticating IdP.                                 *
+ *              (2) (Optional) An entityID of the authenticating IdP.   *
  *              (3) (Optional) A string of additional "key=value"       *
  *                  pairs, separated by '&'s and urlencoded.            *
- * This function takes in the full URL of a Shibboleth protected script *
- * and redirects through the local Discovery Service WAYF so as to do a *
- * Shibboleth authentication.  If the second parameter (a urlencoded    *
- * entityID) is specified, the WAYF will automatically go to that IdP   *
- * without stopping at the WAYF.  This function verifies that the       *
- * given providerId entityID exists in the local whitelist for the WAYF *
- * so as to prevent non-verified IdPs from being used.  The third       *
- * parameter is utilized for any additional key=value pairs that should *
- * be passed to the Shibboleth protected script.  These pairs should    *
- * be separated (but not prefixed) by an ampersand (&) and urlencoded.  *
+ * This function takes in the full URL of a Shibboleth-protected script *
+ * and redirects so as to do a Shibboleth authentication via the        *
+ * InCommon WAYF.  If the second parameter (a whitelisted entityID) is  *
+ * specified, the WAYF will automatically go to that IdP (i.e. without  *
+ * stopping at the WAYF).  The third parameter is utilized for any      *
+ * additional key=value pairs that should be passed to the Shibboleth-  *
+ * protected script.  These pairs should be separated (but not          *
+ * prefixed) by an ampersand (&) and urlencoded.                        *
  ************************************************************************/
 function redirectToSecure($target,$providerId='',$extra='')
 {
-    $redirect = 'Location: https://cilogon.org/Shibboleth.sso/WAYF?' .
+    $redirect = 'Location: https://cilogon.org/Shibboleth.sso/WAYF/InCommon?' .
         'target=' . urlencode($target);
     if (strlen($providerId) > 0) {
-        $white = new whitelist();
-        $white->read();
-        if ($white->exists(urldecode($providerId))) {
-            $redirect .= '&providerId=' . $providerId;
-        }
+        $redirect .= '&providerId=' . urlencode($providerId);
     }
     if (strlen($extra) > 0) {
         $redirect .= '&' . $extra;
