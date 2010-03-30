@@ -2,26 +2,20 @@
 
 require_once('../include/autoloader.php');
 require_once('../include/content.php');
-require_once('../include/shib.php');
 require_once('../include/util.php');
 
-$submit = getPostVar('submit');
+startPHPSession();
+
 $validator = new EmailAddressValidator();
 define('DEFAULT_OPTION_TEXT','-- Choose one -or- Type one in below --');
 
-/* Check if the user clicked the "Submit" button. */
-if (strlen($submit) > 0) { 
-    /* Check the CSRF protection cookie */
-    if (!csrf::isCookieEqualToForm()) {
-        /* ERROR! - CSRF cookie not equal to hidden form element! */
-        csrf::deleteTheCookie();
-        $submit = '';
-    }
-}
+/* If the user clicked a "Submit" button, get the text  *
+ * of the button and verify the CSRF protection cookie. */
+$submit = csrf::verifyCookieAndGetSubmit();
 
 /* If the CSRF cookie was good and the user clicked the "Submit" *
- * button then read in the various form elements and verify that  *
- * the form values are non-empty (or at least make sense).        */
+ * button then read in the various form elements and verify that *
+ * the form values are non-empty (or at least make sense).       */
 if ($submit == 'Submit') {
     $yourName = getPostVar('yourName');
     $emailAddr = getPostVar('emailAddr');
@@ -107,7 +101,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
     </p>
 
     <div class="contactform">
-      <form action="/requestidp/" method="post" class="requestform">
+      <form action="' . getScriptDir() . '" method="post" class="requestform">
       <fieldset>
       <legend>Contact Information</legend>
       <p>
@@ -197,9 +191,17 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
 
     echo '
       </fieldset>
-    ' .  $csrf->getHiddenFormElement() . '
+      ' .  $csrf->getHiddenFormElement() . '
       </form>
       </div>
+      <p>
+      If you are the administrator of an Identity Provider (<acronym
+      title="IdentityProvider">IdP</acronym>), you can <a target="_blank"
+      href="/secure/testidp/">test your IdP</a> to verify attribute release
+      policy.  If all required attributes have been released by your
+      organization, you can easily make it available to users of the CILogon
+      Service.
+      </p>
     </div>
     ';
 
@@ -258,7 +260,6 @@ Comments      = $comments
 
     printFooter();
 }
-
 
 /************************************************************************
  * Function  : printErrorIcon                                           *
