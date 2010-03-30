@@ -112,6 +112,8 @@ function printPageHeader($text) {
  ************************************************************************/
 function printWAYF() 
 {
+    global $csrf;
+
     $incommon = new incommon();
     $whitelist = new whitelist();
     $idps = $incommon->getOnlyWhitelist($whitelist);
@@ -124,7 +126,7 @@ function printWAYF()
       <div class="boxheader">
         Start Here
       </div>
-      <form action="' . getServerVar('SCRIPT_NAME') . 
+      <form action="' . getScriptDir() . 
       '" method="post" class="wayfForm">
       <fieldset>
       <p>
@@ -155,6 +157,7 @@ function printWAYF()
       value="Logon" />
       </p>
       </fieldset>
+      ' .  $csrf->getHiddenFormElement() . '
       </form>
     </div>
     ';
