@@ -5,17 +5,11 @@ require_once('../../include/content.php');
 require_once('../../include/shib.php');
 require_once('../../include/util.php');
 
-$submit = getPostVar('submit');
+startPHPSession();
 
-/* Check if the user clicked a "Submit" button. */
-if (strlen($submit) > 0) { 
-    /* Check the CSRF protection cookie */
-    if (!csrf::isCookieEqualToForm()) {
-        /* ERROR! - CSRF cookie not equal to hidden form element! */
-        csrf::deleteTheCookie();
-        $submit = '';
-    }
-}
+/* If the user clicked a "Submit" button, get the text  *
+ * of the button and verify the CSRF protection cookie. */
+$submit = csrf::verifyCookieAndGetSubmit();
 
 /* If the CSRF cookie was good and the user clicked a "Submit" *
  * button then do the appropriate action before displaying     *
@@ -25,12 +19,12 @@ if ($submit == 'Add Your IdP to CILogon') {
     $white = new whitelist();
     $entityID = getServerVar('HTTP_SHIB_IDENTITY_PROVIDER');
     if ($white->add($entityID)) {
-        if ($white->write()) {
-            $white->reload();
-        }
+        $white->write();
     }
+    printTestPage();
+} else {
+    printTestPage();
 }
-printTestPage();
 
 /************************************************************************
  * Function   : printTestPage                                           *
@@ -245,7 +239,9 @@ function printTestPage()
 
 /************************************************************************
  * Function   : printErrorOrOkayIcon                                    *
- * Parameter  : A string corresponding to a Shibboleth attribute.       *
+ * Parameters : (1) A string corresponding to a Shibboleth attribute.   *
+ *              (2) The popup "title" txt to be displayed when the      *
+ *                  mouse cursor hovers over the error icon.            *
  * Returns    : True if the string length of the input parameter is     *
  *              greater than zero, false otherwise.                     *
  * Side Effect: An "error" or "okay" icon is output as an HTML <img>.   *
@@ -255,7 +251,7 @@ function printTestPage()
  * string is zero, then an "error" icon is output to HTML and the       *
  * function returns 'false'.                                            *
  ************************************************************************/
-function printErrorOrOkayIcon($attr='')
+function printErrorOrOkayIcon($attr='',$popuptext='')
 {
     $retval = false;
     $icon = 'error';
@@ -263,12 +259,43 @@ function printErrorOrOkayIcon($attr='')
     if (strlen($attr) > 0) {
         $icon = 'okay';
         $retval = true;
+        $popuptext = '';
     }
 
-    echo '&nbsp;<img src="/images/' . $icon . 'Icon.png" 
-          alt="&laquo; ' . $icon . '" width="14" height="14" />';
+    echo '&nbsp;<span';
+    if (strlen($popuptext) > 0) {
+        echo ' class="helpcursor"';
+    }
+    echo '><img src="/images/' . $icon . 'Icon.png" 
+          alt="&laquo; ' . ucfirst($icon) . '" ';
+    if (strlen($popuptext) > 0) {
+        echo 'title="'. $popuptext . '" ';
+    }
+    echo 'width="14" height="14" /></span>';
 
     return $retval;
+}
+
+/************************************************************************
+ * Function   : printWithAndWithoutJS                                   *
+ * Parameters : (1) HTML to be output when JavaScript is enabled.       *
+ *              (2) HTML to be output when JavaScript is disabled.      *
+ * This function prints out HTML for when JavaScript is enabled and     *
+ * when JavaScript is disabled.  This allows the page to display        *
+ * properly in either case.                                             *
+ ************************************************************************/
+function printWithAndWithoutJS($withjs='',$withoutjs='')
+{
+    echo '
+    <script type="text/javascript">
+    /* <![CDATA[ */
+    document.write("' . $withjs . '");
+    /* //]]> */
+    </script>
+    <noscript>
+    ' . $withoutjs . '
+    </noscript>
+    ';
 }
 
 ?>
