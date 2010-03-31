@@ -178,6 +178,42 @@ class incommon {
         return $retval;
     }
 
+    /********************************************************************
+     * Function  : entityIDExists                                       *
+     * Parameter : An entityID string.                                  *
+     * Returns   : True if the entityID exists in the InCommon          *
+     *             metadata. False otherwise.                           *
+     * This function takes in a string of an entityID and returns true  *
+     * if that entityID is an IdP in the InCommon metadata file.        *
+     * See also displayNameExists().                                    *
+     ********************************************************************/
+    function entityIDExists($entityID) {
+        return (strlen($this->getDisplayName($entityID)) > 0);
+    }
+
+    /********************************************************************
+     * Function  : exists                                               *
+     * Parameter : An entityID string.                                  *
+     * Returns   : True if the entityID exists in the InCommon          *
+     *             metadata. False otherwise.                           *
+     * This function is an alias for entityIDExists().                  *
+     ********************************************************************/
+    function exists($entityID) {
+        return ($this->entityIDExists($entityID));
+    }
+
+    /********************************************************************
+     * Function  : displayNameExists                                    *
+     * Parameter : An IdP display name string.                          *
+     * Returns   : True if the display name of an IdP exists in the     *
+     *             InCommon metadata. False otherwise.                  *
+     * This function takes in the display name string of an IdP and     *
+     * returns true if that string is in the InCommon metadata file.    *
+     * See also entityIDExists().                                       *
+     ********************************************************************/
+    function displayNameExists($displayName) {
+        return (strlen($this->getEntityID($displayName)) > 0);
+    }
 
     /********************************************************************
      * Function  : add                                                  *
