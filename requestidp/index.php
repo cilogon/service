@@ -76,8 +76,8 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
     $idps = $incommon->getNoWhitelist($whitelist);
 
     printHeader('Request Home Organization');
-
     printPageHeader('Request A New Organization');
+
     echo '
     <div class="boxed">
       <div class="boxheader">
@@ -110,7 +110,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
        size="50" maxlength="80" value="' . $yourName . '" />';
 
     if (($verify) && (strlen($yourName) <= 2)) {
-        printErrorIcon('Please enter your name.');
+        printIcon('error','Please enter your name.');
         $goterror = true;
     }
 
@@ -122,7 +122,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
        size="50" maxlength="80" value="' . $emailAddr . '" />';
 
     if (($verify) && (!$validator->check_email_address($emailAddr))) {
-        printErrorIcon('Please enter a valid email address.');
+        printIcon('error','Please enter a valid email address.');
         $goterror = true;
     }
 
@@ -159,7 +159,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
 
     if (($verify) && ($selectIdP == DEFAULT_OPTION_TEXT) &&
         (strlen($otherIdP) <= 2)) {
-        printErrorIcon('Please select an organization or enter one below.');
+        printIcon('error','Please select an organization or enter one below.');
         $goterror = true;
     }
 
@@ -196,7 +196,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
       </div>
       <p>
       If you are the administrator of an Identity Provider (<acronym
-      title="IdentityProvider">IdP</acronym>), you can <a target="_blank"
+      title="Identity Provider">IdP</acronym>), you can <a target="_blank"
       href="/secure/testidp/">test your IdP</a> to verify attribute release
       policy.  If all required attributes have been released by your
       organization, you can easily make it available to users of the CILogon
@@ -259,20 +259,6 @@ Comments      = $comments
     ';
 
     printFooter();
-}
-
-/************************************************************************
- * Function  : printErrorIcon                                           *
- * Parameter : The popup "title" text to be displayed when the mouse    *
- *             cursor hovers over the error icon.                       *
- * This function prints out the HTML for the little error icon which    *
- * appears after any input fields that contain bad information.         *
- ************************************************************************/
-function printErrorIcon($popuptext)
-{
-    echo '&nbsp;<span class="helpcursor"><img src="/images/errorIcon.png"
-    alt="&laquo; Error" title="' . $popuptext . 
-    '" width="14" height="14" /></span>';
 }
 
 ?>
