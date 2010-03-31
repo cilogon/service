@@ -7,24 +7,29 @@ require_once('../../include/util.php');
 
 startPHPSession();
 
+define('ADD_SUBMIT_TEXT','Add Your IdP to the CILogon Service');
+
 /* If the user clicked a "Submit" button, get the text  *
  * of the button and verify the CSRF protection cookie. */
 $submit = csrf::verifyCookieAndGetSubmit();
 
+/* Get the full list of InCommon IdPs and the whitelist of *
+ * IdPs available to the CILogon Service.                  */
+$incommon = new incommon();
+$whitelist = new whitelist();
+
 /* If the CSRF cookie was good and the user clicked a "Submit" *
  * button then do the appropriate action before displaying     *
  * the main Shibboleth Attributes Test Page.                   */
-if ($submit == 'Add Your IdP to CILogon') {
+if ($submit == ADD_SUBMIT_TEXT) {
     /* Add the current IdP entityID to the WAYF whitelist and reload */
-    $white = new whitelist();
     $entityID = getServerVar('HTTP_SHIB_IDENTITY_PROVIDER');
-    if ($white->add($entityID)) {
-        $white->write();
+    if (($incommon->exists($entityID)) &&
+        ($whitelist->add($entityID))) {
+        $whitelist->write();
     }
-    printTestPage();
-} else {
-    printTestPage();
 }
+printTestPage();
 
 /************************************************************************
  * Function   : printTestPage                                           *
@@ -38,136 +43,291 @@ if ($submit == 'Add Your IdP to CILogon') {
  ************************************************************************/
 function printTestPage()
 {
-    $csrf = new csrf();
-    $csrf->setTheCookie();
+    global $incommon;
+    global $whitelist;
 
-    $gotattrs = true;  /* Did we get all shib attributes? */
+    $gotattrs = false;  // Did we get all shib attributes?
 
     $shibarray = getShibInfo();
 
     printHeader('Test Identity Provider');
+    printPageHeader('Test Your Organization\'s Identity Provider');
 
     echo '
-    <div id="pageHeader">
-      <h1><span>Test Your Identity Provider</span></h1>
-      <h2><span>Verify Shibboleth Attributes Released To Our
-           Service</span></h2>
-    </div>
+    <div class="boxed">
+      <div class="boxheader">
+        Verify SAML Attribute Release Policy
+      </div>
 
-    <div id="summaryDiv">
-      <p class="p1"><span>Thank you for your interest in the CILogon
-        Service.  This page allows an Identity Provider (<acronym 
-        title="Identity Provider">IdP</acronym>) to verify that all
-        necessary Shibboleth attributes have been released to the
-        CILogon Service Provider (<acronym 
-        title="Service Provider">SP</acronym>).</span></p>
-      <p class="p2"><span>Below you will see the various Shibboleth
-        attributes utilized by the CILogon <acronym 
-        title="Service Provider">SP</acronym>.  If all required
-        attributes are present, you can add your <acronym
-        title="Identity Provider">IdP</acronym> to our Discovery Service
-        <acronym title="Where Are You From">WAYF</acronym> (if it has not
-        already been added).</span></p>
-    </div>
+    <p>
+    Thank you for your interest in the CILogon Service.  This page allows
+    the administrator of an Identity Provider (<acronym
+    title="Identity Provider">IdP</acronym>) to verify that all necessary
+    SAML attributes have been released to the CILogon Service Provider
+    (<acronym title="Service Provider">SP</acronym>).  Below you will see
+    the various attributes required by the CILogon Service and their values
+    as released by your IdP.  If all required attributes are present, you
+    can add your <acronym title="Identity Provider">IdP</acronym> to the
+    list of organizations available to the CILogon Service (assuming it has
+    not already been added).
+    </p>
 
-    <div id="attributesDiv">
-      <h2>Attributes</h2>
-        <table cellpadding="5" rules="rows">
-          <tr>
-            <th align="right">Identity Provider (EntityID):</th>
+    <div class="summary">
+    <h2>Summary</h2>
+    ';
+
+    if ((strlen($shibarray['Identity Provider']) > 0) &&
+        (strlen($shibarray['User Identifier']) > 0) &&
+        (strlen($shibarray['Email Address']) > 0) &&
+        (strlen($shibarray['Organization Name']) > 0) &&
+            ((strlen($shibarray['Display Name']) > 0) ||
+                 ((strlen($shibarray['First Name']) > 0) &&
+                  (strlen($shibarray['Last Name']) > 0)))) {
+        $gotattrs = true;
+    }
+
+    if ($gotattrs) {
+        echo '<div class="icon">';
+        printIcon('okay');
+        echo ' 
+        </div>
+        <div class="summarytext">
+        <p>
+        All required attributes have been released by your <acronym
+        title="Identity Provider">IdP</acronym>.  For details of the various
+        attributes utilized by the CILogon Service and their current values,
+        see the sections below.
+        </p>
+        ';
+        if ((!$whitelist->exists($shibarray['Identity Provider'])) &&
+            ($incommon->exists($shibarray['Identity Provider']))) {
+            echo '
+            <p class="addsubmit">
+            <form action="' . getScriptDir() . '" method="post">
+              <input class="submit" type="submit" name="submit"
+                     value="' . ADD_SUBMIT_TEXT . '" />
+            </form>
+            </p>
+            ';
+        } else {
+            echo '
+            <p class="addsubmit">
+            <a href="/">Proceed to the CILogon
+            Service</a>.
+            </p>
+            ';
+        }
+        echo '
+        </div>
+        ';
+    } else {
+        echo '<div class="icon">';
+        printIcon('error','Missing one or more attributes.');
+        echo '
+        </div>
+        <div class="summarytext">
+        <p>
+        One or more of the attributes required by the CILogon Service are
+        not available.  Please see the sections below for details.  Contact
+        <a href="mailto:help@cilogon.org">help&nbsp;@&nbsp;cilogon.org</a>
+        for additional information and assistance.
+        </p>
+        </div>
+        ';
+    }
+
+    echo '
+    </div> <!-- summary -->
+
+    <noscript>
+    <div class="nojs">
+    Javascript is disabled.  In order to expand or collapse the sections
+    below, please enable Javascript in your browser.
+    </div>
+    </noscript>
+
+    <div class="summary">
+        <div id="saml1" style="display:' . 
+            ($gotattrs ? "inline" : "none" ) . 
+        '"><span class="expander"><a 
+        href="javascript:showHideDiv(\'saml\',-1)"><img 
+        src="/images/triright.gif" alt="&rArr;" width="14" height="14" /> 
+        SAML Attributes</a></span>
+        </div>
+        <div id="saml2" style="display:' .
+            ($gotattrs ? "none" : "inline" ) . 
+        '"><span class="expander"><a 
+        href="javascript:showHideDiv(\'saml\',-1)"><img 
+        src="/images/tridown.gif" alt="&dArr;" width="14" height="14" /> 
+        SAML Attributes</a></span>
+        </div>
+        <br class="clear" />
+        <div id="saml3" style="display:' . 
+            ($gotattrs ? "none" : "inline" ) . 
+        '">
+
+        <table cellpadding="5">
+          <tr class="odd">
+            <th>Identity Provider (entityID):</th>
             <td>' . $shibarray['Identity Provider'] . '</td>
             <td>';
 
-    $gotattrs = ($gotattrs && 
-                 printErrorOrOkayIcon($shibarray['Identity Provider']));
+    if (strlen($shibarray['Identity Provider']) == 0) {
+        printIcon('error','Missing the entityID of the IdP.');
+    }
+
+    echo '
+            </td>
+          </tr>
+
+          <tr>
+            <th>ePTID:</th>
+            <td>' . $shibarray['ePTID'] . '</td>
+            <td>';
+            
+    if ((strlen($shibarray['ePPN']) == 0) &&
+        (strlen($shibarray['ePTID']) == 0)) {
+        printIcon('error','Must have either ePPN -OR- ePTID.');
+    }
+            
+    echo '
+            </td>
+          </tr>
+
+          <tr class="odd">
+            <th>ePPN:</th>
+            <td>' . $shibarray['ePPN'] . '</td>
+            <td>';
+            
+    if ((strlen($shibarray['ePPN']) == 0) &&
+        (strlen($shibarray['ePTID']) == 0)) {
+        printIcon('error','Must have either ePPN -OR- ePTID.');
+    }
+            
+    echo '
+            </td>
+          </tr>
+
+          <tr>
+            <th>First Name (givenName):</th>
+            <td>' . $shibarray['First Name'] . '</td>
+            <td>';
+
+    if ((strlen($shibarray['First Name']) == 0) &&
+        (strlen($shibarray['Display Name']) == 0)) {
+        printIcon('error','Must have either givenName + sn -OR- displayName.');
+    }
+
+    echo '
+            </td>
+          </tr>
+          <tr class="odd">
+            <th>Last Name (sn):</th>
+            <td>' . $shibarray['Last Name'] . '</td>
+            <td>';
+
+    if ((strlen($shibarray['Last Name']) == 0) &&
+        (strlen($shibarray['Display Name']) == 0)) {
+        printIcon('error','Must have either givenName + sn -OR- displayName.');
+    }
 
     echo '
             </td>
           </tr>
           <tr>
-            <th align="right">Organization Name:</th>
-            <td>' . $shibarray['Organization Name'] . '</td>
-            <td> </td>
+            <th>Display Name (displayName):</th>
+            <td>' . $shibarray['Display Name'] . '</td>
+            <td>';
+
+    if ((strlen($shibarray['Display Name']) == 0) &&
+            ((strlen($shibarray['First Name']) == 0) ||
+             (strlen($shibarray['Last Name']) == 0))) {
+        printIcon('error','Must have either displayName -OR- givenName + sn.');
+    }
+
+    echo '
+            </td>
+          </tr>
+          <tr class="odd">
+            <th>Email Address (email):</th>
+            <td>' . $shibarray['Email Address'] . '</td>
+            <td>';
+
+    if (strlen($shibarray['Email Address']) == 0) {
+        printIcon('error','Missing valid email address.');
+    }
+
+    echo '
+            </td>
           </tr>
           <tr>
-            <th align="right">Home Page:</th>
+            <th>Level of Assurance (assurance):</th>
+            <td>' . $shibarray['Level of Assurance'] . '</td>
+            <td> </td>
+          </tr>
+
+        </table>
+        </div> <!-- saml3 -->
+    </div> <!-- summary -->
+
+    <div class="summary">
+        <div id="meta1" style="display:' . 
+            ($gotattrs ? "inline" : "none" ) . 
+        '"><span class="expander"><a 
+        href="javascript:showHideDiv(\'meta\',-1)"><img 
+        src="/images/triright.gif" alt="&rArr;" width="14" height="14" /> 
+        Metadata Attributes</a></span>
+        </div>
+        <div id="meta2" style="display:' . 
+            ($gotattrs ? "none" : "inline" ) . 
+        '"><span class="expander"><a 
+        href="javascript:showHideDiv(\'meta\',-1)"><img 
+        src="/images/tridown.gif" alt="&dArr;" width="14" height="14" /> 
+        Metadata Attributes</a></span>
+        </div>
+        <br class="clear" />
+        <div id="meta3" style="display:' . 
+            ($gotattrs ? "none" : "inline" ) . 
+        '">
+
+        <table cellpadding="5">
+          <tr class="odd">
+            <th>Organization Name:</th>
+            <td>' . $shibarray['Organization Name'] . '</td>
+            <td>';
+
+    if (strlen($shibarray['Organization Name']) == 0) {
+        printIcon('error','Could not find &lt;OrganizationDisplayName&gt;'. 
+                          ' in InCommon metadata.');
+    }
+
+    echo '
+            </td>
+          </tr>
+          <tr>
+            <th>Home Page:</th>
             <td><a target="_blank" href="' . $shibarray['Home Page'] . '">' .
             $shibarray['Home Page'] . '</a></td>
             <td> </td>
           </tr>
-          <tr>
-            <th align="right">User Identifier (REMOTE_USER):</th>
-            <td>' . $shibarray['User Identifier'] . '</td>
-            <td>';
-
-    $gotattrs = ($gotattrs && 
-                 printErrorOrOkayIcon($shibarray['User Identifier']));
-
-    echo '
-            </td>
-          </tr>
-          <tr>
-            <th align="right">ePTID / ePPN:</th>
-            <td>' . ((strlen($shibarray['ePTID']) > 0) ? 'Yes' : 'No') .
-            ' / ' . ((strlen($shibarray['ePPN']) > 0) ? 'Yes' : 'No') . 
-            '</td>
-            <td> </td>
-          </tr>
-          <tr>
-            <th align="right">First Name (givenName):</th>
-            <td>' . $shibarray['First Name'] . '</td>
-            <td>';
-
-    $gotattrs = ($gotattrs && 
-                 printErrorOrOkayIcon($shibarray['First Name']));
-
-    echo '
-            </td>
-          </tr>
-          <tr>
-            <th align="right">Last Name (sn):</th>
-            <td>' . $shibarray['Last Name'] . '</td>
-            <td>';
-
-    $gotattrs = ($gotattrs && 
-                 printErrorOrOkayIcon($shibarray['Last Name']));
-
-    echo '
-            </td>
-          </tr>
-          <tr>
-            <th align="right">Email Address (email):</th>
-            <td>' . $shibarray['Email Address'] . '</td>
-            <td>';
-
-    $gotattrs = ($gotattrs && 
-                 printErrorOrOkayIcon($shibarray['Email Address']));
-
-    echo '
-            </td>
-          </tr>
-          <tr>
-            <th align="right">Level of Assurance (assurance):</th>
-            <td>' . $shibarray['Level of Assurance'] . '</td>
-            <td> </td>
-          </tr>';
+    ';
 
     if ((strlen($shibarray['Technical Name']) > 0) &&
         (strlen($shibarray['Technical Address']) > 0)) {
         echo '
-          <tr>
-            <th align="right">Technical Contact:</th>
+          <tr class="odd">
+            <th>Technical Contact:</th>
             <td>' . $shibarray['Technical Name'] . ' &lt;'.
                     $shibarray['Technical Address'] . '&gt;</td>
             <td> </td>
           </tr>';
     }
 
-    if ((strlen($shibarray['Administratvie Name']) > 0) &&
-        (strlen($shibarray['Administratvie Address']) > 0)) {
+    if ((strlen($shibarray['Administrative Name']) > 0) &&
+        (strlen($shibarray['Administrative Address']) > 0)) {
         echo '
           <tr>
-            <th align="right">Administrative Contact:</th>
+            <th>Administrative Contact:</th>
             <td>' . $shibarray['Administrative Name'] . ' &lt;'.
                     $shibarray['Administrative Address'] . '&gt;</td>
             <td> </td>
@@ -175,127 +335,12 @@ function printTestPage()
     }
 
     echo '</table>
-    </div>
-
-    <div id="resultsDiv">
-    ';
-
-    if ($gotattrs) {
-        $white = new whitelist();
-        $white->read();
-
-        echo '
-        <h2>Success!</h2>
-        <p class="p1"><span>Congratulations! All required attributes have
-        been released from your organization.</span></p>
-        ';
-
-        if ($white->exists($shibarray['Identity Provider'])) {
-            echo '
-            <p class="p2"><span>Your organization\'s Identity
-            Provider is available for authentication with the CILogon
-            Service Provider.  Please continue to the
-            CILogon Service home page.</span></p>
-            <div id="buttonDiv">
-              <form action="https://cilogon.org/" method="post">
-                <input class="submit" type="submit" name="submit"
-                       value="Continue to CILogon Service Home Page" />
-              </form>
-            </div>
-            ';
-        } else {
-            echo '
-            <p class="p2"></span>You can add your Identity
-            Provider (<acronym title="Identity Provider">IdP</acronym>) 
-            to our Discovery Service so that users at your
-            organization can utilize the CILogon Service Provider.
-            </span></p>
-            <div id="buttonDiv">
-              <form action="' . basename(__FILE__) . '" method="post">
-                <input class="submit" type="submit" name="submit"
-                       value="Add Your IdP to CILogon" />
-              </form>
-            </div>
-            ';
-        }
-    } else { /* Didn't get all of the required shib attributes */
-        echo '
-        <h2>Failed</h2>
-        <p class="p1"><span>We\'re sorry, but some of the required attributes
-        have not been released by your organization\'s Identity Provider
-        (<acronym title="Identity Provider">IdP</acronym>), so your
-        organization cannot access our service at this time.  For more
-        information, please contact <a
-        href="mailto:info@cilogon.org">info@cilogon.org</a>.</span></p>
-        ';
-    }
-
-    echo '
-      </div>
+        </div>  <!-- meta3 -->
+    </div>  <!-- summary -->
+    </div>  <!-- boxed -->
     ';
 
     printFooter();
-}
-
-/************************************************************************
- * Function   : printErrorOrOkayIcon                                    *
- * Parameters : (1) A string corresponding to a Shibboleth attribute.   *
- *              (2) The popup "title" txt to be displayed when the      *
- *                  mouse cursor hovers over the error icon.            *
- * Returns    : True if the string length of the input parameter is     *
- *              greater than zero, false otherwise.                     *
- * Side Effect: An "error" or "okay" icon is output as an HTML <img>.   *
- * This function takes in a Shibboleth attribute string.  If the length *
- * of the string is greater than zero, then an "okay" icon is output    *
- * to HTML and the function returns 'true'.  If the length of the       *
- * string is zero, then an "error" icon is output to HTML and the       *
- * function returns 'false'.                                            *
- ************************************************************************/
-function printErrorOrOkayIcon($attr='',$popuptext='')
-{
-    $retval = false;
-    $icon = 'error';
-
-    if (strlen($attr) > 0) {
-        $icon = 'okay';
-        $retval = true;
-        $popuptext = '';
-    }
-
-    echo '&nbsp;<span';
-    if (strlen($popuptext) > 0) {
-        echo ' class="helpcursor"';
-    }
-    echo '><img src="/images/' . $icon . 'Icon.png" 
-          alt="&laquo; ' . ucfirst($icon) . '" ';
-    if (strlen($popuptext) > 0) {
-        echo 'title="'. $popuptext . '" ';
-    }
-    echo 'width="14" height="14" /></span>';
-
-    return $retval;
-}
-
-/************************************************************************
- * Function   : printWithAndWithoutJS                                   *
- * Parameters : (1) HTML to be output when JavaScript is enabled.       *
- *              (2) HTML to be output when JavaScript is disabled.      *
- * This function prints out HTML for when JavaScript is enabled and     *
- * when JavaScript is disabled.  This allows the page to display        *
- * properly in either case.                                             *
- ************************************************************************/
-function printWithAndWithoutJS($withjs='',$withoutjs='')
-{
-    echo '
-    <script type="text/javascript">
-    /* <![CDATA[ */
-    document.write("' . $withjs . '");
-    /* //]]> */
-    </script>
-    <noscript>
-    ' . $withoutjs . '
-    </noscript>
-    ';
 }
 
 ?>
