@@ -72,7 +72,7 @@ function printFooter($footer='')
     href="http://gridshib.globus.org/">GridShib</a> projects.</p>
     <p>Please send any questions or comments about this
     site to <a
-    href="mailto:help@teragrid.org">help&nbsp;@&nbsp;cilogon.org</a>.</p>
+    href="mailto:help@cilogon.org">help&nbsp;@&nbsp;cilogon.org</a>.</p>
     </div> <!-- Close "footer" div -->
     </div> <!-- Close "pagecontent" div -->
     </body>
@@ -154,13 +154,37 @@ function printWAYF()
       <p>
       <input type="submit" name="submit" class="submit helpcursor" 
       title="Click to proceed to your selected organization\'s login page."
-      value="Logon" />
+      value="Log On" />
       </p>
       </fieldset>
       ' .  $csrf->getHiddenFormElement() . '
       </form>
     </div>
     ';
+}
+
+/************************************************************************
+ * Function  : printIcon                                                *
+ * Parameters: (1) The prefix of the "...Icon.png" image to be shown.   *
+ *                 E.g. to show "errorIcon.png", pass in "error".       *
+ *             (2) The popup "title" text to be displayed when the      *
+ *                 mouse cursor hovers over the icon.  Defaults to "".  *
+ * This function prints out the HTML for the little icons which can     *
+ * appear inline with other information.  This is accomplished via the  *
+ * use of wrapping the image in a <span> tag.                           *
+ ************************************************************************/
+function printIcon($icon,$popuptext='')
+{
+    echo '&nbsp;<span';
+    if (strlen($popuptext) > 0) {
+        echo ' class="helpcursor"';
+    }
+    echo '><img src="/images/' . $icon . 'Icon.png" 
+          alt="&laquo; ' . ucfirst($icon) . '" ';
+    if (strlen($popuptext) > 0) {
+        echo 'title="'. $popuptext . '" ';
+    }
+    echo 'width="14" height="14" /></span>';
 }
 
 ?>
