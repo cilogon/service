@@ -33,11 +33,11 @@ if ((strlen($providerIdCookie) > 0) &&
     ($white->exists($providerIdCookie))) {
     redirectToSecure($getuser,$providerIdCookie);
 
-/* Else, if the user clicked the WAYF "Logon" button on the Welcome    *
+/* Else, if the user clicked the WAYF "Log On" button on the Welcome    *
  * page and the selected IdP is in the whitelist, then set cookies for *
  * "providerId" and "keepidp" (if the checkbox was checked).  Then     *
  * proceed to the getuser script.                                      */
-} elseif (($submit == "Logon") &&
+} elseif (($submit == "Log On") &&
           (strlen($providerIdPost) > 0) &&
           ($white->exists($providerIdPost))) {
     setcookie('providerId',$providerIdPost,time()+60*60*24*365,'/','',true);
@@ -61,8 +61,8 @@ if ((strlen($providerIdCookie) > 0) &&
 function printLoginPage()
 {
     printHeader('Welcome to the CILogon Service');
-
     printPageHeader('Welcome to the CILogon Service');
+
     echo '
     <div class="welcome">
       <div class="boxheader">
@@ -98,7 +98,7 @@ function printLoginPage()
       <h2>How Do I Use The CILogon Service?</h2>
       <p>
       Select your organization from the drop-down list, then click the
-      &quot;Logon&quot; button.  You will be redirected to your
+      &quot;Log On&quot; button.  You will be redirected to your
       organization\'s login page.  After you authenticate with your
       organization as you typically would, you will be redirected back to
       the CILogon Service.  Then you will be able to fetch a
@@ -111,7 +111,7 @@ function printLoginPage()
       register for a free user account at <a target="_blank"
       href="http://www.protectnetwork.org/">ProtectNetwork</a> for use with
       the CILogon Service.  Alternatively, you can <a target="_blank"
-      href="requestidp">make a request for your organization</a> to appear
+      href="/requestidp/">make a request for your organization</a> to appear
       in the list of available organizations.
       </p>
     </div>
