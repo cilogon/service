@@ -47,8 +47,8 @@
 
 class csrf {
 
-    /* The token name is static to be accessible from isCookieEqualTo Form. */
-    public static $tokenname = "CSRF";
+    /* The token name is const to be accessible from isCookieEqualToForm. */
+    const tokenname = "CSRF";
 
     /* A random sequence of characters. */
     protected $tokenvalue;
@@ -70,7 +70,7 @@ class csrf {
      * other methods of the csrf class.                                 *
      ********************************************************************/
     function getTokenName() {
-        return self::$tokenname;
+        return self::tokenname;
     }
 
     /********************************************************************
@@ -112,8 +112,8 @@ class csrf {
      ********************************************************************/
     public static function getTheCookie() {
         $retval = '';
-        if (isset($_COOKIE[csrf::$tokenname])) {
-            $retval = $_COOKIE[csrf::$tokenname];
+        if (isset($_COOKIE[self::tokenname])) {
+            $retval = $_COOKIE[self::tokenname];
         }
         return $retval;
     }
@@ -125,7 +125,7 @@ class csrf {
      * rather it is set to an empty value with an expired time.         *
      ********************************************************************/
     public static function deleteTheCookie() {
-        setcookie(csrf::$tokenName,'',time()-3600,'/','',true);
+        setcookie(self::tokenname,'',time()-3600,'/','',true);
     }
 
     /********************************************************************
@@ -142,10 +142,10 @@ class csrf {
     public static function isCookieEqualToForm() {
         $retval = false;  // Assume csrf values don't match
 
-        $csrfcookievalue = csrf::getTheCookie();
+        $csrfcookievalue = self::getTheCookie();
         $csrfformvalue = "";
-        if (isset($_POST[csrf::$tokenname])) {
-            $csrfformvalue = $_POST[csrf::$tokenname];
+        if (isset($_POST[self::tokenname])) {
+            $csrfformvalue = $_POST[self::tokenname];
         }
         if ((strlen($csrfcookievalue) > 0) &&
             (strlen($csrfformvalue) > 0) &&
@@ -153,7 +153,7 @@ class csrf {
             $retval = true;
         }
 
-        return retval;
+        return $retval;
     }
 
     /********************************************************************
@@ -175,8 +175,8 @@ class csrf {
      ********************************************************************/
     public static function getTheSession() {
         $retval = '';
-        if (isset($_SESSION[csrf::$tokenname])) {
-            $retval = $_SESSION[csrf::$tokenname];
+        if (isset($_SESSION[self::tokenname])) {
+            $retval = $_SESSION[self::tokenname];
         }
         return $retval;
     }
@@ -186,7 +186,7 @@ class csrf {
      * Deletes the csrf value from the PHP session.                     *
      ********************************************************************/
     public static function deleteTheSession() {
-        unset($_SESSION[csrf::$tokenname]);
+        unset($_SESSION[self::tokenname]);
     }
 
     /********************************************************************
@@ -203,45 +203,59 @@ class csrf {
     public static function isCookieEqualToSession() {
         $retval = false;  // Assume csrf values don't match
 
-        $csrfcookievalue = csrf::getTheCookie();
-        $csrfsesionvalue = csrf::getTheSession();
+        $csrfcookievalue = self::getTheCookie();
+        $csrfsesionvalue = self::getTheSession();
         if ((strlen($csrfcookievalue) > 0) &&
             (strlen($csrfsesionvalue) > 0) &&
             (strcmp($csrfcookievalue,$csrfsesionvalue) == 0)) {
             $retval = true;
         }
 
-        return retval;
+        return $retval;
     }
 
     /********************************************************************
      * Function  : verifyCookieAndGetSubmit                             *
-     * Parameter : The name of a <form>'s "submit" button, defaults to  *
-     *             "submit".                                            *
+     * Parameter : The name of a <form>'s "submit" button OR the key    *
+     *             of a PHP session variable, defaults to "submit".     *
      * Return    : The value of the <form>'s clicked "submit" button if *
      *             the csrf cookie matches the hidden form element, or  *
-     *             empty string otherwise.                              *
-     * This function assumes that the user has clicked a <form>'s       *
-     * "submit" button.  The function takes in the "name" attribute of  *
-     * the submit button, and returns the "value" of the submit button. *
-     * For example, if the form has a button like this:                 *
-     *     <input type="submit" name="mysubmit" value="Logon">          *
-     * You should then pass "mysubmit" as the parameter to this         *
-     * function, and "Logon" would be returend.  However, this function *
-     * also verifies that the csrf cookie matches the hidden csrf form  *
-     * element.  If not, then the returned string is the empty string,  *
-     * and the csrf cookie is deleted.                                  *
+     *             the value of the PHP session variable $submit if the *
+     *             csrf cookie matches the hidden PHP session csrf      *
+     *             variable, or empty string otherwise.                 *
+     * This function assumes that one of the two following actions has  *
+     * occurred:                                                        *
+     *   (1) The user has clicked a <form> submit button.               *
+     *   (2) A PHP session variable has been set.                       *
+     * The function first checks the <form>'s hidden "csrf" element     *
+     * to see if it matches the csrf cookie.  If so, it checks the      *
+     * the value of the submit button with the passed-in "name"         *
+     * attribute (defaults to "submit").  If the value is non-empty,    *
+     * then that value is returned.  However, if the <form> hidden csrf *
+     * element doesn't match the csrf cookie or the submit element is   *
+     * empty, the function then checks the PHP session csrf value to    *
+     * see if that matches the csrf cookie.  If so, it looks for a      *
+     * variable with the passed-in parameter name and returns that      *
+     * value.  In other words, a non-empty <form> submit button has     *
+     * priority over a PHP session value.  In any case, if the csrf     *
+     * test fails for both <form> and PHP session, the csrf cookie is   *
+     * deleted, and the empty string is returned.                       *
      ********************************************************************/
     public static function verifyCookieAndGetSubmit($submit='submit')
     {
-        $retval = getPostVar($submit);
-        if (strlen($retval) > 0) { 
-            /* Check the CSRF protection cookie */
-            if (!csrf::isCookieEqualToForm()) {
-                /* ERROR! - CSRF cookie not equal to hidden form element! */
-                csrf::deleteTheCookie();
-                $retval = '';
-            }
+        $retval = '';
+        // First, check <form> hidden csrf element
+        if (self::isCookieEqualToForm()) {
+            $retval = getPostVar($submit);
+        }
+        // If <form> element missing or bad, check PHP session csrf variable
+        if ((strlen($retval) == 0) && (self::isCookieEqualToSession())) {
+            $retval = getSessionVar($submit);
+        }
+        // If csrf failed or no "submit" element in <form> or session, 
+        // delete the csrf cookie.
+        if (strlen($retval) == 0) {
+            self::deleteTheCookie();
         }
         return $retval;
     }
