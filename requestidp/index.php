@@ -9,8 +9,8 @@ startPHPSession();
 $validator = new EmailAddressValidator();
 define('DEFAULT_OPTION_TEXT','-- Choose one -or- Type one in below --');
 
-/* If the user clicked a "Submit" button, get the text  *
- * of the button and verify the CSRF protection cookie. */
+/* Check the csrf cookie against either a hidden <form> element or a   *
+ * PHP session variable, and get the value of the "submit" element.    */
 $submit = csrf::verifyCookieAndGetSubmit();
 
 /* If the CSRF cookie was good and the user clicked the "Submit" *
@@ -67,7 +67,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
                           $selectIdP='',$otherIdP='',$comments='') 
 {
     global $validator;
-    global $csrf;
+    global $csrf;  // Initialized in content.php
 
     $goterror = false;  /* Did we find any errors in the form? */
 
