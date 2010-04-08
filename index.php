@@ -6,12 +6,12 @@ require_once('include/util.php');
 
 startPHPSession();
 
-/* If the user clicked a "Submit" button, get the text of the button   *
- * and verify the CSRF protection cookie.                              */
+/* Check the csrf cookie against either a hidden <form> element or a   *
+ * PHP session variable, and get the value of the "submit" element.    */
 $submit = csrf::verifyCookieAndGetSubmit();
 
 /* The full URL of the Shibboleth-protected getuser script.            */
-$getuser = 'https://cilogon.org/secure/getuser/';
+define('GETUSER_URL','https://cilogon.org/secure/getuser/');
 
 /* "providerId" and "keepidp" can be set in cookies and/or by a form   *
  * submit.  "providerId" corresonds to the user-selected Idp.          *
@@ -31,7 +31,7 @@ $white = new whitelist();
 if ((strlen($providerIdCookie) > 0) && 
     (strlen($keepidpCookie) > 0) &&
     ($white->exists($providerIdCookie))) {
-    redirectToSecure($getuser,$providerIdCookie);
+    redirectToGetuser($providerIdCookie);
 
 /* Else, if the user clicked the WAYF "Log On" button on the Welcome    *
  * page and the selected IdP is in the whitelist, then set cookies for *
@@ -46,7 +46,7 @@ if ((strlen($providerIdCookie) > 0) &&
     } else {
         setcookie('keepidp','',time()-3600,'/','',true);
     }
-    redirectToSecure($getuser,$providerIdPost);
+    redirectToGetuser($providerIdPost);
 } else { 
     /* Default action - simply print the main Login page */
     printLoginPage();
@@ -123,29 +123,27 @@ function printLoginPage()
 }
 
 /************************************************************************
- * Function   : redirectToSecure                                        *
- * Parameters : (1) The full URL of the Shibboleth protected script.    *
- *              (2) (Optional) An entityID of the authenticating IdP.   *
- *              (3) (Optional) A string of additional "key=value"       *
- *                  pairs, separated by '&'s and urlencoded.            *
- * This function takes in the full URL of a Shibboleth-protected script *
- * and redirects so as to do a Shibboleth authentication via the        *
- * InCommon WAYF.  If the second parameter (a whitelisted entityID) is  *
- * specified, the WAYF will automatically go to that IdP (i.e. without  *
- * stopping at the WAYF).  The third parameter is utilized for any      *
- * additional key=value pairs that should be passed to the Shibboleth-  *
- * protected script.  These pairs should be separated (but not          *
- * prefixed) by an ampersand (&) and urlencoded.                        *
+ * Function   : redirectToGetuser                                       *
+ * Parameter  : (Optional) An entityID of the authenticating IdP.       *
+ * This function redirects to the "/secure/getuser/" script so as to    *
+ * do a Shibboleth authentication via the InCommon WAYF.  If the        *
+ * optional parameter (a whitelisted entityID) is specified, the WAYF   *
+ * will automatically go to that IdP (i.e. without stopping at the      *
+ * WAYF).  This function also sets several PHP session variables that   *
+ * are needed by the getuser script.                                    *
  ************************************************************************/
-function redirectToSecure($target,$providerId='',$extra='')
+function redirectToGetuser($providerId='')
 {
+    // Set PHP session varilables needed by the getuser script
+    $_SESSION[csrf::tokenname] = csrf::getTheCookie();
+    $_SESSION['responseurl'] = getScriptDir(true);
+    $_SESSION['submit'] = 'getuser';
+
+    // Set up the "header" string for redirection thru InCommon WAYF
     $redirect = 'Location: https://cilogon.org/Shibboleth.sso/WAYF/InCommon?' .
-        'target=' . urlencode($target);
+        'target=' . urlencode(GETUSER_URL);
     if (strlen($providerId) > 0) {
         $redirect .= '&providerId=' . urlencode($providerId);
-    }
-    if (strlen($extra) > 0) {
-        $redirect .= '&' . $extra;
     }
     header($redirect);
 }
