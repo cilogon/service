@@ -7,6 +7,12 @@ require_once('../../include/util.php');
 
 startPHPSession();
 
+$submit = csrf::verifyCookieAndGetSubmit();
+$responseurl = getSessionVar('responseurl');
+
+if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
+}
+
 printServerVars();
 
 /************************************************************************
@@ -130,6 +136,7 @@ function printServerVars() {
     printVarTable($_SERVER);
     printVarTable($_SESSION);
     printVarTable($_COOKIE);
+    printPostTable();
     printVarTable($_REQUEST);
     printVarTable($_ENV);
 
@@ -153,6 +160,22 @@ function printVarTable(&$vararray) {
     ';
 
     foreach ($vararray as $key => $value) {
+        echo '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
+    }
+
+    echo '</table>
+    ';
+}
+
+/************************************************************************
+ * Function   : printPostTable                                          *
+ * This function prints out the $_POST array in an HTML table.          * 
+ ************************************************************************/
+function printPostTable() {
+    echo '<br/><hr/><br/><b>$_POST</b><table>
+    ';
+
+    foreach ($_POST as $key => $value) {
         echo '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
     }
 
