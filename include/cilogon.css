@@ -259,6 +259,7 @@ div.welcome {
   width: 59%;
   min-width: 350px;
   padding: 2px;
+  margin-bottom: 1em;
 }
 div.welcome h2 {
   font-size: medium;
