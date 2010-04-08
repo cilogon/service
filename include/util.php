@@ -159,10 +159,17 @@ function startPHPSession()
 
 /************************************************************************
  * Function  : getScriptDir                                             *
- * This function returns the directory of the script that is currently  *
- * running.  The returned directory is terminated by a '/' character.   *
+ * Parameter : (Optional) Boolean to make the script a "full" url by    *
+ *             prepending "https://<hostname>" to the script name.      *
+ *             Defaults to false.                                       *
+ * Return    : The directory or full url of the current script.         *
+ * This function returns the directory (or full url) of the script that *
+ * is currently running.  The returned directory/url is terminated by   *
+ * a '/' character.  This function is useful for those scripts named    *
+ * index.php were we don't want to actually see "index.php" in the      *
+ * address bar.                                                         *
  ************************************************************************/
-function getScriptDir() {
+function getScriptDir($fullurl=false) {
     $sn = getServerVar('SCRIPT_NAME');
     $retval = dirname($sn);
     if ($retval == '.') {
@@ -170,6 +177,11 @@ function getScriptDir() {
     }
     if ((strlen($retval) == 0) || ($retval[strlen($retval)-1] != '/')) {
         $retval .= '/';  // Append a slash if necessary
+    }
+    if ($fullurl) {  // Prepend http(s)://cilogon.org
+        $retval = 'http' . 
+                  ((strtolower(getServerVar('HTTPS')) == 'on') ? 's' : '') .
+                  '://' . getServerVar('HTTP_HOST') . $retval;
     }
     return $retval;
 }
