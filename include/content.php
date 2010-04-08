@@ -17,7 +17,7 @@ $csrf = new csrf();
  ************************************************************************/
 function printHeader($title='',$extra='')
 {
-    global $csrf;
+    global $csrf;  // Initialized above
     $csrf->setTheCookie();
 
     echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
