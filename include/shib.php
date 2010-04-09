@@ -60,42 +60,42 @@ function getShibInfo($metadata=incommon::defaultFilename)
                 $shibarray['Identity Provider'] .
                 "']/Organization/OrganizationDisplayName");
             if (count($result) == 1) {
-                $shibarray['Organization Name'] = $result[0];
+                $shibarray['Organization Name'] = (string)$result[0];
             }
 
             $result = $xml->xpath("//EntityDescriptor[@entityID='" .
                 $shibarray['Identity Provider'] .
                 "']/Organization/OrganizationURL");
             if (count($result) == 1) {
-                $shibarray['Home Page'] = $result[0];
+                $shibarray['Home Page'] = (string)$result[0];
             }
 
             $result = $xml->xpath("//EntityDescriptor[@entityID='" .
                 $shibarray['Identity Provider'] .
                 "']/ContactPerson[@contactType='technical']/GivenName");
             if (count($result) > 0) {
-                $shibarray['Technical Name'] = $result[0];
+                $shibarray['Technical Name'] = (string)$result[0];
             }
 
             $result = $xml->xpath("//EntityDescriptor[@entityID='" .
                 $shibarray['Identity Provider'] .
                 "']/ContactPerson[@contactType='technical']/EmailAddress");
             if (count($result) > 0) {
-                $shibarray['Technical Address'] = $result[0];
+                $shibarray['Technical Address'] = (string)$result[0];
             }
 
             $result = $xml->xpath("//EntityDescriptor[@entityID='" .
                 $shibarray['Identity Provider'] .
                 "']/ContactPerson[@contactType='administrative']/GivenName");
             if (count($result) > 0) {
-                $shibarray['Administrative Name'] = $result[0];
+                $shibarray['Administrative Name'] = (string)$result[0];
             }
 
             $result = $xml->xpath("//EntityDescriptor[@entityID='" .
                 $shibarray['Identity Provider'] .
                 "']/ContactPerson[@contactType='administrative']/EmailAddress");
             if (count($result) > 0) {
-                $shibarray['Administrative Address'] = $result[0];
+                $shibarray['Administrative Address'] = (string)$result[0];
             }
         }
     }
