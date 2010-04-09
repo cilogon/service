@@ -6,59 +6,68 @@ require_once('include/util.php');
 
 startPHPSession();
 
-/* Check the csrf cookie against either a hidden <form> element or a   *
- * PHP session variable, and get the value of the "submit" element.    */
-$submit = csrf::verifyCookieAndGetSubmit();
-
 /* The full URL of the Shibboleth-protected getuser script.            */
 define('GETUSER_URL','https://cilogon.org/secure/getuser/');
-
-/* "providerId" and "keepidp" can be set in cookies and/or by a form   *
- * submit.  "providerId" corresonds to the user-selected Idp.          *
- * "keepidp" corresponds to the "Remember this selection" checkbox and *
- * allows the user to bypass the Welcome page on subsequent visits.    */
-$providerIdCookie = urldecode(getCookieVar('providerId'));
-$providerIdPost = getPostVar('providerId');
-$keepidpCookie = getCookieVar('keepidp');
-$keepidpPost = getPostVar('keepidp');
 
 /* Read in the whitelist of currently available IdPs.                  */
 $white = new whitelist();
 
-/* If both the "keepidp" and the "providerId" cookies were set (and    *
- * the providerId is a whitelisted IdP) then skip the Welcome page and *
- * proceed to the getuser script.                                      */
-if ((strlen($providerIdCookie) > 0) && 
-    (strlen($keepidpCookie) > 0) &&
-    ($white->exists($providerIdCookie))) {
-    redirectToGetuser($providerIdCookie);
+/* Check the csrf cookie against either a hidden <form> element or a   *
+ * PHP session variable, and get the value of the "submit" element.    */
+$submit = csrf::verifyCookieAndGetSubmit();
 
-/* Else, if the user clicked the WAYF "Log On" button on the Welcome    *
- * page and the selected IdP is in the whitelist, then set cookies for *
- * "providerId" and "keepidp" (if the checkbox was checked).  Then     *
- * proceed to the getuser script.                                      */
-} elseif (($submit == "Log On") &&
-          (strlen($providerIdPost) > 0) &&
-          ($white->exists($providerIdPost))) {
-    setcookie('providerId',$providerIdPost,time()+60*60*24*365,'/','',true);
-    if (strlen($keepidpPost) > 0) {
-        setcookie('keepidp','checked',time()+60*60*24*365,'/','',true);
-    } else {
-        setcookie('keepidp','',time()-3600,'/','',true);
-    }
-    redirectToGetuser($providerIdPost);
-} else { 
-    /* Default action - simply print the main Login page */
-    printLoginPage();
-}
+/* Depending on the value of the clicked "submit" button or the        *
+ * equivalent PHP session variable, take action or print out HTML.     */
+switch ($submit) {
+
+    case 'Log On': // User selected an IdP - go to getuser script
+        // Verify that providerId is set and is in the whitelist
+        $providerIdPost = getPostVar('providerId');
+        if ((strlen($providerIdPost) > 0) &&
+            ($white->exists($providerIdPost))) {
+            setcookie('providerId',$providerIdPost,
+                      time()+60*60*24*365,'/','',true);
+            // Set the cookie for keepidp if the checkbox was checked
+            if (strlen(getPostVar('keepidp')) > 0) {
+                setcookie('keepidp','checked',time()+60*60*24*365,'/','',true);
+            } else {
+                setcookie('keepidp','',time()-3600,'/','',true);
+            }
+            // Finally, redirect to the getuser script
+            redirectToGetuser($providerIdPost);
+        } else { // Either providerId not set or not in whitelist
+            printLogonPage();
+        }
+    break; // End case 'Log On'
+
+    case 'gotuser': // Return from the getuser script
+        // printLogonPage();
+        printGetCertificatePage();
+    break; // End case 'gotuser'
+
+    default: // No submit button clicked nor PHP session variable set
+        /* If both the "keepidp" and the "providerId" cookies were set 
+         * (and the providerId is a whitelisted IdP) then skip the 
+         * Logon page and proceed to the getuser script.  */
+        $providerIdCookie = urldecode(getCookieVar('providerId'));
+        if ((strlen($providerIdCookie) > 0) && 
+            (strlen(getCookieVar('keepidp')) > 0) &&
+            ($white->exists($providerIdCookie))) {
+            redirectToGetuser($providerIdCookie);
+        } else { // One of the cookies for providerId or keepidp was not set.
+            printLogonPage();
+        }
+    break; // End default case
+
+} // End switch($submit)
 
 /************************************************************************
- * Function   : printLoginPage                                          *
+ * Function   : printLogonPage                                          *
  * This function prints out the HTML for the main cilogon.org page.     *
  * Explanatory text is shown as well as a button to log in to an IdP    *
  * and get rerouted to the Shibboleth protected service script.         *
  ************************************************************************/
-function printLoginPage()
+function printLogonPage()
 {
     printHeader('Welcome to the CILogon Service');
     printPageHeader('Welcome to the CILogon Service');
@@ -120,6 +129,102 @@ function printLoginPage()
     printWAYF();
 
     printFooter();
+}
+
+/************************************************************************
+ * Function   : printGetCertificatePage                                 *
+ * This function 
+ ************************************************************************/
+function printGetCertificatePage()
+{
+    printHeader('Get Your Certificate');
+    printPageHeader('Welcome ' . getSessionVar('idpname') . ' User');
+
+    echo '
+    <div class="boxed"
+      <div class="boxheader">
+        Fetch And Utilize A CILogon Certificate
+      </div>
+    <p>
+    You are logged on to the CILogon Service.  You can now download a
+    certificate to your local computer\'s desktop.  You can utilize this
+    certificate by launching the GSI-SSHTerm desktop application, which will
+    allow you to connect to the command line of <acronym 
+    title="National Science Foundation">NSF</acronym> cyberinfrastructre
+    resources.
+    </p>
+    ';
+
+    /*
+    echo '
+    <p>
+    <br/><hr/><br/><b>$_SESSION</b><table>
+    ';
+
+    foreach ($_SESSION as $key => $value) {
+        echo '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
+    }
+
+    echo '</table>
+    </p>
+    ';
+    */
+
+    echo '
+    </div>
+    ';
+
+    printFooter();
+}
+
+/************************************************************************
+ * Function   : printFormHead                                           *
+ * This function 
+ ************************************************************************/
+function printFormHead($action='') {
+    /*
+    global $perl_csrf;
+    global $perl_config;
+    */
+
+    $formaction = getScriptDir();
+    
+    if ($action == 'gridshib-ca') {
+        /*
+        $formaction = $perl_config->getParam("ShibProtectedURL") .
+                                             "/shibLaunchGSCA.jnlp";
+        */
+    }
+
+    echo '
+    <form action="' . $formaction . '" method="post">
+    ';
+
+    if ($action == 'gridshib-ca') {
+        echo '
+        <input type="hidden" name="lifetime" value="default">
+        <input type="hidden" name="lifetimeUnit" value="hours">';
+
+        /*
+        $trustedCADirectory = $perl_config->getParam("TrustRoots",
+                                                     "TrustRootsPath");
+        if ((strlen($trustedCADirectory) > 0) && 
+            (is_readable($trustedCADirectory))) {
+            echo '
+            <input type="hidden" name="DownloadTrustroots" value="true">
+            ';
+        }
+        */
+    }
+
+    /*
+    $hiddencsrf = $perl_csrf->getFormElement();
+    if (is_array($hiddencsrf)) {
+        echo  key($hiddencsrf) . "\n";
+    } else {
+        echo $hiddencsrf . "\n";
+    }
+    */
 }
 
 /************************************************************************
