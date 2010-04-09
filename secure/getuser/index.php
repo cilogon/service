@@ -11,9 +11,78 @@ $submit = csrf::verifyCookieAndGetSubmit();
 $responseurl = getSessionVar('responseurl');
 
 if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
+    getUserAndRespond($responseurl);
+} else {
+    printServerVars();
 }
 
-printServerVars();
+/************************************************************************
+ * Function   : getUserAndRespond                                       *
+ * Parameter  : The full URL to redirect to after getting the userid.   *
+ * This function takes all of the various required SAML attributes (as  *
+ * set in the current Shibboleth sessoin), makes a call to the database *
+ * to get the userid assoicated with those attributes, puts several     *
+ * variables in the current PHP session, and responds by redirecting to *
+ * the responseurl in the passed-in parameter.  If there are any issues *
+ * with the database call, the userid is set to the empty string and    *
+ * an error code is put in the PHP session before responding.           *
+ ************************************************************************/
+function getUserAndRespond($responseurl) {
+    $shibarray = getShibInfo();
+    $userid = '';  // Database user id to be returned
+
+    /* If either firstname or lastname is empty but displayName *
+     * is okay, extract first/last name from the displayName.   */
+    $firstname   = $shibarray['First Name'];
+    $lastname    = $shibarray['Last Name'];
+    $displayname = $shibarray['Display Name'];
+    if (((strlen($firstname) == 0) || (strlen($lastname) == 0)) &&
+         (strlen($displayname) > 0)) {
+        if (preg_match('/^([^\s]+)\s+/',$displayname,$matches)) {
+            $firstname = $matches[1];
+        }
+        if (preg_match('/\s+([^\s]+)$/',$displayname,$matches)) {
+            $lastname = $matches[1];
+        }
+    }
+
+    /* If all required attributes are available, *
+     * get the user id from the database.        */
+    if ((strlen($shibarray['User Identifier']) > 0) &&
+        (strlen($shibarray['Identity Provider']) > 0) &&
+        (strlen($shibarray['Organization Name']) > 0) &&
+        (strlen($firstname) > 0) &&
+        (strlen($lastname) > 0) &&
+        (strlen($shibarray['Email Address']) > 0)) {
+        /* Make database callout here, something like this:
+           $perl = new Perl();
+           $perl->eval("BEGIN {unshift(@INC,'/var/www/datastore-1.0/perl');}");
+           $perl->eval('use CILogon::Datastore;');
+           $perl_data = new Perl('CILogon::Datastore');
+           $perl_user = $perl_data->getUser(
+                            $shibarray['User Identifier'],
+                            $shibarray['Identity Provider'],
+                            $shibarray['Organization Name'],
+                            $firstname,
+                            $lastname,
+                            $shibarray['Email Address']
+                        );
+           $userid = $perl_user->getUID();
+         */
+         $_SESSION['happy'] = 'HAPPY HAPPY JOY JOY';
+    }
+
+    /* Put necessary variables in the PHP session. */
+    $_SESSION['uid'] = $userid;
+    // $_SESSION['statuscode'] = $perl_user->getStatusCode();
+    $_SESSION['idpname'] = $shibarray['Organization Name'];
+    $_SESSION['loa'] = $shibarray['Level of Assurance'];
+    $_SESSION[csrf::tokenname] = csrf::getTheCookie();
+    $_SESSION['submit'] = 'gotuser';
+
+    /* Finally, redirect to the calling script. */
+    header('Location: ' . $responseurl);
+}
 
 /************************************************************************
  * Function   : printServerVars                                         *
