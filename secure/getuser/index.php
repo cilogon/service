@@ -76,6 +76,10 @@ function getUserAndRespond($responseurl) {
     $_SESSION['uid'] = $userid;
     // $_SESSION['statuscode'] = $perl_user->getStatusCode();
     $_SESSION['idpname'] = $shibarray['Organization Name'];
+    $_SESSION['firstname'] = (string)$firstname;
+    $_SESSION['lastname'] = (string)$lastname;
+    $_SESSION['remote_user'] = (string)$shibarray['User Identifier'];
+    $_SESSION['emailaddr'] = (string)$shibarray['Email Address'];
     $_SESSION['loa'] = $shibarray['Level of Assurance'];
     $_SESSION[csrf::tokenname] = csrf::getTheCookie();
     $_SESSION['submit'] = 'gotuser';
