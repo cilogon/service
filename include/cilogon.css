@@ -292,7 +292,6 @@ div.contactform fieldset legend {
   font-weight: bold;
   margin-top: 0.5em;
   padding: 0;
-
 }
 div.contactform fieldset input.submit {
   font-weight: bold;
@@ -381,3 +380,48 @@ div.summarytext p.addsubmit {
   font-weight: bold;
 }
 /***** End summary div on testidp page *****/
+
+/***** Begin taskbox on the main page *****/
+div.taskdiv {
+  margin: 1em;
+}
+div.taskdiv table.tasktable {
+  border-spacing: 0 1em;
+}
+tr.taskbox  {
+  border: 1px solid #888;
+}
+tr.taskbox td.buttons {
+  text-align: center;
+  border-left: 1px solid #888;
+  border-top: 1px solid #888;
+  border-bottom: 1px solid #888;
+}
+tr.taskbox td.buttons input.submit {
+  font-weight: bold;
+  font-size: 110%;
+  color: #030;
+  background-color: #aba;
+  margin: 1em 0 1em 0;
+}
+tr.taskbox td.buttons input.submitmore {
+  font-weight: bold;
+  font-size: 110%;
+  color: #030;
+  background-color: #aba;
+  margin-bottom: 1em;
+}
+tr.taskbox td.description {
+  text-align: justify;
+  vertical-align: top;
+  border-right: 1px solid #888;
+  border-top: 1px solid #888;
+  border-bottom: 1px solid #888;
+}
+tr.taskbox td.description h2 {
+  font-size: medium;
+  color: #696;
+  font-weight: bold;
+  margin-top: 0;
+}
+/***** End taskbox on the main page *****/
