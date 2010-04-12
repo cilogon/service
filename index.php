@@ -2,6 +2,7 @@
 
 require_once('include/autoloader.php');
 require_once('include/content.php');
+require_once('include/shib.php');
 require_once('include/util.php');
 
 startPHPSession();
@@ -12,9 +13,14 @@ define('GETUSER_URL','https://cilogon.org/secure/getuser/');
 /* Read in the whitelist of currently available IdPs.                  */
 $white = new whitelist();
 
+/* Loggit object for logging info to syslogs.  Need to use "global".   */
+$log = new loggit();
+
 /* Check the csrf cookie against either a hidden <form> element or a   *
  * PHP session variable, and get the value of the "submit" element.    */
 $submit = csrf::verifyCookieAndGetSubmit();
+
+$log->info("submit = '$submit'");
 
 /* Depending on the value of the clicked "submit" button or the        *
  * equivalent PHP session variable, take action or print out HTML.     */
@@ -39,6 +45,12 @@ switch ($submit) {
             printLogonPage();
         }
     break; // End case 'Log On'
+
+    case 'Log Off':
+        deleteShibCookies();
+        clearSession();
+        printLogonPage();
+    break; // End case 'Log Off'
 
     case 'gotuser': // Return from the getuser script
         // printLogonPage();
@@ -133,7 +145,9 @@ function printLogonPage()
 
 /************************************************************************
  * Function   : printGetCertificatePage                                 *
- * This function 
+ * This function prints out the HTML for the main page where the user   *
+ * can download a certificate and launch the GSI-SSHTerm                *
+ * application/applet.                                                  *
  ************************************************************************/
 function printGetCertificatePage()
 {
@@ -141,7 +155,7 @@ function printGetCertificatePage()
     printPageHeader('Welcome ' . getSessionVar('idpname') . ' User');
 
     echo '
-    <div class="boxed"
+    <div class="boxed">
       <div class="boxheader">
         Fetch And Utilize A CILogon Certificate
       </div>
@@ -151,8 +165,82 @@ function printGetCertificatePage()
     certificate by launching the GSI-SSHTerm desktop application, which will
     allow you to connect to the command line of <acronym 
     title="National Science Foundation">NSF</acronym> cyberinfrastructre
-    resources.
+    resources.  Note that you will need <a target="_blank"
+    href="http://www.javatester.org/version.html">Java 1.5 or higher</a>
+    installed on your local computer and enabled in your web browser.
     </p>
+
+    <div class="taskdiv">
+    <table cellpadding="10" cellspacing="0" class="tasktable">
+    <tr class="taskbox">
+      <td class="buttons">
+    ';
+
+    printFormHead();
+        
+    echo '
+      <input type="submit" name="submit" class="submit"
+       value="Download Certificate" />
+      </form>
+      </td>
+      <td class="description">
+      <h2>1. Download A Certificate To Your Local Computer</h2>
+      When you click the "Download Certificate" button, you launch a Java
+      Web Start (<acronym title="Java Web Start">JWS</acronym>) application
+      on your computer called <a target="_blank"
+      href="http://gridshibca.cilogon.org/">GridShib-CA</a>. This
+      application fetches a certificate from a <a target="_blank"
+      href="http://myproxy.teragrid.org/">MyProxy</a> server.  The
+      GridShib-CA <acronym title="Java Web Start">JWS</acronym> application
+      then downloads the certificate to your computer and saves it in a
+      location known by other grid-enabled desktop applications such as 
+      GSI-SSHTerm (below).
+      </td>
+    </tr>
+
+    <tr class="taskbox">
+      <td class="buttons">
+    ';
+
+    printFormHead();
+
+    echo '
+      <input type="submit" name="submit" class="submit"
+       value="GSI-SSHTerm Desktop App" />
+      <br />
+      <input type="submit" name="submit" class="submitmore"
+       value="GSI-SSHTerm Web Applet" />
+      </form>
+      </td>
+      <td class="description">
+      <h2>2. Launch the GSI-SSHTerm Program</h2>
+      GSI-SSHTerm is an SSH-based terminal application which can utilize the
+      certificates served by the CILogon Service.  GSI-SSHTerm can be run as
+      a desktop application or as a browser-based web applet.  For the
+      "Desktop App" version, be sure to first download a certificate to your
+      desktop (above).
+      </td>
+    </tr>
+
+    <tr class="taskbox">
+      <td class="buttons">
+    ';
+
+    printFormHead();
+
+    echo '
+      <input type="submit" name="submit" class="submit"
+       value="Log Off" />
+      </form>
+      </td>
+      <td class="description">
+        <h2>3. Log Off The CILogon Service Site</h2>
+        To end your session and return to the welcome page, click the 
+        "Log Off" button.  
+      </td>
+    </tr>
+    </table>
+    </div>
     ';
 
     /*
@@ -186,6 +274,7 @@ function printFormHead($action='') {
     global $perl_csrf;
     global $perl_config;
     */
+    global $csrf;
 
     $formaction = getScriptDir();
     
@@ -199,6 +288,7 @@ function printFormHead($action='') {
     echo '
     <form action="' . $formaction . '" method="post">
     ';
+    echo $csrf->getHiddenFormElement();
 
     if ($action == 'gridshib-ca') {
         echo '
@@ -251,6 +341,16 @@ function redirectToGetuser($providerId='')
         $redirect .= '&providerId=' . urlencode($providerId);
     }
     header($redirect);
+}
+
+/************************************************************************
+ * Function   : clearSession                                            *
+ * This function clears (unsets) all of the PHP session values.         *
+ ************************************************************************/
+function clearSession() {
+    while (list($key,$val) = each($_SESSION)) {
+        unset($_SESSION[$key]);
+    }
 }
 
 ?>
