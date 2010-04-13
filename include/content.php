@@ -118,6 +118,7 @@ function printWAYF()
     $whitelist = new whitelist();
     $idps = $incommon->getOnlyWhitelist($whitelist);
     $providerId = getCookieVar('providerId');
+    $keepidp = getCookieVar('keepidp');
 
     $helptext = "By checking this box, you can bypass the welcome page on subsequent visits and proceed directly to your organization's authentication site. You will need to clear your brower's cookies to return here."; 
 
@@ -148,8 +149,9 @@ function printWAYF()
       <p>
       <label for="keepidp" title="' . $helptext . 
       '" class="helpcursor">Remember this selection:</label>
-      <input type="checkbox" name="keepidp" id="keepidp" title="' . 
-          $helptext . '" class="helpcursor" />
+      <input type="checkbox" name="keepidp" id="keepidp" ' . 
+      (($keepidp == 'checked') ? 'checked="checked" ' : '') .
+      'title="' .  $helptext . '" class="helpcursor" />
       </p>
       <p>
       <input type="submit" name="submit" class="submit helpcursor" 
