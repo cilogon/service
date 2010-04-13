@@ -28,6 +28,8 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
  * an error code is put in the PHP session before responding.           *
  ************************************************************************/
 function getUserAndRespond($responseurl) {
+    global $csrf;
+
     $shibarray = getShibInfo();
     $userid = '';  // Database user id to be returned
 
@@ -81,8 +83,9 @@ function getUserAndRespond($responseurl) {
     $_SESSION['remote_user'] = (string)$shibarray['User Identifier'];
     $_SESSION['emailaddr'] = (string)$shibarray['Email Address'];
     $_SESSION['loa'] = $shibarray['Level of Assurance'];
-    $_SESSION[csrf::tokenname] = csrf::getTheCookie();
     $_SESSION['submit'] = 'gotuser';
+    $csrf->setTheCookie();
+    $csrf->setTheSession();
 
     /* Finally, redirect to the calling script. */
     header('Location: ' . $responseurl);

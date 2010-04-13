@@ -329,8 +329,10 @@ function printFormHead($action='') {
  ************************************************************************/
 function redirectToGetuser($providerId='')
 {
+    global $csrf;
     // Set PHP session varilables needed by the getuser script
-    $_SESSION[csrf::tokenname] = csrf::getTheCookie();
+    $csrf->setTheCookie();
+    $csrf->setTheSession();
     $_SESSION['responseurl'] = getScriptDir(true);
     $_SESSION['submit'] = 'getuser';
 
