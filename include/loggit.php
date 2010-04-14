@@ -33,7 +33,6 @@ class loggit {
      *********************************************************************/
     function __construct($logtype='syslog',$email='help@cilogon.org')
     {
-        $ident = '';
         $ident = getServerVar('SERVER_NAME') . ' ' .
                  getServerVar('REQUEST_URI');
 
@@ -50,6 +49,7 @@ class loggit {
      * module. Several server variables and cookies (if they are set)    *
      * are automatically appended to the message to be logged.  These    *
      * are found in the $envs and $cookies array in the code below.      *
+     * Also, all PHP session variables are logged.                       *
      *********************************************************************/
     function info($message,$level=PEAR_LOG_INFO)
     {
@@ -62,13 +62,19 @@ class loggit {
         $envstr = ' ';
         foreach ($envs as $value) {
             if (isset($_SERVER[$value])) {
-                $envstr .= $value . '=' . $_SERVER[$value] . ' ';
+                $envstr .= $value . '="' . $_SERVER[$value] . '" ';
             }
         }
 
         foreach ($cookies as $value) {
             if (isset($_COOKIE[$value])) {
-                $envstr .= $value . '=' . $_COOKIE[$value] . ' ';
+                $envstr .= $value . '="' . $_COOKIE[$value] . '" ';
+            }
+        }
+
+        if (session_id() != '') {
+            foreach ($_SESSION as $key => $value) {
+                $envstr .= $key . '="' . $value . '" ';
             }
         }
 
