@@ -72,16 +72,19 @@ function getUserAndRespond($responseurl) {
            $userid = $perl_user->getUID();
          */
          $_SESSION['happy'] = 'HAPPY HAPPY JOY JOY';
+    } else {
+        // $_SESSION['statuscode'] = 'EMPTY PARAMETER';
     }
 
-    /* Put necessary variables in the PHP session. */
+    /* Put all attributes in the PHP session for debugging purposes. */
     $_SESSION['uid'] = $userid;
     // $_SESSION['statuscode'] = $perl_user->getStatusCode();
+    $_SESSION['remote_user'] = $shibarray['User Identifier'];
+    $_SESSION['idp'] = $shibarray['Identity Provider'];
     $_SESSION['idpname'] = $shibarray['Organization Name'];
-    $_SESSION['firstname'] = (string)$firstname;
-    $_SESSION['lastname'] = (string)$lastname;
-    $_SESSION['remote_user'] = (string)$shibarray['User Identifier'];
-    $_SESSION['emailaddr'] = (string)$shibarray['Email Address'];
+    $_SESSION['firstname'] = $firstname;
+    $_SESSION['lastname'] = $lastname;
+    $_SESSION['emailaddr'] = $shibarray['Email Address'];
     $_SESSION['loa'] = $shibarray['Level of Assurance'];
     $_SESSION['submit'] = 'gotuser';
     $csrf->setTheCookie();
