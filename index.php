@@ -7,23 +7,23 @@ require_once('include/util.php');
 
 startPHPSession();
 
-/* The full URL of the Shibboleth-protected getuser script.            */
+/* The full URL of the Shibboleth-protected getuser script. */
 define('GETUSER_URL','https://cilogon.org/secure/getuser/');
 
-/* Read in the whitelist of currently available IdPs.                  */
+/* Read in the whitelist of currently available IdPs. */
 $white = new whitelist();
 
-/* Loggit object for logging info to syslogs.  Need to use "global".   */
+/* Loggit object for logging info to syslog. */
 $log = new loggit();
 
-/* Check the csrf cookie against either a hidden <form> element or a   *
- * PHP session variable, and get the value of the "submit" element.    */
+/* Check the csrf cookie against either a hidden <form> element or a *
+ * PHP session variable, and get the value of the "submit" element.  */
 $submit = csrf::verifyCookieAndGetSubmit();
 
-$log->info("submit = '$submit'");
+$log->info('submit="' . $submit . '"');
 
-/* Depending on the value of the clicked "submit" button or the        *
- * equivalent PHP session variable, take action or print out HTML.     */
+/* Depending on the value of the clicked "submit" button or the    *
+ * equivalent PHP session variable, take action or print out HTML. */
 switch ($submit) {
 
     case 'Log On': // User selected an IdP - go to getuser script
@@ -53,9 +53,21 @@ switch ($submit) {
     break; // End case 'Log Off'
 
     case 'gotuser': // Return from the getuser script
-        // printLogonPage();
+    case 'main':    // Display main 'fetch certificate' page
         printGetCertificatePage();
     break; // End case 'gotuser'
+
+    /*
+    case 'GSI-SSHTerm Desktop App':
+        $log->info('Launching GSI-SSHTerm Desktop App');
+        $_SESSION['submit'] = 'main';
+        header('Location: http://cilogon.org/gsi-sshterm/ncsa.jnlp');
+    break; // End case 'GSI-SSHTerm Desktop App'
+
+    case 'GSI-SSHTerm Web Applet':
+        handleGSISSHTermWebApplet();
+    break; // End case 'GSI-SSHTerm Web Applet'
+    */
 
     default: // No submit button clicked nor PHP session variable set
         /* If both the "keepidp" and the "providerId" cookies were set 
@@ -315,6 +327,15 @@ function printFormHead($action='') {
         echo $hiddencsrf . "\n";
     }
     */
+}
+
+/************************************************************************
+ * Function   : handleGSISSHTermWebApplet                               *
+ * This funciton
+ ************************************************************************/
+function handleGSISSHTermWebApplet()
+{
+
 }
 
 /************************************************************************
