@@ -152,7 +152,7 @@ function startPHPSession()
     ini_set('session.cookie_secure',true);
     if (session_id() == "") session_start();
     if ((!isset($_SESSION['lastaccess']) || 
-        (time() - $_SESSION['lastaccess']) > 60 )) {
+        (time() - $_SESSION['lastaccess']) > 60)) {
         $_SESSION['lastaccess'] = time();
     }
 }
