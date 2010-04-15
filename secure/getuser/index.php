@@ -7,8 +7,13 @@ require_once('../../include/util.php');
 
 startPHPSession();
 
+/* Check the csrf cookie against either a hidden <form> element or a *
+ * PHP session variable, and get the value of the "submit" element.  */
 $submit = csrf::verifyCookieAndGetSubmit();
+
+/* Get the URL to reply to after database query. */
 $responseurl = getSessionVar('responseurl');
+unsetSessionVar('responseurl');
 
 if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
     getUserAndRespond($responseurl);
@@ -31,7 +36,7 @@ function getUserAndRespond($responseurl) {
     global $csrf;
 
     $shibarray = getShibInfo();
-    $userid = '';  // Database user id to be returned
+    $store = new store();
 
     /* If either firstname or lastname is empty but displayName *
      * is okay, extract first/last name from the displayName.   */
@@ -48,45 +53,33 @@ function getUserAndRespond($responseurl) {
         }
     }
 
-    /* If all required attributes are available, *
-     * get the user id from the database.        */
+    /* If all required attributes are available, get the       *
+     * database user id and status code of the database query. */
     if ((strlen($shibarray['User Identifier']) > 0) &&
         (strlen($shibarray['Identity Provider']) > 0) &&
         (strlen($shibarray['Organization Name']) > 0) &&
         (strlen($firstname) > 0) &&
         (strlen($lastname) > 0) &&
         (strlen($shibarray['Email Address']) > 0)) {
-        /* Make database callout here, something like this:
-           $perl = new Perl();
-           $perl->eval("BEGIN {unshift(@INC,'/var/www/datastore-1.0/perl');}");
-           $perl->eval('use CILogon::Datastore;');
-           $perl_data = new Perl('CILogon::Datastore');
-           $perl_user = $perl_data->getUser(
-                            $shibarray['User Identifier'],
-                            $shibarray['Identity Provider'],
-                            $shibarray['Organization Name'],
-                            $firstname,
-                            $lastname,
-                            $shibarray['Email Address']
-                        );
-           $userid = $perl_user->getUID();
-         */
-         $_SESSION['happy'] = 'HAPPY HAPPY JOY JOY';
+        $store->getUserObj($shibarray['User Identifier'],
+                           $shibarray['Identity Provider'],
+                           $shibarray['Organization Name'],
+                           $firstname,
+                           $lastname,
+                           $shibarray['Email Address']
+                          );
+        $_SESSION['uid']    = $store->getUserSub('uid');
+        $_SESSION['status'] = $store->getUserSub('status');
     } else {
-        // $_SESSION['statuscode'] = 'EMPTY PARAMETER';
+        $_SESSION['uid']    = '';
+        $_SESSION['status'] = $store->STATUS_ERROR_MISSING_PARAMETER;
     }
 
-    /* Put all attributes in the PHP session for debugging purposes. */
-    $_SESSION['uid'] = $userid;
-    // $_SESSION['statuscode'] = $perl_user->getStatusCode();
-    $_SESSION['remote_user'] = $shibarray['User Identifier'];
-    $_SESSION['idp'] = $shibarray['Identity Provider'];
-    $_SESSION['idpname'] = $shibarray['Organization Name'];
-    $_SESSION['firstname'] = $firstname;
-    $_SESSION['lastname'] = $lastname;
-    $_SESSION['emailaddr'] = $shibarray['Email Address'];
+    // Set additional session variables needed by the calling script
     $_SESSION['loa'] = $shibarray['Level of Assurance'];
-    $_SESSION['submit'] = 'gotuser';
+    $_SESSION['submit'] = getSessionVar('responsesubmit');
+    unsetSessionVar('responsesubmit');
+
     $csrf->setTheCookie();
     $csrf->setTheSession();
 
