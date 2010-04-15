@@ -4,6 +4,7 @@ require_once('include/autoloader.php');
 require_once('include/content.php');
 require_once('include/shib.php');
 require_once('include/util.php');
+require_once('include/myproxy.php');
 
 startPHPSession();
 
@@ -19,6 +20,7 @@ $log = new loggit();
 /* Check the csrf cookie against either a hidden <form> element or a *
  * PHP session variable, and get the value of the "submit" element.  */
 $submit = csrf::verifyCookieAndGetSubmit();
+unsetSessionVar('submit');
 
 $log->info('submit="' . $submit . '"');
 
@@ -47,8 +49,8 @@ switch ($submit) {
     break; // End case 'Log On'
 
     case 'Log Off':
-        deleteShibCookies();
-        clearSession();
+        removeShibCookies();
+        $_SESSION = array();  // Clear session variables
         printLogonPage();
     break; // End case 'Log Off'
 
@@ -63,11 +65,11 @@ switch ($submit) {
         $_SESSION['submit'] = 'main';
         header('Location: http://cilogon.org/gsi-sshterm/ncsa.jnlp');
     break; // End case 'GSI-SSHTerm Desktop App'
+    */
 
     case 'GSI-SSHTerm Web Applet':
         handleGSISSHTermWebApplet();
     break; // End case 'GSI-SSHTerm Web Applet'
-    */
 
     default: // No submit button clicked nor PHP session variable set
         /* If both the "keepidp" and the "providerId" cookies were set 
@@ -330,32 +332,159 @@ function printFormHead($action='') {
 }
 
 /************************************************************************
+ * Function   : printGSISSHTermWebApplet                                *
+ * This function
+ ************************************************************************/
+function printGSISSHTermWebApplet($cert) {
+    printHeader('GSI-SSHTerm Web Applet');
+    printPageHeader('Welcome ' . getSessionVar('idpname') . ' User');
+
+    echo '
+    <div class="boxed">
+      <div class="boxheader">
+        Run the GSI-SSHTerm Web-Based Applet
+      </div>
+    <p>
+    <applet width="0" height="0" 
+    archive="versioncheck.jar"
+    code="JavaVersionDisplayApplet" 
+    codebase="http://grid.ncsa.uiuc.edu/gsi-sshterm"
+    name="jvmversion">
+    <b>Please note, you will require at least
+    <a target="_blank" href="http://java.sun.com/">Java Software
+    Development Kit (SDK) 1.5</a> to launch the applet!</b>
+    </applet>
+
+    <div id="maindiv">
+    <p align="center">
+    <applet width="640" height="480" 
+    archive="GSI-SSHTerm-teragrid.jar"
+    code="com.sshtools.sshterm.SshTermApplet" 
+    codebase="http://grid.ncsa.uiuc.edu/gsi-sshterm"
+    style="border-style: solid; border-width: 1; padding-left: 4;
+    padding-right: 4; padding-top: 1; padding-bottom: 1">
+    <param name="sshterm.gsscredential" value="'.$cert.'"/>
+    <param name="sshapps.connection.userName" value="">
+    </applet>
+    </p>
+    </div>
+    ';
+    printFormHead();
+    echo '
+    <input type="submit" name="submit" class="submit" 
+     value="Go Back" />
+    </form>
+    </div>
+    </div>
+    ';
+
+    printFooter();
+}
+
+
+/************************************************************************
  * Function   : handleGSISSHTermWebApplet                               *
- * This funciton
+ * This function
  ************************************************************************/
 function handleGSISSHTermWebApplet()
 {
+    $uid = getSessionVar('uid');
+    $cert = getMyProxyForUID(getSessionVar('uid'));
+    if (strlen($cert) > 0) {
+        printGSISSHTermWebApplet($cert);
+    } else {
+        echo "<h2>uid = $uid<h2>\n";
+        echo "<h2>cert = $cert<h2>\n";
 
+    }
+}
+
+/************************************************************************
+ * Function   : getMyProxyForUID                                        *
+ * This function
+ ************************************************************************/
+function getMyProxyForUID($uid)
+{
+    $retval = '';
+
+    if (strlen($uid) > 0) {
+        $store = new store();
+        $store->getUserObj($uid);
+        $status = $store->getUserSub('status');
+        if (!($status & 1)) {  // All OK status vars are even
+            $dn = $store->getUserSub('getDN');
+            $retval = getMyProxyForDN($dn);
+        }
+    }
+
+    return $retval;
+}
+
+/************************************************************************
+ * Function   : getMyProxyForDN                                         *
+ * This function
+ ************************************************************************/
+function getMyProxyForDN($dn) {
+    $retval = '';
+
+
+    // Check if we should issue 'basic' or 'silver' cert
+    $silver = false;
+    $loa = getSessionVar('loa');
+    if ($loa == 'http://incommonfederation.org/assurance/silver') {
+        $silver = true;
+    }
+
+    if (strlen($dn) > 0) {
+        $cert = getMyProxyCredential($dn,'','myproxy.cilogon.org',
+                ($silver ? 7514 : 7512),12,'/var/www/config/hostcred.pem','',
+                true);
+        if (strlen($cert) > 0) {
+            $retval = $cert;
+        }
+    }
+
+    return $retval;
 }
 
 /************************************************************************
  * Function   : redirectToGetuser                                       *
- * Parameter  : (Optional) An entityID of the authenticating IdP.       *
+ * Parameters : (1) An entityID of the authenticating IdP.  If not      *
+ *                  specified (or set to the empty string), we check    *
+ *                  providerId PHP session variable and providerId      *
+ *                  cookie (in that order) for non-empty values.        *
+ *              (2) (Optional) The value of the PHP session 'submit'    *
+ *                  variable to be set upon return from the 'getuser'   *
+ *                  script.  This is utilized to control the flow of    *
+ *                  this script after "getuser". Defaults to 'gotuser'. *
  * This function redirects to the "/secure/getuser/" script so as to    *
  * do a Shibboleth authentication via the InCommon WAYF.  If the        *
- * optional parameter (a whitelisted entityID) is specified, the WAYF   *
- * will automatically go to that IdP (i.e. without stopping at the      *
- * WAYF).  This function also sets several PHP session variables that   *
- * are needed by the getuser script.                                    *
+ * first parameter (a whitelisted entityID) is not specified, we check  *
+ * to see if either the providerId PHP session variable or the          *
+ * providerId cookie is set (in that order) and use one if available.   *
+ * When the providerId is set, the WAYF will automatically go to that   *
+ * IdP (i.e. without stopping at the WAYF).  This function also sets    *
+ * several PHP session variables that are needed by the getuser script, *
+ * including the 'responsesubmit' variable which is set as the 'submit' *
+ * variable in the 'getuser' script.                                    *
  ************************************************************************/
-function redirectToGetuser($providerId='')
+function redirectToGetuser($providerId='',$responsesubmit='gotuser')
 {
     global $csrf;
     // Set PHP session varilables needed by the getuser script
-    $csrf->setTheCookie();
-    $csrf->setTheSession();
     $_SESSION['responseurl'] = getScriptDir(true);
     $_SESSION['submit'] = 'getuser';
+    $_SESSION['responsesubmit'] = $responsesubmit;
+    $csrf->setTheCookie();
+    $csrf->setTheSession();
+
+    // If providerId not set, try the session and cookie values
+    if (strlen($providerId) == 0) {
+        $providerId = getSessionVar('providerId');
+        if (strlen($providerId) == 0) {
+            $providerId = getCookieVar('providerId');
+        }
+    }
 
     // Set up the "header" string for redirection thru InCommon WAYF
     $redirect = 'Location: https://cilogon.org/Shibboleth.sso/WAYF/InCommon?' .
@@ -364,16 +493,6 @@ function redirectToGetuser($providerId='')
         $redirect .= '&providerId=' . urlencode($providerId);
     }
     header($redirect);
-}
-
-/************************************************************************
- * Function   : clearSession                                            *
- * This function clears (unsets) all of the PHP session values.         *
- ************************************************************************/
-function clearSession() {
-    while (list($key,$val) = each($_SESSION)) {
-        unset($_SESSION[$key]);
-    }
 }
 
 ?>
