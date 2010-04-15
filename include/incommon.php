@@ -240,22 +240,22 @@ class incommon {
     }
 
     /********************************************************************
-     * Function  : delete                                               *
-     * Parameter : An entityID string to be deleted from the            *
+     * Function  : remove                                               *
+     * Parameter : An entityID string to be removed from the            *
      *             $idparray.                                           *
      * Returns   : True if the entityID was removed from the list       *
      *             of entityIDs, false if the passed-in entityID was    *
      *             not in the $idparray.                                *
-     * This function is an alias for deleteEntityID().  See also        *
-     * deleteEntityID() and deleteDisplayName().                        *
+     * This function is an alias for removeEntityID().  See also        *
+     * removeEntityID() and removeDisplayName().                        *
      ********************************************************************/
-    function delete($entityID) {
-        return $this->deleteEntityID($entityID);
+    function remove($entityID) {
+        return $this->removeEntityID($entityID);
     }
 
     /********************************************************************
-     * Function  : deleteEntityID                                       *
-     * Parameter : An entityID string to be deleted from the            *
+     * Function  : removeEntityID                                       *
+     * Parameter : An entityID string to be removed from the            *
      *             $idparray.                                           *
      * Returns   : True if the entityID was removed from the list       *
      *             of entityIDs, false if the passed-in entityID was    *
@@ -263,11 +263,11 @@ class incommon {
      * This function allows you to remove an existing entityID (and its *
      * corresponding OrganizationDisplayName) from the $idparray.  If   *
      * the entityID does not exist in the $idparray, then it is not     *
-     * deleted, and false is returned.  See also delete() and           *
-     * deleteDisplayName().                                             *
+     * removed, and false is returned.  See also remove() and           *
+     * removeDisplayName().                                             *
      ********************************************************************/
-    function deleteEntityID($entityID) {
-        $retval = false;  // Assume delete from list failed
+    function removeEntityID($entityID) {
+        $retval = false;  // Assume remove from list failed
         if (strlen($this->getDisplayName($entityID)) > 0) {
             unset($this->idparray[$entityID]);
             $retval = true;
@@ -276,8 +276,8 @@ class incommon {
     }
 
     /********************************************************************
-     * Function  : deleteDisplayName                                    *
-     * Parameter : An OrganizationDisplayName string to be deleted      *
+     * Function  : removeDisplayName                                    *
+     * Parameter : An OrganizationDisplayName string to be removed      *
      *             from the $idparray.                                  *
      * Returns   : True if the OrganizationDisplayName was removed      *
      *             from the $idparray, false if the passed-in display   *
@@ -285,11 +285,11 @@ class incommon {
      * This function allows you to remove an existing                   *
      * OrganzationDisplayName (and its corresponding entityID) from the *
      * $idparray.  If the display name does not exist in the $idparray, *
-     * then it is not deleted, and false is returned.  See also         *
-     * delete() and deleteEntityID().                                   *
+     * then it is not removed, and false is returned.  See also         *
+     * remove() and removeEntityID().                                   *
      ********************************************************************/
-    function deleteDisplayName($displayName) {
-        $retval = false;  // Assume delete from list failed
+    function removeDisplayName($displayName) {
+        $retval = false;  // Assume remove from list failed
         $entityID = $this->getEntityID($displayName);
         if (strlen($entityID) > 0) {
             unset($this->idparray[$entityID]);

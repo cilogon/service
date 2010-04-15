@@ -104,14 +104,14 @@ function getShibInfo($metadata=incommon::defaultFilename)
 }
 
 /************************************************************************
- * Function   : deleteShibCookies                                       *
- * This function deletes all "_shib*" cookies currently in the user's   *
+ * Function   : removeShibCookies                                       *
+ * This function removes all "_shib*" cookies currently in the user's   *
  * browser session.  In effect, this logs the user out of any IdP.      *
  * Note that you must call this before you output any HTML.  Strictly   *
- * speaking, the cookies are not deleted, rather they are set to empty  *
+ * speaking, the cookies are not removed, rather they are set to empty  *
  * values with expired times.                                           *
  ************************************************************************/
-function deleteShibCookies() 
+function removeShibCookies() 
 {
     while (list ($key,$val) = each ($_COOKIE)) {
         if (strncmp($key,"_shib", strlen("_shib")) == 0) {

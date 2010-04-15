@@ -25,7 +25,7 @@
  *    if (csrf::isCookieEqualToForm()) {                                *
  *        // Form submission is okay - process it                       *
  *    } else {                                                          *
- *        csrf::deleteTheCookie();                                      *
+ *        csrf::removeTheCookie();                                      *
  *    }                                                                 *
  *                                                                      *
  *    // Alternatively, set cookie and PHP session value and compare    *
@@ -40,8 +40,8 @@
  *    if (csrf::isCookieEqualToSession()) {                             *
  *        // Session csrf value was okay - process as normal            *
  *    } else {                                                          *
- *        csrf::deleteTheCookie();                                      *
- *        csrf::deleteTheSession();                                     *
+ *        csrf::removeTheCookie();                                      *
+ *        csrf::removeTheSession();                                     *
  *    }                                                                 *
  ************************************************************************/
 
@@ -119,12 +119,12 @@ class csrf {
     }
 
     /********************************************************************
-     * Function  : deleteTheCookie                                      *
-     * Deletes the csrf cookie.  You must call this method before you   *
-     * output any HTML.  Strictly speaking, the cookie is not deleted,  *
+     * Function  : removeTheCookie                                      *
+     * removes the csrf cookie.  You must call this method before you   *
+     * output any HTML.  Strictly speaking, the cookie is not removed,  *
      * rather it is set to an empty value with an expired time.         *
      ********************************************************************/
-    public static function deleteTheCookie() {
+    public static function removeTheCookie() {
         setcookie(self::tokenname,'',time()-3600,'/','',true);
     }
 
@@ -182,10 +182,10 @@ class csrf {
     }
 
     /********************************************************************
-     * Function  : deleteTheSession                                     *
-     * Deletes the csrf value from the PHP session.                     *
+     * Function  : removeTheSession                                     *
+     * removes the csrf value from the PHP session.                     *
      ********************************************************************/
-    public static function deleteTheSession() {
+    public static function removeTheSession() {
         unset($_SESSION[self::tokenname]);
     }
 
@@ -239,7 +239,7 @@ class csrf {
      * value.  In other words, a non-empty <form> submit button has     *
      * priority over a PHP session value.  In any case, if the csrf     *
      * test fails for both <form> and PHP session, the csrf cookie is   *
-     * deleted, and the empty string is returned.                       *
+     * removed, and the empty string is returned.                       *
      ********************************************************************/
     public static function verifyCookieAndGetSubmit($submit='submit')
     {
@@ -253,9 +253,9 @@ class csrf {
             $retval = getSessionVar($submit);
         }
         // If csrf failed or no "submit" element in <form> or session, 
-        // delete the csrf cookie.
+        // remove the csrf cookie.
         if (strlen($retval) == 0) {
-            self::deleteTheCookie();
+            self::removeTheCookie();
         }
         return $retval;
     }
