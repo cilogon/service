@@ -62,9 +62,6 @@ class store {
         $this->perlobj->eval('$ENV{\'CILOGON_ROOT\'} = \'/var/www/config/\'');
         $this->perlobj->eval('use CILogon::Store;');
         $this->perlobj->eval('use CILogon::User;');
-        $this->perlobj->eval('use CILogon::Exceptions;');
-        $this->perlobj->eval('use CILogon::Namespaces;');
-        $this->perlobj->eval('use CILogon::IdentifierFactory;');
 
         // Set the various STATUS variables
         $this->perlobj->eval('$st = CILogon::Store::STATUS_OK;');
