@@ -183,10 +183,13 @@ class csrf {
 
     /********************************************************************
      * Function  : removeTheSession                                     *
-     * removes the csrf value from the PHP session.                     *
+     * Removes the csrf value from the PHP session.                     *
      ********************************************************************/
     public static function removeTheSession() {
-        unset($_SESSION[self::tokenname]);
+        if (isset($_SESSION[self::tokenname])) {
+            $_SESSION[self::tokenname] = null;
+            unset($_SESSION[self::tokenname]);
+        }
     }
 
     /********************************************************************
