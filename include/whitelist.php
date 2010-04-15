@@ -1,5 +1,7 @@
 <?php
 
+require_once('autoloader.php');
+
 /************************************************************************
  * Class name : whitelist                                               *
  * Description: This class manages the entityID whitelist utilized by   *
@@ -59,6 +61,19 @@ class whitelist {
 
     /********************************************************************
      * Function  : read                                                 *
+     * Returns   : True if the whitelist was read in successfully,      *
+     *             false otherwise.                                     *
+     * This function is an alias to either readFromFile or              *
+     * readFromStore.  This way, the default storage mechanism can      *
+     * be changed by modifying the underlying read method that gets     *
+     * called.                                                          *
+     ********************************************************************/
+    function read() {
+        return $this->readFromFile();
+    }
+
+    /********************************************************************
+     * Function  : readFromFile                                         *
      * Returns   : True if the whitelist file was read in successfully, *
      *             false otherwise.                                     *
      * This function reads in the whitelist file containing the list    *
@@ -66,7 +81,7 @@ class whitelist {
      * entityIDs are stored in the $whitearray as the keys.  The        *
      * <EntityID></EntityID> tags are stripped off.                     *
      ********************************************************************/
-    function read() {
+    function readFromFile() {
         $retval = false;  // Assume read failed
         if (is_readable($this->getFilename())) {
             $xmlstr = '<?xml version="1.0"?><Dummy>';
@@ -83,14 +98,47 @@ class whitelist {
     }
 
     /********************************************************************
+     * Function  : readFromStore                                        *
+     * Returns   : True if the whitelist was read in from the database  *
+     *             store successfully, false otherwise.                 *
+     * This function reads in the whitelist from the database           *
+     * containing the list of entityIDs to be shown on the CILogon      *
+     * Service page.  The entityIDs are stored in the $whitearray as    *
+     * the keys.                                                        *
+     ********************************************************************/
+    function readFromStore() {
+        $retval = false;  // Assume read failed, or empty Idp list
+        $store = new store();
+        $store->perlobj->eval('@idps = CILogon::Store->getIdps();');
+        foreach ($store->perlobj->array->idps as $value) {
+            $this->add($value);
+            $retval = true;
+        }
+        return $retval;
+    }
+
+    /********************************************************************
      * Function  : write                                                *
+     * Returns   : True if the whitelist file was written successfully, *
+     *             false otherwise.                                     *
+     * This function is an alias to either writeToFile or               *
+     * writeToStore.  This way, the default storage mechanism can       *
+     * be changed by modifying the underlying write method that gets    *
+     * called.                                                          *
+     ********************************************************************/
+    function write() {
+        return $this->writeToFile();
+    }
+
+    /********************************************************************
+     * Function  : writeToFile                                          *
      * Returns   : True if the whitelist file was written successfully, *
      *             false otherwise.                                     *
      * This function writes out the list of entityIDs in $whitearray    *
      * to the whitelist file.  The <EntityID>...</EntityID> tags are    *
      * re-added as appropriate.                                         *
      ********************************************************************/
-    function write() {
+    function writeToFile() {
          $retval = false; // Assume write failed
          if (is_writable($this->getFilename())) {
              if ($fh = fopen($this->getFilename(),'w')) {
@@ -102,6 +150,28 @@ class whitelist {
              }
          }
          return $retval;
+    }
+
+    /********************************************************************
+     * Function  : writeToStore                                         *
+     * Returns   : True if the whitelist was written successfully to    *
+     *             the persistent store, false otherwise.               *
+     * This function writes out the list of entityIDs in $whitearray    *
+     * to the database.                                                 *
+     ********************************************************************/
+    function writeToStore() {
+        $retval = false;  // Assume write failed
+        if (count($this->whitearray) > 0) {
+            $store = new store();
+            $store->perlobj->eval('@newidps = ();');
+            foreach ($this->whitearray as $key => $value) {
+                $store->perlobj->eval('push(@newidps,\'' . $key . '\');');
+            }
+            $store->perlobj->eval(
+                '$result = CILogon::Store->saveIdps(@newidps);');
+            $retval = ($store->perlobj->result > 0);
+        }
+        return $retval;
     }
 
     /********************************************************************
@@ -161,24 +231,25 @@ class whitelist {
     }
 
     /********************************************************************
-     * Function  : delete                                               *
-     * Parameter : An entityID string to be deleted from the            *
+     * Function  : remove                                               *
+     * Parameter : An entityID string to be removed from the            *
      *             $whitearray.                                         *
      * Returns   : True if the new entityID was removed from the list   *
      *             of entityIDs, false if the passed-in entityID was    *
      *             not in the $whitearray.                              *
      * This function allows you to remove an existing entityID from the *
      * $whitearray.  If the entityID does not exist in the $whitearray, *
-     * then it is not deleted, and false is returned.                   *
+     * then it is not removed, and false is returned.                   *
      ********************************************************************/
-    function delete($entityID) {
-        $retval = false;  // Assume delete from list failed
+    function remove($entityID) {
+        $retval = false;  // Assume remove from list failed
         if ($this->exists($entityID)) {
             unset($this->whitearray[$entityID]);
             $retval = true;
         }
         return $retval;
     }
+
 }
 
 ?>
