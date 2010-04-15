@@ -141,6 +141,20 @@ function getSessionVar($sess)
 }
 
 /************************************************************************
+ * Function  : unsetSessionVar                                          *
+ * Parameter : The $_SESSION variable to erase.                         *
+ * This function clears the given PHP session variable by first setting *
+ * it to null and then unsetting it entirely.                           *
+ ************************************************************************/
+function unsetSessionVar($sess) 
+{
+    if (isset($_SESSION[$sess])) {
+        $_SESSION[$sess] = null;
+        unset($_SESSION[$sess]);
+    }
+}
+
+/************************************************************************
  * Function  : startPHPSession                                          *
  * This function starts a secure PHP session and should be called at    *
  * at the beginning of each script before any HTML is output.  It also  *
