@@ -78,6 +78,7 @@ function getUserAndRespond($responseurl) {
     // Set additional session variables needed by the calling script
     $_SESSION['loa'] = $shibarray['Level of Assurance'];
     $_SESSION['submit'] = getSessionVar('responsesubmit');
+    $_SESSION['idpname'] = $shibarray['Organization Name'];
     unsetSessionVar('responsesubmit');
 
     $csrf->setTheCookie();
