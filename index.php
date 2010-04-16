@@ -365,6 +365,8 @@ function printGSISSHTermWebApplet($cert) {
     padding-right: 4; padding-top: 1; padding-bottom: 1">
     <param name="sshterm.gsscredential" value="'.$cert.'"/>
     <param name="sshapps.connection.userName" value="">
+    <param name="sshapps.connection.showConnectionDialog" value="true">
+    <param name="sshapps.connection.connectImmediately" value="true">
     </applet>
     </p>
     </div>
