@@ -190,7 +190,7 @@ function printGetCertificatePage()
       <td class="buttons">
     ';
 
-    printFormHead();
+    printFormHead('gridshib-ca');
         
     echo '
       <input type="submit" name="submit" class="submit"
@@ -284,19 +284,15 @@ function printGetCertificatePage()
  * This function 
  ************************************************************************/
 function printFormHead($action='') {
-    /*
+    global $csrf;
     global $perl_csrf;
     global $perl_config;
-    */
-    global $csrf;
 
     $formaction = getScriptDir();
     
     if ($action == 'gridshib-ca') {
-        /*
-        $formaction = $perl_config->getParam("ShibProtectedURL") .
-                                             "/shibLaunchGSCA.jnlp";
-        */
+        $formaction = $perl_config->getParam("GridShibCAURL") .
+                                             "shibCILaunchGSCA.jnlp";
     }
 
     echo '
@@ -309,7 +305,6 @@ function printFormHead($action='') {
         <input type="hidden" name="lifetime" value="default">
         <input type="hidden" name="lifetimeUnit" value="hours">';
 
-        /*
         $trustedCADirectory = $perl_config->getParam("TrustRoots",
                                                      "TrustRootsPath");
         if ((strlen($trustedCADirectory) > 0) && 
@@ -318,17 +313,14 @@ function printFormHead($action='') {
             <input type="hidden" name="DownloadTrustroots" value="true">
             ';
         }
-        */
     }
 
-    /*
     $hiddencsrf = $perl_csrf->getFormElement();
     if (is_array($hiddencsrf)) {
         echo  key($hiddencsrf) . "\n";
     } else {
         echo $hiddencsrf . "\n";
     }
-    */
 }
 
 /************************************************************************
