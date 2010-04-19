@@ -7,6 +7,18 @@ require_once("util.php");
 /* CSRF form element.  Be sure to do "global $csrf" to use it.       */
 $csrf = new csrf();
 
+/* Do GridShibCA perl stuff first so we can set the cookie (which    */
+/* must be done before any HTML can be output) and eventually print  */
+/* the CSRF value to a hidden form element.  Be sure to do           */
+/* "global $perl_config" / "global $perl_csrf" if using the          */
+/* variables from within a function.                                 */
+$perl = new Perl();
+$perl->eval("BEGIN {unshift(@INC,'/usr/local/gridshib-ca-2.0.0/perl');}");
+$perl->eval('use GridShibCA::Config;');
+$perl_config = new Perl('GridShibCA::Config');
+$perl_csrf = $perl_config->getCSRF();
+
+
 /************************************************************************
  * Function   : printHeader                                             *
  * Parameter  : (1) The text in the window's titlebar                   *
@@ -17,8 +29,10 @@ $csrf = new csrf();
  ************************************************************************/
 function printHeader($title='',$extra='')
 {
-    global $csrf;  // Initialized above
+    global $csrf;       // Initialized above
+    global $perl_csrf; 
     $csrf->setTheCookie();
+    setcookie($perl_csrf->TokenName,$perl_csrf->Token,0,'/','',true);
 
     echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
