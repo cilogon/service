@@ -254,6 +254,7 @@ class csrf {
         // If <form> element missing or bad, check PHP session csrf variable
         if ((strlen($retval) == 0) && (self::isCookieEqualToSession())) {
             $retval = getSessionVar($submit);
+            self::removeTheSession();  // No need to use it again
         }
         // If csrf failed or no "submit" element in <form> or session, 
         // remove the csrf cookie.
