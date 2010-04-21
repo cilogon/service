@@ -55,9 +55,13 @@ switch ($submit) {
     break; // End case 'Log Off'
 
     case 'gotuser': // Return from the getuser script
-    case 'main':    // Display main 'fetch certificate' page
-        printGetCertificatePage();
+        handleGotUser();
     break; // End case 'gotuser'
+
+    case 'main':    // Display main 'fetch certificate' page
+    case 'Go Back':
+        printGetCertificatePage();
+    break; // End case 'main'
 
     /*
     case 'GSI-SSHTerm Desktop App':
@@ -149,6 +153,10 @@ function printLogonPage()
       href="/requestidp/">make a request for your organization</a> to appear
       in the list of available organizations.
       </p>
+      <p class="note">
+      <strong>Note:</strong> You must enable cookies in your web browser to
+      use this site.
+      </p>
     </div>
     ';
 
@@ -165,6 +173,10 @@ function printLogonPage()
  ************************************************************************/
 function printGetCertificatePage()
 {
+    global $perl_config;
+
+    $scriptdir = getScriptDir();
+
     printHeader('Get Your Certificate');
     printPageHeader('Welcome ' . getSessionVar('idpname') . ' User');
 
@@ -190,7 +202,8 @@ function printGetCertificatePage()
       <td class="buttons">
     ';
 
-    printFormHead('gridshib-ca');
+    printFormHead(
+        $perl_config->getParam('GridShibCAURL').'shibCILaunchGSCA.jnlp',true);
         
     echo '
       <input type="submit" name="submit" class="submit"
@@ -216,12 +229,17 @@ function printGetCertificatePage()
       <td class="buttons">
     ';
 
-    printFormHead();
+    printFormHead('/gsi-sshterm/cilogon.jnlp');
 
     echo '
       <input type="submit" name="submit" class="submit"
        value="GSI-SSHTerm Desktop App" />
-      <br />
+      </form>
+    ';
+
+    printFormHead($scriptdir);
+
+    echo '
       <input type="submit" name="submit" class="submitmore"
        value="GSI-SSHTerm Web Applet" />
       </form>
@@ -240,7 +258,7 @@ function printGetCertificatePage()
       <td class="buttons">
     ';
 
-    printFormHead();
+    printFormHead($scriptdir);
 
     echo '
       <input type="submit" name="submit" class="submit"
@@ -281,45 +299,46 @@ function printGetCertificatePage()
 
 /************************************************************************
  * Function   : printFormHead                                           *
- * This function 
+ * Parameters : (1) The value of the form's "action" parameter.         *
+ *              (2) (Optional) True if extra hidden tags should be      *
+ *                  output for the GridShib-CA client application.      *
+ *                  Defaults to false.                                  *
+ * This function prints out the opening <form> tag for displaying       *
+ * submit buttons.  The first parameter is used for the "action" value  *
+ * of the <form>.  This function outputs a hidden csrf field in the     *
+ * form block.  If the second parameter is given and set to true, then  *
+ * additional hidden input elements are also output to be used when the *
+ * the GridShib-CA client launches.                                     *
  ************************************************************************/
-function printFormHead($action='') {
+function printFormHead($action,$gsca=false) {
     global $csrf;
     global $perl_csrf;
     global $perl_config;
 
-    $formaction = getScriptDir();
-    
-    if ($action == 'gridshib-ca') {
-        $formaction = $perl_config->getParam("GridShibCAURL") .
-                                             "shibCILaunchGSCA.jnlp";
-    }
-
     echo '
-    <form action="' . $formaction . '" method="post">
+    <form action="' . $action . '" method="post">
     ';
     echo $csrf->getHiddenFormElement();
 
-    if ($action == 'gridshib-ca') {
+    if ($gsca) {
         echo '
-        <input type="hidden" name="lifetime" value="default">
-        <input type="hidden" name="lifetimeUnit" value="hours">';
+        <input type="hidden" name="lifetime" value="default" />
+        <input type="hidden" name="lifetimeUnit" value="hours" />';
 
-        $trustedCADirectory = $perl_config->getParam("TrustRoots",
-                                                     "TrustRootsPath");
-        if ((strlen($trustedCADirectory) > 0) && 
-            (is_readable($trustedCADirectory))) {
+        $trustCADir = $perl_config->getParam("TrustRoots","TrustRootsPath");
+        if ((strlen($trustCADir) > 0) && (is_readable($trustCADir))) {
             echo '
-            <input type="hidden" name="DownloadTrustroots" value="true">
+            <input type="hidden" name="DownloadTrustroots" value="true" />
             ';
         }
-    }
 
-    $hiddencsrf = $perl_csrf->getFormElement();
-    if (is_array($hiddencsrf)) {
-        echo  key($hiddencsrf) . "\n";
-    } else {
-        echo $hiddencsrf . "\n";
+        $hiddencsrf = $perl_csrf->getFormElement();
+        // Fix for when Perl/PHP returns a string as an array element
+        if (is_array($hiddencsrf)) {
+            echo key($hiddencsrf) . "\n";
+        } else {
+            echo $hiddencsrf . "\n";
+        }
     }
 }
 
@@ -327,7 +346,8 @@ function printFormHead($action='') {
  * Function   : printGSISSHTermWebApplet                                *
  * This function
  ************************************************************************/
-function printGSISSHTermWebApplet($cert) {
+function printGSISSHTermWebApplet($cert) 
+{
     printHeader('GSI-SSHTerm Web Applet');
     printPageHeader('Welcome ' . getSessionVar('idpname') . ' User');
 
@@ -336,34 +356,33 @@ function printGSISSHTermWebApplet($cert) {
       <div class="boxheader">
         Run the GSI-SSHTerm Web-Based Applet
       </div>
-    <p>
+    <div class="javaapplet">
     <applet width="0" height="0" 
     archive="versioncheck.jar"
     code="JavaVersionDisplayApplet" 
-    codebase="http://grid.ncsa.uiuc.edu/gsi-sshterm"
+    codebase="http://cilogon.org/gsi-sshterm"
     name="jvmversion">
     <b>Please note, you will require at least
     <a target="_blank" href="http://java.sun.com/">Java Software
     Development Kit (SDK) 1.5</a> to launch the applet!</b>
     </applet>
+    </div>
 
-    <div id="maindiv">
-    <p align="center">
+    <p class="javaapplet">
     <applet width="640" height="480" 
-    archive="GSI-SSHTerm-teragrid.jar"
+    archive="GSI-SSHTerm-cilogon.jar"
     code="com.sshtools.sshterm.SshTermApplet" 
-    codebase="http://grid.ncsa.uiuc.edu/gsi-sshterm"
-    style="border-style: solid; border-width: 1; padding-left: 4;
-    padding-right: 4; padding-top: 1; padding-bottom: 1">
+    codebase="http://cilogon.org/gsi-sshterm"
+    class="gsisshterm">
     <param name="sshterm.gsscredential" value="'.$cert.'"/>
     <param name="sshapps.connection.userName" value="">
     <param name="sshapps.connection.showConnectionDialog" value="true">
     <param name="sshapps.connection.connectImmediately" value="true">
     </applet>
     </p>
-    </div>
+    <div>
     ';
-    printFormHead();
+    printFormHead(getScriptDir());
     echo '
     <input type="submit" name="submit" class="submit" 
      value="Go Back" />
@@ -375,6 +394,44 @@ function printGSISSHTermWebApplet($cert) {
     printFooter();
 }
 
+/************************************************************************
+ * Function   : printErrorBox                                           *
+ * This function
+ ************************************************************************/
+function printErrorBox($errortext) 
+{
+    echo '
+    <div class="errorbox">
+    <table cellpadding="5">
+    <tr>
+    <td>
+    ';
+    printIcon('error','Unable to fetch certificate');
+    echo '&nbsp;
+    </td>
+    <td>' . $errortext . '
+    </tc>
+    </tr>
+    </table>
+    </div>
+    ';
+}
+
+/************************************************************************
+ * Function   : handleGotUser                                           *
+ * This function
+ ************************************************************************/
+function handleGotUser()
+{
+    $uid = getSessionVar('uid');
+    $status = getSessionVar('status');
+    # If empty 'uid' or odd-numbered status code, error!
+    if ((strlen($uid) == 0) || ($status &1)) {
+    } else { // Got one of the STATUS_OK* status codes
+        printGetCertificatePage();
+    }
+
+}
 
 /************************************************************************
  * Function   : handleGSISSHTermWebApplet                               *
@@ -383,13 +440,40 @@ function printGSISSHTermWebApplet($cert) {
 function handleGSISSHTermWebApplet()
 {
     $uid = getSessionVar('uid');
-    $cert = getMyProxyForUID(getSessionVar('uid'));
+    $uid = '';
+    $cert = getMyProxyForUID($uid);
     if (strlen($cert) > 0) {
         printGSISSHTermWebApplet($cert);
     } else {
-        echo "<h2>uid = $uid<h2>\n";
-        echo "<h2>cert = $cert<h2>\n";
+        printHeader('Error Running GSI-SSHTerm Web Applet');
+        printPageHeader('ERROR Running The GSI-SSHTerm Web Applet');
 
+        echo '
+        <div class="boxed">
+          <div class="boxheader">
+            Unable To Fetch A Certificate For GSI-SSHTerm Applet
+          </div>
+        ';
+        
+        printErrorBox('There was an error trying to fetch a certificate for
+            you.  Without the certificate, the GSI-SSHTerm web applet is
+            unable to launch.  This may be a temporary error.  You can use
+            the email address at the bottom of the page to inform the system
+            administrators of this problem.');
+
+        echo '
+        <div>
+        ';
+        printFormHead(getScriptDir());
+        echo '
+        <input type="submit" name="submit" class="submit" 
+         value="Go Back" />
+        </form>
+        </div>
+        </div>
+        ';
+
+        printFooter();
     }
 }
 
