@@ -440,7 +440,6 @@ function handleGotUser()
 function handleGSISSHTermWebApplet()
 {
     $uid = getSessionVar('uid');
-    $uid = '';
     $cert = getMyProxyForUID($uid);
     if (strlen($cert) > 0) {
         printGSISSHTermWebApplet($cert);
