@@ -1,0 +1,222 @@
+Change log
+==========
+
+Changes by David Spence or Matt Viljoen unless otherwise stated
+
+0.91h (19/11/09) David Meredith
+- Patches contributed by Jon Siwek (see 'doc' dir).
+- Use "CR" EOL settings for terminal emulation
+- X11 Forwarding fixes for 64bit linux and MAC
+- Add 'gssapi-with-mic' user authentication method (from RFC 4462 http://tools.ietf.org/html/rfc4462)
+  and remove depreciated 'external-keyx' userauth method (from draft RFC 4462).
+- Add 'gssapi-keyex' user authentication method (from RFC 4462 http://tools.ietf.org/html/rfc4462)
+  and remove depreciated 'gssapi' userauth method (from drafts of RFC 4462).
+
+
+0.91g (16/11/09) David Meredith
+ - New 'signReleaseJars' ant target that signs the compiled release .jar files 
+  in-situ in the 'release' dir. Requires an 'env.properties' file in the base directory
+  (use the provided 'sample.env.properties' as  an example).
+- Added the necessary jars to VOMS enable for authentication with
+  VOs, provides a Java implementation of voms-proxy-init and accompanying GUI.
+  See the build.xml file for instructions to enable this. 
+- Fixed pkcs10 cert/key selection bug. Now supports multiple cert/key entries in a 
+  pkcs10 file. User can select which cert/key pair to use if required. Contributions
+  from Siew Hoon Leong (Cerlane).
+Following patches contributed by Jon Siwek
+ - Word wrapping for error dialog windows
+ - Skip invalid entries in the known_host file
+ - Update the browser launcher
+ - Fix the "Can't find menu Help" error
+
+
+0.91g (23/05/08)
+- (04/03/08) Installs the rekeyed UK e-Science CA root certificate following Debian Secuirty Advisary DSA-1571-1.
+
+0.91e (04/03/08) Adam Horwich
+- (04/03/08) Fixed bug with exported pfx/p12 certificates from IE7/Firefox.
+
+0.91d (18/01/08)
+- (18/01/08) Now automatically installs the certificates of the new UK e-Science CA hierarchy as well as old ones.
+
+0.91c (18/12/07)
+- (14/12/07) Fixed Error reporting for failed private key reads on authentication.
+- (17/12/07) Bug fixes in tunneling code - outgoing connections now work.
+- (17/12/07) Redesign Tunneling dialogs to be clearer.
+- (17/12/07) Disabled various opertations on x11 forwarding connections.
+- (17/12/07) Corrected repeatition of x11 connections in tunneling window.
+- (18/12/07) Fixed various bugs with Active channels pane in tunneling window.
+	
+0.91b (30/11/07)
+- (30/11/07) Re-jig some html files
+
+0.91a (21/11/07)
+- (18/10/07) Added firefox as second choice for help pages in UNIX after mozilla.
+- (19/10/07) Added Windows .ico file for the terminal to bin directory.
+- (21/11/07) Changes in rekeying and SFTP for more reliability in long term connections.
+	
+0.91 (09/10/07)
+- (26/09/07) added the sshterm.autoconnect.host, sshterm.autoconnect.port and sshterm.autoconnect.username options to the applet.
+- (08/10/07) Changed default SSO Kerberos port to 7512
+- (09/10/07) Fixed minor errors in the SSH Tunneling sub-system.
+	
+0.90c (26/09/07)
+- (03/09/07) Minor bug fix for SSO config file.
+- (25/09/07) Better error reporting on error.
+
+0.90b (16/08/07)
+- (09/08/07) Minor bug fix to connection routines to stop hanging after one hour.
+- (07/08/07) Add more help links.
+
+0.90a (19/07/07)
+- (19/07/07) Minor bug fix to connection routines to stop hanging on connection.
+	
+0.90 (12/07/07)
+- (04/06/07) Added sshterm.myproxy.defaults.username and sshterm.krb5myproxy.username config options
+- (05/06/07) Better error messages (MyProxy) and error message typos fixed
+- (05/06/07) Added sshterm.pkcs12.defaults.file and improved the remembering of the PKCS12 filename between uses of the dialog box
+- (05/06/07) Added the sshterm.browser.profile and sshterm.browser.dn config options
+- (05/06/07) Added the sshterm.krb5myproxy.enabled config option
+- (05/06/07) build.properties now has three options build.site (as before) version.suffix (changes the suffix at the end of the version string) and default.properties.file (which changes the file in sshtools/res/common which is included in the default.properties).  Kerberos support is now enabled in the defualt.properties file and not at compile time.
+- (05/06/07) Added sshterm.auth.order config option.
+- (12/06/07) Sorted connection problem: silent connection failure while displaying "connected".
+- (21/06/07) New Connection Properties GSI Defaults tab bringing out the above options
+- (21/06/07) Fixed Connection Properties Terminal tab
+- (21/06/07) sshterm.xForwarding can now be set in default.properties and GSI-SSHTerm.settings
+- (27/06/07) Added legacy proxy type to support voms-proxy-init.
+- (27/06/07) Added sshterm.proxyLength, sshterm.proxyType and sshterm.delegationType to the configuration files
+- (03/07/07) Changed the re-keying methods slightly to prevent errors on re-keying
+- (03/07/07) Changed whereabouts of onDisconnect handler so that it catches errors on connection.
+- (05/07/07) Fixed a memory leak in TerminalEmulation (writing to "in" buffer when no one ever reads it).
+- (11/07/07) Added Terry Fleury's version check code for applets.
+- (12/07/07) Improvements to MyProxy error messages.
+- (12/07/07) Changed order of changelog and displayed in application.
+
+0.85 (01/05/07)
+- (30/05/07) Better error messages for PKCS 12 errors.
+- (31/05/07) Better error messages on unexpected closure of connection.
+- (31/05/07) SFTP windows now closed on Socket/IO execption.
+- (31/05/07) SFTP: Fixed upload directory errors.
+- (01/06/07) Terminal emulation now ignores char 90 (DCS) as a special character... there seems to a bit of an error in some version of man that was causing the terminal to lock (Suse 9.3)
+
+0.84 (25/04/07)
+- (18/04/07) Fixed more spurious errors in SFTP
+- (18/04/07) Display dialog to user when remote side disconnects
+- (18/04/07) Fixed some problems with key re-exchange.
+- (18/04/07) If there is one browser profile found, or one certificate within that browser profile then these are chosen automatically.
+- (23/04/07) Fixed several problems with key re-exchange when using SFTP by processing events (i.e. Mouse-clicks) on a seperate Thread to the AWT-Event threads, this stops deadlocks with the Transport protocol threads when dialog boxes are displayed by this thread.
+- (25/04/07) Changed default logging to INFO (to console for applet) now res/log4j.properties read for applet/webstart, res/sshterm.properties for application
+
+0.83 (16/04/07)
+- (11/04/07) More improvements to link handling in SFTP
+- (11/04/07) Bug fixes in SFTP (directory copies no longer use cd)
+- (11/04/07) Bug fixes in SFTP (File progress dialog works as expected with lots of files)
+- (11/04/07) Improvements in error reporting
+- (11/04/07) Font improvements in Windows.
+- (13/04/07) Bug fixes in SFTP (remove more dependance on local and remote cwd)
+- (13/04/07) Bug fixes in SFTP (No longer freezes when nothing to do)
+- (13/04/07) Improvements in file transfer dialog box.
+	
+0.82 (05/04/07)
+- (12/03/07) Stopped the default.properties being written to the user's properties file
+- (12/03/07) Now remembers MyProxy username between sessions
+- (12/03/07) Hostname in title bar
+- (13/03/07) Changed proxy info type "[not a proxy]" to "end entity certificate"
+- (13/03/07) Correctly linked to the main window lots of dialog boxes
+- (04/04/07) Correctly report expired certificates 
+- (04/04/07) Links appear correcly as directories in GSI-SFTP
+- (04/04/07) Some shortcut keys sorted.  Now new terminal is Alt-G, tunneling is Alt-Z, VNC is Alt-A and SFTP is Alt-B.
+- (04/04/07) Alt+key no longer causes accented characters (just short cuts)
+- (05/04/07) Any highlighting of text causes a copy
+- (05/04/07) Any change to the terminal display causes un-highlighting of the text (except if dragging)
+
+0.81 (15/02/07)
+- (15/02/07) Unsigned the puretls-sign.jar
+
+0.80 (08/02/07)
+- (18/01/07) Better error reporting with MyProxy errors
+- (18/01/07) Updated version of bouncy castle libraries
+- (18/01/07) Added default.properties file for easily setting defaults for a deployment
+- (18/01/07) Added support for configuring saving of proxies
+- (25/01/07) Bug-fix from Terry Fleury for scroll bars in Mac OS X
+- (25/01/07) Updated libbrowser supports more Firefox installations
+- (30/01/07) Added support to view Grid proxy info and destroy Grid proxies on disk
+- (30/01/07) Improved the security of code to save grid proxies
+- (30/01/07) Exposed options for saving proxies in connections dialog
+- (02/02/07) Bug-fix for disappearing text in Mac OS X from Terry Fleury
+- (05/02/07) Now casts the final "null" of a varargs call to the appropriate (Ojbect) or (Class) type (patch from Terry Fleury).
+- (05/02/07) Better deletion of temporary files.
+- (05/02/07) Saving of user settings in Applet.
+- (05/02/07) Check if user wants to delete proxies that have been written to disk
+- (05/02/07) Patch from Terry Fleury to enable proxies embeded in web page to be read by the applet
+- (07/02/07) More information in About box, including patch from Terry Fleury to put date.
+
+0.79 (16/01/07)
+- (16/01/07) Update copy of cryptix libraries used to avoid bug in DN parsing
+
+0.78 (21/12/06)
+- (01/12/06) Seperated out browser support to the libbrowser library.  This now does not display expired certificates.
+- (18/12/06) Upgraded CoG libraries to version 1.4
+- (18/12/06) The type of Grid certificate proxy can now be chosen, legacy proxies are no longer created
+- (18/12/06) The lifetime of the proxy created can now be chosen
+- (19/12/06) Fixed bug which stopped connection if DISPLAY was incorrectly set (esp. affecting Mac OS X)
+
+0.77 (12/10/06)
+- (11/10/06) Changed build script to not require (undocumented) $JAVA_HOME/bin to be in $PATH.
+- (11/10/06) Changed to automatically install at run-time all certificates found in res/certificates at build-time.
+- (11/10/06) Support for compiling/building under Windows.
+- (11/10/06) doc/README file added to explain compiling and compile-time options.
+- (11/10/06) Fixed error with bin/sshterm.bat
+- (11/10/06) New configuration options read from ~/.sshterm/GSI-SSHTerm.properties (but not written) to set Kerberos Realm and KDC; (Kerberos and normal) MyProxy server hostname and port; and port for use in "Simple Connection Dialog Box".
+- (11/10/06) More sensible arrangement of some default settings
+
+0.76 (01/09/06)
+- (01/09/06) Some more descriptive error messages.
+- (01/09/06) Fixed a bug concerning the default myproxy server.
+
+0.75 (09/08/06)
+- (09/08/06) Now automatically installs the new UK e-Science CA certificates as well as old ones.
+
+0.74 (06/07/06)
+- (13/06/06) Better loading of shared libraries for Mozilla in Windows
+- (06/07/06) Merged in Kerberos-MyProxy code to main tree
+- (06/07/06) Fixed tab key in SshVNC
+
+0.73 (08/06/06)
+- (08/06/06) More descriptive error messages when server drops connection, especially during authentication
+
+0.72 (24/05/06)
+- (23/05/06) Fixed small bug with the browser certificate code to better support Windows 2000
+
+0.71 (05/05/06)
+- (04/05/06) Fixed channel opening code to prevent the opening of VNC sessions crashing java+browser.
+
+0.70 (21/4/06)
+-Useful error message when authentication fails due to clock skew
+-Access to certificates from Firefox (Linux & Windows), Mozilla (Linux & Windows) and Internet Explorer (Windows)
+-Fixed key re-exchange bug (dies after transfering just under 1Gb)
+
+0.62
+-Check for i386 before loading shared library
+-Change of font in windows
+	
+0.61    
+-Improvements to GUI especially error handling in MyProxyPrompt.java
+-Fixed X Tunneling bug and improvements to GridInitPrompt.java
+-More GUI improvements and bug fix for java 1.6 in windows
+-Now deletes temporary files (updates jlirc) 
+
+0.6 
+-Added X Tunneling and Proxy delegation settings along with bug fixes
+
+0.5 
+-Added other SSHTools programs (SSHVnc, SecureTunneling, ShiFT)
+
+0.3 
+-Now works with pkcs12 certificates
+
+0.2 
+-Upgraded Cog-Kit to 1.2.  SSHTools now compilable with JDK1.5
+
+0.1 
+-Integrated SSHTerm version 0.2.2 with Jean-Claude's GSI authentication module
