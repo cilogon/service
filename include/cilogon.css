@@ -43,13 +43,14 @@ div.pagecontent {
   margin-right: 2px;
   min-width: 600px
 }
-
 div.boxed {
   border: 1px solid #888;
   min-width: 350px;
   padding: 2px;
 }
-
+div.boxed div.javaapplet {
+  text-align: center;
+}
 div.boxheader {
   border: 1px solid #696;
   text-align: center;
@@ -58,22 +59,18 @@ div.boxheader {
   padding-top: 2px;
   padding-bottom: 2px;
 }
-
 div.nojs {
   border: 1px solid #933;
   text-align: center;
   background-color: #fcc;
   margin: 1em 5em 1em 5em;
 }
-
 br.clear {
   clear: both;
 }
-
 .helpcursor {
   cursor: help;
 }
-
 p.equation {
   text-align: center;
   font-weight: bold;
@@ -82,6 +79,21 @@ p.equation {
 p.equation span {
   border: 1px dotted #aca;
   padding: 5px;
+}
+input.submit {
+  font-weight: bold;
+  font-size: 110%;
+  color: #030;
+  background-color: #aba;
+}
+p.javaapplet {
+  text-align: center;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+applet.gsisshterm {
+  border-style: solid;
+  border-width: 1px;
 }
 /***** End a few misc divs *****/
 
@@ -191,37 +203,6 @@ div.footer a:visited {
 }
 /***** End page footer *****/
 
-/***** Begin simple tooltip *****/
-a.tip {
-  position: relative; 
-  z-index: 24; 
-  text-decoration: none;
-  outline: none;
-  cursor: help;
-}
-a.tip:hover {
-  z-index: 25; 
-  background-color: #ff0;
-}
-a.tip span {
-  display: none;
-}
-a.tip:hover span { 
-  display: block;
-  position: absolute;
-  top: 2em; 
-  left: 0em; 
-  width: 15em;
-  border: 1px solid #696;
-  background-color: #cfc;
-  color: #030;
-  text-align: center;
-  border-radius: 8px;
-  -moz-border-radius: 8px;    /* This works only in Camino/Firefox */
-  -webkit-border-radius: 8px; /* This is just for Safari */
-}
-/***** End simple tooltip *****/
-
 /***** Begin WAYF list of whitelisted entityIDs *****/
 div.wayf {
   border: 1px solid #888;
@@ -244,12 +225,6 @@ div.wayf fieldset p {
   margin-top: 1em;
   text-align: center;
 }
-div.wayf fieldset input.submit {
-  font-weight: bold;
-  font-size: 110%;
-  color: #030;
-  background-color: #aba;
-}
 /***** End WAYF *****/
 
 /***** Begin Welcome page text *****/
@@ -269,6 +244,10 @@ div.welcome h2 {
 div.welcome p {
   margin-left: 1em;
   margin-right: 1em;
+}
+div.welcome p.note {
+  text-align: center;
+  font-size: small;
 }
 /***** End Welcome page text *****/
 
@@ -293,13 +272,7 @@ div.contactform fieldset legend {
   margin-top: 0.5em;
   padding: 0;
 }
-div.contactform fieldset input.submit {
-  font-weight: bold;
-  font-size: 110%;
-  color: #030;
-  background-color: #aba;
-}
-div.contactform fieldset.submit span.fixerror {
+div.contactform span.fixerror {
   color: #c00;
   font-weight: bold;
   margin-left: 2em;
@@ -329,12 +302,6 @@ div.summary div.icon {
 div.summary form {
   text-align: center;
   margin-bottom: 0.5em;
-}
-div.summary input.submit {
-  font-weight: bold;
-  font-size: 110%;
-  color: #030;
-  background-color: #aba;
 }
 div.summary a:link {
   color: #030;
@@ -397,19 +364,12 @@ tr.taskbox td.buttons {
   border-top: 1px solid #888;
   border-bottom: 1px solid #888;
 }
-tr.taskbox td.buttons input.submit {
-  font-weight: bold;
-  font-size: 110%;
-  color: #030;
-  background-color: #aba;
-  margin: 1em 0 1em 0;
-}
 tr.taskbox td.buttons input.submitmore {
   font-weight: bold;
   font-size: 110%;
   color: #030;
   background-color: #aba;
-  margin-bottom: 1em;
+  margin-top: 1em;
 }
 tr.taskbox td.description {
   text-align: justify;
@@ -425,3 +385,17 @@ tr.taskbox td.description h2 {
   margin-top: 0;
 }
 /***** End taskbox on the main page *****/
+
+/***** Begin errorbox and associated icon/text *****/
+div.errorbox {
+  margin: 1em;
+  padding: 1em;
+  border: 3px double red;
+}
+div.errorbox table {
+  border-width: 0;
+  border-spacing: 0;
+  border-style: solid;
+  border-collapse: collapse;
+}
+/***** End errorbox and associated icon/text *****/
