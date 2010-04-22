@@ -47,7 +47,8 @@ switch ($submit) {
         }
     break; // End case 'Log On'
 
-    case 'Log Off':
+    case 'Log Off':   // Click the 'Log Off' button
+    case 'Continue' : // Return to Log On page after error condition
         removeShibCookies();
         $_SESSION = array();  // Clear session variables
         printLogonPage();
@@ -96,8 +97,8 @@ switch ($submit) {
  ************************************************************************/
 function printLogonPage()
 {
-    printHeader('Welcome to the CILogon Service');
-    printPageHeader('Welcome to the CILogon Service');
+    printHeader('Welcome To The CILogon Service');
+    printPageHeader('Welcome To The CILogon Service');
 
     echo '
     <div class="welcome">
@@ -192,7 +193,7 @@ function printGetCertificatePage()
     title="National Science Foundation">NSF</acronym> cyberinfrastructre
     resources.  Note that you will need <a target="_blank"
     href="http://www.javatester.org/version.html">Java 1.5 or higher</a>
-    installed on your local computer and enabled in your web browser.
+    installed on your computer and enabled in your web browser.
     </p>
 
     <div class="taskdiv">
@@ -335,11 +336,42 @@ function handleGotUser()
 {
     $uid = getSessionVar('uid');
     $status = getSessionVar('status');
-    # If empty 'uid' or odd-numbered status code, error!
-    if ((strlen($uid) == 0) || ($status &1)) {
-        // FIX ME!!!
+    # If empty 'uid' or 'status' or odd-numbered status code, error!
+    if ((strlen($uid) == 0) || (strlen($status) == 0) || ($status & 1)) {
+        printHeader('Error Logging On');
+        printPageHeader('ERROR Logging On');
+
+        echo '
+        <div class="boxed">
+          <div class="boxheader">
+            Unable To Log On
+          </div>
+        ';
+        printErrorBox('An internal error has occurred.  System
+            administrators have been notified.  This may be a temporary
+            error.  Please try again later, or contact us at the the email
+            address at the bottom of the page.');
+
+        echo '
+        <div>
+        ';
+        printFormHead(getScriptDir());
+        echo '
+        <input type="submit" name="submit" class="submit" value="Continue" />
+        </form>
+        </div>
+        </div>
+        ';
+        printFooter();
     } else { // Got one of the STATUS_OK* status codes
-        printGetCertificatePage();
+        // If the user got a new DN due to changed SAML attributes,
+        // print out a notification page.
+        $store = new store();
+        if ($status = $store->STATUS['STATUS_OK_USER_CHANGED']) {
+            printUserChanged();
+        } else { // STATUS_OK or STATUS_OK_NEW_USER
+            printGetCertificatePage();
+        }
     }
 }
 
@@ -362,7 +394,7 @@ function handleGSISSHTermWebApplet()
         echo '
         <div class="boxed">
           <div class="boxheader">
-            Run the GSI-SSHTerm Web-Based Applet
+            Run The GSI-SSHTerm Web-Based Applet
           </div>
         <div class="javaapplet">
         <applet width="0" height="0" 
@@ -408,11 +440,9 @@ function handleGSISSHTermWebApplet()
             Unable To Fetch A Certificate For GSI-SSHTerm Applet
           </div>
         ';
-        printErrorBox('There was an error trying to fetch a certificate for
-            you.  Without the certificate, the GSI-SSHTerm web applet is
-            unable to launch.  This may be a temporary error.  You can use
-            the email address at the bottom of the page to inform the system
-            administrators of this problem.');
+        printErrorBox('An internal error occurred and has been logged.  
+            This may be a temporary error.  Please try again later, or
+            contact us at the the email address at the bottom of the page.');
 
         echo '
         <div>
@@ -426,6 +456,20 @@ function handleGSISSHTermWebApplet()
         ';
         printFooter();
     }
+}
+
+/************************************************************************
+ * Function   : printUserChanged                                        *
+ * This function prints out a notification page informing the user that *
+ * some of their attributes have changed, which will affect the         *
+ * contents of future issued certificates.  This page shows which       *
+ * attributes are different (displaying both old and new values) and    *
+ * what portions of the certificate are affected.                       *
+ ************************************************************************/
+function printUserChanged()
+{
+    // FIXME!!!
+    printGetCertificatePage();
 }
 
 /************************************************************************
