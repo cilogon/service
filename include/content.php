@@ -82,7 +82,7 @@ function printFooter($footer='')
     Foundation</a> under grant number <a target="_blank"
     href="http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0943633">0943633</a>.</p>
     <p>This site uses software from the <a target="_blank"
-    href="http://myproxy.teragrid.org/">MyProxy</a> and <a target="_blank"
+    href="http://myproxy.ncsa.uiuc.edu/">MyProxy</a> and <a target="_blank"
     href="http://gridshib.globus.org/">GridShib</a> projects.</p>
     <p>Please send any questions or comments about this
     site to <a
