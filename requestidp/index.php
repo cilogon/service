@@ -217,19 +217,19 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
  *              (5) The input Comments field.                           *
  * This function is called when when the user clicks the "Submit"       *
  * button with valid entries in the various form fields.  It composes   *
- * an email to "info@cilogon.org" and then prints out a "Thank You"     *
+ * an email to "help@cilogon.org" and then prints out a "Thank You"     *
  * page to the user.                                                    *
  ************************************************************************/
 function printRequestSubmitted($yourName,$emailAddr,
                                $selectIdP,$otherIdP,$comments)
 {
-    $mailto   = 'tfleury@illinois.edu';
-    $mailfrom = 'From: info@cilogon.org' . "\r\n" .
+    $mailto   = 'help@cilogon.org';
+    $mailfrom = 'From: help@cilogon.org' . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
     $mailsubj = 'CILogon Service - Request New IdP';
     $mailmsg  = "
-CILogon Service - New Identity Provider Request!
----------------
+CILogon Service - New Identity Provider Request
+-----------------------------------------------
 Name          = $yourName
 Email Address = $emailAddr
 Selected IdP  = $selectIdP
