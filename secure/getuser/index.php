@@ -10,6 +10,7 @@ startPHPSession();
 /* Check the csrf cookie against either a hidden <form> element or a *
  * PHP session variable, and get the value of the "submit" element.  */
 $submit = csrf::verifyCookieAndGetSubmit();
+unsetSessionVar('submit');
 
 /* Get the URL to reply to after database query. */
 $responseurl = getSessionVar('responseurl');
@@ -72,7 +73,20 @@ function getUserAndRespond($responseurl) {
         $_SESSION['status'] = $store->getUserSub('status');
     } else {
         $_SESSION['uid']    = '';
-        $_SESSION['status'] = $store->STATUS_ERROR_MISSING_PARAMETER;
+        $_SESSION['status'] = $store->STATUS['STATUS_ERROR_MISSING_PARAMETER'];
+    }
+
+    // If 'status' is not STATUS_OK_*, then send an error email
+    if (($_SESSION['status']) & 1) { // Bad status codes are odd-numbered
+        sendErrorEmail($shibarray['User Identifier'],
+                       $shibarray['Identity Provider'],
+                       $shibarray['Organization Name'],
+                       $firstname, 
+                       $lastname,
+                       $shibarray['Email Address'],
+                       $_SESSION['uid'],
+                       array_search($_SESSION['status'],$store->STATUS)
+                      );
     }
 
     // Set additional session variables needed by the calling script
@@ -87,6 +101,51 @@ function getUserAndRespond($responseurl) {
 
     /* Finally, redirect to the calling script. */
     header('Location: ' . $responseurl);
+}
+
+/************************************************************************
+ * Function   : sendErrorEmail                                          *
+ * Parameters : (1) The REMOTE_USER                                     *
+ *              (2) EntityId of the Identity Provider                   *
+ *              (3) IdP Display Name                                    *
+ *              (4) User's first name                                   *
+ *              (5) User's last name                                    *
+ *              (6) User's email address                                *
+ *              (7) Persistent store user identifier                    *
+ *              (8) String value of the status of getUser() call        *
+ * This function sends an email to help@cilogon.org when there is a     *
+ * problem getting the user.  This can happen when there are missing    *
+ * SAML attributes in the Shibboleth session, or when the persistent    *
+ * store getUser() call returns a bad status code.                      *
+ ************************************************************************/
+function sendErrorEmail($remote_user,$idp,$idpname,$firstname,$lastname,
+                        $emailaddr,$uid,$statuscode) 
+{
+    $mailto   = 'help@cilogon.org';
+    $mailfrom = 'From: help@cilogon.org' . "\r\n" .
+                'X-Mailer: PHP/' . phpversion();
+    $mailsubj = 'CILogon Service - Failure in getuser script';
+    $mailmsg  = '
+CILogon Service - Failure in /secure/getuser/
+---------------------------------------------
+Remote_User   = ' . 
+    ((strlen($remote_user) > 0) ? $remote_user : '<MISSING>') . '
+IdP           = ' .
+    ((strlen($idp) > 0) ? $idp : '<MISSING>') . '
+Organization  = ' .
+    ((strlen($idpname) > 0) ? $idpname : '<MISSING>') . '
+First Name    = ' .
+    ((strlen($firstname) > 0) ? $firstname : '<MISSING>') . '
+Last Name     = ' .
+    ((strlen($lastname) > 0) ? $lastname : '<MISSING>') . '
+Email Address = ' .
+    ((strlen($emailaddr) > 0) ? $emailaddr : '<MISSING>') . '
+Database UID  = ' .
+    ((strlen($uid) > 0) ? $uid : '<MISSING>') . '
+Status Code   = ' .
+    ((strlen($statuscode) > 0) ? $statuscode : '<MISSING>') . '
+';
+    mail($mailto,$mailsubj,$mailmsg,$mailfrom);
 }
 
 /************************************************************************
