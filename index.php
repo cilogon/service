@@ -41,7 +41,6 @@ switch ($submit) {
             } else {
                 setcookie('keepidp','',time()-3600,'/','',true);
             }
-            // Finally, redirect to the getuser script
             redirectToGetuser($providerIdPost);
         } else { // Either providerId not set or not in whitelist
             printLogonPage();
@@ -58,18 +57,16 @@ switch ($submit) {
         handleGotUser();
     break; // End case 'gotuser'
 
-    case 'main':    // Display main 'fetch certificate' page
-    case 'Go Back':
-        printGetCertificatePage();
+    case 'main':    // Display main  'Download Certificate' page
+    case 'Go Back': // Return to the 'Download Certificate' page
+        // Verify the PHP session contains valid info
+        if (verifyCurrentSession()) {
+            printGetCertificatePage();
+        } else { // Otherwise, redirect to the 'Welcome' page
+            $_SESSION = array();  // Clear session variables
+            printLogonPage();
+        }
     break; // End case 'main'
-
-    /*
-    case 'GSI-SSHTerm Desktop App':
-        $log->info('Launching GSI-SSHTerm Desktop App');
-        $_SESSION['submit'] = 'main';
-        header('Location: http://cilogon.org/gsi-sshterm/ncsa.jnlp');
-    break; // End case 'GSI-SSHTerm Desktop App'
-    */
 
     case 'GSI-SSHTerm Web Applet':
         handleGSISSHTermWebApplet();
@@ -183,13 +180,15 @@ function printGetCertificatePage()
     echo '
     <div class="boxed">
       <div class="boxheader">
-        Fetch And Utilize A CILogon Certificate
+        Get And Use Your CILogon Certificate
       </div>
     <p>
     You are logged on to the CILogon Service.  You can now download a
-    certificate to your local computer\'s desktop.  You can utilize this
-    certificate by launching the GSI-SSHTerm desktop application, which will
-    allow you to connect to the command line of <acronym 
+    certificate to your local computer and then use it to securely access
+    <acronym title="National Science Foundation">NSF</acronym>
+    cyberinfrastructre resources.  For example, you can use your
+    certificate with GSI-SSHTerm to connect to the command
+    line of <acronym 
     title="National Science Foundation">NSF</acronym> cyberinfrastructre
     resources.  Note that you will need <a target="_blank"
     href="http://www.javatester.org/version.html">Java 1.5 or higher</a>
@@ -217,7 +216,7 @@ function printGetCertificatePage()
       on your computer called <a target="_blank"
       href="http://gridshibca.cilogon.org/">GridShib-CA</a>. This
       application fetches a certificate from a <a target="_blank"
-      href="http://myproxy.teragrid.org/">MyProxy</a> server.  The
+      href="http://myproxy.ncsa.uiuc.edu/">MyProxy</a> server.  The
       GridShib-CA <acronym title="Java Web Start">JWS</acronym> application
       then downloads the certificate to your computer and saves it in a
       location known by other grid-enabled desktop applications such as 
@@ -246,11 +245,13 @@ function printGetCertificatePage()
       </td>
       <td class="description">
       <h2>2. Launch the GSI-SSHTerm Program</h2>
-      GSI-SSHTerm is an SSH-based terminal application which can utilize the
-      certificates served by the CILogon Service.  GSI-SSHTerm can be run as
-      a desktop application or as a browser-based web applet.  For the
-      "Desktop App" version, be sure to first download a certificate to your
-      desktop (above).
+      GSI-SSHTerm is an example application which can use the certificates
+      provided by the CILogon Service.  
+      GSI-SSHTerm allows you to establish a remote terminal session 
+      with a GSI-enabled SSH server.
+      You can run GSI-SSHTerm on your desktop or in your web browser.
+      For the "Desktop App" version, be sure to first download
+      a certificate to your desktop (above).
       </td>
     </tr>
 
@@ -261,39 +262,20 @@ function printGetCertificatePage()
     printFormHead($scriptdir);
 
     echo '
-      <input type="submit" name="submit" class="submit"
-       value="Log Off" />
+      <input type="submit" name="submit" class="submit" value="Log Off" />
       </form>
       </td>
       <td class="description">
         <h2>3. Log Off The CILogon Service Site</h2>
-        To end your session and return to the welcome page, click the 
-        "Log Off" button.  
+        To end your CILogon session and return to the welcome page, click
+        the "Log Off" button.  Note that this will not log you out of your
+        organization\'s authentication service.
       </td>
     </tr>
     </table>
     </div>
-    ';
-
-    /*
-    echo '
-    <p>
-    <br/><hr/><br/><b>$_SESSION</b><table>
-    ';
-
-    foreach ($_SESSION as $key => $value) {
-        echo '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
-    }
-
-    echo '</table>
-    </p>
-    ';
-    */
-
-    echo '
     </div>
     ';
-
     printFooter();
 }
 
@@ -343,83 +325,11 @@ function printFormHead($action,$gsca=false) {
 }
 
 /************************************************************************
- * Function   : printGSISSHTermWebApplet                                *
- * This function
- ************************************************************************/
-function printGSISSHTermWebApplet($cert) 
-{
-    printHeader('GSI-SSHTerm Web Applet');
-    printPageHeader('Welcome ' . getSessionVar('idpname') . ' User');
-
-    echo '
-    <div class="boxed">
-      <div class="boxheader">
-        Run the GSI-SSHTerm Web-Based Applet
-      </div>
-    <div class="javaapplet">
-    <applet width="0" height="0" 
-    archive="versioncheck.jar"
-    code="JavaVersionDisplayApplet" 
-    codebase="http://cilogon.org/gsi-sshterm"
-    name="jvmversion">
-    <b>Please note, you will require at least
-    <a target="_blank" href="http://java.sun.com/">Java Software
-    Development Kit (SDK) 1.5</a> to launch the applet!</b>
-    </applet>
-    </div>
-
-    <p class="javaapplet">
-    <applet width="640" height="480" 
-    archive="GSI-SSHTerm-cilogon.jar"
-    code="com.sshtools.sshterm.SshTermApplet" 
-    codebase="http://cilogon.org/gsi-sshterm"
-    class="gsisshterm">
-    <param name="sshterm.gsscredential" value="'.$cert.'"/>
-    <param name="sshapps.connection.userName" value="">
-    <param name="sshapps.connection.showConnectionDialog" value="true">
-    <param name="sshapps.connection.connectImmediately" value="true">
-    </applet>
-    </p>
-    <div>
-    ';
-    printFormHead(getScriptDir());
-    echo '
-    <input type="submit" name="submit" class="submit" 
-     value="Go Back" />
-    </form>
-    </div>
-    </div>
-    ';
-
-    printFooter();
-}
-
-/************************************************************************
- * Function   : printErrorBox                                           *
- * This function
- ************************************************************************/
-function printErrorBox($errortext) 
-{
-    echo '
-    <div class="errorbox">
-    <table cellpadding="5">
-    <tr>
-    <td>
-    ';
-    printIcon('error','Unable to fetch certificate');
-    echo '&nbsp;
-    </td>
-    <td>' . $errortext . '
-    </tc>
-    </tr>
-    </table>
-    </div>
-    ';
-}
-
-/************************************************************************
  * Function   : handleGotUser                                           *
- * This function
+ * This function is called upon return from the "secure/getuser" script *
+ * which should have set the 'uid' and 'status' PHP session variables.  *
+ * It verifies that the status return is one of STATUS_OK_* (even       *
+ * values).  If the return is STATUS_OK_
  ************************************************************************/
 function handleGotUser()
 {
@@ -427,23 +337,68 @@ function handleGotUser()
     $status = getSessionVar('status');
     # If empty 'uid' or odd-numbered status code, error!
     if ((strlen($uid) == 0) || ($status &1)) {
+        // FIX ME!!!
     } else { // Got one of the STATUS_OK* status codes
         printGetCertificatePage();
     }
-
 }
 
 /************************************************************************
  * Function   : handleGSISSHTermWebApplet                               *
- * This function
+ * This function is called when the user clicks on the 'GSI-SSHTerm     *
+ * Web Applet' button.  It tries to fetch a credential for the user     *
+ * from the MyProxyCA server.  If it cannot do so, it prints out an     *
+ * error message.  Otherwise, it loads a page with the GSI-SSHTerm      *
+ * applet.                                                              *
  ************************************************************************/
 function handleGSISSHTermWebApplet()
 {
     $uid = getSessionVar('uid');
     $cert = getMyProxyForUID($uid);
     if (strlen($cert) > 0) {
-        printGSISSHTermWebApplet($cert);
-    } else {
+        printHeader('GSI-SSHTerm Web Applet');
+        printPageHeader('Welcome ' . getSessionVar('idpname') . ' User');
+
+        echo '
+        <div class="boxed">
+          <div class="boxheader">
+            Run the GSI-SSHTerm Web-Based Applet
+          </div>
+        <div class="javaapplet">
+        <applet width="0" height="0" 
+        archive="versioncheck.jar"
+        code="JavaVersionDisplayApplet" 
+        codebase="http://cilogon.org/gsi-sshterm"
+        name="jvmversion">
+        <b>Please note, you will require at least
+        <a target="_blank" href="http://java.sun.com/">Java Software
+        Development Kit (SDK) 1.5</a> to launch the applet!</b>
+        </applet>
+        </div>
+
+        <p class="javaapplet">
+        <applet width="640" height="480" 
+        archive="GSI-SSHTerm-cilogon.jar"
+        code="com.sshtools.sshterm.SshTermApplet" 
+        codebase="http://cilogon.org/gsi-sshterm"
+        class="gsisshterm">
+        <param name="sshterm.gsscredential" value="'.$cert.'"/>
+        <param name="sshapps.connection.userName" value="">
+        <param name="sshapps.connection.showConnectionDialog" value="true">
+        <param name="sshapps.connection.connectImmediately" value="true">
+        </applet>
+        </p>
+        <div>
+        ';
+        printFormHead(getScriptDir());
+        echo '
+        <input type="submit" name="submit" class="submit" value="Go Back" />
+        </form>
+        </div>
+        </div>
+        ';
+        printFooter();
+    } else { // Could not get a certificate - output error message
         printHeader('Error Running GSI-SSHTerm Web Applet');
         printPageHeader('ERROR Running The GSI-SSHTerm Web Applet');
 
@@ -453,7 +408,6 @@ function handleGSISSHTermWebApplet()
             Unable To Fetch A Certificate For GSI-SSHTerm Applet
           </div>
         ';
-        
         printErrorBox('There was an error trying to fetch a certificate for
             you.  Without the certificate, the GSI-SSHTerm web applet is
             unable to launch.  This may be a temporary error.  You can use
@@ -465,20 +419,48 @@ function handleGSISSHTermWebApplet()
         ';
         printFormHead(getScriptDir());
         echo '
-        <input type="submit" name="submit" class="submit" 
-         value="Go Back" />
+        <input type="submit" name="submit" class="submit" value="Go Back" />
         </form>
         </div>
         </div>
         ';
-
         printFooter();
     }
 }
 
 /************************************************************************
+ * Function   : printErrorBox                                           *
+ * Parameter  : HTML error text to be output.                           *
+ * This function prints out a bordered box with an error icon and any   *
+ * passed-in error HTML text.  The error icon and text are output to    *
+ * a <table> so as to keep the icon to the left of the error text.      *
+ ************************************************************************/
+function printErrorBox($errortext) 
+{
+    echo '
+    <div class="errorbox">
+    <table cellpadding="5">
+    <tr>
+    <td>
+    ';
+    printIcon('error');
+    echo '&nbsp;
+    </td>
+    <td> ' . $errortext . '
+    </td>
+    </tr>
+    </table>
+    </div>
+    ';
+}
+
+/************************************************************************
  * Function   : getMyProxyForUID                                        *
- * This function
+ * Parameter  : A persistent store user identifier.                     *
+ * Returns    : A MyProxy credential, or empty string upon error.       *
+ * This function returns a MyProxy credential for a given persistent    *
+ * store user identifier.  If there is any error in getting the         *
+ * credential, an empty string is returned.                             *
  ************************************************************************/
 function getMyProxyForUID($uid)
 {
@@ -499,25 +481,63 @@ function getMyProxyForUID($uid)
 
 /************************************************************************
  * Function   : getMyProxyForDN                                         *
- * This function
+ * Parameter  : A "DN" string to be passed to myproxy.cilogon.org.      *
+ * Returns    : A MyProxy credential, or empty string upon error.       *
+ * This function returns a MyProxy credential for a given DN string.    *
+ * This "DN" is passed to myproxy.cilogon.org as the '-l' (--username)  *
+ * parameter.  It is not a true DN in that it also contains an email=   *
+ * field to be put into the credential extension.  This function reads  *
+ * the PHP session value of 'loa' (level of assurance) to determine     *
+ * whether a 'basic' or 'silver' credential should be issued.           *
  ************************************************************************/
 function getMyProxyForDN($dn) {
     $retval = '';
 
-
-    // Check if we should issue 'basic' or 'silver' cert
-    $silver = false;
-    $loa = getSessionVar('loa');
-    if ($loa == 'http://incommonfederation.org/assurance/silver') {
-        $silver = true;
-    }
-
     if (strlen($dn) > 0) {
+        // Check if we should issue 'basic' or 'silver' cert
+        $silver = false;
+        $loa = getSessionVar('loa');
+        if ($loa == 'http://incommonfederation.org/assurance/silver') {
+            $silver = true;
+        }
+
         $cert = getMyProxyCredential($dn,'','myproxy.cilogon.org',
-                ($silver ? 7514 : 7512),12,'/var/www/config/hostcred.pem','',
-                true);
+                ($silver ? 7514 : 7512),12,'/var/www/config/hostcred.pem','');
         if (strlen($cert) > 0) {
             $retval = $cert;
+        }
+    }
+
+    return $retval;
+}
+
+/************************************************************************
+ * Function   : verifyCurrentSession                                    *
+ * Parameter  : (Optional) The user-selected Identity Provider          *
+ * Returns    : True if the contents of the PHP session ar valid,       *
+ *              False otherwise.                                        *
+ * This function verifies the contents of the PHP session.  It checks   *
+ * the following:                                                       *
+ * (1) The persistent store 'uid', the Identity Provider 'idp', the     *
+ *     IdP Display Name 'idpname', and the 'status' (of getUser()) are  *
+ *     all non-empty strings.                                           *
+ * (2) The 'status' (of getUser()) is even (i.e. STATUS_OK_*).          *
+ * (3) If $providerId is passed-in, it must match 'idp'.                *
+ * If all checks are good, then this function returns true.             *
+ ************************************************************************/
+function verifyCurrentSession($providerId='') 
+{
+    $retval = false;
+
+    $uid = getSessionVar('uid');
+    $idp = getSessionVar('idp');
+    $idpname = getSessionVar('idpname');
+    $status = getSessionVar('status');
+    if ((strlen($uid) > 0) && (strlen($idp) > 0) && 
+        (strlen($idpname) > 0) && (strlen($status) > 0) &&
+        (!($status & 1))) {  // All STATUS_OK_* codes are even
+        if ((strlen($providerId) == 0) || ($providerId == $idp)) {
+            $retval = true;
         }
     }
 
@@ -534,26 +554,26 @@ function getMyProxyForDN($dn) {
  *                  variable to be set upon return from the 'getuser'   *
  *                  script.  This is utilized to control the flow of    *
  *                  this script after "getuser". Defaults to 'gotuser'. *
- * This function redirects to the "/secure/getuser/" script so as to    *
- * do a Shibboleth authentication via the InCommon WAYF.  If the        *
- * first parameter (a whitelisted entityID) is not specified, we check  *
- * to see if either the providerId PHP session variable or the          *
+
+ * If the first parameter (a whitelisted entityID) is not specified,    *
+ * we check to see if either the providerId PHP session variable or the *
  * providerId cookie is set (in that order) and use one if available.   *
- * When the providerId is set, the WAYF will automatically go to that   *
- * IdP (i.e. without stopping at the WAYF).  This function also sets    *
- * several PHP session variables that are needed by the getuser script, *
- * including the 'responsesubmit' variable which is set as the 'submit' *
- * variable in the 'getuser' script.                                    *
+ * The function then checks to see if there is a valid PHP session      *
+ * and if the providerId matches the 'idp' in the session.  If so, then *
+ * we don't need to redirect to "/secure/getuser/" and instead we       *
+ * we display the main "Download Certificate" page.  However, if the    *
+ * PHP session is not valid, then this function redirects to the        *
+ * "/secure/getuser/" script so as to do a Shibboleth authentication    *
+ * via the InCommon WAYF.  When the providerId is non-empty, the WAYF   *
+ * will automatically go to that IdP (i.e. without stopping at the      *
+ * WAYF).  This function also sets several PHP session variables that   *
+ * are needed by the getuser script, including the 'responsesubmit'     *
+ * variable which is set as the return 'submit' variable in the         *
+ * 'getuser' script.                                                    *
  ************************************************************************/
 function redirectToGetuser($providerId='',$responsesubmit='gotuser')
 {
     global $csrf;
-    // Set PHP session varilables needed by the getuser script
-    $_SESSION['responseurl'] = getScriptDir(true);
-    $_SESSION['submit'] = 'getuser';
-    $_SESSION['responsesubmit'] = $responsesubmit;
-    $csrf->setTheCookie();
-    $csrf->setTheSession();
 
     // If providerId not set, try the session and cookie values
     if (strlen($providerId) == 0) {
@@ -563,13 +583,28 @@ function redirectToGetuser($providerId='',$responsesubmit='gotuser')
         }
     }
 
-    // Set up the "header" string for redirection thru InCommon WAYF
-    $redirect = 'Location: https://cilogon.org/Shibboleth.sso/WAYF/InCommon?' .
-        'target=' . urlencode(GETUSER_URL);
-    if (strlen($providerId) > 0) {
-        $redirect .= '&providerId=' . urlencode($providerId);
+    // If the user has a valid 'uid' in the PHP session, and the
+    // providerId matches the 'idp' in the PHP session, then 
+    // simply go to the 'Download Certificate' button page.
+    if (verifyCurrentSession($providerId)) {
+        printGetCertificatePage();
+    } else { // Otherwise, redirect to the getuser script
+        // Set PHP session varilables needed by the getuser script
+        $_SESSION['responseurl'] = getScriptDir(true);
+        $_SESSION['submit'] = 'getuser';
+        $_SESSION['responsesubmit'] = $responsesubmit;
+        $csrf->setTheCookie();
+        $csrf->setTheSession();
+
+        // Set up the "header" string for redirection thru InCommon WAYF
+        $redirect = 
+            'Location: https://cilogon.org/Shibboleth.sso/WAYF/InCommon?' .
+            'target=' . urlencode(GETUSER_URL);
+        if (strlen($providerId) > 0) {
+            $redirect .= '&providerId=' . urlencode($providerId);
+        }
+        header($redirect);
     }
-    header($redirect);
 }
 
 ?>
