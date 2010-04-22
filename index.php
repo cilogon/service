@@ -187,10 +187,10 @@ function printGetCertificatePage()
     You are logged on to the CILogon Service.  You can now download a
     certificate to your local computer and then use it to securely access
     <acronym title="National Science Foundation">NSF</acronym>
-    cyberinfrastructre resources.  For example, you can use your
+    cyberinfrastructure resources.  For example, you can use your
     certificate with GSI-SSHTerm to connect to the command
     line of <acronym 
-    title="National Science Foundation">NSF</acronym> cyberinfrastructre
+    title="National Science Foundation">NSF</acronym> cyberinfrastructure
     resources.  Note that you will need <a target="_blank"
     href="http://www.javatester.org/version.html">Java 1.5 or higher</a>
     installed on your computer and enabled in your web browser.
