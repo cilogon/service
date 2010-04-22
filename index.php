@@ -382,10 +382,10 @@ function handleGSISSHTermWebApplet()
         code="com.sshtools.sshterm.SshTermApplet" 
         codebase="http://cilogon.org/gsi-sshterm"
         class="gsisshterm">
-        <param name="sshterm.gsscredential" value="'.$cert.'"/>
-        <param name="sshapps.connection.userName" value="">
-        <param name="sshapps.connection.showConnectionDialog" value="true">
-        <param name="sshapps.connection.connectImmediately" value="true">
+        <param name="sshterm.gsscredential" value="'.$cert.'" />
+        <param name="sshapps.connection.userName" value="" />
+        <param name="sshapps.connection.showConnectionDialog" value="true" />
+        <param name="sshapps.connection.connectImmediately" value="true" />
         </applet>
         </p>
         <div>
