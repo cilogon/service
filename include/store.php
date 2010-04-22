@@ -33,20 +33,16 @@ class store {
     // The Perl object instance.
     public $perlobj;
 
-    // The various STATUS constants from Store.pm
-    public $STATUS_OK;
-    public $STATUS_OK_NEW_USER;
-    public $STATUS_OK_USER_CHANGED;
-    public $STATUS_ERROR_DUPLICATE_SERIAL;
-    public $STATUS_ERROR_DATABASE_FAILURE;
-    public $STATUS_ERROR_NOT_FOUND;
-    public $STATUS_ERROR_MALFORMED_INPUT;
-    public $STATUS_ERROR_MISSING_PARAMETER;
-    public $STATUS_ERROR_MALFORMED_URI;
-    public $STATUS_ERROR_NO_IDENTITY_PROVIDER;
-
     // A User object returned by CILogon::Store->getUser()
     public $userobj = null;
+
+    /* The various STATUS_* constants from Store.pm.  The keys of the   *
+     * array are strings corresponding to the contant names.  The       *
+     * values of the array are the integer values.  For example,        *
+     *     $this->STATUS['STATUS_OK'] = 0;                              *
+     * Use "array_search($this->getUserSub('status'),$this->STATUS)" to *
+     * look up the STATUS_* name given the status integer value.        */
+    public $STATUS = array();
 
 
     /********************************************************************
@@ -66,31 +62,31 @@ class store {
 
         // Set the various STATUS variables
         $this->perlobj->eval('$st = CILogon::Store::STATUS_OK;');
-        $this->STATUS_OK = $this->perlobj->st;
+        $this->STATUS['STATUS_OK'] = $this->perlobj->st;
         $this->perlobj->eval('$st = CILogon::Store::STATUS_OK_NEW_USER;');
-        $this->STATUS_OK_NEW_USER = $this->perlobj->st;
+        $this->STATUS['STATUS_OK_NEW_USER'] = $this->perlobj->st;
         $this->perlobj->eval('$st = CILogon::Store::STATUS_OK_USER_CHANGED;');
-        $this->STATUS_OK_USER_CHANGED = $this->perlobj->st;
+        $this->STATUS['STATUS_OK_USER_CHANGED'] = $this->perlobj->st;
         $this->perlobj->eval(
             '$st = CILogon::Store::STATUS_ERROR_DUPLICATE_SERIAL;');
-        $this->STATUS_ERROR_DUPLICATE_SERIAL = $this->perlobj->st;
+        $this->STATUS['STATUS_ERROR_DUPLICATE_SERIAL'] = $this->perlobj->st;
         $this->perlobj->eval(
             '$st = CILogon::Store::STATUS_ERROR_DATABASE_FAILURE;');
-        $this->STATUS_ERROR_DATABASE_FAILURE = $this->perlobj->st;
+        $this->STATUS['STATUS_ERROR_DATABASE_FAILURE'] = $this->perlobj->st;
         $this->perlobj->eval('$st = CILogon::Store::STATUS_ERROR_NOT_FOUND;');
-        $this->STATUS_ERROR_NOT_FOUND = $this->perlobj->st;
+        $this->STATUS['STATUS_ERROR_NOT_FOUND'] = $this->perlobj->st;
         $this->perlobj->eval(
             '$st = CILogon::Store::STATUS_ERROR_MALFORMED_INPUT;');
-        $this->STATUS_ERROR_MALFORMED_INPUT = $this->perlobj->st;
+        $this->STATUS['STATUS_ERROR_MALFORMED_INPUT'] = $this->perlobj->st;
         $this->perlobj->eval(
             '$st = CILogon::Store::STATUS_ERROR_MISSING_PARAMETER;');
-        $this->STATUS_ERROR_MISSING_PARAMETER = $this->perlobj->st;
+        $this->STATUS['STATUS_ERROR_MISSING_PARAMETER'] = $this->perlobj->st;
         $this->perlobj->eval(
             '$st = CILogon::Store::STATUS_ERROR_MALFORMED_URI;');
-        $this->STATUS_ERROR_MALFORMED_URI = $this->perlobj->st;
+        $this->STATUS['STATUS_ERROR_MALFORMED_URI'] = $this->perlobj->st;
         $this->perlobj->eval(
             '$st = CILogon::Store::STATUS_ERROR_NO_IDENTITY_PROVIDER;');
-        $this->STATUS_ERROR_NO_IDENTITY_PROVIDER = $this->perlobj->st;
+        $this->STATUS['STATUS_ERROR_NO_IDENTITY_PROVIDER'] = $this->perlobj->st;
     }
 
     /********************************************************************
