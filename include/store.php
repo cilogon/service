@@ -9,10 +9,10 @@
  *     // get the database uid for that user to be utilized later.      *
  *     $uid = '';                                                       *
  *     $store = new store();                                            *
- *     $store->getUser('jsmith@illinois.edu',                           *
- *                     'urn:mace:incommon:uiuc.edu',                    *
- *                     'University of Illinois at Urbana-Champaign',    *
- *                     'John','Smith','jsmith@illinois.edu');           *
+ *     $store->getUserObj('jsmith@illinois.edu',                        *
+ *                        'urn:mace:incommon:uiuc.edu',                 *
+ *                        'University of Illinois at Urbana-Champaign', *
+ *                        'John','Smith','jsmith@illinois.edu');        *
  *     $status = $store->getUserSub('status');                          *
  *     if (!($status & 1)) { // OK status codes are even                *
  *         $uid = $store->getUserSub('uid');                            *
@@ -21,7 +21,7 @@
  *     // Later in the code, re-fetch the user using this uid           *
  *     // and print out the stored attributes.                          *
  *     if (strlen($uid) > 0) {                                          *
- *         $store->getUser($uid);                                       *
+ *         $store->getUserObj($uid);                                    *
  *         echo "Name = " . $store->getUserSub('firstName') . " " .     *
  *                          $store->getUserSub('lastName') . "\n";      *
  *         echo "DN = "   . $store->getUserSub('getDN') . "\n";         *
