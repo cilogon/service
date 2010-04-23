@@ -48,7 +48,9 @@ class store {
     /********************************************************************
      * Function  : __construct - default constructor                    *
      * Returns   : A new store object.                                  *
-     * Default constructor.  
+     * Default constructor.  This method initializes the PHP/Perl       *
+     * environment to use the CILogon Perl classes.  It also populates  *
+     * the $STATUS array with the various STATUS_* codes.               *
      ********************************************************************/
     function __construct() {
         // Set up the Perl environment
@@ -119,6 +121,27 @@ class store {
             $this->perlobj->eval($cmd);
             $this->userobj = $this->perlobj->userobj;
         }
+    }
+
+    /********************************************************************
+     * Function  : getLastUserObj                                       *
+     * Parameter : $uid - the database user identifier                  *
+     * This method calls the getLastArchivedUser() method in the        *
+     * CILogon::Store perl module.  The method does NOT return          *
+     * anything.  Instead, it sets the object's $userobj variable for   *
+     * later use by getUserSub().  This method is useful when the       *
+     * getUserObj() method returns a userobj that has a status code of  *
+     * STATUS_OK_USER_CHANGED.  Then you can call getLastUserObj() to   *
+     * find the previous attributes of the given uid.  Note that this   *
+     * overwrites any existing userobj so that future calls to          *
+     * getUserSub() will act on the "last archived" user.               *
+     ********************************************************************/
+    function getLastUserObj($uid) {
+        $this->userobj = null;
+        // Call the getLastArchivedUser() method and save result in $userobj
+        $this->perlobj->eval(
+            '$userobj = CILogon::Store->getLastArchivedUser(\''.$uid.'\');');
+        $this->userobj = $this->perlobj->userobj;
     }
 
     /********************************************************************
