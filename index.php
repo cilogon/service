@@ -60,6 +60,7 @@ switch ($submit) {
 
     case 'main':    // Display main  'Download Certificate' page
     case 'Go Back': // Return to the 'Download Certificate' page
+    case 'Proceed': // Proceed after 'User Changed' page
         // Verify the PHP session contains valid info
         if (verifyCurrentSession()) {
             printGetCertificatePage();
@@ -367,8 +368,8 @@ function handleGotUser()
         // If the user got a new DN due to changed SAML attributes,
         // print out a notification page.
         $store = new store();
-        if ($status = $store->STATUS['STATUS_OK_USER_CHANGED']) {
-            printUserChanged();
+        if ($status == $store->STATUS['STATUS_OK_USER_CHANGED']) {
+            printUserChangedPage();
         } else { // STATUS_OK or STATUS_OK_NEW_USER
             printGetCertificatePage();
         }
@@ -459,17 +460,181 @@ function handleGSISSHTermWebApplet()
 }
 
 /************************************************************************
- * Function   : printUserChanged                                        *
+ * Function   : printUserChangedPage                                    *
  * This function prints out a notification page informing the user that *
  * some of their attributes have changed, which will affect the         *
  * contents of future issued certificates.  This page shows which       *
  * attributes are different (displaying both old and new values) and    *
  * what portions of the certificate are affected.                       *
  ************************************************************************/
-function printUserChanged()
+function printUserChangedPage()
 {
-    // FIXME!!!
-    printGetCertificatePage();
+    $uid = getSessionVar('uid');
+    $store = new store();
+    $store->getUserObj($uid);
+    if (!($store->getUserSub('status') & 1)) {  // STATUS_OK codes are even
+        $idpname = $store->getUserSub('idpDisplayName');
+        $first   = $store->getUserSub('firstName');
+        $last    = $store->getUserSub('lastName');
+        $email   = $store->getUserSub('email');
+        $dn      = $store->getUserSub('getDN');
+        $dn      = preg_replace('/\s+email=.+$/','',$dn);
+        $store->getLastUserObj($uid);
+        if (!($store->getUserSub('status') & 1)) {  // STATUS_OK codes are even
+            $previdpname = $store->getUserSub('idpDisplayName');
+            $prevfirst   = $store->getUserSub('firstName');
+            $prevlast    = $store->getUserSub('lastName');
+            $prevemail   = $store->getUserSub('email');
+            $prevdn      = $store->getUserSub('getDN');
+            $prevdn      = preg_replace('/\s+email=.+$/','',$prevdn);
+
+            $tablerowodd = true;
+
+            printHeader('Certificate Information Changed');
+            printPageHeader('Notice: User Information Changed');
+
+            echo '
+            <div class="boxed">
+              <div class="boxheader">
+                Some Of Your Information Has Changed
+              </div>
+            <p>
+            One or more of the attributes released by your organization has
+            changed since the last time you logged on to the CILogon
+            Service.  This will affect your certificates as described below.
+            </p>
+
+            <div class="userchanged">
+            <table cellpadding="5">
+              <tr class="headings">
+                <th>Attribute</th>
+                <th>Previous Value</th>
+                <th>Current Value</th>
+              </tr>
+            ';
+
+            if ($idpname != $previdpname) {
+                echo '
+                <tr' . ($tablerowodd ? ' class="odd"' : '') . '>
+                  <th>Organization Name:</th>
+                  <td>'.$previdpname.'</td>
+                  <td>'.$idpname.'</td>
+                </tr>
+                ';
+                $tablerowodd = !$tablerowodd;
+            }
+
+            if ($first != $prevfirst) {
+                echo '
+                <tr' . ($tablerowodd ? ' class="odd"' : '') . '>
+                  <th>First Name:</th>
+                  <td>'.$prevfirst.'</td>
+                  <td>'.$first.'</td>
+                </tr>
+                ';
+                $tablerowodd = !$tablerowodd;
+            }
+
+            if ($last != $prevlast) {
+                echo '
+                <tr' . ($tablerowodd ? ' class="odd"' : '') . '>
+                  <th>Last Name:</th>
+                  <td>'.$prevlast.'</td>
+                  <td>'.$last.'</td>
+                </tr>
+                ';
+                $tablerowodd = !$tablerowodd;
+            }
+
+            if ($email != $prevemail) {
+                echo '
+                <tr' . ($tablerowodd ? ' class="odd"' : '') . '>
+                  <th>Email Address:</th>
+                  <td>'.$prevemail.'</td>
+                  <td>'.$email.'</td>
+                </tr>
+                ';
+                $tablerowodd = !$tablerowodd;
+            }
+
+            echo '
+            </table>
+            </div>
+            ';
+
+            if (($idpname != $previdpname) ||
+                ($first != $prevfirst) ||
+                ($last != $prevlast)) {
+                echo '
+                <p>
+                The above changes to your attributes will cause your
+                <strong>certificate subject</strong> to change.  You may be
+                required to re-register with relying parties using this new
+                certificate subject.
+                </p>
+                <p>
+                <blockquote>
+                <table cellspacing="0">
+                  <tr>
+                    <td>Previous Subject DN:</td>
+                    <td>' . $prevdn . '</td>
+                  </tr>
+                  <tr>
+                    <td>Current Subject DN:</td>
+                    <td>' . $dn . '</td>
+                  </tr>
+                </table>
+                </blockquote>
+                </p>
+                ';
+            }
+
+            if ($email != $prevemail) {
+                echo '
+                <p>
+                Your new certificate will contain your <strong>updated email
+                address</strong>.
+                This may change how your certificate may be used in email
+                clients.  Possible problems which may occur include:
+                </p>
+                <ul>
+                <li>If your "from" address does not match what is contained in
+                    the certificate, recipients may fail to verify your signed
+                    email messages.</li>
+                <li>If the email address in the certificate does not match the
+                    destination address, senders may have difficulty encrypting
+                    email addressed to you.</li>
+                </ul>
+                ';
+            }
+
+            echo '
+            <p>
+            If you have any questions, please contact us at the email
+            address at the bottom of the page.
+            </p>
+            <div>
+            ';
+            printFormHead(getScriptDir());
+            echo '
+            <input type="submit" name="submit" class="submit" 
+             value="Proceed" />
+            </form>
+            </div>
+            </div>
+            ';
+            printFooter();
+
+            
+        } else {  // Database error, should never happen
+            $_SESSION = array();  // Clear session variables
+            printLogonPage();
+        }
+    } else {  // Database error, should never happen
+        $_SESSION = array();  // Clear session variables
+        printLogonPage();
+    }
+    
 }
 
 /************************************************************************
