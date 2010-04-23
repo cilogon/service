@@ -399,3 +399,36 @@ div.errorbox table {
   border-collapse: collapse;
 }
 /***** End errorbox and associated icon/text *****/
+
+/***** Begin userchanged div and table *****/
+div.userchanged table {
+  margin: 1em 3em;
+  border: 1px solid #696;
+  border-spacing: 0;
+  border-collapse: collapse;
+  width: inherit;
+}
+div.userchanged table tr th {
+  border: 1px solid #696;
+  background-color: #efe;
+  text-align: right;
+}
+div.userchanged table tr.headings th {
+  border: 1px solid #696;
+  background-color: #efe;
+  text-align: center;
+}
+div.userchanged table tr td {
+  border: 1px solid #696;
+  background-color: #efe;
+}
+div.userchanged table tr.odd th {
+  border: 1px solid #696;
+  background-color: #fafffa;
+  text-align: right;
+}
+div.userchanged table tr.odd td {
+  border: 1px solid #696;
+  background-color: #fafffa;
+}
+/***** End userchanged div and table *****/
