@@ -45,6 +45,7 @@ function printTestPage()
 {
     global $incommon;
     global $whitelist;
+    global $csrf;
 
     $gotattrs = false;  // Did we get all shib attributes?
 
@@ -105,7 +106,8 @@ function printTestPage()
             <p class="addsubmit">
             <form action="' . getScriptDir() . '" method="post">
               <input class="submit" type="submit" name="submit"
-                     value="' . ADD_SUBMIT_TEXT . '" />
+                     value="' . ADD_SUBMIT_TEXT . '" />' .
+            $csrf->getHiddenFormElement() . '
             </form>
             </p>
             ';
