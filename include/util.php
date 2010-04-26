@@ -17,6 +17,23 @@ function getServerVar($serv) {
 }
 
 /************************************************************************
+ * Function  : getGetVar                                                *
+ * Parameter : The $_GET variable to query.                             *
+ * Returns   : The value of the $_GET variable or empty string if       *
+ *             that variable is not set.                                *
+ * This function queries a given $_GET parameter (which is set in the   *
+ * URL via a "?parameter=value" parameter) and returns the value.       *
+ ************************************************************************/
+function getGetVar($get) 
+{ 
+    $retval = '';
+    if (isset($_GET[$get])) {
+        $retval = $_GET[$get];
+    }
+    return $retval;
+}
+
+/************************************************************************
  * Function  : getPostVar                                               *
  * Parameter : The $_POST variable to query.                            *
  * Returns   : The value of the $_POST variable or empty string if      *
@@ -77,6 +94,35 @@ function unsetSessionVar($sess)
         $_SESSION[$sess] = null;
         unset($_SESSION[$sess]);
     }
+}
+
+/************************************************************************
+ * Function   : setOrUnsetSessionVar                                    *
+ * Parameters : (1) The name of the PHP session variable to set or      *
+ *                  unset.                                              *
+ *              (2) The value of the PHP session variable (to set),     *
+ *                  or empty string (to unset).  Defaults to empty      *
+ *                  string (implies unset the session variable).        *
+ * Returns    : True if the PHP session variable was set, else false.   *
+ * This function can set or unset a given PHP session variable.         *
+ * The first parameter is the PHP session variable to set/unset.  If    *
+ * the second parameter is the empty string, then the session variable  *
+ * is unset.  Otherwise, the session variable is set to the second      *
+ * parameter.  The function returns true if the session variable was    *
+ * set, false otherwise.  Normally, the return value can be ignored.    *
+ ************************************************************************/
+function setOrUnsetSessionVar($key,$value='') 
+{
+    $retval = false;  // Assume we want to unset the session variable
+    if (strlen($key) > 0) {  // Make sure session variable name was passed in
+        if (strlen($value) > 0) {
+            $_SESSION[$key] = $value;
+            $retval = true;
+        } else {
+            unsetSessionVar($key);
+        }
+    }
+    return $retval;
 }
 
 /************************************************************************
