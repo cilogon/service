@@ -74,7 +74,7 @@ switch ($submit) {
         handleGSISSHTermWebApplet();
     break; // End case 'GSI-SSHTerm Web Applet'
 
-    default: // No submit button clicked nor PHP session variable set
+    default: // No submit button clicked nor PHP session submit variable set
         /* If both the "keepidp" and the "providerId" cookies were set 
          * (and the providerId is a whitelisted IdP) then skip the 
          * Logon page and proceed to the getuser script.  */
@@ -763,7 +763,6 @@ function verifyCurrentSession($providerId='')
  *                  variable to be set upon return from the 'getuser'   *
  *                  script.  This is utilized to control the flow of    *
  *                  this script after "getuser". Defaults to 'gotuser'. *
-
  * If the first parameter (a whitelisted entityID) is not specified,    *
  * we check to see if either the providerId PHP session variable or the *
  * providerId cookie is set (in that order) and use one if available.   *
