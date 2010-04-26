@@ -33,8 +33,11 @@ class store {
     // The Perl object instance.
     public $perlobj;
 
-    // A User object returned by CILogon::Store->getUser()
+    // An object returned by CILogon::Store->getUser()
     public $userobj = null;
+
+    // An object returned by CILogon::Store->getPortalParameters()
+    public $portalobj = null;
 
     /* The various STATUS_* constants from Store.pm.  The keys of the   *
      * array are strings corresponding to the contant names.  The       *
@@ -61,6 +64,7 @@ class store {
         $this->perlobj->eval('use CILogon::Store;');
         $this->perlobj->eval('use CILogon::User;');
         $this->perlobj->eval('use CILogon::IdentifierFactory;');
+        $this->perlobj->eval('use CILogon::PortalParameters;');
 
         // Set the various STATUS variables
         $this->perlobj->eval('$st = CILogon::Store::STATUS_OK;');
@@ -159,6 +163,49 @@ class store {
         $retval = '';
         if ($this->userobj != null) {
             $retval = $this->userobj->{$sub}();
+            // Sometimes, the PHP/Perl code returns strings in an array
+            if (is_array($retval)) {
+                $retval = key($retval);
+            }
+        }
+        return $retval;
+    }
+
+    /********************************************************************
+     * Function  : getPortalObj                                         *
+     * Parameter : $tempcred - the temporary credential passed by a     *
+     *             Community Portal, corresponds to "oauth_token".      *
+     * This method calls the getPortalParameters() method in the        *
+     * CILogon::Store perl module.  The method does NOT return          *
+     * anything.  Instead, it sets the object's $portalobj variable for *
+     * later use by getPortalSub().                                     *
+     ********************************************************************/
+    function getPortalObj($tempcred) {
+        $this->portalobj = null;
+        // Call the getPortalParamters() method and save result in $portalobj
+        $this->perlobj->eval(
+            '$portalobj = CILogon::Store->getPortalParameters(\'' .
+                $tempcred . '\');');
+        $this->portalobj = $this->perlobj->portalobj;
+    }
+
+    /********************************************************************
+     * Function  : getPortalSub                                         *
+     * Parameters: The name of the                                      *
+     *             CILogon::PortalParameters->subroutine to call.       *
+     * Returns   : The string returned by the given subroutine.         *
+     * This method is a wrapper to all of the various perl subroutines  *
+     * in the CILogon::PortalParameters perl module.  The parameter     *
+     * you pass in corresponds to the subroutine name to be called.     *
+     *  See the PortalParameters.pm file for all available subrotines.  *
+     *  The important ones:                                             *
+     *    callbackUri, failureUri, successUri, name (of Community       *
+     *    Portal), tempCred, status.                                    *
+     ********************************************************************/
+    function getPortalSub($sub) {
+        $retval = '';
+        if ($this->portalobj != null) {
+            $retval = $this->portalobj->{$sub}();
             // Sometimes, the PHP/Perl code returns strings in an array
             if (is_array($retval)) {
                 $retval = key($retval);
