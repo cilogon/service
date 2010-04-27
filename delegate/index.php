@@ -1,10 +1,9 @@
 <?php
 
-require_once('include/autoloader.php');
-require_once('include/content.php');
-require_once('include/shib.php');
-require_once('include/util.php');
-require_once('include/myproxy.php');
+require_once('../include/autoloader.php');
+require_once('../include/content.php');
+require_once('../include/shib.php');
+require_once('../include/util.php');
 
 startPHPSession();
 
@@ -56,6 +55,17 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
             handleGotUser();
         break; // End case 'gotuser'
 
+        case 'Proceed': // Proceed after 'User Changed' paged
+            // Verify the PHP session contains valid info
+            if (verifyCurrentSession()) {
+                printAllowDelegationPage();
+            } else { // Otherwise, redirect to the 'Welcome' page
+                removeShibCookies();
+                unsetGetUserSessionVars();
+                printLogonPage();
+            }
+        break; // End case 'Proceed'
+
         default: // No submit button clicked nor PHP session submit variable set
             /* If both the "keepidp" and the "providerId" cookies were set 
              * (and the providerId is a whitelisted IdP) then skip the 
@@ -83,13 +93,13 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
  ************************************************************************/
 function printLogonPage()
 {
-    printHeader('Welcome To The CILogon Service');
-    printPageHeader('Welcome To The CILogon Service');
+    printHeader('Welcome To The CILogon Delegate Service');
+    printPageHeader('Welcome To The CILogon Delegate Service');
 
     echo '
     <div class="welcome">
       <div class="boxheader">
-        About The CILogon Service
+        About The CILogon Delegate Service
       </div>
       <h2>What Is The CILogon Service?</h2>
       <p>
@@ -150,11 +160,121 @@ function printLogonPage()
 }
 
 /************************************************************************
+ * Function   : printBadOAuthTokenPage                                  *
+ * This function prints out the HTML for the page when the oauth_token  *
+ * (tempcred) or associated OAuth information is missing, bad, or       *
+ * expired.                                                             *
  ************************************************************************/
 function printBadOAuthTokenPage()
 {
+    printHeader('CILogon Delegate Service');
+    printPageHeader('This Is The CILogon Delegate Service');
 
+    echo '
+    <div class="boxed">
+      <div class="boxheader">
+        The CILogon Delegate Service Is For Authorized Portal Use Only
+      </div>
+      <p>
+      You have reached the CILogon Delegate Service.  This service is for
+      use by Community Portals to delegate certificates to their users.  If
+      you arrived at this page from a community portal, there was a problem
+      with the information provided by your community portal to this site.
+      Please return to your portal and try again.
+      </p>
+      <p>
+      If you are an individual wishing to download a certificate to your
+      local computer, please try the <a target="_blank"
+      href="https://cilogon.org/">CILogon Service</a>.
+      </p>
+      <p class="note">
+      <strong>Note:</strong> You must enable cookies in your web browser to
+      use this site.
+      </p>
+    </div>
+    ';
 
+    printFooter();
+}
+
+/************************************************************************
+ * Function   : printAllowDelegationPage                                *
+ * This function prints out the HTML for the main page where the user   *
+ *  
+ ************************************************************************/
+function printAllowDelegationPage()
+{
+    // FIXME!!!
+    $scriptdir = getScriptDir();
+
+    printHeader('Confirm Allow Delegation');
+    printPageHeader('Welcome ' . getSessionVar('idpname') . ' User');
+
+    echo '
+    <div class="boxed">
+      <div class="boxheader">
+        Confirm That You Want To Delegate A Certificate
+      </div>
+    <p>
+    You are logged on to the CILogon Service.  You can now download a
+    certificate to your local computer and then use it to securely access
+    <acronym title="National Science Foundation">NSF</acronym>
+    cyberinfrastructure resources.  For example, you can use your
+    certificate with GSI-SSHTerm to connect to the command
+    line of <acronym 
+    title="National Science Foundation">NSF</acronym> cyberinfrastructure
+    resources.  Note that you will need <a target="_blank"
+    href="http://www.javatester.org/version.html">Java 1.5 or higher</a>
+    installed on your computer and enabled in your web browser.
+    </p>
+
+    <div class="taskdiv">
+    <table cellpadding="10" cellspacing="0" class="tasktable">
+
+    <tr class="taskbox">
+      <td class="buttons">
+    ';
+
+    printFormHead($scriptdir);
+
+    echo '
+      <input type="submit" name="submit" class="submit" value="Log Off" />
+      </form>
+      </td>
+      <td class="description">
+        <h2>3. Log Off The CILogon Service Site</h2>
+        To end your CILogon session and return to the welcome page, click
+        the "Log Off" button.  Note that this will not log you out of your
+        organization\'s authentication service.
+      </td>
+    </tr>
+    </table>
+    </div>
+    </div>
+    ';
+    printFooter();
+}
+
+/************************************************************************
+ * Function   : printFormHead                                           *
+ * Parameters : (1) The value of the form's "action" parameter.         *
+ *              (2) (Optional) True if extra hidden tags should be      *
+ *                  output for the GridShib-CA client application.      *
+ *                  Defaults to false.                                  *
+ * This function prints out the opening <form> tag for displaying       *
+ * submit buttons.  The first parameter is used for the "action" value  *
+ * of the <form>.  This function outputs a hidden csrf field in the     *
+ * form block.  If the second parameter is given and set to true, then  *
+ * additional hidden input elements are also output to be used when the *
+ * the GridShib-CA client launches.                                     *
+ ************************************************************************/
+function printFormHead($action) {
+    global $csrf;
+
+    echo '
+    <form action="' . $action . '" method="post">
+    ';
+    echo $csrf->getHiddenFormElement();
 }
 
 /************************************************************************
@@ -166,11 +286,11 @@ function printBadOAuthTokenPage()
  ************************************************************************/
 function handleGotUser()
 {
-    // FIXME!!!
     $uid = getSessionVar('uid');
     $status = getSessionVar('status');
     # If empty 'uid' or 'status' or odd-numbered status code, error!
     if ((strlen($uid) == 0) || (strlen($status) == 0) || ($status & 1)) {
+        unsetGetUserSessionVars();
         printHeader('Error Logging On');
         printPageHeader('ERROR Logging On');
 
@@ -190,7 +310,7 @@ function handleGotUser()
         ';
         printFormHead(getScriptDir());
         echo '
-        <input type="submit" name="submit" class="submit" value="Continue" />
+        <input type="submit" name="submit" class="submit" value="Proceed" />
         </form>
         </div>
         </div>
@@ -201,11 +321,9 @@ function handleGotUser()
         // print out a notification page.
         $store = new store();
         if ($status == $store->STATUS['STATUS_OK_USER_CHANGED']) {
-            // FIXME!!!
             printUserChangedPage();
         } else { // STATUS_OK or STATUS_OK_NEW_USER
-            // FIXME!!!
-            // printGetCertificatePage();
+            printAllowDelegationPage();
         }
     }
 }
@@ -220,7 +338,6 @@ function handleGotUser()
  ************************************************************************/
 function printUserChangedPage()
 {
-    // FIXME!!!
     $uid = getSessionVar('uid');
     $store = new store();
     $store->getUserObj($uid);
@@ -253,7 +370,8 @@ function printUserChangedPage()
             <p>
             One or more of the attributes released by your organization has
             changed since the last time you logged on to the CILogon
-            Service.  This will affect your certificates as described below.
+            Delegation Service.  This will affect your certificates as
+            described below.
             </p>
 
             <div class="userchanged">
@@ -379,16 +497,31 @@ function printUserChangedPage()
 
             
         } else {  // Database error, should never happen
-            // FIXME!!!
-            $_SESSION = array();  // Clear session variables
+            unsetGetUserSessionVars();
             printLogonPage();
         }
     } else {  // Database error, should never happen
-        // FIXME!!!
-        $_SESSION = array();  // Clear session variables
+        unsetGetUserSessionVars();
         printLogonPage();
     }
     
+}
+
+/************************************************************************
+ * Function   : unsetGetUserSessionVars                                    *
+ * This function removes all of the PHP session variables related to    *
+ * the 'secure/getuser' script.  This will force the user to log on     *
+ * (again) with their IdP and call the 'getuser' script to repopulate   *
+ * the PHP session.                                                     *
+ ************************************************************************/
+function unsetGetUserSessionVars()
+{
+    unsetSessionVar('submit');
+    unsetSessionVar('uid');
+    unsetSessionVar('status');
+    unsetSessionVar('loa');
+    unsetSessionVar('idp');
+    unsetSessionVar('idpname');
 }
 
 /************************************************************************
@@ -410,24 +543,26 @@ function verifyOAuthToken($token='')
     $retval = false; // Assume OAuth session info is not valid
 
     // If passing in the OAuth $token, try to get the associated info
-    // and put it into the PHP session.
+    // from the persistent store and put it into the PHP session.
     if (strlen($token) > 0) {
+        $store = new store();
         $store->getPortalObj($token);
         $status = $store->getPortalSub('status');
         if (!($status & 1)) {  // STATUS_OK* codes are even-numbered
             setOrUnsetSessionVar('callbackuri',
-                                 $store->getPortalSub('callbackUri'));
+                $store->getPortalSub('callbackUri'));
             setOrUnsetSessionVar('failureuri',
-                                 $store->getPortalSub('failureUri'));
+                $store->getPortalSub('failureUri'));
             setOrUnsetSessionVar('successuri',
-                                 $store->getPortalSub('successUri'));
+                $store->getPortalSub('successUri'));
             setOrUnsetSessionVar('portalname',
-                                 $store->getPortalSub('name'));
+                $store->getPortalSub('name'));
             setOrUnsetSessionVar('tempcred',
-                                 $store->getPortalSub('tempCred'));
+                $store->getPortalSub('tempCred'));
         }
     }
 
+    // Now check to verify all session variables have data
     if ((strlen(getSessionVar('callbackuri')) > 0) &&
         (strlen(getSessionVar('failureuri')) > 0) &&
         (strlen(getSessionVar('successuri')) > 0) &&
@@ -488,7 +623,7 @@ function verifyCurrentSession($providerId='')
  * The function then checks to see if there is a valid PHP session      *
  * and if the providerId matches the 'idp' in the session.  If so, then *
  * we don't need to redirect to "/secure/getuser/" and instead we       *
- * we display the main "Download Certificate" page.  However, if the    *
+ * we display the main "Allow Delegation" page.  However, if the        *
  * PHP session is not valid, then this function redirects to the        *
  * "/secure/getuser/" script so as to do a Shibboleth authentication    *
  * via the InCommon WAYF.  When the providerId is non-empty, the WAYF   *
@@ -512,10 +647,9 @@ function redirectToGetuser($providerId='',$responsesubmit='gotuser')
 
     // If the user has a valid 'uid' in the PHP session, and the
     // providerId matches the 'idp' in the PHP session, then 
-    // simply go to the 'Download Certificate' button page.
+    // simply go to the 'Allow Delegation' page.
     if (verifyCurrentSession($providerId)) {
-        // FIXME!!!
-        // printGetCertificatePage();
+        printAllowDelegationPage();
     } else { // Otherwise, redirect to the getuser script
         // Set PHP session varilables needed by the getuser script
         $_SESSION['responseurl'] = getScriptDir(true);
