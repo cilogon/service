@@ -58,7 +58,6 @@ switch ($submit) {
         handleGotUser();
     break; // End case 'gotuser'
 
-    case 'main':    // Display main  'Download Certificate' page
     case 'Go Back': // Return to the 'Download Certificate' page
     case 'Proceed': // Proceed after 'User Changed' page
         // Verify the PHP session contains valid info
@@ -68,7 +67,7 @@ switch ($submit) {
             $_SESSION = array();  // Clear session variables
             printLogonPage();
         }
-    break; // End case 'main'
+    break; // End case 'Go Back' / 'Proceed'
 
     case 'GSI-SSHTerm Web Applet':
         handleGSISSHTermWebApplet();
@@ -253,7 +252,7 @@ function printGetCertificatePage()
       with a GSI-enabled SSH server.
       You can run GSI-SSHTerm on your desktop or in your web browser.
       For the "Desktop App" version, be sure to first download
-      a certificate to your desktop (above).
+      a certificate to your computer (above).
       </td>
     </tr>
 
