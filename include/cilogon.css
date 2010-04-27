@@ -95,6 +95,10 @@ applet.gsisshterm {
   border-style: solid;
   border-width: 1px;
 }
+p.note {
+  text-align: center;
+  font-size: small;
+}
 /***** End a few misc divs *****/
 
 /***** Begin the "CILogon Service" header at the top of each page *****/
@@ -244,10 +248,6 @@ div.welcome h2 {
 div.welcome p {
   margin-left: 1em;
   margin-right: 1em;
-}
-div.welcome p.note {
-  text-align: center;
-  font-size: small;
 }
 /***** End Welcome page text *****/
 
