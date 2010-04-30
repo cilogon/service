@@ -99,7 +99,15 @@ p.note {
   text-align: center;
   font-size: small;
 }
-/***** End a few misc divs *****/
+div.portalinfo {
+  /* width: inherit; */
+  margin-left: 3em;
+  margin-right: 3em;
+  border: 1px dashed #888;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+/***** End a few misc element *****/
 
 /***** Begin the "CILogon Service" header at the top of each page *****/
 div.logoheader {
@@ -432,3 +440,20 @@ div.userchanged table tr.odd td {
   background-color: #fafffa;
 }
 /***** End userchanged div and table *****/
+
+/***** Begin allowdiv and submit buttons *****/
+div.allowdiv p {
+  text-align: center;
+}
+div.allowdiv table {
+  margin: auto;
+  border-spacing: 10px;
+  width: 100%;
+}
+div.allowdiv table td {
+  border: 1px solid #888;
+  padding: 1em;
+  background-color: #f5fff5;
+  width: 40%;
+}
+/***** End allowdiv *****/
