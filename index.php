@@ -69,6 +69,10 @@ switch ($submit) {
         }
     break; // End case 'Go Back' / 'Proceed'
 
+    case 'GSI-SSHTerm Desktop App':
+        header('Location: /gsi-sshterm/cilogon.jnlp');
+    break; // End case 'GSI-SSHTerm Desktop App'
+
     case 'GSI-SSHTerm Web Applet':
         handleGSISSHTermWebApplet();
     break; // End case 'GSI-SSHTerm Web Applet'
@@ -229,7 +233,7 @@ function printGetCertificatePage()
       <td class="buttons">
     ';
 
-    printFormHead('/gsi-sshterm/cilogon.jnlp');
+    printFormHead($scriptdir);
 
     echo '
       <input type="submit" name="submit" class="submit"
