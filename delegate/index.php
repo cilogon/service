@@ -93,31 +93,32 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
  ************************************************************************/
 function printLogonPage()
 {
-    printHeader('Welcome To The CILogon Delegate Service');
-    printPageHeader('Welcome To The CILogon Delegate Service');
+    printHeader('Welcome To The CILogon Delegation Service');
+    printPageHeader('Welcome To The CILogon Delegation Service');
 
     echo '
     <div class="welcome">
       <div class="boxheader">
-        About The CILogon Delegate Service
+        About The CILogon Delegation Service
       </div>
-      <h2>What Is The CILogon Service?</h2>
+      <h2>What Is The CILogon Delegation Service?</h2>
       <p>
-      The CILogon Service allows users to authenticate
-      with their home organization and obtain a
-      certificate for secure access to <a target="_blank"
-      href="http://www.nsf.gov/">NSF</a> <a target="_blank"
-      href="http://www.nsf.gov/oci">CyberInfrastructure</a> (<acronym
-      title="CyberInfrastructure">CI</acronym>) projects. Additional
-      information can be found at <a target="_blank"
-      href="http://www.cilogon.org/service">www.cilogon.org</a>.
+      The CILogon Delegation Service allows community portals to get a
+      certificate on behalf of a user.  Once a user authenticates
+      with their home organization, the CILogon Delegation Service 
+      delegates a certficate back to the user\'s community portal.
       </p>
-      <p class="equation">
-      <span>CILogon + Your Organization = Secure Access to 
-      <acronym title="National Science Foundation">NSF</acronym>
-      <acronym title="CyberInfrastructure">CI</acronym></span>
+      <p>
+      Below is the community portal requesting a certificate to be delegated
+      on your behalf.  If this information does not look correct, do not
+      proceed.
       </p>
-      <h2>How Does The CILogon Service Work?</h2>
+      <div class="portalinfo">
+      <xmp> Portal Name: ' . getSessionVar('portalname') . '
+' .       ' Portal URL : ' . getSessionVar('successuri') . 
+      '</xmp>
+      </div>
+      <h2>How Does The CILogon Delegation Service Work?</h2>
       <p>
       The CILogon Service is a member of <a target="_blank"
       href="http://www.incommonfederation.org/">InCommon</a>, a formal
@@ -126,16 +127,16 @@ function printLogonPage()
       provide their users with web single sign-on.  An InCommon organization
       can partner with the CILogon Service to provide user information for
       the purpose of issuing certificates.  These certificates can then be
-      used for accessing cyberinfrastructure resources.
+      delegated to community portals for use by their users.
       </p>
-      <h2>How Do I Use The CILogon Service?</h2>
+      <h2>How Do I Use The CILogon Delegation Service?</h2>
       <p>
       Select your organization from the drop-down list, then click the
       &quot;Log On&quot; button.  You will be redirected to your
       organization\'s login page.  After you authenticate with your
       organization as you typically would, you will be redirected back to
-      the CILogon Service.  Then you will be able to fetch a
-      certificate for use with cyberinfrastructure resources.  
+      the CILogon Delegation Service.  Then you will be able to delegate a
+      certificate to your community portal.  
       </p>
       <h2>What If I Don\'t See My Organization Listed?</h2>
       <p>
@@ -143,7 +144,7 @@ function printLogonPage()
       the drop-down list in the &quot;Start Here&quot; menu, you can
       register for a free user account at <a target="_blank"
       href="http://www.protectnetwork.org/">ProtectNetwork</a> for use with
-      the CILogon Service.  Alternatively, you can <a target="_blank"
+      the CILogon Delegation Service.  Alternatively, you can <a target="_blank"
       href="/requestidp/">make a request for your organization</a> to appear
       in the list of available organizations.
       </p>
@@ -167,20 +168,24 @@ function printLogonPage()
  ************************************************************************/
 function printBadOAuthTokenPage()
 {
-    printHeader('CILogon Delegate Service');
-    printPageHeader('This Is The CILogon Delegate Service');
+    printHeader('CILogon Delegation Service');
+    printPageHeader('This Is The CILogon Delegation Service');
 
     echo '
     <div class="boxed">
       <div class="boxheader">
-        The CILogon Delegate Service Is For Authorized Portal Use Only
+        The CILogon Delegation Service Is For Delegating Certificates To 
+        Portals
       </div>
       <p>
-      You have reached the CILogon Delegate Service.  This service is for
-      use by Community Portals to delegate certificates to their users.  If
-      you arrived at this page from a community portal, there was a problem
-      with the information provided by your community portal to this site.
-      Please return to your portal and try again.
+      You have reached the CILogon Delegation Service.  This service is for
+      use by Community Portals to obtain certificates for their users.  
+      End users should not normally see this page.
+      </p>
+      <p>If you arrived at this page from a community portal, there was a
+      problem with the delegation process.
+      Please return to your portal and try again.  If the error persists,
+      please contact us at the email address at the bottom of the page.
       </p>
       <p>
       If you are an individual wishing to download a certificate to your
@@ -207,6 +212,9 @@ function printAllowDelegationPage()
     // FIXME!!!
     $scriptdir = getScriptDir();
 
+    $lifetimetext = "Enter the lifetime of the certificate to be delegated to the portal. Time is in hours. Valid entries are between 1 and 240 hours (inclusive).";
+    $remembertext = "By checking this box, you permit future delegations to this portal without your explicit approval (i.e., you will automatically bypass this page for this portal). The parameters related to the delegation (e.g., certificate lifetime) will be remembered. You will need to clear your browser's cookies to return here."; 
+
     printHeader('Confirm Allow Delegation');
     printPageHeader('Welcome ' . getSessionVar('idpname') . ' User');
 
@@ -216,37 +224,58 @@ function printAllowDelegationPage()
         Confirm That You Want To Delegate A Certificate
       </div>
     <p>
-    You are logged on to the CILogon Service.  You can now download a
-    certificate to your local computer and then use it to securely access
-    <acronym title="National Science Foundation">NSF</acronym>
-    cyberinfrastructure resources.  For example, you can use your
-    certificate with GSI-SSHTerm to connect to the command
-    line of <acronym 
-    title="National Science Foundation">NSF</acronym> cyberinfrastructure
-    resources.  Note that you will need <a target="_blank"
-    href="http://www.javatester.org/version.html">Java 1.5 or higher</a>
-    installed on your computer and enabled in your web browser.
+    You are logged on to the CILogon Delegation Service.  The portal below is
+    requesting a delegated certificate for use on your behalf.  You must now
+    allow (or deny) this delegation to occur.  Please look at the
+    information provided by the portal below.  If this information appears
+    correct, then allow the delegation to occur.  Otherwise, deny the
+    request, or navigate away from this page.
     </p>
 
-    <div class="taskdiv">
-    <table cellpadding="10" cellspacing="0" class="tasktable">
+    <div class="portalinfo">
+      <xmp> Portal Name   : ' . getSessionVar('portalname') . '
+' .       ' Portal URL    : ' . getSessionVar('successuri') . '
+' .       ' Delegation URL: ' . getSessionVar('callbackuri') . 
+    '</xmp>
+    </div>
 
-    <tr class="taskbox">
-      <td class="buttons">
+    <div class="allowdiv">
+    <table>
+    <tr>
+    <td>
     ';
 
     printFormHead($scriptdir);
 
     echo '
-      <input type="submit" name="submit" class="submit" value="Log Off" />
-      </form>
-      </td>
-      <td class="description">
-        <h2>3. Log Off The CILogon Service Site</h2>
-        To end your CILogon session and return to the welcome page, click
-        the "Log Off" button.  Note that this will not log you out of your
-        organization\'s authentication service.
-      </td>
+    <p>
+    <label for="lifetime" title="'.$lifetimetext.'" 
+    class="helpcursor">Certificate Lifetime (in hours):</label>
+    <input type="text" name="lifetime" id="lifetime" title="'.
+    $lifetimetext.'" class="helpcursor" size="3" maxlength="3" 
+    value="12" />
+    </p>
+    <p>
+    <input type="submit" name="submit" class="submit" value="Allow" />
+    </p>
+    <p>
+    <input type="submit" name="submit" class="submit helpcursor" 
+    title="'.$remembertext.'"
+    value="Always Allow" />
+    </p>
+    </form>
+    </td>
+    <td>
+    ';
+
+    printFormHead($scriptdir);
+
+    echo '
+    <p>
+    <input type="submit" name="submit" class="submit" value="Deny" />
+    </p>
+    </form>
+    </td>
     </tr>
     </table>
     </div>
@@ -548,6 +577,7 @@ function verifyOAuthToken($token='')
         $store = new store();
         $store->getPortalObj($token);
         $status = $store->getPortalSub('status');
+        setOrUnsetSessionVar('portalstatus',$status);
         if (!($status & 1)) {  // STATUS_OK* codes are even-numbered
             setOrUnsetSessionVar('callbackuri',
                 $store->getPortalSub('callbackUri'));
@@ -567,7 +597,8 @@ function verifyOAuthToken($token='')
         (strlen(getSessionVar('failureuri')) > 0) &&
         (strlen(getSessionVar('successuri')) > 0) &&
         (strlen(getSessionVar('portalname')) > 0) &&
-        (strlen(getSessionVar('tempcred')) > 0)) {
+        (strlen(getSessionVar('tempcred')) > 0) &&
+        (!(getSessionVar('portalstatus') & 1))) { // STATUS_OK* are even
         $retval = true;
     }
 
@@ -584,7 +615,7 @@ function verifyOAuthToken($token='')
  * (1) The persistent store 'uid', the Identity Provider 'idp', the     *
  *     IdP Display Name 'idpname', and the 'status' (of getUser()) are  *
  *     all non-empty strings.                                           *
- * (2) The 'status' (of getUser()) is even (i.e. STATUS_OK_*).          *
+ * (2) The 'status' (of getUser()) is even (i.e., STATUS_OK_*).         *
  * (3) If $providerId is passed-in, it must match 'idp'.                *
  * If all checks are good, then this function returns true.             *
  ************************************************************************/
@@ -627,7 +658,7 @@ function verifyCurrentSession($providerId='')
  * PHP session is not valid, then this function redirects to the        *
  * "/secure/getuser/" script so as to do a Shibboleth authentication    *
  * via the InCommon WAYF.  When the providerId is non-empty, the WAYF   *
- * will automatically go to that IdP (i.e. without stopping at the      *
+ * will automatically go to that IdP (i.e., without stopping at the     *
  * WAYF).  This function also sets several PHP session variables that   *
  * are needed by the getuser script, including the 'responsesubmit'     *
  * variable which is set as the return 'submit' variable in the         *
