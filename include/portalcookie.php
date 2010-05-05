@@ -55,7 +55,13 @@ class portalcookie {
     function read() {
         if (isset($_COOKIE[self::cookiename])) {
             $cookie = $_COOKIE[self::cookiename];
-            $this->portalarray = unserialize(base64_decode($cookie));
+            $b64 = base64_decode($cookie);
+            if ($b64 !== false) {
+                $unserial = unserialize($b64);
+                if ($unserial !== false) {
+                    $this->portalarray = $unserial;
+                }
+            }
         }
     }
 
