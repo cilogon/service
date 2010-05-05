@@ -74,7 +74,8 @@ class portalcookie {
     function write() {
         if (!empty($this->portalarray)) {
             setcookie(self::cookiename,
-                base64_encode(serialize($this->portalarray)),0,'/','',true);
+                base64_encode(serialize($this->portalarray)),
+                    time()+60*60*24*365,'/','',true);
         }
     }
 
