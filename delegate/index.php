@@ -399,8 +399,8 @@ function handleAllowDelegation($always=false)
     }
 
     // Set the 'remember' cookie for when 'Always Allow' is clicked
-    $portal->setPortalRemember((int)$always);
-    $portal->setPortalLifetime((int)$lifetime);
+    $portal->setPortalRemember($portalname,(int)$always);
+    $portal->setPortalLifetime($portalname,(int)$lifetime);
     $portal->write();  // Save the cookie with the updated values
 
     $success = false;  // Assume delegation of certificate failed
