@@ -107,6 +107,11 @@ div.portalinfo {
   overflow-x: auto;
   overflow-y: hidden;
 }
+div.returnlink {
+  text-align: center;
+  font-weight: bold;
+  margin: 2em 5em;
+}
 /***** End a few misc element *****/
 
 /***** Begin the "CILogon Service" header at the top of each page *****/
@@ -303,7 +308,7 @@ div.summary h3 {
   margin-left: 2em;
   margin-bottom: 0;
 }
-div.summary div.icon {
+div.icon {
   float: left;
   margin-right: 1em;
 }
