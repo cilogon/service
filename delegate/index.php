@@ -10,6 +10,9 @@ startPHPSession();
 /* The full URL of the Shibboleth-protected getuser script. */
 define('GETUSER_URL','https://cilogon.org/secure/getuser/');
 
+/* The full URL of the 'delegation/authorized' OAuth script. */
+define('AUTHORIZED_URL','https://cilogon.org/delegation/authorized');
+
 /* Read in the whitelist of currently available IdPs. */
 $white = new whitelist();
 
@@ -41,7 +44,8 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
                           time()+60*60*24*365,'/','',true);
                 // Set the cookie for keepidp if the checkbox was checked
                 if (strlen(getPostVar('keepidp')) > 0) {
-                    setcookie('keepidp','checked',time()+60*60*24*365,'/','',true);
+                    setcookie('keepidp','checked',time()+60*60*24*365,
+                              '/','',true);
                 } else {
                     setcookie('keepidp','',time()-3600,'/','',true);
                 }
@@ -66,6 +70,15 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
             }
         break; // End case 'Proceed'
 
+        case 'Allow':        // User allows delegation of certificate
+        case 'Always Allow': // Remember delegation for current portal
+            handleAllowDelegation(($submit == 'Always Allow'));
+        break; // End case 'Allow' or 'Always Allow'
+
+        case 'Deny': // User denies delegation of certificate
+            printDenyPage();
+        break; // End case 'Deny'
+
         default: // No submit button clicked nor PHP session submit variable set
             /* If both the "keepidp" and the "providerId" cookies were set 
              * (and the providerId is a whitelisted IdP) then skip the 
@@ -89,7 +102,7 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
  * Function   : printLogonPage                                          *
  * This function prints out the HTML for the main cilogon.org page.     *
  * Explanatory text is shown as well as a button to log in to an IdP    *
- * and get rerouted to the Shibboleth protected service script.         *
+ * and get rerouted to the Shibboleth protected getuser script.         *
  ************************************************************************/
 function printLogonPage()
 {
@@ -205,83 +218,281 @@ function printBadOAuthTokenPage()
 /************************************************************************
  * Function   : printAllowDelegationPage                                *
  * This function prints out the HTML for the main page where the user   *
- *  
+ * is presented with the portal information and asked to either Allow   *
+ * or Deny delegation of a certificate to the portal.  We first check   *
+ * to see if the "remember" cookie has been set for this portal.  If    *
+ * so, then we automatically "Always Allow" delegation.  Otherwise,     *
+ * we print out the HTML for the <form> buttons.                        *
  ************************************************************************/
 function printAllowDelegationPage()
 {
-    // FIXME!!!
-    $scriptdir = getScriptDir();
+    // Read the cookie containing portal 'lifetime' and 'remember' settings
+    $portalname = getSessionVar('portalname');
+    $portal = new portalcookie();
+    $remember = $portal->getPortalRemember($portalname);
+    $lifetime = $portal->getPortalLifetime($portalname);
+    // If no 'lifetime' cookie, default to 12 hours.  Otherwise,
+    // make sure lifetime is between 1 and 240 hours (inclusive).
+    if ((strlen($lifetime) == 0) || ($lifetime == 0)) {
+        $lifetime = 12;
+    } elseif ($lifetime < 1) {
+        $lifetime = 1;
+    } elseif ($lifetime > 240) {
+        $lifetime = 240;
+    }
 
-    $lifetimetext = "Enter the lifetime of the certificate to be delegated to the portal. Time is in hours. Valid entries are between 1 and 240 hours (inclusive).";
-    $remembertext = "By checking this box, you permit future delegations to this portal without your explicit approval (i.e., you will automatically bypass this page for this portal). The parameters related to the delegation (e.g., certificate lifetime) will be remembered. You will need to clear your browser's cookies to return here."; 
+    // If 'remember' is set for the current portal, then automatically
+    // click the 'Always Allow' button for the user.
+    if ($remember == 1) {
+        handleAllowDelegation(true);
+    } else {
+        // User did not click 'Always Allow' before, so show the
+        // HTML to prompt user for Allow or Deny delegation.
 
-    printHeader('Confirm Allow Delegation');
+        $scriptdir = getScriptDir();
+
+        $lifetimetext = "Enter the lifetime of the certificate to be delegated to the portal. Time is in hours. Valid entries are between 1 and 240 hours (inclusive).";
+        $remembertext = "By clicking this button, you permit future delegations to this portal without your explicit approval (i.e., you will automatically bypass this page for this portal). The parameters related to the delegation (e.g., certificate lifetime) will be remembered. You will need to clear your browser's cookies to return here."; 
+
+        printHeader('Confirm Allow Delegation');
+        printPageHeader('Welcome ' . getSessionVar('idpname') . ' User');
+
+        echo '
+        <div class="boxed">
+          <div class="boxheader">
+            Confirm That You Want To Delegate A Certificate
+          </div>
+        <p>
+        You are logged on to the CILogon Delegation Service.  The portal
+        below is requesting a delegated certificate for use on your behalf.
+        You must now allow (or deny) this delegation to occur.  Please look
+        at the information provided by the portal below.  If this
+        information appears correct, then allow the delegation to occur.
+        Otherwise, deny the request, or navigate away from this page.
+        </p>
+
+        <div class="portalinfo">
+          <xmp> Portal Name   : ' . getSessionVar('portalname') . '
+' .       ' Portal URL    : ' . getSessionVar('successuri') . '
+' .       ' Delegation URL: ' . getSessionVar('callbackuri') . 
+        '</xmp>
+        </div>
+
+        <div class="allowdiv">
+        <table>
+        <tr>
+        <td>
+        ';
+
+        printFormHead($scriptdir);
+
+        echo '
+        <p>
+        <label for="lifetime" title="' . $lifetimetext . '" 
+        class="helpcursor">Certificate Lifetime (in hours):</label>
+        <input type="text" name="lifetime" id="lifetime" title="' .
+        $lifetimetext. '" class="helpcursor" size="3" maxlength="3" 
+        value="' . $lifetime . '" />
+        </p>
+        <p>
+        <input type="submit" name="submit" class="submit" value="Allow" />
+        </p>
+        <p>
+        <input type="submit" name="submit" class="submit helpcursor" 
+        title="'.$remembertext.'"
+        value="Always Allow" />
+        </p>
+        </form>
+        </td>
+        <td>
+        ';
+
+        printFormHead($scriptdir);
+
+        echo '
+        <p>
+        <input type="submit" name="submit" class="submit" value="Deny" />
+        </p>
+        </form>
+        </td>
+        </tr>
+        </table>
+        </div>
+        </div>
+        ';
+        printFooter();
+    }
+}
+
+/************************************************************************
+ * Function   : printDenyPage                                           *
+ * This function prints out the HTML for when the user clicked the      *
+ * "Deny" button on the "Allow Delegation" page.  It gives the user a   *
+ * link back to the portal via the "failure URL".                       *
+ ************************************************************************/
+function printDenyPage() {
+    printHeader('Delegation Denied');
     printPageHeader('Welcome ' . getSessionVar('idpname') . ' User');
 
     echo '
     <div class="boxed">
       <div class="boxheader">
-        Confirm That You Want To Delegate A Certificate
+        You Have Denied Delegation Of A Certificate To Your Portal
       </div>
     <p>
-    You are logged on to the CILogon Delegation Service.  The portal below is
-    requesting a delegated certificate for use on your behalf.  You must now
-    allow (or deny) this delegation to occur.  Please look at the
-    information provided by the portal below.  If this information appears
-    correct, then allow the delegation to occur.  Otherwise, deny the
-    request, or navigate away from this page.
-    </p>
-
-    <div class="portalinfo">
-      <xmp> Portal Name   : ' . getSessionVar('portalname') . '
-' .       ' Portal URL    : ' . getSessionVar('successuri') . '
-' .       ' Delegation URL: ' . getSessionVar('callbackuri') . 
-    '</xmp>
-    </div>
-
-    <div class="allowdiv">
-    <table>
-    <tr>
-    <td>
-    ';
-
-    printFormHead($scriptdir);
-
-    echo '
-    <p>
-    <label for="lifetime" title="'.$lifetimetext.'" 
-    class="helpcursor">Certificate Lifetime (in hours):</label>
-    <input type="text" name="lifetime" id="lifetime" title="'.
-    $lifetimetext.'" class="helpcursor" size="3" maxlength="3" 
-    value="12" />
+    You have explicitly denied delegation of a certificate to the portal "' .
+    getSessionVar('portalname') . '".  Below is a link to return to the
+    portal.  This link has been provided by the portal to be used when
+    delegation of a certificate fails.
     </p>
     <p>
-    <input type="submit" name="submit" class="submit" value="Allow" />
+    <strong>Note:</strong> If you do not trust the information provided by
+    the portal, <strong>do not</strong> click on the link below.  Instead,
+    please contact your portal administrators or contact us at the email
+    address at the bottom of the page.
     </p>
-    <p>
-    <input type="submit" name="submit" class="submit helpcursor" 
-    title="'.$remembertext.'"
-    value="Always Allow" />
-    </p>
-    </form>
-    </td>
-    <td>
-    ';
 
-    printFormHead($scriptdir);
-
-    echo '
-    <p>
-    <input type="submit" name="submit" class="submit" value="Deny" />
-    </p>
-    </form>
-    </td>
-    </tr>
-    </table>
+    <div class="returnlink">
+      <a href="' . getSessionVar('failureuri') . '">Return to ' .
+      getSessionVar('portalname') . '</a>
     </div>
     </div>
     ';
     printFooter();
+}
+
+/************************************************************************
+ * Function   : handleAllowDelegation                                   *
+ * Parameters : True if the user selected 'Always Allow' delegation.    *
+ * This fuction is called when the user clicks one of the 'Allow' or    *
+ * 'Always Allow' buttons, or when the user had previously clicked      *
+ * the 'Always Allow' button which saved the 'remember' cookie for the  *
+ * current portal.  It first reads the cookie for the portal and        *
+ * updates the 'lifetime' and 'remember' parameters, then (re)saves     *
+ * the cookie.  Then it calls out to the 'delegation/authorized'        *
+ * servlet in order to do the back-end certificate delegation process.  *
+ * If the $always parameter is true, then the user is automatically     *
+ * returned to the portal's successuri or failureuri.  Otherwise, the   *
+ * user is presented with a page showing the result of the attempted    *
+ * certificate delegation as well as a link to "return to your portal". *
+ ************************************************************************/
+function handleAllowDelegation($always=false)
+{
+    $portalname = getSessionVar('portalname');
+
+    // Try to get the certificate lifetime from a submitted <form>
+    $lifetime = trim(getPostVar('lifetime'));
+
+    // If we couldn't get lifetime from the <form>, try the cookie
+    $portal = new portalcookie();
+    if (strlen($lifetime) == 0) {
+        $lifetime = $portal->getPortalLifetime($portalname);
+    }
+
+    // Verify that lifetime is in the range [1,240]; default to 12
+    if ((strlen($lifetime) == 0) || ($lifetime == 0)) {
+        $lifetime = 12;
+    } elseif ($lifetime < 1) {
+        $lifetime = 1;
+    } elseif ($lifetime > 240) {
+        $lifetime = 240;
+    }
+
+    // Set the 'remember' cookie for when 'Always Allow' is clicked
+    $portal->setPortalRemember((int)$always);
+    $portal->setPortalLifetime((int)$lifetime);
+    $portal->write();  // Save the cookie with the updated values
+
+    $success = false;  // Assume delegation of certificate failed
+
+    // Now call out to the "delegation/authorized" servlet to execute
+    // the delegation the credential to the portal.
+    $ch = curl_init();
+    if ($ch !== false) {
+        $url = AUTHORIZED_URL . '?' .
+               'oauth_token=' . urlencode(getSessionVar('tempcred')) . '&' .
+               'cilogon_lifetime=' . $lifetime . '&' .
+               'cilogon_loa=' . urlencode(getSessionVar('loa')) . '&' .
+               'cilogon_uid=' . urlencode(getSessionVar('uid'));
+        curl_setopt($ch,CURLOPT_URL,$url);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($ch,CURLOPT_TIMEOUT,30);
+        $output = curl_exec($ch);
+        if (!empty($output)) { 
+            $httpcode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
+            if ($httpcode == 200) {
+                if (preg_match('/^cilogon_status=ok$/',$output)) {
+                    $success = true;
+                }
+            }
+        }
+        curl_close($ch);
+    }
+
+    // Depending on the result (success or failure), output appropriate
+    // HTML to allow the user to return to the portal, or if $always
+    // was set, then automatically return the user to the successuri
+    // or failureuri.
+    if ($always) {
+        header('Location: ' . ($success ? getSessionVar('successuri') :
+                                          getSessionVar('failureuri')));
+    } else {
+        $headertext = 'Delegation Failed';
+        if ($success) {
+            $headertext = 'Delegation Successful';
+        }
+
+        printHeader($headertext);
+        printPageHeader($headertext);
+
+        echo '
+        <div class="boxed">
+          <div class="boxheader">
+        ';
+        if ($success) {
+            echo 'Successful Delegation Of Certificate To Your Portal';
+        } else {
+            echo 'Failed To Delegate Certificate To Your Portal';
+        }
+        echo '
+          </div>
+        <div>
+        <div class="icon">
+        ';
+        printIcon(($success ? 'okay' : 'error'));
+        echo '
+        </div>
+        <h2>' . ($success ? 'Success!' : 'Failure!') . '</h2>
+        </div>
+        <p>
+        ';
+        if ($success) {
+            echo '
+            A certificate has been delegated to the portal "' .
+            getSessionVar('portalname') . '".  Below is a link to return to
+            your portal to utilize the delegated certificate.
+            ';
+        } else {
+            echo '
+            We were unable to delegate a certificate to the portal "' .
+            getSessionVar('portalname') . '".  Below is a link to return to
+            the portal.  This link has been provided by the portal to be
+            used when delegation of a certificate fails.
+            ';
+        }
+        echo '
+        </p>
+
+        <div class="returnlink">
+          <a href="' . 
+          getSessionVar(($success ? 'successuri' : 'failureuri')) . 
+          '">Return to ' .
+          getSessionVar('portalname') . '</a>
+        </div>
+        </div>
+        ';
+        printFooter();
+    }
 }
 
 /************************************************************************
