@@ -152,7 +152,7 @@ function printWAYF()
     foreach ($idps as $entityId => $idpName) {
         echo '<option value="' . $entityId . '"';
         if ($entityId == $providerId) {
-            echo ' selected';
+            echo ' selected="selected"';
         }
         echo '>' . $idpName . '</option>' . "\n";
     }
