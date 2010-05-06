@@ -127,9 +127,9 @@ function printLogonPage()
       proceed.
       </p>
       <div class="portalinfo">
-      <xmp> Portal Name: ' . getSessionVar('portalname') . '
-' .       ' Portal URL : ' . getSessionVar('successuri') . 
-      '</xmp>
+      <pre> Portal Name: ' . htmlspecialchars(getSessionVar('portalname')) . '
+' .       ' Portal URL : ' . htmlspecialchars(getSessionVar('successuri')) . 
+      '</pre>
       </div>
       <h2>How Does The CILogon Delegation Service Work?</h2>
       <p>
@@ -229,8 +229,8 @@ function printAllowDelegationPage()
     // Read the cookie containing portal 'lifetime' and 'remember' settings
     $portalname = getSessionVar('portalname');
     $portal = new portalcookie();
-    $remember = $portal->getPortalRemember($portalname);
-    $lifetime = $portal->getPortalLifetime($portalname);
+    $remember = $portal->getPortalRemember(getSessionVar('callbackuri'));
+    $lifetime = $portal->getPortalLifetime(getSessionVar('callbackuri'));
     // If no 'lifetime' cookie, default to 12 hours.  Otherwise,
     // make sure lifetime is between 1 and 240 hours (inclusive).
     if ((strlen($lifetime) == 0) || ($lifetime == 0)) {
@@ -272,10 +272,10 @@ function printAllowDelegationPage()
         </p>
 
         <div class="portalinfo">
-          <xmp> Portal Name   : ' . getSessionVar('portalname') . '
-' .       ' Portal URL    : ' . getSessionVar('successuri') . '
-' .       ' Delegation URL: ' . getSessionVar('callbackuri') . 
-        '</xmp>
+        <pre> Portal Name   : '.htmlspecialchars(getSessionVar('portalname')).'
+' .       ' Portal URL    : ' .  htmlspecialchars(getSessionVar('successuri')).'
+' .       ' Delegation URL: ' . htmlspecialchars(getSessionVar('callbackuri')).
+        '</pre>
         </div>
 
         <div class="allowdiv">
@@ -386,7 +386,7 @@ function handleAllowDelegation($always=false)
     // If we couldn't get lifetime from the <form>, try the cookie
     $portal = new portalcookie();
     if (strlen($lifetime) == 0) {
-        $lifetime = $portal->getPortalLifetime($portalname);
+        $lifetime = $portal->getPortalLifetime(getSessionVar('callbackuri'));
     }
 
     // Convert lifetime to integer.  Empty string and alpha chars --> 0
@@ -401,11 +401,12 @@ function handleAllowDelegation($always=false)
     }
 
     // Set the 'remember' cookie for when 'Always Allow' is clicked
-    $portal->setPortalRemember($portalname,(int)$always);
-    $portal->setPortalLifetime($portalname,$lifetime);
+    $portal->setPortalRemember(getSessionVar('callbackuri'),(int)$always);
+    $portal->setPortalLifetime(getSessionVar('callbackuri'),$lifetime);
     $portal->write();  // Save the cookie with the updated values
 
     $success = false;  // Assume delegation of certificate failed
+    $certtext = '';    // Output of 'openssl x509 -noout -text -in cert.pem'
 
     // Now call out to the "delegation/authorized" servlet to execute
     // the delegation the credential to the portal.
@@ -423,8 +424,25 @@ function handleAllowDelegation($always=false)
         if (!empty($output)) { 
             $httpcode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
             if ($httpcode == 200) {
-                if (preg_match('/^cilogon_status=ok$/',$output)) {
+                // Check body of curl query for cilogon_status=ok
+                if (preg_match('/cilogon_status=ok/',$output)) {
                     $success = true;
+                    // Also check if the cert was returned as base64 
+                    // encoded PEM certificate.  If so, get info about it.
+                    if (preg_match('/cilogon_cert=([^\s]+)/',
+                                   $output,$matches)) {
+                        $b64cert = $matches[1];
+                        $cert = base64_decode($b64cert);
+                        if ($cert !== false) {
+                            // Run "openssl x509" command for cert info
+                            exec('/bin/env /usr/bin/openssl x509 -text '.
+                                 '<<< ' . escapeshellarg($cert) . ' 2>&1',
+                                 $x509out,$retcode);
+                            if ($retcode == 0) {
+                                $certtext = implode("\n",$x509out);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -466,25 +484,62 @@ function handleAllowDelegation($always=false)
         </div>
         <h2>' . ($success ? 'Success!' : 'Failure!') . '</h2>
         </div>
-        <p>
         ';
         if ($success) {
             echo '
+            <p>
             A certificate has been delegated to the portal "' .
             getSessionVar('portalname') . '".  Below is a link to return to
             your portal to use the delegated certificate.
+            </p>
             ';
+            // If we got the cert from the 'delegation/authorized' script,
+            // output it in an expandable/scrollable <div> for user info.
+            if (strlen($certtext) > 0) {
+                echo '
+                <noscript>
+                <div class="nojs">
+                Javascript is disabled. In order to expand the "Certificate
+                Details" section below, please enable Javascript in your
+                browser.
+                </div>
+                </noscript>
+                
+                <div class="summary">
+                <div id="certtext1" style="display:inline"><span 
+                class="expander"><a 
+                href="javascript:showHideDiv(\'certtext\',-1)"><img
+                src="/images/triright.gif" alt="&rArr;" width="14" 
+                height="14" />
+                Certificate Details</a></span>
+                </div>
+                <div id="certtext2" style="display:none"><span
+                class="expander"><a
+                href="javascript:showHideDiv(\'certtext\',-1)"><img 
+                src="/images/tridown.gif" alt="&dArr;" width="14" 
+                height="14" /> 
+                Certificate Details</a></span>
+                </div>
+                <br class="clear" />
+                <div id="certtext3" style="display:none">
+                  <div class="portalinfo">
+                  <pre>' . htmlspecialchars($certtext) . '</pre>
+                  </div>
+                </div>
+                </div>
+                ';
+            }
         } else {
             echo '
+            <p>
             We were unable to delegate a certificate to the portal "' .
             getSessionVar('portalname') . '".  Below is a link to return to
             the portal.  This link has been provided by the portal to be
             used when delegation of a certificate fails.
+            </p>
             ';
         }
         echo '
-        </p>
-
         <div class="returnlink">
           <a href="' . 
           getSessionVar(($success ? 'successuri' : 'failureuri')) . 
