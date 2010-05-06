@@ -389,8 +389,10 @@ function handleAllowDelegation($always=false)
         $lifetime = $portal->getPortalLifetime($portalname);
     }
 
-    // Verify that lifetime is in the range [1,240]; default to 12
-    if ((strlen($lifetime) == 0) || ($lifetime == 0)) {
+    // Convert lifetime to integer.  Empty string and alpha chars --> 0
+    $lifetime = (int)$lifetime;  
+    // Verify that lifetime is in the range [1,240].  Default to 12 hours.
+    if ($lifetime == 0) {
         $lifetime = 12;
     } elseif ($lifetime < 1) {
         $lifetime = 1;
@@ -400,7 +402,7 @@ function handleAllowDelegation($always=false)
 
     // Set the 'remember' cookie for when 'Always Allow' is clicked
     $portal->setPortalRemember($portalname,(int)$always);
-    $portal->setPortalLifetime($portalname,(int)$lifetime);
+    $portal->setPortalLifetime($portalname,$lifetime);
     $portal->write();  // Save the cookie with the updated values
 
     $success = false;  // Assume delegation of certificate failed
@@ -470,7 +472,7 @@ function handleAllowDelegation($always=false)
             echo '
             A certificate has been delegated to the portal "' .
             getSessionVar('portalname') . '".  Below is a link to return to
-            your portal to utilize the delegated certificate.
+            your portal to use the delegated certificate.
             ';
         } else {
             echo '
