@@ -101,6 +101,10 @@ switch ($submit) {
  ************************************************************************/
 function printLogonPage()
 {
+    global $log;
+
+    $log->info('Welcome page hit.');
+
     printHeader('Welcome To The CILogon Service');
     printPageHeader('Welcome To The CILogon Service');
 
@@ -176,6 +180,9 @@ function printLogonPage()
 function printGetCertificatePage()
 {
     global $perl_config;
+    global $log;
+
+    $log->info('Get And Use Certificate page hit.');
 
     $scriptdir = getScriptDir();
 
@@ -338,10 +345,14 @@ function printFormHead($action,$gsca=false) {
  ************************************************************************/
 function handleGotUser()
 {
+    global $log;
+
     $uid = getSessionVar('uid');
     $status = getSessionVar('status');
     # If empty 'uid' or 'status' or odd-numbered status code, error!
     if ((strlen($uid) == 0) || (strlen($status) == 0) || ($status & 1)) {
+        $log->error('Failed to getuser.');
+
         printHeader('Error Logging On');
         printPageHeader('ERROR Logging On');
 
@@ -389,6 +400,8 @@ function handleGotUser()
  ************************************************************************/
 function handleGSISSHTermWebApplet()
 {
+    global $log;
+
     $uid = getSessionVar('uid');
     $cert = getMyProxyForUID($uid);
     if (strlen($cert) > 0) {
@@ -435,6 +448,8 @@ function handleGSISSHTermWebApplet()
         ';
         printFooter();
     } else { // Could not get a certificate - output error message
+        $log->error('Unable to get certificate for GSI-SSHTerm Web Applet.');
+
         printHeader('Error Running GSI-SSHTerm Web Applet');
         printPageHeader('ERROR Running The GSI-SSHTerm Web Applet');
 
@@ -472,6 +487,10 @@ function handleGSISSHTermWebApplet()
  ************************************************************************/
 function printUserChangedPage()
 {
+    global $log;
+
+    $log->info('User IdP attributes changed.');
+
     $uid = getSessionVar('uid');
     $store = new store();
     $store->getUserObj($uid);
@@ -630,10 +649,12 @@ function printUserChangedPage()
 
             
         } else {  // Database error, should never happen
+            $log->error('Database error reading previous user attributes.');
             $_SESSION = array();  // Clear session variables
             printLogonPage();
         }
     } else {  // Database error, should never happen
+        $log->error('Database error reading current user attributes.');
         $_SESSION = array();  // Clear session variables
         printLogonPage();
     }
@@ -785,6 +806,7 @@ function verifyCurrentSession($providerId='')
 function redirectToGetuser($providerId='',$responsesubmit='gotuser')
 {
     global $csrf;
+    global $log;
 
     // If providerId not set, try the session and cookie values
     if (strlen($providerId) == 0) {
@@ -814,6 +836,8 @@ function redirectToGetuser($providerId='',$responsesubmit='gotuser')
         if (strlen($providerId) > 0) {
             $redirect .= '&providerId=' . urlencode($providerId);
         }
+
+        $log->info('Auto-redirect="' . $redirect . '"');
         header($redirect);
     }
 }

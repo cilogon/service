@@ -106,6 +106,10 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
  ************************************************************************/
 function printLogonPage()
 {
+    global $log;
+
+    $log->info('Welcome page hit.');
+
     printHeader('Welcome To The CILogon Delegation Service');
     printPageHeader('Welcome To The CILogon Delegation Service');
 
@@ -181,6 +185,10 @@ function printLogonPage()
  ************************************************************************/
 function printBadOAuthTokenPage()
 {
+    global $log;
+
+    $log->warn('Missing or invalid oauth_token.');
+
     printHeader('CILogon Delegation Service');
     printPageHeader('This Is The CILogon Delegation Service');
 
@@ -226,6 +234,8 @@ function printBadOAuthTokenPage()
  ************************************************************************/
 function printAllowDelegationPage()
 {
+    global $log;
+
     // Read the cookie containing portal 'lifetime' and 'remember' settings
     $portalname = getSessionVar('portalname');
     $portal = new portalcookie();
@@ -248,6 +258,8 @@ function printAllowDelegationPage()
     } else {
         // User did not click 'Always Allow' before, so show the
         // HTML to prompt user for Allow or Deny delegation.
+
+        $log->info('Allow or Deny Delegation page hit.');
 
         $scriptdir = getScriptDir();
 
@@ -378,6 +390,10 @@ function printDenyPage() {
  ************************************************************************/
 function handleAllowDelegation($always=false)
 {
+    global $log;
+
+    $log->info('Attempting to delegate a certificate to a portal...');
+
     $portalname = getSessionVar('portalname');
 
     // Try to get the certificate lifetime from a submitted <form>
@@ -449,11 +465,16 @@ function handleAllowDelegation($always=false)
         curl_close($ch);
     }
 
+    $log->info('Delegation of certificate to portal ' .
+               ($success ? 'succeeded.' : 'failed.'));
+
     // Depending on the result (success or failure), output appropriate
     // HTML to allow the user to return to the portal, or if $always
     // was set, then automatically return the user to the successuri
     // or failureuri.
     if ($always) {
+        $log->info("Automatically returning to portal's " .
+                   ($success ? 'success' : 'failure') . ' url.');
         header('Location: ' . ($success ? getSessionVar('successuri') :
                                           getSessionVar('failureuri')));
     } else {
@@ -583,10 +604,14 @@ function printFormHead($action) {
  ************************************************************************/
 function handleGotUser()
 {
+    global $log;
+
     $uid = getSessionVar('uid');
     $status = getSessionVar('status');
     # If empty 'uid' or 'status' or odd-numbered status code, error!
     if ((strlen($uid) == 0) || (strlen($status) == 0) || ($status & 1)) {
+        $log->error('Failed to getuser.');
+
         unsetGetUserSessionVars();
         printHeader('Error Logging On');
         printPageHeader('ERROR Logging On');
@@ -635,6 +660,10 @@ function handleGotUser()
  ************************************************************************/
 function printUserChangedPage()
 {
+    global $log;
+
+    $log->info('User IdP attributes changed.');
+
     $uid = getSessionVar('uid');
     $store = new store();
     $store->getUserObj($uid);
@@ -794,10 +823,12 @@ function printUserChangedPage()
 
             
         } else {  // Database error, should never happen
+            $log->error('Database error reading previous user attributes.');
             unsetGetUserSessionVars();
             printLogonPage();
         }
     } else {  // Database error, should never happen
+        $log->error('Database error reading current user attributes.');
         unsetGetUserSessionVars();
         printLogonPage();
     }
@@ -935,6 +966,7 @@ function verifyCurrentSession($providerId='')
 function redirectToGetuser($providerId='',$responsesubmit='gotuser')
 {
     global $csrf;
+    global $log;
 
     // If providerId not set, try the session and cookie values
     if (strlen($providerId) == 0) {
@@ -964,6 +996,9 @@ function redirectToGetuser($providerId='',$responsesubmit='gotuser')
         if (strlen($providerId) > 0) {
             $redirect .= '&providerId=' . urlencode($providerId);
         }
+
+        $log->info('Auto-redirect="' . $redirect . '"');
+
         header($redirect);
     }
 }
