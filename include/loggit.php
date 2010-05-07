@@ -33,7 +33,7 @@ class loggit {
      *********************************************************************/
     function __construct($logtype='syslog',$email='help@cilogon.org')
     {
-        $ident = getServerVar('SERVER_NAME') . ' ' .
+        $ident = getServerVar('SERVER_NAME') .
                  getServerVar('REQUEST_URI');
 
         $this->logger = &Log::singleton($logtype,
@@ -78,7 +78,7 @@ class loggit {
             }
         }
 
-        $this->logger->log($message . $envstr, $level);
+        $this->logger->log($message . ' ' . $envstr, $level);
     }
 
     /*********************************************************************
