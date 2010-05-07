@@ -118,7 +118,7 @@ function printLogonPage()
       <p>
       The CILogon Delegation Service allows community portals to get a
       certificate on behalf of a user.  Once a user authenticates
-      with their home organization, the CILogon Delegation Service 
+      with a home organization, the CILogon Delegation Service 
       delegates a certficate back to the user\'s community portal.
       </p>
       <p>
