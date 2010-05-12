@@ -259,7 +259,7 @@ function printAllowDelegationPage()
         // User did not click 'Always Allow' before, so show the
         // HTML to prompt user for Allow or Deny delegation.
 
-        $log->info('Allow or Deny Delegation page hit.');
+        $log->info('Allow Or Deny Delegation page hit.');
 
         $scriptdir = getScriptDir();
 
@@ -997,7 +997,7 @@ function redirectToGetuser($providerId='',$responsesubmit='gotuser')
             $redirect .= '&providerId=' . urlencode($providerId);
         }
 
-        $log->info('Auto-redirect="' . $redirect . '"');
+        $log->info('Shibboleth Login="' . $redirect . '"');
 
         header($redirect);
     }

@@ -837,7 +837,7 @@ function redirectToGetuser($providerId='',$responsesubmit='gotuser')
             $redirect .= '&providerId=' . urlencode($providerId);
         }
 
-        $log->info('Auto-redirect="' . $redirect . '"');
+        $log->info('Shibboleth Login="' . $redirect . '"');
         header($redirect);
     }
 }
