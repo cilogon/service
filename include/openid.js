@@ -92,7 +92,7 @@ function selectOID(provider)
     /* Change the dropdown OpenID icon. */
     var iconelement = document.getElementById('currentopenidicon');
     if (iconelement !== null) {
-      iconelement.src = 'openid/' + provider + '.png';
+      iconelement.src = '/images/' + provider + '.png';
     }
 
     /* Set the hiddenopenid field to the provider string so   */
