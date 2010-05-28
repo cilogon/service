@@ -118,6 +118,15 @@ div.returnlink {
   text-align: center;
   vertical-align: middle;
 }
+.zeroheight {
+  display: block;
+  width: 0;
+  height: 0;
+  line-height:0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
 /***** End a few misc element *****/
 
 /***** Begin the "CILogon Service" header at the top of each page *****/
