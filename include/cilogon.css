@@ -112,6 +112,12 @@ div.returnlink {
   font-weight: bold;
   margin: 2em 5em;
 }
+.centered {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+  vertical-align: middle;
+}
 /***** End a few misc element *****/
 
 /***** Begin the "CILogon Service" header at the top of each page *****/
@@ -241,6 +247,15 @@ div.wayf fieldset {
 div.wayf fieldset p {
   margin-top: 1em;
   text-align: center;
+}
+div.providerselection {
+  height: 2em;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+div.providerselection select.selectIdP {
+  font-size: 8pt;
 }
 /***** End WAYF *****/
 
@@ -462,3 +477,159 @@ div.allowdiv table td {
   width: 40%;
 }
 /***** End allowdiv *****/
+
+/***** Begin OpenID stuff *****/
+#openidurl {
+  font-size: 8pt;
+  padding-top: 2px;
+  padding-bottom: 1px;
+  padding-left: 3px;
+  padding-right: 1px;
+}
+#openidusername {
+  border: 1px solid #ddd;
+  font-family: monospace;
+  font-size: 8pt;
+  outline: none;
+}
+.openiddrop {
+  position: relative;
+  z-index: 100;
+  display: inline;
+}
+.openiddrop img {
+  vertical-align: middle;
+}
+.openiddrop ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: inline;
+}
+.openiddrop ul li {
+  display: inline;
+  position: relative;
+}
+.openiddrop ul li h3 {
+  display: inline;
+  border: 2px outset #888;
+  padding: 0px 2px 2px 2px;
+  background: #eee url('/images/clear.png') no-repeat;
+}
+.openiddrop ul li table {
+  display: none;
+  position: absolute;
+  border: 2px outset #888;
+  top: 21px;
+  right: 4px;
+}
+.openiddrop ul li:hover table {
+  display: block;
+}
+table.providertable {
+  border-width: 0;
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+table.providertable tr td {
+  padding: 2px 8px 2px 18px;
+}
+table.openidtable {
+  border-width: 0;
+  border-spacing: 0;
+  border-collapse: collapse;
+  width: 100%; 
+  margin: 0;
+  padding: 0;
+  table-layout: fixed;
+}
+table.openidtable th {
+  border: 1px solid #ccc;
+  background-color: #eee;
+  padding: 0;
+  font-weight: normal;
+}
+table.openidtable td {
+  border: 0px solid #000;
+  background-color: #eee;
+  padding: 0;
+}
+.aolicon {
+  background: #eee url('/images/aol.png') no-repeat left center;
+}
+.bloggericon {
+  background: #eee url('/images/blogger.png') no-repeat left center;
+}
+.certificaicon {
+  background: #eee url('/images/certifi.ca.png') no-repeat left center;
+}
+.chimpicon {
+  background: #eee url('/images/chi.mp.png') no-repeat left center;
+}
+.clavidicon {
+  background: #eee url('/images/clavid.png') no-repeat left center;
+}
+.flickricon {
+  background: #eee url('/images/flickr.png') no-repeat left center;
+}
+.getopenidicon {
+  background: #eee url('/images/getopenid.png') no-repeat left center;
+}
+.googleicon {
+  background: #eee url('/images/google.png') no-repeat left center;
+}
+.hyvesicon {
+  background: #eee url('/images/hyves.png') no-repeat left center;
+}
+.identityicon {
+  background: #eee url('/images/identity.net.png') no-repeat left center;
+}
+.launchpadicon {
+  background: #eee url('/images/launchpad.png') no-repeat left center;
+}
+.liquididicon {
+  background: #eee url('/images/liquidid.png') no-repeat left center;
+}
+.livejournalicon {
+  background: #eee url('/images/livejournal.png') no-repeat left center;
+}
+.myidicon {
+  background: #eee url('/images/myid.png') no-repeat left center;
+}
+.myopenidicon {
+  background: #eee url('/images/myopenid.png') no-repeat left center;
+}
+.myspaceicon {
+  background: #eee url('/images/myspace.png') no-repeat left center;
+}
+.myvidoopicon {
+  background: #eee url('/images/myvidoop.png') no-repeat left center;
+}
+.netlogicon {
+  background: #eee url('/images/netlog.png') no-repeat left center;
+}
+.oneloginicon {
+  background: #eee url('/images/onelogin.png') no-repeat left center;
+}
+.openidicon {
+  background: #eee url('/images/openid.png') no-repeat left center;
+}
+.verisignicon {
+  background: #eee url('/images/verisign.png') no-repeat left center;
+}
+.voxicon {
+  background: #eee url('/images/vox.png') no-repeat left center;
+}
+.wordpressicon {
+  background: #eee url('/images/wordpress.png') no-repeat left center;
+}
+.yahooicon {
+  background: #eee url('/images/yahoo.png') no-repeat left center;
+}
+.yiidicon {
+  background: #eee url('/images/yiid.png') no-repeat left center;
+}
+/***** End OpenID stuff *****/
