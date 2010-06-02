@@ -98,7 +98,7 @@ class openid {
      * no action is taken.                                              *
      ********************************************************************/
     function setProvider($provider) {
-        if ($this->isProviderValid($provider)) {
+        if ($this->exists($provider)) {
             $this->provider = $provider;
         }
     }
@@ -123,7 +123,7 @@ class openid {
     }
 
     /********************************************************************
-     * Function  : isProviderValid                                      *
+     * Function  : exists                                               *
      * Parameter : (Optional) The name of an OpenID Provider.  If not   *
      *             passed in, defaults to the class variable $provider. *
      * Returns   : True if the OpenID provider exists in the            *
@@ -134,11 +134,9 @@ class openid {
      * value is searched for in the $providerarray.  If the given       *
      * provider is a key in the $providerarray, true is returned.       *
      ********************************************************************/
-    function isProviderValid() {
-        $numargs = func_num_args();
-        return array_key_exists(
-            ($numargs==0 ? $this->getProvider() : func_get_arg(0)),
-            $this->providerarray);
+    function exists() {
+        return isset($this->providerarray[
+            (func_num_args()==0 ? $this->getProvider() : func_get_arg(0))]);
     }
 
     /********************************************************************
