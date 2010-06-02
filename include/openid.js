@@ -43,30 +43,30 @@ function selectOID(provider)
 {
   /* An object linking provider string names to URLs */
   var providers = {
-    'aol'         : 'http://openid.aol.com' ,
-    'blogger'     : 'http://username.blogspot.com' ,
+    'AOL'         : 'http://openid.aol.com' ,
+    'Blogger'     : 'http://username.blogspot.com' ,
     'certifi.ca'  : 'http://certifi.ca/username' ,
-    'chi.mp'      : 'http://username.mp' ,
+    'Chi.mp'      : 'http://username.mp' ,
     'clavid'      : 'http://username.clavid.com' ,
-    'flickr'      : 'http://flickr.com/photos/username' ,
-    'getopenid'   : 'http://getopenid.com/username' ,
-    'google'      : 'http://google.com/accounts/o8/id' ,
-    'hyves'       : 'http://hyves.nl' ,
-    'launchpad'   : 'http://login.launchpad.net' ,
-    'liquidid'    : 'http://username.liquidid.net' ,
-    'livejournal' : 'http://username.livejournal.com' ,
-    'myid'        : 'http://myid.net' ,
-    'myopenid'    : 'http://myopenid.com' ,
-    'myspace'     : 'http://myspace.com' ,
-    'myvidoop'    : 'http://myvidoop.com' ,
-    'netlog'      : 'http://netlog.com/username' ,
-    'onelogin'    : 'https://app.onelogin.com/openid/username' ,
-    'openid'      : 'http://username' ,
-    'verisign'    : 'http://pip.verisignlabs.com' ,
-    'vox'         : 'http://username.vox.com' ,
-    'wordpress'   : 'http://username.wordpress.com' ,
-    'yahoo'       : 'http://yahoo.com' ,
-    'yiid'        : 'http://yiid.com'
+    'Flickr'      : 'http://flickr.com/photos/username' ,
+    'GetOpenID'   : 'http://getopenid.com/username' ,
+    'Google'      : 'http://google.com/accounts/o8/id' ,
+    'Hyves'       : 'http://hyves.nl' ,
+    'LaunchPad'   : 'http://login.launchpad.net' ,
+    'LiquidID'    : 'http://username.liquidid.net' ,
+    'LiveJournal' : 'http://username.livejournal.com' ,
+    'myID'        : 'http://myid.net' ,
+    'myOpenID'    : 'http://myopenid.com' ,
+    'MySpace'     : 'http://myspace.com' ,
+    'myVidoop'    : 'http://myvidoop.com' ,
+    'NetLog'      : 'http://netlog.com/username' ,
+    'OneLogin'    : 'https://app.onelogin.com/openid/username' ,
+    'OpenID'      : 'http://username' ,
+    'Verisign'    : 'http://pip.verisignlabs.com' ,
+    'Vox'         : 'http://username.vox.com' ,
+    'WordPress'   : 'http://username.wordpress.com' ,
+    'Yahoo'       : 'http://yahoo.com' ,
+    'Yiid'        : 'http://yiid.com'
   };
 
   var providerurl = providers[provider];
@@ -92,7 +92,8 @@ function selectOID(provider)
     /* Change the dropdown OpenID icon. */
     var iconelement = document.getElementById('currentopenidicon');
     if (iconelement !== null) {
-      iconelement.src = '/images/' + provider + '.png';
+      iconelement.src = '/images/' + provider.toLowerCase() + '.png';
+      iconelement.alt = provider;
     }
 
     /* Set the hiddenopenid field to the provider string so   */
