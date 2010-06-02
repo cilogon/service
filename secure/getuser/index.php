@@ -26,7 +26,7 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
  * Function   : getUserAndRespond                                       *
  * Parameter  : The full URL to redirect to after getting the userid.   *
  * This function takes all of the various required SAML attributes (as  *
- * set in the current Shibboleth sessoin), makes a call to the database *
+ * set in the current Shibboleth session), makes a call to the database *
  * to get the userid assoicated with those attributes, puts several     *
  * variables in the current PHP session, and responds by redirecting to *
  * the responseurl in the passed-in parameter.  If there are any issues *
