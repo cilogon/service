@@ -69,7 +69,7 @@ class whitelist {
      * called.                                                          *
      ********************************************************************/
     function read() {
-        return $this->readFromFile();
+        return $this->readFromStore();
     }
 
     /********************************************************************
@@ -127,7 +127,7 @@ class whitelist {
      * called.                                                          *
      ********************************************************************/
     function write() {
-        return $this->writeToFile();
+        return $this->writeToStore();
     }
 
     /********************************************************************
