@@ -19,7 +19,7 @@ $submit = csrf::verifyCookieAndGetSubmit();
 if ($submit == 'Submit') {
     $yourName = getPostVar('yourName');
     $emailAddr = getPostVar('emailAddr');
-    $selectIdP = getPostVar('selectIdP');
+    $providerId = getPostVar('providerId');
     $otherIdP = getPostVar('otherIdP');
     $comments = getPostVar('comments');
 
@@ -27,17 +27,17 @@ if ($submit == 'Submit') {
     if ((strlen($yourName) > 2) &&
         (strlen($emailAddr) > 2) &&
         ($validator->check_email_address($emailAddr)) &&
-            (($selectIdP != DEFAULT_OPTION_TEXT) ||
+            (($providerId != DEFAULT_OPTION_TEXT) ||
              (strlen($otherIdP) > 2))) {
         /* Everything is okay! Send email request and print "Thank you!" */
         printRequestSubmitted($yourName,$emailAddr,
-                              $selectIdP,$otherIdP,$comments);
+                              $providerId,$otherIdP,$comments);
     } else {
         /* User entered some blank (or invalid) fields.  Show the *
          * Main Form page again, with their inputs, PLUS the      *
          * places that there are errors.                          */
         printRequestForm(true,$yourName,$emailAddr,
-                         $selectIdP,$otherIdP,$comments);
+                         $providerId,$otherIdP,$comments);
     }
 
 } else {   
@@ -64,7 +64,7 @@ if ($submit == 'Submit') {
  * to fix the errors before submitting again.                           *
  ************************************************************************/
 function printRequestForm($verify=false,$yourName='',$emailAddr='',
-                          $selectIdP='',$otherIdP='',$comments='') 
+                          $providerId='',$otherIdP='',$comments='') 
 {
     global $validator;
     global $csrf;  // Initialized in content.php
@@ -133,12 +133,12 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
       <fieldset>
       <legend>Home Organization</legend>
       <p>
-      <label for="selectIdP">Select an Organization:</label>
-      <select name="selectIdP" id="selectIdP" class="select">
+      <label for="providerId">Select an Organization:</label>
+      <select name="providerId" id="providerId" class="select">
       <option value="' . DEFAULT_OPTION_TEXT . '"';
 
-    if (($selectIdP == DEFAULT_OPTION_TEXT) ||
-        (strlen($selectIdP) == 0)) {
+    if (($providerId == DEFAULT_OPTION_TEXT) ||
+        (strlen($providerId) == 0)) {
         echo ' selected="selected"';
     }
         
@@ -148,7 +148,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
     foreach ($idps as $value) {
         echo '
         <option value="'.$value.'"';
-        if ($value == $selectIdP) {
+        if ($value == $providerId) {
             echo ' selected="selected"';
         }
         echo '>'.$value.'</option>';
@@ -157,7 +157,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
     echo '
       </select>';
 
-    if (($verify) && ($selectIdP == DEFAULT_OPTION_TEXT) &&
+    if (($verify) && ($providerId == DEFAULT_OPTION_TEXT) &&
         (strlen($otherIdP) <= 2)) {
         printIcon('error','Please select an organization or enter one below.');
         $goterror = true;
@@ -221,7 +221,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
  * page to the user.                                                    *
  ************************************************************************/
 function printRequestSubmitted($yourName,$emailAddr,
-                               $selectIdP,$otherIdP,$comments)
+                               $providerId,$otherIdP,$comments)
 {
     $mailto   = 'help@cilogon.org';
     $mailfrom = 'From: help@cilogon.org' . "\r\n" .
@@ -232,7 +232,7 @@ CILogon Service - New Identity Provider Request
 -----------------------------------------------
 Name          = $yourName
 Email Address = $emailAddr
-Selected IdP  = $selectIdP
+Selected IdP  = $providerId
 Other IdP     = $otherIdP
 Comments      = $comments
 ";

@@ -266,7 +266,7 @@ div.providerselection {
   padding: 0;
   border: 0;
 }
-div.providerselection select.selectIdP {
+div.providerselection select.providerId {
   font-size: 8pt;
 }
 /***** End WAYF *****/

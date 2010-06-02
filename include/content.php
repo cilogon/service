@@ -145,8 +145,8 @@ function printWAYF()
       '" method="post" class="wayfForm">
       <fieldset>
       <p>
-      <label for="selectIdP" class="ontop">Select An Organization:</label>
-      <select name="providerId" id="selectIdP">
+      <label for="providerId" class="ontop">Select An Organization:</label>
+      <select name="providerId" id="providerId">
     ';
 
     foreach ($idps as $entityId => $idpName) {
