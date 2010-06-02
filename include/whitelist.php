@@ -204,11 +204,7 @@ class whitelist {
      * entityID is in the $whitearray whitelist.  If so, return true.   *
      ********************************************************************/
     function exists($entityID) {
-        $retval = false;  // Assume entityID is not in whitelist
-        if (isset($this->whitearray[$entityID])) {
-            $retval = true;
-        }
-        return $retval;
+        return isset($this->whitearray[$entityID]);
     }
 
     /********************************************************************
