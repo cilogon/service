@@ -20,12 +20,8 @@ if ($argc == 7) {
         (strlen($emailaddr) > 0)) {
 
         $store = new store();
-        $store->getUserObj($remoteuser,
-                           $idp,
-                           $idpname,
-                           $firstname,
-                           $lastname,
-                           $emailaddr);
+        $store->getUserObj($remoteuser, $idp, $idpname, 
+                           $firstname, $lastname, $emailaddr);
 
         printInfo($store);
 
@@ -36,9 +32,34 @@ if ($argc == 7) {
             $store->getLastUserObj($uid);
             printInfo($store);
         }
+    } else {
+        printUsage();
     }
+
+} elseif ($argc == 3) {
+
+    $remoteuser = $argv[1];
+    $idp = $argv[2];
+
+    if ((strlen($remoteuser) > 0) &&
+        (strlen($idp) > 0)) {
+
+        $store = new store();
+        $store->getUserObj($remoteuser, $idp);
+
+        printInfo($store);
+    } else {
+        printUsage();
+    }
+
 } else {
-    echo "Usage: " . $argv[0] . " REMOTEUSER IDP IDPNAME FIRST LAST EMAIL\n";
+    printUsage();
+}
+
+function printUsage() {
+    echo "Usage: adduser.php REMOTEUSER IDP\n";
+    echo "  OR   adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME EMAIL\n";
+    echo "Note: The first usage is for OpenID.  The second usage is for InCommon.\n";
 }
 
 function printInfo($store)
