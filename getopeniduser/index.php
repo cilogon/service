@@ -1,8 +1,12 @@
 <?php
 
-require_once('../../include/autoloader.php');
-require_once('../../include/content.php');
-require_once('../../include/util.php');
+require_once('../include/autoloader.php');
+require_once('../include/content.php');
+require_once('../include/util.php');
+require_once('Auth/OpenID/Consumer.php');
+require_once('Auth/OpenID/FileStore.php');
+require_once('Auth/OpenID/SReg.php');
+require_once('Auth/OpenID/PAPE.php');
 
 startPHPSession();
 
@@ -38,9 +42,46 @@ function getUserAndRespond($responseurl) {
 
     $store = new store();
 
+    $store_path = '/tmp/_php_consumer_cilogon';
+    if (!(file_exists($store_path)) &&
+        !(mkdir($store_path))) {
+        // FIXME!
+        echo "ERROR CREATING STORE DIRECTORY\n";
+        exit(0);
+    }
+    $filestore = new Auth_OpenID_FileStore($store_path);
+    $consumer = new Auth_OpenID_Consumer($filestore);
+    $return_to = 'https://cilogon.org/getopeniduser/';
+    $response = $consumer->complete($return_to);
+
+    $esc_identity = '';
+    // Check the response status.
+    if ($response->status == Auth_OpenID_CANCEL) {
+        // This means the authentication was cancelled.
+        $msg = 'Verification cancelled.';
+    } else if ($response->status == Auth_OpenID_FAILURE) {
+        // Authentication failed; display the error message.
+        $msg = "OpenID authentication failed: " . $response->message;
+    } else if ($response->status == Auth_OpenID_SUCCESS) {
+        // This means the authentication succeeded; extract the
+        // identity URL and Simple Registration data (if it was
+        // returned).
+        $openidid = $response->getDisplayIdentifier();
+        $esc_identity = escape($openidid);
+
+        $success = sprintf('You have successfully verified ' .
+                           '<a href="%s">%s</a> as your identity.',
+                           $esc_identity, $esc_identity);
+
+        if ($response->endpoint->canonicalID) {
+            $escaped_canonicalID = escape($response->endpoint->canonicalID);
+            $success .= '  (XRI CanonicalID: '.$escaped_canonicalID.') ';
+        }
+    }
+
     /* If all required attributes are available, get the       *
      * database user id and status code of the database query. */
-    $openid = getGetVar('openid.identity');
+    $openid = $esc_identity;
     $provider = getSessionVar('idp');
     if ((strlen($openid) > 0) &&
         (strlen($provider) > 0)) {
@@ -70,6 +111,10 @@ function getUserAndRespond($responseurl) {
 
     /* Finally, redirect to the calling script. */
     header('Location: ' . $responseurl);
+}
+
+function escape($thing) {
+    return htmlentities($thing);
 }
 
 /************************************************************************
