@@ -152,6 +152,29 @@ class openid {
         $url = $this->providerarray[$this->getProvider()];
         return preg_replace('/username/',$this->username,$url);
     }
+
+    /********************************************************************
+     * Function  : getInputTextURL                                      *
+     * Returns   : The OpenID URL to be used for an OpenID login,       *
+     *             replacing any 'username' string with an <input       *
+     *             type="text"> form element.                           *
+     * This method is similar to getURL, but rather than simply         *
+     * replacing any 'username' string with the class variable          *
+     * $username, a full <input type="text"> form element is inserted.  *
+     * This is useful when outputting the OpenID logon form.            *
+     ********************************************************************/
+    function getInputTextURL() {
+        $url = $this->providerarray[$this->getProvider()];
+        $len = strlen($this->username) + 1;
+        if ($len > 20) {
+            $len = 20;
+        }
+        return preg_replace('/username/',
+               '<input type="text" name="username" size="' . $len . '" '.
+               'value="' .  $this->username . '" id="openidusername" ' .
+               'onfocus="setInterval(\'boxExpand()\',1);" />',
+               $url);
+    }
 }
 
 ?>
