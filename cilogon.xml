@@ -1,0 +1,56 @@
+<EntityDescriptor entityID="https://cilogon.org/shibboleth">
+  <SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:1.1:protocol urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:Extensions xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata">
+      <DiscoveryResponse xmlns="urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol" Binding="urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol" Location="https://cilogon.org/Shibboleth.sso/DS" index="1"></DiscoveryResponse>
+    </md:Extensions>
+    <md:KeyDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <!-- Serial No. 10242511584731451503, expires on Sun Jan 27 17:36:04 2013 GMT -->
+          <ds:X509Certificate>
+MIIDVDCCAjygAwIBAgIJAI4ktgTnvdBvMA0GCSqGSIb3DQEBBQUAMBYxFDASBgNV
+BAMTC2NpbG9nb24ub3JnMB4XDTEwMDEyODE3MzYwNFoXDTEzMDEyNzE3MzYwNFow
+FjEUMBIGA1UEAxMLY2lsb2dvbi5vcmcwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw
+ggEKAoIBAQCU2+Mqs1OhxQRdrJ+W19BUgquVG/3rxd9EDzwGOWBkO+awCXtRe50p
+LGVXYF/ylNXeAdF2LHICKHB35i/ZNnXj9Y+llarHiTyrrSmYa3OA0Q2YEzSsv6o6
+rk4+SysmnFPLggVbFnqmtCRn7bwAodonhWWfVqwBj+GkO3RoedfCYhfsiKJOTioN
+Bc1VXlNlxBeAVYuJuhDzCQnSn+IhLnqKWXpnq2exZfeOG+yfUQB31BONSnCWadFW
+ODgybq5q+D4IDFeW+2LmQGNVCjUnB7RTGwRWgj2AHusySohpwDCha1eIqXb+FNGA
+ifI2PEgCS69NgBJNMaAvAAjcEUugK0bfAgMBAAGjgaQwgaEwDgYDVR0PAQH/BAQD
+AgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAJBgNVHRMEAjAAMB0G
+A1UdDgQWBBS6KexHniS9+CMFdNlM/DILrMQ3AjBGBgNVHSMEPzA9gBS6KexHniS9
++CMFdNlM/DILrMQ3AqEapBgwFjEUMBIGA1UEAxMLY2lsb2dvbi5vcmeCCQCOJLYE
+573QbzANBgkqhkiG9w0BAQUFAAOCAQEAS4U3vwFFyjsezayUJcVm6PW40HIJW3iV
+qaNv/8dwPFKtX03C3XEMnexFegnZ4cYSTAc5fdpAxaEZjnhTsKsA5aFKHlF1uUYn
+5beFDAbLDn5AlJamBoYn3s8ZOa0x9A1FdrDLSLTUqc1BH1Hz8MRFR/NsD/LdI1I5
+5tIY6A/0lAlOgq/+iRyAzc/NZloHRJriiysJzRLWq1oF2VlW0fgkF7v1tf7oBZjq
+SPTVAuw69SbXBXnaHQXN2DnsdUhepjQTumKi+S1sZhAMW9nVNFXVBkehfr5NUFR+
+8QVxZNy6yZE12GjQMJc6YbNQ8kiC2gzqTimid0/2DzSakuhgAMacNg==
+          </ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:AssertionConsumerService xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://cilogon.org/Shibboleth.sso/SAML2/POST" index="1"></md:AssertionConsumerService>
+    <md:AssertionConsumerService xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://cilogon.org/Shibboleth.sso/SAML2/POST-SimpleSign" index="2"></md:AssertionConsumerService>
+    <md:AssertionConsumerService xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact" Location="https://cilogon.org/Shibboleth.sso/SAML2/Artifact" index="3"></md:AssertionConsumerService>
+    <md:AssertionConsumerService xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" Binding="urn:oasis:names:tc:SAML:1.0:profiles:browser-post" Location="https://cilogon.org/Shibboleth.sso/SAML/POST" index="4"></md:AssertionConsumerService>
+    <md:AssertionConsumerService xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" Binding="urn:oasis:names:tc:SAML:1.0:profiles:artifact-01" Location="https://cilogon.org/Shibboleth.sso/SAML/Artifact" index="5"></md:AssertionConsumerService>
+  </SPSSODescriptor>
+  <Organization>
+    <OrganizationName xml:lang="en">University of Illinois at Urbana-Champaign</OrganizationName>
+    <OrganizationDisplayName xml:lang="en">University of Illinois at Urbana-Champaign</OrganizationDisplayName>
+    <OrganizationURL xml:lang="en">http://www.uiuc.edu/index.html</OrganizationURL>
+  </Organization>
+  <ContactPerson contactType="technical">
+    <GivenName>Terry Fleury</GivenName>
+    <EmailAddress>tfleury@illinois.edu</EmailAddress>
+  </ContactPerson>
+  <ContactPerson contactType="administrative">
+    <GivenName>Michael Grady</GivenName>
+    <EmailAddress>m-grady@illinois.edu</EmailAddress>
+  </ContactPerson>
+  <ContactPerson contactType="support">
+    <GivenName>Jim Basney</GivenName>
+    <EmailAddress>jbasney@ncsa.illinois.edu</EmailAddress>
+  </ContactPerson>
+</EntityDescriptor>
