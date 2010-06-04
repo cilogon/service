@@ -86,6 +86,9 @@ function printFooter($footer='')
     echo '
     <br class="clear" />
     <div class="footer">
+    <p>Know <a target="_blank"
+    href="http://ca.cilogon.org/responsibilities">your responsibilities</a>
+    for using the CILogon Service.</p>
     <p>The <a target="_blank"
     href="http://www.cilogon.org/service">CILogon Service</a> is funded by
     the <a target="_blank" href="http://www.nsf.gov/">National Science
@@ -147,6 +150,11 @@ function printWAYF()
     $username   = getCookieVar('username');
     if (strlen($username) == 0) {
         $username = 'username';
+    }
+    $openid = new openid();
+    if ($useopenid == '1') {
+        $openid->setProvider($providerId);
+        $openid->setUsername($username);
     }
 
     $helptext = "By checking this box, you can bypass the welcome page on subsequent visits and proceed directly to your organization's authentication site. You will need to clear your brower's cookies to return here."; 
@@ -226,25 +234,15 @@ function printWAYF()
         <th id="openidurl">
         ';
 
-        if ($useopenid == '1') {
-            $openid = new openid($providerId,$username);
-            echo $openid->getInputTextURL();
-        } else {
-            echo '          http://<input type="text" name="username" 
-              size="9" value="username" id="openidusername"
-              onfocus="setInterval(\'boxExpand()\',1)" />';
-        }
+        echo $openid->getInputTextURL();
 
         echo '
         </th>
         <td class="openiddrop">
         <ul>
           <li><h3><img id="currentopenidicon" src=" ' . 
-               (($useopenid == '1') ? '/images/' . 
-                                      strtolower($providerId) . '.png' : 
-                                      '/images/openid.png') . 
-               '" width="16" height="16" alt="' . 
-               (($useopenid == '1') ? $providerId : 'OpenID') . 
+               '/images/' . strtolower($openid->getProvider()) . '.png' .
+               '" width="16" height="16" alt="' . $openid->getProvider() .
                '"/><img src="/images/droparrow.png" 
                width="8" height="16" alt="&dArr;"/></h3>
           <table class="providertable">
@@ -335,11 +333,11 @@ function printWAYF()
       'title="' .  $helptext . '" class="helpcursor" />
       </p>
       <p>
-      ' .  $csrf->getHiddenFormElement() . '
+      ' . $csrf->getHiddenFormElement() . '
       <input type="hidden" name="useopenid" id="useopenid" value="' . 
       (($useopenid == '1') ? '1' : '0') . '"/>
       <input type="hidden" name="hiddenopenid" id="hiddenopenid" value="' .
-      (($useopenid == '1') ? $providerId: 'OpenID') .  '"/>
+      $openid->getProvider() . '"/>
       <input type="submit" name="submit" class="submit helpcursor" 
       title="Click to proceed to your selected organization\'s login page."
       value="Log On" />
@@ -355,13 +353,6 @@ function printWAYF()
         document.getElementById(\'openidusername\').select();
         useOpenID(\'1\')">Use OpenID instead</a>
       </p>
-
-      <noscript>
-      <div class="nojs">
-      Javascript is disabled.  In order to log on with OpenID, please
-      enable Javascript in your browser.
-      </div>
-      </noscript>
       </div>
 
       <div id="starthere4" style="display:'.
@@ -373,6 +364,13 @@ function printWAYF()
         useOpenID(\'0\')">Use InCommon instead</a>
       </p>
       </div>
+
+      <noscript>
+      <div class="nojs">
+      Javascript is disabled.  OpenID authentication requires that
+      Javascript be enabled in your browser.
+      </div>
+      </noscript>
 
       </fieldset>
       </form>
