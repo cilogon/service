@@ -107,13 +107,15 @@ switch ($submit) {
          * (and the providerId is a whitelisted IdP or valid OpenID    *
          * provider) then skip the Logon page and proceed to the       *
          * appropriate getuser script.                                 */
-        $providerIdCookie = urldecode(getCookieVar('providerId'));
+        $providerIdCookie = getCookieVar('providerId');
         if ((strlen($providerIdCookie) > 0) && 
             (strlen(getCookieVar('keepidp')) > 0)) {
             if (getCookieVar('useopenid') == '1') { // Use OpenID authentication
-                if ($openid->exists($providerIdCookie)) {
-                    redirectToGetOpenIDUser($providerIdCookie,
-                                            getCookieVar('username'));
+                $usernameCookie = getCookieVar('username');
+                if (($openid->exists($providerIdCookie)) &&
+                    (strlen($usernameCookie) > 0))
+                {
+                    redirectToGetOpenIDUser($providerIdCookie,$usernameCookie);
                 } else {
                     printLogonPage();
                 }
@@ -196,6 +198,18 @@ function printLogonPage()
       the CILogon Service.  Alternatively, you can <a target="_blank"
       href="/requestidp/">make a request for your organization</a> to appear
       in the list of available organizations.
+      </p>
+      <h2>Can I Use OpenID Instead?</h2>
+      <p>
+      The CILogon Service also supports the use of <a target="_blank"
+      href="http://openid.net/">OpenID</a> as an alternate authentication
+      mechanism.  Many users have an OpenID account without even knowing it.
+      For example, you can use your <a target="_blank"
+      href="http://google.com/profiles/me">Google</a> or <a target="_blank"
+      href="http://openid.yahoo.com/">Yahoo</a> account for OpenID
+      authentication.  However, the certificates issued to OpenID users may
+      be accepted by fewer cyberinfrastructure resource providers than those
+      issued to InCommon users.  
       </p>
       <p class="note">
       <strong>Note:</strong> You must enable cookies in your web browser to
