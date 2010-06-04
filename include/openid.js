@@ -78,7 +78,7 @@ function selectOID(provider)
     var urlelement = document.getElementById('openidurl');
     if (urlelement !== null) {
       /* If the url contains "username", replace it with an input text box. */
-      var newurl = providerurl.replace('username','<input type="text" name="username" size="9" value="username" id="openidusername" onfocus="setInterval(\'boxexpand()\',1);" />');
+      var newurl = providerurl.replace('username','<input type="text" name="username" size="9" value="username" id="openidusername" onfocus="setInterval(\'boxExpand()\',1);" />');
       urlelement.innerHTML = newurl;
     }
 
