@@ -41,16 +41,17 @@ function showHideDiv(whichDiv,showhide)
             { // show div
               style2.display = "inline";
             }
-          else if (showhide == 0)
+          else if (showhide === 0)
             { // hide div
               style2.display = "none";
             }
           else 
             { // toggle div
-              if (style2.display == "inline")
+              if (style2.display == "inline") {
                 style2.display = "none";
-              else
+              } else {
                 style2.display = "inline";
+              }
             }
         }
     }
