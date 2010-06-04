@@ -1,5 +1,8 @@
 <?php
 
+require_once("DB.php");
+require_once('Auth/OpenID/PostgreSQLStore.php');
+
 /************************************************************************
  * Class name : openid                                                  *
  * Description: This class aids in the formation of OpenID user URLs.   *
@@ -124,19 +127,15 @@ class openid {
 
     /********************************************************************
      * Function  : exists                                               *
-     * Parameter : (Optional) The name of an OpenID Provider.  If not   *
-     *             passed in, defaults to the class variable $provider. *
+     * Parameter : The name of an OpenID Provider.                      *
      * Returns   : True if the OpenID provider exists in the            *
      *             $providerarray.  False otherwise.                    *
-     * This method takes zero or one argument.  If no arguments are     *
-     * passed in, then it uses the current $provider as previously set  *
-     * by setProvider().  If one argument is given, then that provider  *
-     * value is searched for in the $providerarray.  If the given       *
-     * provider is a key in the $providerarray, true is returned.       *
+     * This method takes a string for an OpenID provider.  The          *
+     * $providerarray is searched for this string.  If found, true is   *
+     * returned.                                                        *
      ********************************************************************/
-    function exists() {
-        return isset($this->providerarray[
-            (func_num_args()==0 ? $this->getProvider() : func_get_arg(0))]);
+    function exists($provider) {
+        return isset($this->providerarray[$provider]);
     }
 
     /********************************************************************
@@ -174,6 +173,10 @@ class openid {
                'value="' .  $this->username . '" id="openidusername" ' .
                'onfocus="setInterval(\'boxExpand()\',1);" />',
                $url);
+    }
+
+    function getStorage() {
+
     }
 }
 
