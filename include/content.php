@@ -78,6 +78,9 @@ function printFooter($footer='')
     echo '
     <br class="clear" />
     <div class="footer">
+    <p>Know <a target="_blank"
+    href="http://ca.cilogon.org/responsibilities">your responsibilities</a>
+    for using the CILogon Service.</p>
     <p>The <a target="_blank"
     href="http://www.cilogon.org/service">CILogon Service</a> is funded by
     the <a target="_blank" href="http://www.nsf.gov/">National Science
