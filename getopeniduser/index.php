@@ -4,9 +4,6 @@ require_once('../include/autoloader.php');
 require_once('../include/content.php');
 require_once('../include/util.php');
 require_once('Auth/OpenID/Consumer.php');
-require_once('Auth/OpenID/FileStore.php');
-require_once('Auth/OpenID/SReg.php');
-require_once('Auth/OpenID/PAPE.php');
 
 startPHPSession();
 
@@ -41,80 +38,73 @@ function getUserAndRespond($responseurl) {
     global $csrf;
 
     $store = new store();
+    $openid = new openid();
+    $openidid = '';
 
-    $store_path = '/tmp/_php_consumer_cilogon';
-    if (!(file_exists($store_path)) &&
-        !(mkdir($store_path))) {
-        // FIXME!
-        echo "ERROR CREATING STORE DIRECTORY\n";
-        exit(0);
-    }
-    $filestore = new Auth_OpenID_FileStore($store_path);
-    $consumer = new Auth_OpenID_Consumer($filestore);
-    $return_to = 'https://cilogon.org/getopeniduser/';
-    $response = $consumer->complete($return_to);
+    $datastore = $openid->getStorage();
+    if ($datastore == null) {
+        $_SESSION['openiderror'] = 'Internal OpenID error. Please try logging in with Shibboleth.';
+    } else {
+        $consumer = new Auth_OpenID_Consumer($datastore);
+        $response = $consumer->complete(getScriptDir(true));
 
-    $esc_identity = '';
-    // Check the response status.
-    if ($response->status == Auth_OpenID_CANCEL) {
-        // This means the authentication was cancelled.
-        $msg = 'Verification cancelled.';
-    } else if ($response->status == Auth_OpenID_FAILURE) {
-        // Authentication failed; display the error message.
-        $msg = "OpenID authentication failed: " . $response->message;
-    } else if ($response->status == Auth_OpenID_SUCCESS) {
-        // This means the authentication succeeded; extract the
-        // identity URL and Simple Registration data (if it was
-        // returned).
-        $openidid = $response->getDisplayIdentifier();
-        $esc_identity = escape($openidid);
-
-        $success = sprintf('You have successfully verified ' .
-                           '<a href="%s">%s</a> as your identity.',
-                           $esc_identity, $esc_identity);
-
-        if ($response->endpoint->canonicalID) {
-            $escaped_canonicalID = escape($response->endpoint->canonicalID);
-            $success .= '  (XRI CanonicalID: '.$escaped_canonicalID.') ';
+        // Check the response status.
+        if ($response->status == Auth_OpenID_CANCEL) {
+            // This means the authentication was canceled.
+            $_SESSION['openiderror'] = 'OpenID logon canceled. ' . 
+                'Please try again.';
+        } elseif ($response->status == Auth_OpenID_FAILURE) {
+            // Authentication failed; display an error message.
+            $_SESSION['openiderror'] = 'OpenID authentication failed: ' .
+                $response->message . '. Please try again.' ;
+        } elseif ($response->status == Auth_OpenID_SUCCESS) {
+            // This means the authentication succeeded; extract the identity.
+            $openidid = htmlentities($response->getDisplayIdentifier());
+        } else {
+            $_SESSION['openiderror'] = 'OpenID logon error. ' . 
+                                        'Please try again.';
         }
     }
 
-    /* If all required attributes are available, get the       *
-     * database user id and status code of the database query. */
-    $openid = $esc_identity;
-    $provider = getSessionVar('idp');
-    if ((strlen($openid) > 0) &&
-        (strlen($provider) > 0)) {
-        $store->getUserObj($openid, $provider);
-        $_SESSION['uid']    = $store->getUserSub('uid');
-        $_SESSION['status'] = $store->getUserSub('status');
+    /* Make sure no OpenID error was reported */
+    if (strlen($_SESSION['openiderror']) == 0) {
+        /* If all required attributes are available, get the       *
+         * database user id and status code of the database query. */
+        $providerId = getSessionVar('providerId');
+        if ((strlen($openidid) > 0) && (strlen($providerId) > 0)) {
+            $store->getUserObj($openidid, $providerId);
+            $_SESSION['uid']    = $store->getUserSub('uid');
+            $_SESSION['status'] = $store->getUserSub('status');
+        } else {
+            $_SESSION['uid']    = '';
+            $_SESSION['status'] = $store->STATUS['STATUS_ERROR_MISSING_PARAMETER'];
+        }
+
+        // If 'status' is not STATUS_OK_*, then send an error email
+        if (($_SESSION['status']) & 1) { // Bad status codes are odd-numbered
+            sendErrorEmail($openidid,
+                           $providerId,
+                           $_SESSION['uid'],
+                           array_search($_SESSION['status'],$store->STATUS)
+                          );
+        } else {
+            $_SESSION['loa'] = 'openid';
+            $_SESSION['idp'] = $providerId;
+            $_SESSION['idpname'] = $providerId;
+        }
+
+        // Set additional session variables needed by the calling script
+        $_SESSION['submit'] = getSessionVar('responsesubmit');
+        $csrf->setTheCookie();
+        $csrf->setTheSession();
     } else {
-        $_SESSION['uid']    = '';
-        $_SESSION['status'] = $store->STATUS['STATUS_ERROR_MISSING_PARAMETER'];
+        unsetSessionVar('submit');
     }
 
-    // If 'status' is not STATUS_OK_*, then send an error email
-    if (($_SESSION['status']) & 1) { // Bad status codes are odd-numbered
-        sendErrorEmail($openid,
-                       $provider,
-                       $_SESSION['uid'],
-                       array_search($_SESSION['status'],$store->STATUS)
-                      );
-    }
-
-    // Set additional session variables needed by the calling script
-    $_SESSION['submit'] = getSessionVar('responsesubmit');
     unsetSessionVar('responsesubmit');
-
-    $csrf->setTheCookie();
-    $csrf->setTheSession();
 
     /* Finally, redirect to the calling script. */
     header('Location: ' . $responseurl);
-}
-
-function escape($thing) {
-    return htmlentities($thing);
 }
 
 /************************************************************************
@@ -128,7 +118,7 @@ function escape($thing) {
  * SAML attributes in the Shibboleth session, or when the persistent    *
  * store getUser() call returns a bad status code.                      *
  ************************************************************************/
-function sendErrorEmail($openid,$provider,$uid,$statuscode) 
+function sendErrorEmail($openidid,$providerId,$uid,$statuscode) 
 {
     $mailto   = 'help@cilogon.org';
     $mailfrom = 'From: help@cilogon.org' . "\r\n" .
@@ -138,9 +128,9 @@ function sendErrorEmail($openid,$provider,$uid,$statuscode)
 CILogon Service - Failure in /secure/getopeniduser/
 ---------------------------------------------------
 OpenId       = ' . 
-    ((strlen($openid) > 0) ? $openid : '<MISSING>') . '
+    ((strlen($openidid) > 0) ? $openidid : '<MISSING>') . '
 Provider     = ' .
-    ((strlen($provider) > 0) ? $provider : '<MISSING>') . '
+    ((strlen($providerId) > 0) ? $providerId : '<MISSING>') . '
 Database UID = ' .
     ((strlen($uid) > 0) ? $uid : '<MISSING>') . '
 Status Code  = ' .
