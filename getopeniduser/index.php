@@ -64,6 +64,8 @@ function getUserAndRespond($responseurl) {
             $_SESSION['openiderror'] = 'OpenID logon error. ' . 
                                         'Please try again.';
         }
+
+        $openid->disconnect();
     }
 
     /* Make sure no OpenID error was reported */
