@@ -1,7 +1,8 @@
 <?php
 
-require_once("DB.php");
+require_once('DB.php');
 require_once('Auth/OpenID/PostgreSQLStore.php');
+
 
 /************************************************************************
  * Class name : openid                                                  *
@@ -14,6 +15,14 @@ require_once('Auth/OpenID/PostgreSQLStore.php');
  *              username.  This substitution is done automatically by   *
  *              the getURL() method.                                    *
  *                                                                      *
+ *              There is one constant in the class that you should set  *
+ *              for your particular set up:                             *
+ *                                                                      *
+ *              databasePropertiesFile - this is the full path and name *
+ *                  of the database.properties file utilized to connect *
+ *                  to the PostgreSQL database.  It is used by the      *
+ *                  OpenID consumer to store temporary tokens.          *
+ *                                                                      *
  * Example usage:                                                       *
  *    require_once('openid.php');                                       *
  *    $openid = new openid();                                           *
@@ -25,6 +34,9 @@ require_once('Auth/OpenID/PostgreSQLStore.php');
  ************************************************************************/
 
 class openid {
+
+    /* set the constants to correspond to your particular set up.       */
+    const databasePropertiesFile = '/var/www/config/database.properties';
 
     /* The $providerarray lists all of the supported OpenID providers   *
      * as the keys and their corresponding URLs as the values.  If      *
@@ -64,6 +76,8 @@ class openid {
     /* If the OpenID Provider URL has the string 'username' in it, it   *
      * must be replaced with the actual user's account username.        */
     protected $username;
+
+    public $db = null;
 
     /********************************************************************
      * Function  : __construct - default constructor                    *
@@ -175,8 +189,56 @@ class openid {
                $url);
     }
 
-    function getStorage() {
+    /********************************************************************
+     * Function  : disconnect                                           *
+     * This method closes the database connection utilized by the       *
+     * OpenID toolkit.  It should be called after getStorage() and the  *
+     * associated usage of that storage.                                *
+     ********************************************************************/
+    function disconnect() {
+        if ($this->db != null) {
+            $this->db->disconnect();
+            $this->db = null;
+        }
+    }
 
+    /********************************************************************
+     * Function  : getStorage                                           *
+     * Returns   : A new Auth_OpenID_PostgreSQLStore object for use by  *
+     *             an Auth_OpenID_Consumer.                             *
+     * This method connects to a PostgreSQL database in order to store  *
+     * the temporary OpenID tokens used by an Auth_OpenID_Consumer.  It *
+     * reads database parameters from a local database.properties file  *
+     * and tries to open a connection to the PostgreSQL database.  If   *
+     * successful, it creates a new Auth_OpenID_PostgreSQLStore to be   *
+     * returned for use by an Auth_OpenID_Consumer.                     *
+     ********************************************************************/
+    function getStorage() {
+        $retval = null;
+        
+        $this->disconnect();  // Close any previous database connection
+
+        $props = parse_ini_file(self::databasePropertiesFile);
+        if ($props !== false) {
+            $dsn = array(
+                'phptype'  => 'pgsql',
+                'username' => $props['org.cilogon.database.userName'],
+                'password' => $props['org.cilogon.database.password'],
+                'hostspec' => $props['org.cilogon.database.host'],
+                'database' => $props['org.cilogon.database.databaseName']
+            );
+            $this->db =& DB::connect($dsn);
+            if (PEAR::isError($this->db)) {
+                $this->db = null;
+            }
+        }
+
+        if ($this->db != null) {
+            $retval =& new Auth_OpenID_PostgreSQLStore($this->db);
+            $retval->createTables();
+        }
+
+        return $retval;
     }
 }
 
