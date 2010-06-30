@@ -89,14 +89,13 @@ function printFooter($footer='')
     <p>Know <a target="_blank"
     href="http://ca.cilogon.org/responsibilities">your responsibilities</a>
     for using the CILogon Service.</p>
-    <p>The <a target="_blank"
-    href="http://www.cilogon.org/service">CILogon Service</a> is funded by
+    <p>This material is based upon work supported by
     the <a target="_blank" href="http://www.nsf.gov/">National Science
     Foundation</a> under grant number <a target="_blank"
     href="http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0943633">0943633</a>.</p>
-    <p>This site uses software from the <a target="_blank"
-    href="http://myproxy.ncsa.uiuc.edu/">MyProxy</a> and <a target="_blank"
-    href="http://gridshib.globus.org/">GridShib</a> projects.</p>
+    <p>Any opinions, findings and conclusions or recomendations expressed
+    in this material are those of the author(s) and do not necessarily
+    reflect the views of the National Science Foundation.</p>
     <p>Please send any questions or comments about this
     site to <a
     href="mailto:help@cilogon.org">help&nbsp;@&nbsp;cilogon.org</a>.</p>
@@ -141,13 +140,13 @@ function printWAYF()
 {
     global $csrf;
 
-    $incommon   = new incommon();
-    $whitelist  = new whitelist();
-    $idps       = $incommon->getOnlyWhitelist($whitelist);
-    $providerId = getCookieVar('providerId');
-    $keepidp    = getCookieVar('keepidp');
-    $useopenid  = getCookieVar('useopenid');
-    $username   = getCookieVar('username');
+    $incommon    = new incommon();
+    $whitelist   = new whitelist();
+    $idps        = $incommon->getOnlyWhitelist($whitelist);
+    $providerId  = getCookieVar('providerId');
+    $keepidp     = getCookieVar('keepidp');
+    $useopenid   = getCookieVar('useopenid');
+    $username    = getCookieVar('username');
     if (strlen($username) == 0) {
         $username = 'username';
     }
@@ -348,10 +347,7 @@ function printWAYF()
       '">
       <p>
       <a title="'.$insteadtext.'" class="smaller"
-        href="javascript:showHideDiv(\'starthere\',-1);
-        document.getElementById(\'openidusername\').focus();
-        document.getElementById(\'openidusername\').select();
-        useOpenID(\'1\')">Use OpenID instead</a>
+        href="javascript:showHideDiv(\'starthere\',-1); useOpenID(\'1\')">Use OpenID instead</a>
       </p>
       </div>
 
@@ -360,8 +356,7 @@ function printWAYF()
       '">
       <p>
       <a title="'.$insteadtext.'" class="smaller"
-        href="javascript:showHideDiv(\'starthere\',-1);
-        useOpenID(\'0\')">Use InCommon instead</a>
+        href="javascript:showHideDiv(\'starthere\',-1); useOpenID(\'0\')">Use InCommon instead</a>
       </p>
       </div>
 
@@ -371,7 +366,15 @@ function printWAYF()
       Javascript be enabled in your browser.
       </div>
       </noscript>
+      ';
 
+      $openiderror = getSessionVar('openiderror');
+      if (strlen($openiderror) > 0) {
+          echo "<div class=\"openiderror\">$openiderror</div>";
+          unsetSessionVar('openiderror');
+      }
+
+      echo '
       </fieldset>
       </form>
     </div>
