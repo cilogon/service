@@ -81,14 +81,13 @@ function printFooter($footer='')
     <p>Know <a target="_blank"
     href="http://ca.cilogon.org/responsibilities">your responsibilities</a>
     for using the CILogon Service.</p>
-    <p>The <a target="_blank"
-    href="http://www.cilogon.org/service">CILogon Service</a> is funded by
+    <p>This material is based upon work supported by
     the <a target="_blank" href="http://www.nsf.gov/">National Science
     Foundation</a> under grant number <a target="_blank"
     href="http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0943633">0943633</a>.</p>
-    <p>This site uses software from the <a target="_blank"
-    href="http://myproxy.ncsa.uiuc.edu/">MyProxy</a> and <a target="_blank"
-    href="http://gridshib.globus.org/">GridShib</a> projects.</p>
+    <p>Any opinions, findings and conclusions or recomendations expressed
+    in this material are those of the author(s) and do not necessarily
+    reflect the views of the National Science Foundation.</p>
     <p>Please send any questions or comments about this
     site to <a
     href="mailto:help@cilogon.org">help&nbsp;@&nbsp;cilogon.org</a>.</p>
