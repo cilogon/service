@@ -6,9 +6,6 @@ require_once('../include/shib.php');
 require_once('../include/util.php');
 require_once('../include/myproxy.php');
 require_once('Auth/OpenID/Consumer.php');
-require_once('Auth/OpenID/FileStore.php');
-require_once('Auth/OpenID/SReg.php');
-require_once('Auth/OpenID/PAPE.php');
 
 startPHPSession();
 
@@ -898,7 +895,28 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser')
 
 /************************************************************************
  * Function   : redirectToGetOpenIDUser                                 *
- * Parameters : 
+ * Parameters : (1) An OpenID provider name. See the $providerarray in  *
+ *                  the openid.php class for a full list. If not        *
+ *                  specified (or set to the empty string), we check    *
+ *                  providerId PHP session variable and providerId      *
+ *                  cookie (in that order) for non-empty values.        *
+ *              (2) (Optional) The username to replace the string       *
+ *                  'username' in the OpenID URL (if necessary).        *
+ *                  Defaults to 'username'.                             *
+ *              (3) (Optional) The value of the PHP session 'submit'    *
+ *                  variable to be set upon return from the 'getuser'   *
+ *                  script.  This is utilized to control the flow of    *
+ *                  this script after "getuser". Defaults to 'gotuser'. *
+ * This method redirects control flow to the getopeniduser script for   *
+ * when the user logs in via OpenID.  It first checks to see if we have *
+ * a valid session.  If so, we don't need to redirect and instead       *
+ * simply show the Get Certificate page.  Otherwise, we start an OpenID *
+ * logon by using the PHP / OpenID library.  First, connect to the      *
+ * PostgreSQL database to store temporary tokens used by OpenID upon    *
+ * successful authentication.  Next, create a new OpenID consumer and   *
+ * attempt to redirect to the appropriate OpenID provider.  Upon any    *
+ * error, set the 'openiderror' PHP session variable and redisplay the  *
+ * main logon screen.                                                   *
  ************************************************************************/
 function redirectToGetOpenIDUser($providerId='',$username='username',
                                  $responsesubmit='gotuser') 
@@ -906,6 +924,8 @@ function redirectToGetOpenIDUser($providerId='',$username='username',
     global $csrf;
     global $log;
     global $openid;
+
+    $openiderrorstr = 'Internal OpenID error. Please try logging in with Shibboleth.';
 
     // If providerId not set, try the session and cookie values
     if (strlen($providerId) == 0) {
@@ -920,62 +940,58 @@ function redirectToGetOpenIDUser($providerId='',$username='username',
     // simply go to the 'Download Certificate' button page.
     if (verifyCurrentSession($providerId)) {
         printGetCertificatePage();
-    } else { // Otherwise, redirect to the getuser script
-        // Set PHP session varilables needed by the getuser script
+    } else { // Otherwise, redirect to the getopeniduser script
+        // Set PHP session varilables needed by the getopeniduser script
         $_SESSION['providerId'] = $providerId;
-        $_SESSION['idp'] = $providerId;
-        $_SESSION['idpname'] = $providerId;
-        $_SESSION['loa'] = 'openid';
         $_SESSION['responseurl'] = getScriptDir(true);
         $_SESSION['submit'] = 'getuser';
         $_SESSION['responsesubmit'] = $responsesubmit;
         $csrf->setTheCookie();
         $csrf->setTheSession();
 
-        $log->info('OpenID Login');
-
+        $auth_request = null;
         $openid->setProvider($providerId);
         $openid->setUsername($username);
-        $store_path = '/tmp/_php_consumer_cilogon';
-        if (!(file_exists($store_path)) &&
-            !(mkdir($store_path))) {
-            // FIXME!
-            echo "ERROR CREATING STORE DIRECTORY\n";
-            exit(0);
-        }
-        $filestore = new Auth_OpenID_FileStore($store_path);
-        $consumer = new Auth_OpenID_Consumer($filestore);
-        $auth_request = $consumer->begin($openid->getURL());
-        if (!$auth_request) {
-            // FIXME!
-            echo "ERROR CREATING AUTH_REQUEST\n";
-            exit(0);
-        }
-        if ($auth_request->shouldSendRedirect()) {
-            $redirect_url = $auth_request->redirectURL(
-                'https://cilogon.org/',
-                'https://cilogon.org/getopeniduser/');
-            if (Auth_OpenID::isFailure($redirect_url)) {
-                // FIXME!
-                echo "ERROR DOING REDIRECT_URL\n";
-                exit(0);
-            } else {
-                header("Location: " . $redirect_url);
-            }
+        $datastore = $openid->getStorage();
+
+        if ($datastore == null) {
+            $_SESSION['openiderror'] = $openiderrorstr;
         } else {
-            $form_id = 'openid_message';
-            $form_html = $auth_request->htmlMarkup(
-                'https://cilogon.org/',
-                'https://cilogon.org/getopeniduser/',
-                false, array('id' => $form_id));
-            if (Auth_OpenID::isFailure($form_html)) {
-                // FIXME!
-                echo "ERROR DOING REDIRECT_URL " .
-                      $form_html->message . "\n";
-                exit(0);
+            $consumer = new Auth_OpenID_Consumer($datastore);
+            $auth_request = $consumer->begin($openid->getURL());
+        }
+
+        if (!$auth_request) {
+            $_SESSION['openiderror'] = $openiderrorstr;
+        } else {
+            if ($auth_request->shouldSendRedirect()) {
+                $redirect_url = $auth_request->redirectURL(
+                    'https://cilogon.org/',
+                    'https://cilogon.org/getopeniduser/');
+                if (Auth_OpenID::isFailure($redirect_url)) {
+                    $_SESSION['openiderror'] = $openiderrorstr;
+                } else {
+                    $log->info('OpenID Login=' . $redirect_url . '"');
+                    header("Location: " . $redirect_url);
+                }
             } else {
-                print $form_html;
+                $form_id = 'openid_message';
+                $form_html = $auth_request->htmlMarkup(
+                    'https://cilogon.org/',
+                    'https://cilogon.org/getopeniduser/',
+                    false, array('id' => $form_id));
+                if (Auth_OpenID::isFailure($form_html)) {
+                    $_SESSION['openiderror'] = $openiderrorstr;
+                } else {
+                    print $form_html;
+                }
             }
+
+            $openid->disconnect();
+        }
+
+        if (strlen(getSessionVar('openiderror') > 0)) {
+            printLogonPage();
         }
     }
 }
