@@ -569,6 +569,12 @@ table.openidtable td {
   background-color: #eee;
   padding: 0;
 }
+div.openiderror {
+  border: 3px double red;
+  text-align: center;
+  background-color: #fcc;
+  margin: 1em;
+}
 .aolicon {
   background: #eee url('/images/aol.png') no-repeat left center;
 }
