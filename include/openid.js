@@ -120,6 +120,14 @@ function useOpenID(useit)
   var useelement = document.getElementById('useopenid');
   if (useelement !== undefined) {
     useelement.value = useit;
+    if (useit == '1') {
+      /* If there is a 'username' field in the OpenID, select/focus it */
+      openidusername = document.getElementById('openidusername');
+      if (openidusername !== undefined) {
+        openidusername.focus();
+        openidusername.select();
+      }
+    }
   }
 }
 
