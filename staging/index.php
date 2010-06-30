@@ -9,7 +9,7 @@ require_once('Auth/OpenID/Consumer.php');
 
 startPHPSession();
 
-/* The full URL of the Shibboleth-protected getuser script. */
+/* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
 define('GETUSER_URL','https://cilogon.org/secure/getuser/');
 define('GETOPENIDUSER_URL','https://cilogon.org/getopeniduser/');
 
