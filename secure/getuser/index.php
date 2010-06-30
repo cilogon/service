@@ -87,13 +87,14 @@ function getUserAndRespond($responseurl) {
                        $_SESSION['uid'],
                        array_search($_SESSION['status'],$store->STATUS)
                       );
+    } else {
+        // Set additional session variables needed by the calling script
+        $_SESSION['loa'] = $shibarray['Level of Assurance'];
+        $_SESSION['idp'] = $shibarray['Identity Provider'];
+        $_SESSION['idpname'] = $shibarray['Organization Name'];
     }
 
-    // Set additional session variables needed by the calling script
-    $_SESSION['loa'] = $shibarray['Level of Assurance'];
     $_SESSION['submit'] = getSessionVar('responsesubmit');
-    $_SESSION['idp'] = $shibarray['Identity Provider'];
-    $_SESSION['idpname'] = $shibarray['Organization Name'];
     unsetSessionVar('responsesubmit');
 
     $csrf->setTheCookie();
