@@ -41,6 +41,7 @@ function getUserAndRespond($responseurl) {
     $openid = new openid();
     $openidid = '';
 
+    unsetSessionVar('openiderror');
     $datastore = $openid->getStorage();
     if ($datastore == null) {
         $_SESSION['openiderror'] = 'Internal OpenID error. Please try logging in with Shibboleth.';
@@ -69,11 +70,12 @@ function getUserAndRespond($responseurl) {
     }
 
     /* Make sure no OpenID error was reported */
-    if (strlen($_SESSION['openiderror']) == 0) {
+    if (strlen(getSessionVar('openiderror')) == 0) {
         /* If all required attributes are available, get the       *
          * database user id and status code of the database query. */
-        $providerId = getSessionVar('providerId');
-        if ((strlen($openidid) > 0) && (strlen($providerId) > 0)) {
+        $providerId = getCookieVar('providerId');
+        if ((strlen($openidid) > 0) && (strlen($providerId) > 0) &&
+            ($openid->exists($providerId))) {
             $store->getUserObj($openidid, $providerId);
             $_SESSION['uid']    = $store->getUserSub('uid');
             $_SESSION['status'] = $store->getUserSub('status');
