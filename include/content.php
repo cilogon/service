@@ -1,7 +1,7 @@
 <?php
 
-require_once("autoloader.php");
 require_once("util.php");
+require_once("autoloader.php");
 
 /* The csrf token object to set the CSRF cookie and print the hidden */
 /* CSRF form element.  Be sure to do "global $csrf" to use it.       */
@@ -190,7 +190,9 @@ function printWAYF()
       </select>
       </div>
       </div>
+      ';
 
+    echo '
       <!-- Preload all OpenID icons -->
       <div class="zeroheight">
         <div class="aolicon"></div>
@@ -323,7 +325,9 @@ function printWAYF()
       </table>
       </div>
       </div>
+      ';
 
+      echo '
       <p>
       <label for="keepidp" title="' . $helptext . 
       '" class="helpcursor">Remember this selection:</label>
@@ -346,8 +350,14 @@ function printWAYF()
       (($useopenid == '1') ? 'none' : 'inline') . 
       '">
       <p>
+      ';
+
+      echo '
       <a title="'.$insteadtext.'" class="smaller"
         href="javascript:showHideDiv(\'starthere\',-1); useOpenID(\'1\')">Use OpenID instead</a>
+      ';
+
+      echo '
       </p>
       </div>
 
