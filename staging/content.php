@@ -168,9 +168,15 @@ function printWAYF()
       <form action="' . getScriptDir() . '" method="post">
       <fieldset>
 
-      <div id="starthere1" style="display:' . 
-      (($useopenid == '1') ? 'none' : 'inline') . 
-      '">
+      <div id="starthere1" style="display:';
+
+      if ($useopenid == '1') {
+          echo 'none">';
+      } else {
+          echo 'inline">';
+      }
+
+      echo '
       <p>
       Select An InCommon Organization:
       </p>
@@ -219,11 +225,18 @@ function printWAYF()
         <div class="googleicon"></div>
         <div class="myvidoopicon"></div>
         <div class="yiidicon"></div>
-      </div>
+      </div>';
 
-      <div id="starthere2" style="display:' . 
-      (($useopenid == '1') ? 'inline' : 'none') . 
-      '">
+      echo '
+      <div id="starthere2" style="display:';
+
+      if ($useopenid == '1') {
+          echo 'inline">';
+      } else {
+          echo 'none">';
+      }
+
+      echo '
       <p>
       Select An OpenID Provider:
       </p>
@@ -232,12 +245,11 @@ function printWAYF()
         <col width="85%" />
         <col width="15%" />
         <tr>
-        <th id="openidurl">
-        ';
+        <th id="openidurl">';
 
-        echo $openid->getInputTextURL();
+      echo $openid->getInputTextURL();
 
-        echo '
+      echo '
         </th>
         <td class="openiddrop">
         <ul>
@@ -270,7 +282,9 @@ function printWAYF()
                 href="javascript:selectOID(\'LiquidID\')">LiquidID</a></td>
               <td class="openidicon"><a 
                 href="javascript:selectOID(\'OpenID\')">OpenID</a></td>
-            </tr>
+            </tr>';
+
+      echo '
             <tr>
               <td class="chimpicon"><a 
                 href="javascript:selectOID(\'Chi.mp\')">Chi.mp</a></td>
@@ -335,8 +349,11 @@ function printWAYF()
       (($keepidp == 'checked') ? 'checked="checked" ' : '') .
       'title="' .  $helptext . '" class="helpcursor" />
       </p>
-      <p>
-      ' . $csrf->getHiddenFormElement() . '
+      <p>';
+
+      echo $csrf->getHiddenFormElement();
+
+      echo '
       <input type="hidden" name="useopenid" id="useopenid" value="' . 
       (($useopenid == '1') ? '1' : '0') . '"/>
       <input type="hidden" name="hiddenopenid" id="hiddenopenid" value="' .
@@ -346,9 +363,15 @@ function printWAYF()
       value="Log On" />
       </p>
 
-      <div id="starthere3" style="display:' . 
-      (($useopenid == '1') ? 'none' : 'inline') . 
-      '">
+      <div id="starthere3" style="display:';
+
+      if ($useopenid == '1') {
+          echo 'none">';
+      } else {
+          echo 'inline">';
+      }
+
+      echo '
       <p>
       ';
 
@@ -361,12 +384,24 @@ function printWAYF()
       </p>
       </div>
 
-      <div id="starthere4" style="display:'.
-      (($useopenid == '1') ? 'inline' : 'none') . 
-      '">
+      <div id="starthere4" style="display:';
+
+      if ($useopenid == '1') {
+          echo 'inline">';
+      } else {
+          echo 'none">';
+      }
+
+      echo '
       <p>
+      ';
+
+      echo '
       <a title="'.$insteadtext.'" class="smaller"
         href="javascript:showHideDiv(\'starthere\',-1); useOpenID(\'0\')">Use InCommon instead</a>
+      ';
+
+      echo '
       </p>
       </div>
 
@@ -590,7 +625,7 @@ function redirectToGetOpenIDUser($providerId='',$username='username',
                 if (Auth_OpenID::isFailure($redirect_url)) {
                     $_SESSION['openiderror'] = $openiderrorstr;
                 } else {
-                    $log->info('OpenID Login=' . $redirect_url . '"');
+                    $log->info('OpenID Login="' . $redirect_url . '"');
                     header("Location: " . $redirect_url);
                 }
             } else {
