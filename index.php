@@ -5,14 +5,19 @@ require_once('include/content.php');
 require_once('include/shib.php');
 require_once('include/util.php');
 require_once('include/myproxy.php');
+require_once('Auth/OpenID/Consumer.php');
 
 startPHPSession();
 
-/* The full URL of the Shibboleth-protected getuser script. */
+/* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
 define('GETUSER_URL','https://cilogon.org/secure/getuser/');
+define('GETOPENIDUSER_URL','https://cilogon.org/getopeniduser/');
 
 /* Read in the whitelist of currently available IdPs. */
 $white = new whitelist();
+
+/* Get a default OpenID object to be used in case of OpenID logon. */
+$openid = new openid();
 
 /* Loggit object for logging info to syslog. */
 $log = new loggit();
@@ -28,22 +33,39 @@ $log->info('submit="' . $submit . '"');
  * equivalent PHP session variable, take action or print out HTML. */
 switch ($submit) {
 
-    case 'Log On': // User selected an IdP - go to getuser script
-        // Verify that providerId is set and is in the whitelist
-        $providerIdPost = getPostVar('providerId');
-        if ((strlen($providerIdPost) > 0) &&
-            ($white->exists($providerIdPost))) {
-            setcookie('providerId',$providerIdPost,
-                      time()+60*60*24*365,'/','',true);
-            // Set the cookie for keepidp if the checkbox was checked
-            if (strlen(getPostVar('keepidp')) > 0) {
-                setcookie('keepidp','checked',time()+60*60*24*365,'/','',true);
-            } else {
-                setcookie('keepidp','',time()-3600,'/','',true);
+    case 'Log On': // Check for OpenID or InCommon usage.
+        // Set the cookie for keepidp if the checkbox was checked
+        if (strlen(getPostVar('keepidp')) > 0) {
+            setcookie('keepidp','checked',time()+60*60*24*365,'/','',true);
+        } else {
+            setcookie('keepidp','',time()-3600,'/','',true);
+        }
+        if (getPostVar('useopenid') == '1') { // Use OpenID authentication
+            setcookie('useopenid','1',time()+60*60*24*365,'/','',true);
+            // Verify that OpenID provider is in list of providers
+            $openidproviderPost = getPostVar('hiddenopenid');
+            $usernamePost = getPostVar('username');
+            if ($openid->exists($openidproviderPost)) {
+                setcookie('providerId',$openidproviderPost,
+                          time()+60*60*24*365,'/','',true);
+                setcookie('username',$usernamePost,
+                          time()+60*60*24*365,'/','',true);
+                redirectToGetOpenIDUser($openidproviderPost,$usernamePost);
+            } else { // OpenID provider is not in provider list
+                printLogonPage();
             }
-            redirectToGetuser($providerIdPost);
-        } else { // Either providerId not set or not in whitelist
-            printLogonPage();
+        } else { // Use InCommon authentication
+            setcookie('useopenid','',time()-3600,'/','',true);
+            // Verify that InCommon providerId is in the whitelist
+            $providerIdPost = getPostVar('providerId');
+            if ($white->exists($providerIdPost)) {
+                setcookie('providerId',$providerIdPost,
+                          time()+60*60*24*365,'/','',true);
+                setcookie('username','',time()-3600,'/','',true);
+                redirectToGetUser($providerIdPost);
+            } else { // Either providerId not set or not in whitelist
+                printLogonPage();
+            }
         }
     break; // End case 'Log On'
 
@@ -62,7 +84,7 @@ switch ($submit) {
     case 'Proceed': // Proceed after 'User Changed' page
         // Verify the PHP session contains valid info
         if (verifyCurrentSession()) {
-            printGetCertificatePage();
+            printMainPage();
         } else { // Otherwise, redirect to the 'Welcome' page
             $_SESSION = array();  // Clear session variables
             printLogonPage();
@@ -78,14 +100,29 @@ switch ($submit) {
     break; // End case 'GSI-SSHTerm Web Applet'
 
     default: // No submit button clicked nor PHP session submit variable set
-        /* If both the "keepidp" and the "providerId" cookies were set 
-         * (and the providerId is a whitelisted IdP) then skip the 
-         * Logon page and proceed to the getuser script.  */
-        $providerIdCookie = urldecode(getCookieVar('providerId'));
+        /* If both the "keepidp" and the "providerId" cookies were set *
+         * (and the providerId is a whitelisted IdP or valid OpenID    *
+         * provider) then skip the Logon page and proceed to the       *
+         * appropriate getuser script.                                 */
+        $providerIdCookie = getCookieVar('providerId');
         if ((strlen($providerIdCookie) > 0) && 
-            (strlen(getCookieVar('keepidp')) > 0) &&
-            ($white->exists($providerIdCookie))) {
-            redirectToGetuser($providerIdCookie);
+            (strlen(getCookieVar('keepidp')) > 0)) {
+            if (getCookieVar('useopenid') == '1') { // Use OpenID authentication
+                $usernameCookie = getCookieVar('username');
+                if (($openid->exists($providerIdCookie)) &&
+                    (strlen($usernameCookie) > 0))
+                {
+                    redirectToGetOpenIDUser($providerIdCookie,$usernameCookie);
+                } else {
+                    printLogonPage();
+                }
+            } else { // Use InCommon authentication
+                if ($white->exists($providerIdCookie)) {
+                    redirectToGetUser($providerIdCookie);
+                } else {
+                    printLogonPage();
+                }
+            }
         } else { // One of the cookies for providerId or keepidp was not set.
             printLogonPage();
         }
@@ -159,6 +196,18 @@ function printLogonPage()
       href="/requestidp/">make a request for your organization</a> to appear
       in the list of available organizations.
       </p>
+      <h2>Can I Use OpenID Instead?</h2>
+      <p>
+      The CILogon Service also supports the use of <a target="_blank"
+      href="http://openid.net/">OpenID</a> as an alternate authentication
+      mechanism.  Many users have an OpenID account without even knowing it.
+      For example, you can use your <a target="_blank"
+      href="http://google.com/profiles/me">Google</a> or <a target="_blank"
+      href="http://openid.yahoo.com/">Yahoo</a> account for OpenID
+      authentication.  However, the certificates issued to OpenID users may
+      be accepted by fewer cyberinfrastructure resource providers than those
+      issued to InCommon users.  
+      </p>
       <p class="note">
       <strong>Note:</strong> You must enable cookies in your web browser to
       use this site.
@@ -172,12 +221,12 @@ function printLogonPage()
 }
 
 /************************************************************************
- * Function   : printGetCertificatePage                                 *
+ * Function   : printMainPage                                           *
  * This function prints out the HTML for the main page where the user   *
  * can download a certificate and launch the GSI-SSHTerm                *
  * application/applet.                                                  *
  ************************************************************************/
-function printGetCertificatePage()
+function printMainPage()
 {
     global $perl_config;
     global $log;
@@ -385,7 +434,7 @@ function handleGotUser()
         if ($status == $store->STATUS['STATUS_OK_USER_CHANGED']) {
             printUserChangedPage();
         } else { // STATUS_OK or STATUS_OK_NEW_USER
-            printGetCertificatePage();
+            printMainPage();
         }
     }
 }
@@ -721,125 +770,29 @@ function getMyProxyForUID($uid)
  * parameter.  It is not a true DN in that it also contains an email=   *
  * field to be put into the credential extension.  This function reads  *
  * the PHP session value of 'loa' (level of assurance) to determine     *
- * whether a 'basic' or 'silver' credential should be issued.           *
+ * whether a 'basic', 'silver', or 'openid' credential should be issued.*
  ************************************************************************/
 function getMyProxyForDN($dn) {
     $retval = '';
+    $port = 7512;  // Default to 'basic' cert
 
     if (strlen($dn) > 0) {
-        // Check if we should issue 'basic' or 'silver' cert
-        $silver = false;
+        // Check if we should issue 'basic', 'silver', or 'openid' cert
         $loa = getSessionVar('loa');
         if ($loa == 'http://incommonfederation.org/assurance/silver') {
-            $silver = true;
+            $port = 7514;
+        } elseif ($loa == 'openid') {
+            $port = 7516;
         }
 
         $cert = getMyProxyCredential($dn,'','myproxy.cilogon.org',
-                ($silver ? 7514 : 7512),12,'/var/www/config/hostcred.pem','');
+                $port,12,'/var/www/config/hostcred.pem','');
         if (strlen($cert) > 0) {
             $retval = $cert;
         }
     }
 
     return $retval;
-}
-
-/************************************************************************
- * Function   : verifyCurrentSession                                    *
- * Parameter  : (Optional) The user-selected Identity Provider          *
- * Returns    : True if the contents of the PHP session ar valid,       *
- *              False otherwise.                                        *
- * This function verifies the contents of the PHP session.  It checks   *
- * the following:                                                       *
- * (1) The persistent store 'uid', the Identity Provider 'idp', the     *
- *     IdP Display Name 'idpname', and the 'status' (of getUser()) are  *
- *     all non-empty strings.                                           *
- * (2) The 'status' (of getUser()) is even (i.e. STATUS_OK_*).          *
- * (3) If $providerId is passed-in, it must match 'idp'.                *
- * If all checks are good, then this function returns true.             *
- ************************************************************************/
-function verifyCurrentSession($providerId='') 
-{
-    $retval = false;
-
-    $uid = getSessionVar('uid');
-    $idp = getSessionVar('idp');
-    $idpname = getSessionVar('idpname');
-    $status = getSessionVar('status');
-    if ((strlen($uid) > 0) && (strlen($idp) > 0) && 
-        (strlen($idpname) > 0) && (strlen($status) > 0) &&
-        (!($status & 1))) {  // All STATUS_OK_* codes are even
-        if ((strlen($providerId) == 0) || ($providerId == $idp)) {
-            $retval = true;
-        }
-    }
-
-    return $retval;
-}
-
-/************************************************************************
- * Function   : redirectToGetuser                                       *
- * Parameters : (1) An entityID of the authenticating IdP.  If not      *
- *                  specified (or set to the empty string), we check    *
- *                  providerId PHP session variable and providerId      *
- *                  cookie (in that order) for non-empty values.        *
- *              (2) (Optional) The value of the PHP session 'submit'    *
- *                  variable to be set upon return from the 'getuser'   *
- *                  script.  This is utilized to control the flow of    *
- *                  this script after "getuser". Defaults to 'gotuser'. *
- * If the first parameter (a whitelisted entityID) is not specified,    *
- * we check to see if either the providerId PHP session variable or the *
- * providerId cookie is set (in that order) and use one if available.   *
- * The function then checks to see if there is a valid PHP session      *
- * and if the providerId matches the 'idp' in the session.  If so, then *
- * we don't need to redirect to "/secure/getuser/" and instead we       *
- * we display the main "Download Certificate" page.  However, if the    *
- * PHP session is not valid, then this function redirects to the        *
- * "/secure/getuser/" script so as to do a Shibboleth authentication    *
- * via the InCommon WAYF.  When the providerId is non-empty, the WAYF   *
- * will automatically go to that IdP (i.e. without stopping at the      *
- * WAYF).  This function also sets several PHP session variables that   *
- * are needed by the getuser script, including the 'responsesubmit'     *
- * variable which is set as the return 'submit' variable in the         *
- * 'getuser' script.                                                    *
- ************************************************************************/
-function redirectToGetuser($providerId='',$responsesubmit='gotuser')
-{
-    global $csrf;
-    global $log;
-
-    // If providerId not set, try the session and cookie values
-    if (strlen($providerId) == 0) {
-        $providerId = getSessionVar('providerId');
-        if (strlen($providerId) == 0) {
-            $providerId = getCookieVar('providerId');
-        }
-    }
-
-    // If the user has a valid 'uid' in the PHP session, and the
-    // providerId matches the 'idp' in the PHP session, then 
-    // simply go to the 'Download Certificate' button page.
-    if (verifyCurrentSession($providerId)) {
-        printGetCertificatePage();
-    } else { // Otherwise, redirect to the getuser script
-        // Set PHP session varilables needed by the getuser script
-        $_SESSION['responseurl'] = getScriptDir(true);
-        $_SESSION['submit'] = 'getuser';
-        $_SESSION['responsesubmit'] = $responsesubmit;
-        $csrf->setTheCookie();
-        $csrf->setTheSession();
-
-        // Set up the "header" string for redirection thru InCommon WAYF
-        $redirect = 
-            'Location: https://cilogon.org/Shibboleth.sso/WAYF/InCommon?' .
-            'target=' . urlencode(GETUSER_URL);
-        if (strlen($providerId) > 0) {
-            $redirect .= '&providerId=' . urlencode($providerId);
-        }
-
-        $log->info('Shibboleth Login="' . $redirect . '"');
-        header($redirect);
-    }
 }
 
 ?>
