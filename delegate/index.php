@@ -4,6 +4,7 @@ require_once('../include/autoloader.php');
 require_once('../include/content.php');
 require_once('../include/shib.php');
 require_once('../include/util.php');
+require_once('Auth/OpenID/Consumer.php');
 
 startPHPSession();
 
@@ -68,7 +69,7 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
                     setcookie('providerId',$providerIdPost,
                               time()+60*60*24*365,'/','',true);
                     setcookie('username','',time()-3600,'/','',true);
-                    redirectToGetuser($providerIdPost);
+                    redirectToGetUser($providerIdPost);
                 } else { // Either providerId not set or not in whitelist
                     printLogonPage();
                 }
@@ -82,7 +83,7 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
         case 'Proceed': // Proceed after 'User Changed' paged
             // Verify the PHP session contains valid info
             if (verifyCurrentSession()) {
-                printAllowDelegationPage();
+                printMainPage();
             } else { // Otherwise, redirect to the 'Welcome' page
                 removeShibCookies();
                 unsetGetUserSessionVars();
@@ -104,7 +105,7 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
              * (and the providerId is a whitelisted IdP or valid OpenID    *
              * provider) then skip the Logon page and proceed to the       *
              * appropriate getuser script.                                 */
-            $providerIdCookie = urldecode(getCookieVar('providerId'));
+            $providerIdCookie = getCookieVar('providerId');
             if ((strlen($providerIdCookie) > 0) && 
                 (strlen(getCookieVar('keepidp')) > 0)) {
                 if (getCookieVar('useopenid') == '1') { // Use OpenID auth
@@ -119,7 +120,7 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
                     }
                 } else { // Use InCommon authentication
                     if ($white->exists($providerIdCookie)) {
-                        redirectToGetuser($providerIdCookie);
+                        redirectToGetUser($providerIdCookie);
                     } else { 
                         printLogonPage();
                     }
@@ -271,7 +272,7 @@ function printBadOAuthTokenPage()
 }
 
 /************************************************************************
- * Function   : printAllowDelegationPage                                *
+ * Function   : printMainPage                                           *
  * This function prints out the HTML for the main page where the user   *
  * is presented with the portal information and asked to either Allow   *
  * or Deny delegation of a certificate to the portal.  We first check   *
@@ -279,7 +280,7 @@ function printBadOAuthTokenPage()
  * so, then we automatically "Always Allow" delegation.  Otherwise,     *
  * we print out the HTML for the <form> buttons.                        *
  ************************************************************************/
-function printAllowDelegationPage()
+function printMainPage()
 {
     global $log;
 
@@ -503,6 +504,8 @@ function handleAllowDelegation($always=false)
                                  $x509out,$retcode);
                             if ($retcode == 0) {
                                 $certtext = implode("\n",$x509out);
+                            } else {
+                                $certtext = $cert;
                             }
                         }
                     }
@@ -692,7 +695,7 @@ function handleGotUser()
         if ($status == $store->STATUS['STATUS_OK_USER_CHANGED']) {
             printUserChangedPage();
         } else { // STATUS_OK or STATUS_OK_NEW_USER
-            printAllowDelegationPage();
+            printMainPage();
         }
     }
 }
@@ -950,207 +953,5 @@ function verifyOAuthToken($token='')
 
     return $retval;
 }
-
-/************************************************************************
- * Function   : verifyCurrentSession                                    *
- * Parameter  : (Optional) The user-selected Identity Provider          *
- * Returns    : True if the contents of the PHP session ar valid,       *
- *              False otherwise.                                        *
- * This function verifies the contents of the PHP session.  It checks   *
- * the following:                                                       *
- * (1) The persistent store 'uid', the Identity Provider 'idp', the     *
- *     IdP Display Name 'idpname', and the 'status' (of getUser()) are  *
- *     all non-empty strings.                                           *
- * (2) The 'status' (of getUser()) is even (i.e., STATUS_OK_*).         *
- * (3) If $providerId is passed-in, it must match 'idp'.                *
- * If all checks are good, then this function returns true.             *
- ************************************************************************/
-function verifyCurrentSession($providerId='') 
-{
-    $retval = false;
-
-    $uid = getSessionVar('uid');
-    $idp = getSessionVar('idp');
-    $idpname = getSessionVar('idpname');
-    $status = getSessionVar('status');
-    if ((strlen($uid) > 0) && (strlen($idp) > 0) && 
-        (strlen($idpname) > 0) && (strlen($status) > 0) &&
-        (!($status & 1))) {  // All STATUS_OK_* codes are even
-        if ((strlen($providerId) == 0) || ($providerId == $idp)) {
-            $retval = true;
-        }
-    }
-
-    return $retval;
-}
-
-/************************************************************************
- * Function   : redirectToGetuser                                       *
- * Parameters : (1) An entityID of the authenticating IdP.  If not      *
- *                  specified (or set to the empty string), we check    *
- *                  providerId PHP session variable and providerId      *
- *                  cookie (in that order) for non-empty values.        *
- *              (2) (Optional) The value of the PHP session 'submit'    *
- *                  variable to be set upon return from the 'getuser'   *
- *                  script.  This is utilized to control the flow of    *
- *                  this script after "getuser". Defaults to 'gotuser'. *
- * If the first parameter (a whitelisted entityID) is not specified,    *
- * we check to see if either the providerId PHP session variable or the *
- * providerId cookie is set (in that order) and use one if available.   *
- * The function then checks to see if there is a valid PHP session      *
- * and if the providerId matches the 'idp' in the session.  If so, then *
- * we don't need to redirect to "/secure/getuser/" and instead we       *
- * we display the main "Allow Delegation" page.  However, if the        *
- * PHP session is not valid, then this function redirects to the        *
- * "/secure/getuser/" script so as to do a Shibboleth authentication    *
- * via the InCommon WAYF.  When the providerId is non-empty, the WAYF   *
- * will automatically go to that IdP (i.e., without stopping at the     *
- * WAYF).  This function also sets several PHP session variables that   *
- * are needed by the getuser script, including the 'responsesubmit'     *
- * variable which is set as the return 'submit' variable in the         *
- * 'getuser' script.                                                    *
- ************************************************************************/
-function redirectToGetuser($providerId='',$responsesubmit='gotuser')
-{
-    global $csrf;
-    global $log;
-
-    // If providerId not set, try the session and cookie values
-    if (strlen($providerId) == 0) {
-        $providerId = getSessionVar('providerId');
-        if (strlen($providerId) == 0) {
-            $providerId = getCookieVar('providerId');
-        }
-    }
-
-    // If the user has a valid 'uid' in the PHP session, and the
-    // providerId matches the 'idp' in the PHP session, then 
-    // simply go to the 'Allow Delegation' page.
-    if (verifyCurrentSession($providerId)) {
-        printAllowDelegationPage();
-    } else { // Otherwise, redirect to the getuser script
-        // Set PHP session varilables needed by the getuser script
-        $_SESSION['responseurl'] = getScriptDir(true);
-        $_SESSION['submit'] = 'getuser';
-        $_SESSION['responsesubmit'] = $responsesubmit;
-        $csrf->setTheCookie();
-        $csrf->setTheSession();
-
-        // Set up the "header" string for redirection thru InCommon WAYF
-        $redirect = 
-            'Location: https://cilogon.org/Shibboleth.sso/WAYF/InCommon?' .
-            'target=' . urlencode(GETUSER_URL);
-        if (strlen($providerId) > 0) {
-            $redirect .= '&providerId=' . urlencode($providerId);
-        }
-
-        $log->info('Shibboleth Login="' . $redirect . '"');
-        header($redirect);
-    }
-}
-
-/************************************************************************
- * Function   : redirectToGetOpenIDUser                                 *
- * Parameters : (1) An OpenID provider name. See the $providerarray in  *
- *                  the openid.php class for a full list. If not        *
- *                  specified (or set to the empty string), we check    *
- *                  providerId PHP session variable and providerId      *
- *                  cookie (in that order) for non-empty values.        *
- *              (2) (Optional) The username to replace the string       *
- *                  'username' in the OpenID URL (if necessary).        *
- *                  Defaults to 'username'.                             *
- *              (3) (Optional) The value of the PHP session 'submit'    *
- *                  variable to be set upon return from the 'getuser'   *
- *                  script.  This is utilized to control the flow of    *
- *                  this script after "getuser". Defaults to 'gotuser'. *
- * This method redirects control flow to the getopeniduser script for   *
- * when the user logs in via OpenID.  It first checks to see if we have *
- * a valid session.  If so, we don't need to redirect and instead       *
- * simply show the Get Certificate page.  Otherwise, we start an OpenID *
- * logon by using the PHP / OpenID library.  First, connect to the      *
- * PostgreSQL database to store temporary tokens used by OpenID upon    *
- * successful authentication.  Next, create a new OpenID consumer and   *
- * attempt to redirect to the appropriate OpenID provider.  Upon any    *
- * error, set the 'openiderror' PHP session variable and redisplay the  *
- * main logon screen.                                                   *
- ************************************************************************/
-function redirectToGetOpenIDUser($providerId='',$username='username',
-                                 $responsesubmit='gotuser') 
-{
-    global $csrf;
-    global $log;
-    global $openid;
-
-    $openiderrorstr = 'Internal OpenID error. Please try logging in with Shibboleth.';
-
-    // If providerId not set, try the session and cookie values
-    if (strlen($providerId) == 0) {
-        $providerId = getSessionVar('providerId');
-        if (strlen($providerId) == 0) {
-            $providerId = getCookieVar('providerId');
-        }
-    }
-
-    // If the user has a valid 'uid' in the PHP session, and the
-    // providerId matches the 'idp' in the PHP session, then 
-    // simply go to the 'Download Certificate' button page.
-    if (verifyCurrentSession($providerId)) {
-        printAllowDelegationPage();
-    } else { // Otherwise, redirect to the getopeniduser script
-        // Set PHP session varilables needed by the getopeniduser script
-        $_SESSION['providerId'] = $providerId;
-        $_SESSION['responseurl'] = getScriptDir(true);
-        $_SESSION['submit'] = 'getuser';
-        $_SESSION['responsesubmit'] = $responsesubmit;
-        $csrf->setTheCookie();
-        $csrf->setTheSession();
-
-        $auth_request = null;
-        $openid->setProvider($providerId);
-        $openid->setUsername($username);
-        $datastore = $openid->getStorage();
-
-        if ($datastore == null) {
-            $_SESSION['openiderror'] = $openiderrorstr;
-        } else {
-            $consumer = new Auth_OpenID_Consumer($datastore);
-            $auth_request = $consumer->begin($openid->getURL());
-        }
-
-        if (!$auth_request) {
-            $_SESSION['openiderror'] = $openiderrorstr;
-        } else {
-            if ($auth_request->shouldSendRedirect()) {
-                $redirect_url = $auth_request->redirectURL(
-                    'https://cilogon.org/delegate/',
-                    'https://cilogon.org/getopeniduser/');
-                if (Auth_OpenID::isFailure($redirect_url)) {
-                    $_SESSION['openiderror'] = $openiderrorstr;
-                } else {
-                    $log->info('OpenID Login=' . $redirect_url . '"');
-                    header("Location: " . $redirect_url);
-                }
-            } else {
-                $form_id = 'openid_message';
-                $form_html = $auth_request->htmlMarkup(
-                    'https://cilogon.org/delegate/',
-                    'https://cilogon.org/getopeniduser/',
-                    false, array('id' => $form_id));
-                if (Auth_OpenID::isFailure($form_html)) {
-                    $_SESSION['openiderror'] = $openiderrorstr;
-                } else {
-                    print $form_html;
-                }
-            }
-
-            $openid->disconnect();
-        }
-
-        if (strlen(getSessionVar('openiderror') > 0)) {
-            printLogonPage();
-        }
-    }
-}
-
 
 ?>
