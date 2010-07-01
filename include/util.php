@@ -1,5 +1,9 @@
 <?php
 
+/* NOTE: Look at the bottom of this file to see that it calls           *
+ * startPHPSession().  Thus you simply need to require_once(util.php)   *
+ * at the top of your PHP code to start a PHP session.                  */
+
 /************************************************************************
  * Function  : getServerVar                                             *
  * Parameter : The $_SERVER variable to query.                          *
@@ -170,5 +174,8 @@ function getScriptDir($fullurl=false) {
     }
     return $retval;
 }
+
+/* Start a secure PHP session */
+startPHPSession();
 
 ?>

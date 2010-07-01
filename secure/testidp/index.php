@@ -1,11 +1,9 @@
 <?php
 
+require_once('../../include/util.php');
 require_once('../../include/autoloader.php');
 require_once('../../include/content.php');
 require_once('../../include/shib.php');
-require_once('../../include/util.php');
-
-startPHPSession();
 
 define('ADD_SUBMIT_TEXT','Add Your IdP to the CILogon Service');
 

@@ -1,10 +1,8 @@
 <?php
 
+require_once('../include/util.php');
 require_once('../include/autoloader.php');
 require_once('../include/content.php');
-require_once('../include/util.php');
-
-startPHPSession();
 
 $validator = new EmailAddressValidator();
 define('DEFAULT_OPTION_TEXT','-- Choose one -or- Type one in below --');

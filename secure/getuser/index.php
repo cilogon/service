@@ -1,11 +1,9 @@
 <?php
 
+require_once('../../include/util.php');
 require_once('../../include/autoloader.php');
 require_once('../../include/content.php');
 require_once('../../include/shib.php');
-require_once('../../include/util.php');
-
-startPHPSession();
 
 /* Check the csrf cookie against either a hidden <form> element or a *
  * PHP session variable, and get the value of the "submit" element.  */
