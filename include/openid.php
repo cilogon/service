@@ -77,7 +77,7 @@ class openid {
      * must be replaced with the actual user's account username.        */
     protected $username;
 
-    public $db = null;
+    protected $db = null;
 
     /********************************************************************
      * Function  : __construct - default constructor                    *
