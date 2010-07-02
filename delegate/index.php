@@ -166,8 +166,9 @@ function printLogonPage()
       proceed.
       </p>
       <div class="portalinfo">
-      <pre> Portal Name: '.htmlspecialchars(getSessionVar('portalname')).' 
-' .       ' Portal URL : '.htmlspecialchars(getSessionVar('successuri')).' </pre>
+      <pre> Portal Name: ',htmlspecialchars(getSessionVar('portalname')),' 
+' ,       ' Portal URL : ',htmlspecialchars(getSessionVar('successuri')),
+' </pre>
       </div>
       <h2>How Does The CILogon Delegation Service Work?</h2>
       <p>
@@ -330,9 +331,9 @@ function printMainPage()
         </p>
 
         <div class="portalinfo">
-        <pre> Portal Name   : '.htmlspecialchars(getSessionVar('portalname')).'
-' .       ' Portal URL    : ' .  htmlspecialchars(getSessionVar('successuri')).'
-' .       ' Delegation URL: ' . htmlspecialchars(getSessionVar('callbackuri')).
+        <pre> Portal Name   : ',htmlspecialchars(getSessionVar('portalname')),'
+' ,         ' Portal URL    : ',htmlspecialchars(getSessionVar('successuri')),'
+' ,         ' Delegation URL: ',htmlspecialchars(getSessionVar('callbackuri')),
         '</pre>
         </div>
 
@@ -346,11 +347,11 @@ function printMainPage()
 
         echo '
         <p>
-        <label for="lifetime" title="' . $lifetimetext . '" 
+        <label for="lifetime" title="' , $lifetimetext , '" 
         class="helpcursor">Certificate Lifetime (in hours):</label>
-        <input type="text" name="lifetime" id="lifetime" title="' .
+        <input type="text" name="lifetime" id="lifetime" title="' ,
         $lifetimetext. '" class="helpcursor" size="3" maxlength="3" 
-        value="' . $lifetime . '" />
+        value="' , $lifetime , '" />
         </p>
         <p>
         <input type="submit" name="submit" class="submit" value="Allow" />
@@ -398,8 +399,8 @@ function printDenyPage() {
         You Have Denied Delegation Of A Certificate To Your Portal
       </div>
     <p>
-    You have explicitly denied delegation of a certificate to the portal "' .
-    getSessionVar('portalname') . '".  Below is a link to return to the
+    You have explicitly denied delegation of a certificate to the portal "' ,
+    getSessionVar('portalname') , '".  Below is a link to return to the
     portal.  This link has been provided by the portal to be used when
     delegation of a certificate fails.
     </p>
@@ -411,8 +412,8 @@ function printDenyPage() {
     </p>
 
     <div class="returnlink">
-      <a href="' . getSessionVar('failureuri') . '">Return to ' .
-      getSessionVar('portalname') . '</a>
+      <a href="' , getSessionVar('failureuri') , '">Return to ' ,
+      getSessionVar('portalname') , '</a>
     </div>
     </div>
     ';
@@ -551,14 +552,14 @@ function handleAllowDelegation($always=false)
         printIcon(($success ? 'okay' : 'error'));
         echo '
         </div>
-        <h2>' . ($success ? 'Success!' : 'Failure!') . '</h2>
+        <h2>' , ($success ? 'Success!' : 'Failure!') , '</h2>
         </div>
         ';
         if ($success) {
             echo '
             <p>
-            A certificate has been delegated to the portal "' .
-            getSessionVar('portalname') . '".  Below is a link to return to
+            A certificate has been delegated to the portal "' ,
+            getSessionVar('portalname') , '".  Below is a link to return to
             your portal to use the delegated certificate.
             </p>
             ';
@@ -592,7 +593,7 @@ function handleAllowDelegation($always=false)
                 <br class="clear" />
                 <div id="certtext3" style="display:none">
                   <div class="portalinfo">
-                  <pre>' . htmlspecialchars($certtext) . '</pre>
+                  <pre>' , htmlspecialchars($certtext) , '</pre>
                   </div>
                 </div>
                 </div>
@@ -601,8 +602,8 @@ function handleAllowDelegation($always=false)
         } else {
             echo '
             <p>
-            We were unable to delegate a certificate to the portal "' .
-            getSessionVar('portalname') . '".  Below is a link to return to
+            We were unable to delegate a certificate to the portal "' ,
+            getSessionVar('portalname') , '".  Below is a link to return to
             the portal.  This link has been provided by the portal to be
             used when delegation of a certificate fails.
             </p>
@@ -610,10 +611,10 @@ function handleAllowDelegation($always=false)
         }
         echo '
         <div class="returnlink">
-          <a href="' . 
-          getSessionVar(($success ? 'successuri' : 'failureuri')) . 
-          '">Return to ' .
-          getSessionVar('portalname') . '</a>
+          <a href="' , 
+          getSessionVar(($success ? 'successuri' : 'failureuri')) , 
+          '">Return to ' ,
+          getSessionVar('portalname') , '</a>
         </div>
         </div>
         ';
@@ -638,7 +639,7 @@ function printFormHead($action) {
     global $csrf;
 
     echo '
-    <form action="' . $action . '" method="post">
+    <form action="' , $action , '" method="post">
     ';
     echo $csrf->getHiddenFormElement();
 }
@@ -759,7 +760,7 @@ function printUserChangedPage()
 
             if ($idpname != $previdpname) {
                 echo '
-                <tr' . ($tablerowodd ? ' class="odd"' : '') . '>
+                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
                   <th>Organization Name:</th>
                   <td>'.$previdpname.'</td>
                   <td>'.$idpname.'</td>
@@ -770,7 +771,7 @@ function printUserChangedPage()
 
             if ($first != $prevfirst) {
                 echo '
-                <tr' . ($tablerowodd ? ' class="odd"' : '') . '>
+                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
                   <th>First Name:</th>
                   <td>'.$prevfirst.'</td>
                   <td>'.$first.'</td>
@@ -781,7 +782,7 @@ function printUserChangedPage()
 
             if ($last != $prevlast) {
                 echo '
-                <tr' . ($tablerowodd ? ' class="odd"' : '') . '>
+                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
                   <th>Last Name:</th>
                   <td>'.$prevlast.'</td>
                   <td>'.$last.'</td>
@@ -792,7 +793,7 @@ function printUserChangedPage()
 
             if ($email != $prevemail) {
                 echo '
-                <tr' . ($tablerowodd ? ' class="odd"' : '') . '>
+                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
                   <th>Email Address:</th>
                   <td>'.$prevemail.'</td>
                   <td>'.$email.'</td>
@@ -821,11 +822,11 @@ function printUserChangedPage()
                 <table cellspacing="0">
                   <tr>
                     <td>Previous Subject DN:</td>
-                    <td>' . $prevdn . '</td>
+                    <td>' , $prevdn , '</td>
                   </tr>
                   <tr>
                     <td>Current Subject DN:</td>
-                    <td>' . $dn . '</td>
+                    <td>' , $dn , '</td>
                   </tr>
                 </table>
                 </blockquote>

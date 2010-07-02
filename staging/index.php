@@ -357,7 +357,7 @@ function printFormHead($action,$gsca=false) {
     global $perl_config;
 
     echo '
-    <form action="' . $action . '" method="post">
+    <form action="' , $action , '" method="post">
     ';
     echo $csrf->getHiddenFormElement();
 
@@ -376,9 +376,9 @@ function printFormHead($action,$gsca=false) {
         $hiddencsrf = $perl_csrf->getFormElement();
         // Fix for when Perl/PHP returns a string as an array element
         if (is_array($hiddencsrf)) {
-            echo key($hiddencsrf) . "\n";
+            echo key($hiddencsrf) , "\n";
         } else {
-            echo $hiddencsrf . "\n";
+            echo $hiddencsrf , "\n";
         }
     }
 }
@@ -584,7 +584,7 @@ function printUserChangedPage()
 
             if ($idpname != $previdpname) {
                 echo '
-                <tr' . ($tablerowodd ? ' class="odd"' : '') . '>
+                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
                   <th>Organization Name:</th>
                   <td>'.$previdpname.'</td>
                   <td>'.$idpname.'</td>
@@ -595,7 +595,7 @@ function printUserChangedPage()
 
             if ($first != $prevfirst) {
                 echo '
-                <tr' . ($tablerowodd ? ' class="odd"' : '') . '>
+                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
                   <th>First Name:</th>
                   <td>'.$prevfirst.'</td>
                   <td>'.$first.'</td>
@@ -606,7 +606,7 @@ function printUserChangedPage()
 
             if ($last != $prevlast) {
                 echo '
-                <tr' . ($tablerowodd ? ' class="odd"' : '') . '>
+                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
                   <th>Last Name:</th>
                   <td>'.$prevlast.'</td>
                   <td>'.$last.'</td>
@@ -617,7 +617,7 @@ function printUserChangedPage()
 
             if ($email != $prevemail) {
                 echo '
-                <tr' . ($tablerowodd ? ' class="odd"' : '') . '>
+                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
                   <th>Email Address:</th>
                   <td>'.$prevemail.'</td>
                   <td>'.$email.'</td>
@@ -646,11 +646,11 @@ function printUserChangedPage()
                 <table cellspacing="0">
                   <tr>
                     <td>Previous Subject DN:</td>
-                    <td>' . $prevdn . '</td>
+                    <td>' , $prevdn , '</td>
                   </tr>
                   <tr>
                     <td>Current Subject DN:</td>
-                    <td>' . $dn . '</td>
+                    <td>' , $dn , '</td>
                   </tr>
                 </table>
                 </blockquote>
@@ -726,7 +726,7 @@ function printErrorBox($errortext)
     printIcon('error');
     echo '&nbsp;
     </td>
-    <td> ' . $errortext . '
+    <td> ' , $errortext , '
     </td>
     </tr>
     </table>

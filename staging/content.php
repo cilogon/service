@@ -37,7 +37,7 @@ function printHeader($title='',$extra='')
     echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-    <head><title>' . $title . '</title> 
+    <head><title>' , $title , '</title> 
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-XRDS-Location" 
           content="https://cilogon.org/cilogon.xrds"/>
@@ -120,7 +120,7 @@ function printPageHeader($text) {
     <div class="b">
     <div class="l">
     <div class="r">
-    <div class="titlebox">' . $text . '</div>
+    <div class="titlebox">' , $text , '</div>
     </div>
     </div>
     </div>
@@ -165,7 +165,7 @@ function printWAYF()
         Start Here
       </div>
 
-      <form action="' . getScriptDir() . '" method="post">
+      <form action="' , getScriptDir() , '" method="post">
       <fieldset>
 
       <div id="starthere1" style="display:';
@@ -185,11 +185,11 @@ function printWAYF()
     ';
 
     foreach ($idps as $entityId => $idpName) {
-        echo '<option value="' . $entityId . '"';
+        echo '<option value="' , $entityId , '"';
         if ($entityId == $providerId) {
             echo ' selected="selected"';
         }
-        echo '>' . $idpName . '</option>' . "\n";
+        echo '>' , $idpName , '</option>' , "\n";
     }
 
     echo '
@@ -253,9 +253,9 @@ function printWAYF()
         </th>
         <td class="openiddrop">
         <ul>
-          <li><h3><img id="currentopenidicon" src=" ' . 
-               '/images/' . strtolower($openid->getProvider()) . '.png' .
-               '" width="16" height="16" alt="' . $openid->getProvider() .
+          <li><h3><img id="currentopenidicon" src=" ' , 
+               '/images/' , strtolower($openid->getProvider()) , '.png' ,
+               '" width="16" height="16" alt="' , $openid->getProvider() ,
                '"/><img src="/images/droparrow.png" 
                width="8" height="16" alt="&dArr;"/></h3>
           <table class="providertable">
@@ -343,21 +343,21 @@ function printWAYF()
 
       echo '
       <p>
-      <label for="keepidp" title="' . $helptext . 
+      <label for="keepidp" title="' , $helptext , 
       '" class="helpcursor">Remember this selection:</label>
-      <input type="checkbox" name="keepidp" id="keepidp" ' . 
-      (($keepidp == 'checked') ? 'checked="checked" ' : '') .
-      'title="' .  $helptext . '" class="helpcursor" />
+      <input type="checkbox" name="keepidp" id="keepidp" ' , 
+      (($keepidp == 'checked') ? 'checked="checked" ' : '') ,
+      'title="' , $helptext , '" class="helpcursor" />
       </p>
       <p>';
 
       echo $csrf->getHiddenFormElement();
 
       echo '
-      <input type="hidden" name="useopenid" id="useopenid" value="' . 
-      (($useopenid == '1') ? '1' : '0') . '"/>
-      <input type="hidden" name="hiddenopenid" id="hiddenopenid" value="' .
-      $openid->getProvider() . '"/>
+      <input type="hidden" name="useopenid" id="useopenid" value="' , 
+      (($useopenid == '1') ? '1' : '0') , '"/>
+      <input type="hidden" name="hiddenopenid" id="hiddenopenid" value="' ,
+      $openid->getProvider() , '"/>
       <input type="submit" name="submit" class="submit helpcursor" 
       title="Click to proceed to your selected organization\'s login page."
       value="Log On" />
@@ -442,10 +442,10 @@ function printIcon($icon,$popuptext='')
     if (strlen($popuptext) > 0) {
         echo ' class="helpcursor"';
     }
-    echo '><img src="/images/' . $icon . 'Icon.png" 
-          alt="&laquo; ' . ucfirst($icon) . '" ';
+    echo '><img src="/images/' , $icon , 'Icon.png" 
+          alt="&laquo; ' , ucfirst($icon) , '" ';
     if (strlen($popuptext) > 0) {
-        echo 'title="'. $popuptext . '" ';
+        echo 'title="' , $popuptext , '" ';
     }
     echo 'width="14" height="14" /></span>';
 }

@@ -99,13 +99,13 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
     </p>
 
     <div class="contactform">
-      <form action="' . getScriptDir() . '" method="post" class="requestform">
+      <form action="' , getScriptDir() , '" method="post" class="requestform">
       <fieldset>
       <legend>Contact Information</legend>
       <p>
       <label for="yourName">Your Name:</label>
       <input id="yourName" name="yourName" class="text" type="text" 
-       size="50" maxlength="80" value="' . $yourName . '" />';
+       size="50" maxlength="80" value="' , $yourName , '" />';
 
     if (($verify) && (strlen($yourName) <= 2)) {
         printIcon('error','Please enter your name.');
@@ -117,7 +117,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
       <p>
       <label for="emailAddr">Email Address:</label>
       <input id="emailAddr" name="emailAddr" class="text" type="text" 
-       size="50" maxlength="80" value="' . $emailAddr . '" />';
+       size="50" maxlength="80" value="' , $emailAddr , '" />';
 
     if (($verify) && (!$validator->check_email_address($emailAddr))) {
         printIcon('error','Please enter a valid email address.');
@@ -133,14 +133,14 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
       <p>
       <label for="providerId">Select an Organization:</label>
       <select name="providerId" id="providerId" class="select">
-      <option value="' . DEFAULT_OPTION_TEXT . '"';
+      <option value="' , DEFAULT_OPTION_TEXT , '"';
 
     if (($providerId == DEFAULT_OPTION_TEXT) ||
         (strlen($providerId) == 0)) {
         echo ' selected="selected"';
     }
         
-    echo '>' . DEFAULT_OPTION_TEXT . '</option>
+    echo '>' , DEFAULT_OPTION_TEXT , '</option>
     ';
 
     foreach ($idps as $value) {
@@ -166,7 +166,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
       <p>
       <label for="otherIdP">Don\'t See It? Enter Here:</label>
       <input id="otherIdP" name="otherIdP" class="text" type="text" 
-       size="50" maxlength="80" value="' . $otherIdP . '" />
+       size="50" maxlength="80" value="' , $otherIdP , '" />
       </p>
       </fieldset>
       <fieldset>
@@ -174,7 +174,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
       <p>
       <label for="comments">Please tell us more about yourself and your interest in the CILogon Service:</label>
       <textarea id="comments" name="comments" class="textarea" 
-      cols="50" rows="5">' .  $comments . '</textarea>
+      cols="50" rows="5">' ,  $comments , '</textarea>
       </p>
       </fieldset>
       <fieldset class="submit">
@@ -189,7 +189,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
 
     echo '
       </fieldset>
-      ' .  $csrf->getHiddenFormElement() . '
+      ' ,  $csrf->getHiddenFormElement() , '
       </form>
       </div>
       <p>

@@ -102,10 +102,10 @@ function printTestPage()
             ($incommon->exists($shibarray['Identity Provider']))) {
             echo '
             <p class="addsubmit">
-            <form action="' . getScriptDir() . '" method="post">
+            <form action="' , getScriptDir() , '" method="post">
               <input class="submit" type="submit" name="submit"
-                     value="' . ADD_SUBMIT_TEXT . '" />' .
-            $csrf->getHiddenFormElement() . '
+                     value="' , ADD_SUBMIT_TEXT , '" />' ,
+            $csrf->getHiddenFormElement() , '
             </form>
             </p>
             ';
@@ -147,29 +147,29 @@ function printTestPage()
     </noscript>
 
     <div class="summary">
-        <div id="saml1" style="display:' . 
-            ($gotattrs ? "inline" : "none" ) . 
+        <div id="saml1" style="display:' , 
+            ($gotattrs ? "inline" : "none" ) , 
         '"><span class="expander"><a 
         href="javascript:showHideDiv(\'saml\',-1)"><img 
         src="/images/triright.gif" alt="&rArr;" width="14" height="14" /> 
         SAML Attributes</a></span>
         </div>
-        <div id="saml2" style="display:' .
-            ($gotattrs ? "none" : "inline" ) . 
+        <div id="saml2" style="display:' ,
+            ($gotattrs ? "none" : "inline" ) , 
         '"><span class="expander"><a 
         href="javascript:showHideDiv(\'saml\',-1)"><img 
         src="/images/tridown.gif" alt="&dArr;" width="14" height="14" /> 
         SAML Attributes</a></span>
         </div>
         <br class="clear" />
-        <div id="saml3" style="display:' . 
-            ($gotattrs ? "none" : "inline" ) . 
+        <div id="saml3" style="display:' , 
+            ($gotattrs ? "none" : "inline" ) , 
         '">
 
         <table cellpadding="5">
           <tr class="odd">
             <th>Identity Provider (entityID):</th>
-            <td>' . $shibarray['Identity Provider'] . '</td>
+            <td>' , $shibarray['Identity Provider'] , '</td>
             <td>';
 
     if (strlen($shibarray['Identity Provider']) == 0) {
@@ -182,7 +182,7 @@ function printTestPage()
 
           <tr>
             <th>ePTID:</th>
-            <td>' . $shibarray['ePTID'] . '</td>
+            <td>' , $shibarray['ePTID'] , '</td>
             <td>';
             
     if ((strlen($shibarray['ePPN']) == 0) &&
@@ -196,7 +196,7 @@ function printTestPage()
 
           <tr class="odd">
             <th>ePPN:</th>
-            <td>' . $shibarray['ePPN'] . '</td>
+            <td>' , $shibarray['ePPN'] , '</td>
             <td>';
             
     if ((strlen($shibarray['ePPN']) == 0) &&
@@ -210,7 +210,7 @@ function printTestPage()
 
           <tr>
             <th>First Name (givenName):</th>
-            <td>' . $shibarray['First Name'] . '</td>
+            <td>' , $shibarray['First Name'] , '</td>
             <td>';
 
     if ((strlen($shibarray['First Name']) == 0) &&
@@ -223,7 +223,7 @@ function printTestPage()
           </tr>
           <tr class="odd">
             <th>Last Name (sn):</th>
-            <td>' . $shibarray['Last Name'] . '</td>
+            <td>' , $shibarray['Last Name'] , '</td>
             <td>';
 
     if ((strlen($shibarray['Last Name']) == 0) &&
@@ -236,7 +236,7 @@ function printTestPage()
           </tr>
           <tr>
             <th>Display Name (displayName):</th>
-            <td>' . $shibarray['Display Name'] . '</td>
+            <td>' , $shibarray['Display Name'] , '</td>
             <td>';
 
     if ((strlen($shibarray['Display Name']) == 0) &&
@@ -250,7 +250,7 @@ function printTestPage()
           </tr>
           <tr class="odd">
             <th>Email Address (email):</th>
-            <td>' . $shibarray['Email Address'] . '</td>
+            <td>' , $shibarray['Email Address'] , '</td>
             <td>';
 
     if (strlen($shibarray['Email Address']) == 0) {
@@ -262,7 +262,7 @@ function printTestPage()
           </tr>
           <tr>
             <th>Level of Assurance (assurance):</th>
-            <td>' . $shibarray['Level of Assurance'] . '</td>
+            <td>' , $shibarray['Level of Assurance'] , '</td>
             <td> </td>
           </tr>
 
@@ -271,29 +271,29 @@ function printTestPage()
     </div> <!-- summary -->
 
     <div class="summary">
-        <div id="meta1" style="display:' . 
-            ($gotattrs ? "inline" : "none" ) . 
+        <div id="meta1" style="display:' , 
+            ($gotattrs ? "inline" : "none" ) , 
         '"><span class="expander"><a 
         href="javascript:showHideDiv(\'meta\',-1)"><img 
         src="/images/triright.gif" alt="&rArr;" width="14" height="14" /> 
         Metadata Attributes</a></span>
         </div>
-        <div id="meta2" style="display:' . 
-            ($gotattrs ? "none" : "inline" ) . 
+        <div id="meta2" style="display:' , 
+            ($gotattrs ? "none" : "inline" ) , 
         '"><span class="expander"><a 
         href="javascript:showHideDiv(\'meta\',-1)"><img 
         src="/images/tridown.gif" alt="&dArr;" width="14" height="14" /> 
         Metadata Attributes</a></span>
         </div>
         <br class="clear" />
-        <div id="meta3" style="display:' . 
-            ($gotattrs ? "none" : "inline" ) . 
+        <div id="meta3" style="display:' , 
+            ($gotattrs ? "none" : "inline" ) , 
         '">
 
         <table cellpadding="5">
           <tr class="odd">
             <th>Organization Name:</th>
-            <td>' . $shibarray['Organization Name'] . '</td>
+            <td>' , $shibarray['Organization Name'] , '</td>
             <td>';
 
     if (strlen($shibarray['Organization Name']) == 0) {
@@ -306,8 +306,8 @@ function printTestPage()
           </tr>
           <tr>
             <th>Home Page:</th>
-            <td><a target="_blank" href="' . $shibarray['Home Page'] . '">' .
-            $shibarray['Home Page'] . '</a></td>
+            <td><a target="_blank" href="' , $shibarray['Home Page'] , '">' ,
+            $shibarray['Home Page'] , '</a></td>
             <td> </td>
           </tr>
     ';
@@ -317,8 +317,8 @@ function printTestPage()
         echo '
           <tr class="odd">
             <th>Technical Contact:</th>
-            <td>' . $shibarray['Technical Name'] . ' &lt;'.
-                    $shibarray['Technical Address'] . '&gt;</td>
+            <td>' , $shibarray['Technical Name'] , ' &lt;' ,
+                    $shibarray['Technical Address'] , '&gt;</td>
             <td> </td>
           </tr>';
     }
@@ -328,8 +328,8 @@ function printTestPage()
         echo '
           <tr>
             <th>Administrative Contact:</th>
-            <td>' . $shibarray['Administrative Name'] . ' &lt;'.
-                    $shibarray['Administrative Address'] . '&gt;</td>
+            <td>' , $shibarray['Administrative Name'] , ' &lt;' ,
+                    $shibarray['Administrative Address'] , '&gt;</td>
             <td> </td>
           </tr>';
     }

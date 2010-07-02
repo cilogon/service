@@ -235,19 +235,19 @@ function printServerVars() {
     {
         $fkey='_'.$key;
         if ( strpos($fkey,'SHIB')>1 && $key!="HTTP_SHIB_ATTRIBUTES") {
-            echo '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
+            echo '<tr><td>',$key,'</td><td>',$value,'</td></tr>';
         }
     }
     echo '
-    <tr><td>(REMOTE_USER)</td><td>'.$_SERVER['REMOTE_USER'].'</td></tr>
-    <tr><td>(HTTP_REMOTE_USER)</td><td>'.$_SERVER['HTTP_REMOTE_USER'].
+    <tr><td>(REMOTE_USER)</td><td>',$_SERVER['REMOTE_USER'],'</td></tr>
+    <tr><td>(HTTP_REMOTE_USER)</td><td>',$_SERVER['HTTP_REMOTE_USER'],
     '</td></tr>
     </table>
     <br/>
 
     attribute response from the IdP (<code>HTTP_SHIB_ATTRIBUTES</code>):<br/>
     <textarea id="attributeResponseArea" onclick="select()" rows="1"
-    cols="130">'.$_SERVER["HTTP_SHIB_ATTRIBUTES"].'</textarea><br/>
+    cols="130">',$_SERVER["HTTP_SHIB_ATTRIBUTES"],'</textarea><br/>
     <span id="decodeButtonBlock"><input type="button" id="decodeButton"
     value="decode base64 encoded attribute response using JavaScript"
     onClick="decodeAttributeResponse();"><br/></span>
@@ -288,11 +288,11 @@ function printServerVars() {
  * useful for printing out $_SERVER, $_COOKIE, $_REQUEST, etc.          *
  ************************************************************************/
 function printVarTable(&$vararray) {
-    echo '<br/><hr/><br/><b>$' . var_name($vararray). '</b><table>
+    echo '<br/><hr/><br/><b>$' , var_name($vararray) , '</b><table>
     ';
 
     foreach ($vararray as $key => $value) {
-        echo '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
+        echo '<tr><td>',$key,'</td><td>',$value,'</td></tr>';
     }
 
     echo '</table>
@@ -308,7 +308,7 @@ function printPostTable() {
     ';
 
     foreach ($_POST as $key => $value) {
-        echo '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
+        echo '<tr><td>',$key,'</td><td>',$value,'</td></tr>';
     }
 
     echo '</table>
