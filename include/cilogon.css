@@ -112,6 +112,14 @@ div.returnlink {
   font-weight: bold;
   margin: 2em 5em;
 }
+div.noticebanner {
+  border: 5px ridge orange;
+  text-align: center;
+  font-weight: bolder;
+  background-color: #fa6;
+  padding: 0.5em;
+  margin: 1em 3em;
+}
 .centered {
   padding-left: 0;
   padding-right: 0;
