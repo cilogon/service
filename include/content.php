@@ -631,7 +631,7 @@ function redirectToGetOpenIDUser($providerId='',$username='username',
                 if (Auth_OpenID::isFailure($redirect_url)) {
                     $_SESSION['openiderror'] = $openiderrorstr;
                 } else {
-                    $log->info('OpenID Login="' . $redirect_url . '"');
+                    $log->info('OpenID Login="' . $providerId . '"');
                     header("Location: " . $redirect_url);
                 }
             } else {
@@ -643,6 +643,7 @@ function redirectToGetOpenIDUser($providerId='',$username='username',
                 if (Auth_OpenID::isFailure($form_html)) {
                     $_SESSION['openiderror'] = $openiderrorstr;
                 } else {
+                    $log->info('OpenID Login="' . $providerId . '"');
                     print $form_html;
                 }
             }
