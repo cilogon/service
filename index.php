@@ -7,10 +7,6 @@ require_once('include/shib.php');
 require_once('include/myproxy.php');
 require_once('Auth/OpenID/Consumer.php');
 
-/* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
-define('GETUSER_URL','https://cilogon.org/secure/getuser/');
-define('GETOPENIDUSER_URL','https://cilogon.org/getopeniduser/');
-
 /* Read in the whitelist of currently available IdPs. */
 $white = new whitelist();
 
@@ -464,7 +460,7 @@ function handleGSISSHTermWebApplet()
         <applet width="0" height="0" 
         archive="versioncheck.jar"
         code="JavaVersionDisplayApplet" 
-        codebase="http://cilogon.org/gsi-sshterm"
+        codebase="http://' , HOSTNAME , '/gsi-sshterm"
         name="jvmversion">
         <b>Please note, you will require at least
         <a target="_blank" href="http://java.sun.com/">Java Software
@@ -476,7 +472,7 @@ function handleGSISSHTermWebApplet()
         <applet width="640" height="480" 
         archive="GSI-SSHTerm-cilogon.jar"
         code="com.sshtools.sshterm.SshTermApplet" 
-        codebase="http://cilogon.org/gsi-sshterm"
+        codebase="http://' , HOSTNAME , '/gsi-sshterm"
         class="gsisshterm">
         <param name="sshterm.gsscredential" value="'.$cert.'" />
         <param name="sshapps.connection.userName" value="" />

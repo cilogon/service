@@ -3,6 +3,10 @@
 require_once("util.php");
 require_once("autoloader.php");
 
+/* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
+define('GETUSER_URL','https://' . HOSTNAME . '/secure/getuser/');
+define('GETOPENIDUSER_URL','https://' . HOSTNAME . '/getopeniduser/');
+
 /* The csrf token object to set the CSRF cookie and print the hidden */
 /* CSRF form element.  Be sure to do "global $csrf" to use it.       */
 $csrf = new csrf();
@@ -40,7 +44,7 @@ function printHeader($title='',$extra='')
     <head><title>' , $title , '</title> 
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-XRDS-Location" 
-          content="https://cilogon.org/cilogon.xrds"/>
+          content="https://' , HOSTNAME , '/cilogon.xrds"/>
     <link rel="stylesheet" type="text/css" href="/include/cilogon.css" />
     <script type="text/javascript" src="/include/secutil.js"></script>
     <script type="text/javascript" src="/include/openid.js"></script>
@@ -542,7 +546,7 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser')
 
         // Set up the "header" string for redirection thru InCommon WAYF
         $redirect = 
-            'Location: https://cilogon.org/Shibboleth.sso/WAYF/InCommon?' .
+            'Location: https://' . HOSTNAME . '/Shibboleth.sso/WAYF/InCommon?' .
             'target=' . urlencode(GETUSER_URL);
         if (strlen($providerId) > 0) {
             $redirect .= '&providerId=' . urlencode($providerId);
@@ -626,8 +630,8 @@ function redirectToGetOpenIDUser($providerId='',$username='username',
         } else {
             if ($auth_request->shouldSendRedirect()) {
                 $redirect_url = $auth_request->redirectURL(
-                    'https://cilogon.org/',
-                    'https://cilogon.org/getopeniduser/');
+                    'https://' . HOSTNAME . '/',
+                    'https://' . HOSTNAME . '/getopeniduser/');
                 if (Auth_OpenID::isFailure($redirect_url)) {
                     $_SESSION['openiderror'] = $openiderrorstr;
                 } else {
@@ -637,8 +641,8 @@ function redirectToGetOpenIDUser($providerId='',$username='username',
             } else {
                 $form_id = 'openid_message';
                 $form_html = $auth_request->htmlMarkup(
-                    'https://cilogon.org/',
-                    'https://cilogon.org/getopeniduser/',
+                    'https://' . HOSTNAME . '/',
+                    'https://' . HOSTNAME . '/getopeniduser/',
                     false, array('id' => $form_id));
                 if (Auth_OpenID::isFailure($form_html)) {
                     $_SESSION['openiderror'] = $openiderrorstr;

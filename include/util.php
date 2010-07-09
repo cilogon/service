@@ -2,7 +2,9 @@
 
 /* NOTE: Look at the bottom of this file to see that it calls           *
  * startPHPSession().  Thus you simply need to require_once(util.php)   *
- * at the top of your PHP code to start a PHP session.                  */
+ * at the top of your PHP code to start a PHP session.  Also there is   *
+ * a "define()" for HOSTNAME at the bottom of this file which allows    *
+ * you to manually change the hostname used in various URLs.            */
 
 /************************************************************************
  * Function  : getServerVar                                             *
@@ -167,7 +169,7 @@ function getScriptDir($fullurl=false) {
     if ((strlen($retval) == 0) || ($retval[strlen($retval)-1] != '/')) {
         $retval .= '/';  // Append a slash if necessary
     }
-    if ($fullurl) {  // Prepend http(s)://cilogon.org
+    if ($fullurl) {  // Prepend http(s)://hostname
         $retval = 'http' . 
                   ((strtolower(getServerVar('HTTPS')) == 'on') ? 's' : '') .
                   '://' . getServerVar('HTTP_HOST') . $retval;
@@ -178,4 +180,8 @@ function getScriptDir($fullurl=false) {
 /* Start a secure PHP session */
 startPHPSession();
 
+/* If HTTP_HOST is set, use that as the hostname.  Otherwise, set manually. */
+$thehostname = getServerVar('HTTP_HOST');
+define('HOSTNAME',((strlen($thehostname) > 0) ? 
+    $thehostname : 'cilogon.org'));
 ?>

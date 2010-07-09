@@ -6,12 +6,8 @@ require_once('../include/content.php');
 require_once('../include/shib.php');
 require_once('Auth/OpenID/Consumer.php');
 
-/* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
-define('GETUSER_URL','https://cilogon.org/secure/getuser/');
-define('GETOPENIDUSER_URL','https://cilogon.org/getopeniduser/');
-
 /* The full URL of the 'delegation/authorized' OAuth script. */
-define('AUTHORIZED_URL','https://cilogon.org/delegation/authorized');
+define('AUTHORIZED_URL','https://' . HOSTNAME . '/delegation/authorized');
 
 /* Read in the whitelist of currently available IdPs. */
 $white = new whitelist();
@@ -258,7 +254,7 @@ function printBadOAuthTokenPage()
       <p>
       If you are an individual wishing to download a certificate to your
       local computer, please try the <a target="_blank"
-      href="https://cilogon.org/">CILogon Service</a>.
+      href="https://' , HOSTNAME , '/">CILogon Service</a>.
       </p>
       <p class="note">
       <strong>Note:</strong> You must enable cookies in your web browser to
