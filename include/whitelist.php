@@ -54,7 +54,6 @@ class whitelist {
      * array.                                                           *
      ********************************************************************/
     function __construct($filename=self::defaultFilename) {
-        $this->whitearray = array();
         $this->setFilename($filename);
         $this->read();
     }
@@ -83,6 +82,7 @@ class whitelist {
      ********************************************************************/
     function readFromFile() {
         $retval = false;  // Assume read failed
+        $this->clear();
         if (is_readable($this->getFilename())) {
             $xmlstr = '<?xml version="1.0"?><Dummy>';
             $xmlstr .= @file_get_contents($this->getFilename());
@@ -108,6 +108,7 @@ class whitelist {
      ********************************************************************/
     function readFromStore() {
         $retval = false;  // Assume read failed, or empty Idp list
+        $this->clear();
         $store = new store();
         $store->perlobj->eval('@idps = CILogon::Store->getIdps();');
         foreach ($store->perlobj->array->idps as $value) {
@@ -244,6 +245,15 @@ class whitelist {
             $retval = true;
         }
         return $retval;
+    }
+
+    /********************************************************************
+     * Function  : clear                                                *
+     * This function clears the list of entityIDs from the $whitearray  *
+     * by assigning a new (empty) array() to it.                        *
+     ********************************************************************/
+    function clear() {
+        $this->whitearray = array();
     }
 
 }
