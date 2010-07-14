@@ -16,15 +16,19 @@ $submit = csrf::verifyCookieAndGetSubmit();
 $incommon = new incommon();
 $whitelist = new whitelist();
 
+/* Get the Shibboleth information for the current session. */
+$shibarray = getShibInfo();
+
 /* If the CSRF cookie was good and the user clicked a "Submit" *
  * button then do the appropriate action before displaying     *
  * the main Shibboleth Attributes Test Page.                   */
 if ($submit == ADD_SUBMIT_TEXT) {
     /* Add the current IdP entityID to the WAYF whitelist and reload */
-    $entityID = getServerVar('HTTP_SHIB_IDENTITY_PROVIDER');
+    $entityID = $shibarray['Identity Provider'];
     if (($incommon->exists($entityID)) &&
         ($whitelist->add($entityID))) {
         $whitelist->write();
+        sendNotificationEmail();
     }
 }
 printTestPage();
@@ -43,11 +47,10 @@ function printTestPage()
 {
     global $incommon;
     global $whitelist;
+    global $shibarray;
     global $csrf;
 
     $gotattrs = false;  // Did we get all shib attributes?
-
-    $shibarray = getShibInfo();
 
     printHeader('Test Identity Provider');
     printPageHeader('Test Your Organization\'s Identity Provider');
@@ -341,6 +344,58 @@ function printTestPage()
     ';
 
     printFooter();
+}
+
+/************************************************************************
+ * Function   : sendNotificationEmail                                   *
+ * This function sends a notification email to the 'alerts@cilogon.org' *
+ * mailing list when a new IdP has been added to the whitelist.         *
+ ************************************************************************/
+function sendNotificationEmail() 
+{
+    global $incommon;
+    global $shibarray;
+
+    $entityID = $shibarray['Identity Provider'];
+    $mailto   = 'alerts@cilogon.org';
+    $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .
+                'X-Mailer: PHP/' . phpversion();
+    $mailsubj = 'CILogon Service - New IdP Added To Whitelist';
+    $mailmsg  = "
+CILogon Service - New Identity Provider Added
+---------------------------------------------
+Organization = " . $shibarray['Organization Name'] . "
+(EntityId    = " . $shibarray['Identity Provider'] . ")
+
+Submitted by:
+------------
+Name  = ";
+
+    if ((strlen($shibarray['First Name']) > 0) && 
+        (strlen($shibarray['Last Name']) > 0)) {
+        $mailmsg .= $shibarray['First Name'] . ' ' . $shibarray['Last Name'];
+    } else {
+        $mailmsg .= $shibarray['Display Name'];
+    }
+
+    if (strlen($shibarray['Email Address']) > 0) {
+        $mailmsg .= "
+Email = " . $shibarray['Email Address'];
+    }
+
+    if (strlen($shibarray['User Identifier']) > 0) {
+        $mailmsg .= "
+UID   = " . $shibarray['User Identifier'];
+    }
+
+    if (strlen($shibarray['Level of Assurance']) > 0) {
+        $mailmsg .= "
+LOA   = " . $shibarray['Level of Assurance'];
+    }
+
+    $mailmsg .= "\n";
+
+    mail($mailto,$mailsubj,$mailmsg,$mailfrom);
 }
 
 ?>
