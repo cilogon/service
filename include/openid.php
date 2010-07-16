@@ -1,7 +1,9 @@
 <?php
 
-require_once('DB.php');
-require_once('Auth/OpenID/PostgreSQLStore.php');
+if (include_once('DB.php')) {
+    include_once('Auth/OpenID/PostgreSQLStore.php');
+}
+require_once('Auth/OpenID/FileStore.php');
 
 
 /************************************************************************
@@ -15,13 +17,17 @@ require_once('Auth/OpenID/PostgreSQLStore.php');
  *              username.  This substitution is done automatically by   *
  *              the getURL() method.                                    *
  *                                                                      *
- *              There is one constant in the class that you should set  *
+ *              There are constants in the class that you should set    *
  *              for your particular set up:                             *
  *                                                                      *
  *              databasePropertiesFile - this is the full path and name *
  *                  of the database.properties file utilized to connect *
  *                  to the PostgreSQL database.  It is used by the      *
  *                  OpenID consumer to store temporary tokens.          *
+                fileStoreDirectory - the full path to the apache-owned  *
+                    directory for storing OpenID information to be used *
+                    by the "FileStore" module. Note that this directory *
+                    must exist and be owner (or group) 'apache'.        *
  *                                                                      *
  * Example usage:                                                       *
  *    require_once('openid.php');                                       *
@@ -35,8 +41,9 @@ require_once('Auth/OpenID/PostgreSQLStore.php');
 
 class openid {
 
-    /* set the constants to correspond to your particular set up.       */
+    /* Set the constants to correspond to your particular set up.       */
     const databasePropertiesFile = '/var/www/config/database.properties';
+    const fileStoreDirectory = '/var/run/openid';
 
     /* The $providerarray lists all of the supported OpenID providers   *
      * as the keys and their corresponding URLs as the values.  If      *
@@ -203,7 +210,7 @@ class openid {
     }
 
     /********************************************************************
-     * Function  : getStorage                                           *
+     * Function  : getPostgrSQLStorage                                  *
      * Returns   : A new Auth_OpenID_PostgreSQLStore object for use by  *
      *             an Auth_OpenID_Consumer.                             *
      * This method connects to a PostgreSQL database in order to store  *
@@ -213,7 +220,7 @@ class openid {
      * successful, it creates a new Auth_OpenID_PostgreSQLStore to be   *
      * returned for use by an Auth_OpenID_Consumer.                     *
      ********************************************************************/
-    function getStorage() {
+    function getPostgreSQLStorage() {
         $retval = null;
         
         $this->disconnect();  // Close any previous database connection
@@ -239,6 +246,37 @@ class openid {
         }
 
         return $retval;
+    }
+
+    /********************************************************************
+     * Function  : getFileStorage                                       *
+     * Returns   : A new Auth_OpenID_FileStore object for use by        *
+     *             an Auth_OpenID_Consumer.                             *
+     * This method returns a new FileStore using the directory constant *
+     * 'fileStoreDirectory'.  This can be used by an                    *
+     * Auth_OpenID_Consumer.                                            *
+     ********************************************************************/
+    function getFileStorage() {
+        $retval = null;
+
+        if (file_exists(self::fileStoreDirectory)) {
+            $retval =& new Auth_OpenID_FileStore(self::fileStoreDirectory);
+        }
+
+        return $retval;
+    }
+
+    /********************************************************************
+     * Function  : getStorage                                           *
+     * Returns   : A new Auth_OpenID_FileStore or                       *
+     *             Auth_OpenID_PostgreSQLStore object for use by an     *
+     *             Auth_OpenID_Consumer.                                *
+     * This method points to either getPostgreSQLStorage() or           *
+     * getFileStoreage() and returns a store suitable for use by a      *
+     * Auth_OpenID_Consumer. 
+     ********************************************************************/
+    function getStorage() {
+        return $this->getFileStorage();
     }
 }
 
