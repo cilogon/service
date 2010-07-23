@@ -276,7 +276,7 @@ class openid {
      * Auth_OpenID_Consumer. 
      ********************************************************************/
     function getStorage() {
-        return $this->getFileStorage();
+        return $this->getPostgreSQLStorage();
     }
 }
 
