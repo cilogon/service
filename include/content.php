@@ -119,13 +119,17 @@ function printFooter($footer='')
  * the four edges of the box and then outlines the inner box.           *
  ************************************************************************/
 function printPageHeader($text) {
+/*
     echo '
     <div class="noticebanner">
     The CILogon Service is in beta testing.
     Unscheduled service outages may occur.
     The next scheduled outage is <em>Friday, July 23</em>.
     </div>
+    ';
+*/
 
+    echo '
     <div class="t">
     <div class="b">
     <div class="l">
