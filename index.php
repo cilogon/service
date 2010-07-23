@@ -134,6 +134,7 @@ function printLogonPage()
 {
     global $log;
 
+/* BEGIN COMMENT OUT FOR MAINTENANCE */
     $log->info('Welcome page hit.');
 
     printHeader('Welcome To The CILogon Service');
@@ -212,6 +213,14 @@ function printLogonPage()
     printWAYF();
 
     printFooter();
+/* END COMMENT OUT FOR MAINTENANCE */
+/*
+echo '<h1>The CILogon Service is currently undergoing maintenance.</h1>
+<h1>Please try again after 4:00pm (Central time).</h1>
+<h1>Visit <a href="http://www.cilogon.org/">www.cilogon.org</a> for more
+information.</h1>';
+*/
+
 }
 
 /************************************************************************
