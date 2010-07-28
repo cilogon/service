@@ -2,27 +2,24 @@
 
 <head>
 <title>GSI-SSHTerm Applet</title>
-<script type="text/javascript" src="detectjvm.js"></script>
 </head>
 
-<body onload="init();">
+<body>
 
 <center><h1>GSI-SSHTerm Applet</h1></center>
 
-<applet width="0" height="0" archive="./versioncheck.jar" 
-code="JavaVersionDisplayApplet" name="jvmversion">
-<b>Please note, you will require at least
-<a target="_blank" href="http://java.sun.com/">Java Software Development Kit (SDK) 1.5</a> to launch the applet!</b>
-</applet>
-
 <div id="maindiv">
 <p align="center">
-<applet width="640" height="480" 
+<applet alt="Applet failed to load.  Java 1.5 or greater is required."
+width="640" height="480" 
 archive="./GSI-SSHTerm-cilogon.jar"
 code="com.sshtools.sshterm.SshTermApplet" 
 style="border-style: solid; border-width: 1; padding-left: 4; padding-right: 4; padding-top: 1; padding-bottom: 1">
 <param name="sshapps.connection.showConnectionDialog" value="true">
 <param name="sshapps.connection.connectImmediately" value="true">
+<b>Please note, you will require at least
+<a target="_blank" href="http://java.sun.com/">Java Software
+Development Kit (SDK) 1.5</a> to launch the applet!</b>
 </applet></p>
 </div>
 
