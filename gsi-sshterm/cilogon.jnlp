@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp spec="1.0+"
-      codebase="http://cilogon.org/gsi-sshterm/"
+      codebase="https://cilogon.org/gsi-sshterm/"
       href="cilogon.jnlp"
 >
 
@@ -11,7 +11,7 @@
   </description>
   <description kind="short">GSI-SSHTerm for cilogon.org</description>
   <description kind="tooltip">GSI-SSHTerm</description>
-  <homepage href="http://cilogon.org/gsi-sshterm/" />
+  <homepage href="https://cilogon.org/gsi-sshterm/" />
   <icon href="largessh.gif" />
   <offline-allowed />
   <shortcut oneline="false">
