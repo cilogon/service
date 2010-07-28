@@ -465,28 +465,21 @@ function handleGSISSHTermWebApplet()
           <div class="boxheader">
             Run The GSI-SSHTerm Web-Based Applet
           </div>
-        <div class="javaapplet">
-        <applet width="0" height="0" 
-        archive="versioncheck.jar"
-        code="JavaVersionDisplayApplet" 
-        codebase="http://' , HOSTNAME , '/gsi-sshterm"
-        name="jvmversion">
-        <b>Please note, you will require at least
-        <a target="_blank" href="http://java.sun.com/">Java Software
-        Development Kit (SDK) 1.5</a> to launch the applet!</b>
-        </applet>
-        </div>
 
         <p class="javaapplet">
-        <applet width="640" height="480" 
+        <applet alt="Applet failed to load. Java 1.5 or greater is required."
+        width="640" height="480" 
         archive="GSI-SSHTerm-cilogon.jar"
         code="com.sshtools.sshterm.SshTermApplet" 
-        codebase="http://' , HOSTNAME , '/gsi-sshterm"
+        codebase="https://' , HOSTNAME , '/gsi-sshterm"
         class="gsisshterm">
         <param name="sshterm.gsscredential" value="'.$cert.'" />
         <param name="sshapps.connection.userName" value="" />
         <param name="sshapps.connection.showConnectionDialog" value="true" />
         <param name="sshapps.connection.connectImmediately" value="true" />
+        <b>Please note, you will require at least
+        <a target="_blank" href="http://java.sun.com/">Java Software
+        Development Kit (SDK) 1.5</a> to launch the applet!</b>
         </applet>
         </p>
         <div>
