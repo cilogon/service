@@ -52,7 +52,7 @@ class openid {
     public $providerarray = array(
         'AOL'         => 'http://openid.aol.com' ,
         'Blogger'     => 'http://username.blogspot.com' ,
-        'certifi.ca'  => 'http://certifi.ca/username' ,
+        /* 'certifi.ca'  => 'http://certifi.ca/username' , */
         'Chi.mp'      => 'http://username.mp' ,
         'clavid'      => 'http://username.clavid.com' ,
         'Flickr'      => 'http://flickr.com/photos/username' ,
@@ -69,6 +69,7 @@ class openid {
         'NetLog'      => 'http://netlog.com/username' ,
         'OneLogin'    => 'https://app.onelogin.com/openid/username' ,
         'OpenID'      => 'http://username' ,
+        'Steam'       => 'http://steamcommunity.com/openid' ,
         'Verisign'    => 'http://pip.verisignlabs.com' ,
         'Vox'         => 'http://username.vox.com' ,
         'WordPress'   => 'http://username.wordpress.com' ,

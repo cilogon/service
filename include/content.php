@@ -169,6 +169,7 @@ function printWAYF()
         $openid->setProvider($providerId);
         $openid->setUsername($username);
     }
+    $oidarray = array();
 
     $helptext = "By checking this box, you can bypass the welcome page on subsequent visits and proceed directly to your organization's authentication site. You will need to clear your brower's cookies to return here."; 
     $insteadtext = "By clicking this link, you change the type of authentication used for the CILogon Service. You can select either InCommon or OpenID authentication.";
@@ -210,234 +211,179 @@ function printWAYF()
       </select>
       </div>
       </div>
-      ';
 
-    echo '
       <!-- Preload all OpenID icons -->
       <div class="zeroheight">
-        <div class="aolicon"></div>
-        <div class="hyvesicon"></div>
-        <div class="netlogicon"></div>
-        <div class="bloggericon"></div>
-        <div class="launchpadicon"></div>
-        <div class="oneloginicon"></div>
-        <div class="certificaicon"></div>
-        <div class="liquididicon"></div>
-        <div class="openidicon"></div>
-        <div class="chimpicon"></div>
-        <div class="livejournalicon"></div>
-        <div class="verisignicon"></div>
-        <div class="clavidicon"></div>
-        <div class="myidicon"></div>
-        <div class="voxicon"></div>
-        <div class="flickricon"></div>
-        <div class="myopenidicon"></div>
-        <div class="wordpressicon"></div>
-        <div class="getopenidicon"></div>
-        <div class="myspaceicon"></div>
-        <div class="yahooicon"></div>
-        <div class="googleicon"></div>
-        <div class="myvidoopicon"></div>
-        <div class="yiidicon"></div>
-      </div>';
+        ';
 
-      echo '
-      <div id="starthere2" style="display:';
+    /* Print out all OpenID icons to avoid loading later */
+    $oidnum = 0;
+    foreach ($openid->providerarray as $oname => $ourl) {
+        $oidarray[$oidnum++] = $oname;  // Put Provider names in numbered array
+        echo '<div class="' . getIconName($oname) . '"></div>
+        ';
+    }
 
-      if ($useopenid == '1') {
-          echo 'inline">';
-      } else {
-          echo 'none">';
-      }
+    echo '</div>
+    <div id="starthere2" style="display:';
 
-      echo '
-      <p>
-      Select An OpenID Provider:
-      </p>
-      <div class="providerselection">
-      <table class="openidtable">
-        <col width="85%" />
-        <col width="15%" />
-        <tr>
-        <th id="openidurl">';
+    if ($useopenid == '1') {
+        echo 'inline">';
+    } else {
+        echo 'none">';
+    }
 
-      echo $openid->getInputTextURL();
+    echo '
+    <p>
+    Select An OpenID Provider:
+    </p>
+    <div class="providerselection">
+    <table class="openidtable">
+      <col width="85%" />
+      <col width="15%" />
+      <tr>
+      <th id="openidurl">';
 
-      echo '
-        </th>
-        <td class="openiddrop">
-        <ul>
-          <li><h3><img id="currentopenidicon" src=" ' , 
-               '/images/' , strtolower($openid->getProvider()) , '.png' ,
-               '" width="16" height="16" alt="' , $openid->getProvider() ,
-               '"/><img src="/images/droparrow.png" 
-               width="8" height="16" alt="&dArr;"/></h3>
-          <table class="providertable">
-            <tr>
-              <td class="aolicon"><a 
-                href="javascript:selectOID(\'AOL\')">AOL</a></td>
-              <td class="hyvesicon"><a 
-                href="javascript:selectOID(\'Hyves\')">Hyves</a></td>
-              <td class="netlogicon"><a 
-                href="javascript:selectOID(\'NetLog\')">NetLog</a></td>
-            </tr>
-            <tr>
-              <td class="bloggericon"><a 
-                href="javascript:selectOID(\'Blogger\')">Blogger</a></td>
-              <td class="launchpadicon"><a 
-                href="javascript:selectOID(\'LaunchPad\')">LaunchPad</a></td>
-              <td class="oneloginicon"><a 
-                href="javascript:selectOID(\'OneLogin\')">OneLogin</a></td>
-            </tr>
-            <tr>
-              <td class="certificaicon"><a 
-                href="javascript:selectOID(\'certifi.ca\')">certifi.ca</a></td>
-              <td class="liquididicon"><a 
-                href="javascript:selectOID(\'LiquidID\')">LiquidID</a></td>
-              <td class="openidicon"><a 
-                href="javascript:selectOID(\'OpenID\')">OpenID</a></td>
-            </tr>';
+    echo $openid->getInputTextURL();
 
-      echo '
-            <tr>
-              <td class="chimpicon"><a 
-                href="javascript:selectOID(\'Chi.mp\')">Chi.mp</a></td>
-              <td class="livejournalicon"><a 
-                href="javascript:selectOID(\'LiveJournal\')">LiveJournal</a></td>
-              <td class="verisignicon"><a 
-                href="javascript:selectOID(\'Verisign\')">Verisign</a></td>
-            </tr>
-            <tr>
-              <td class="clavidicon"><a 
-                href="javascript:selectOID(\'clavid\')">clavid</a></td>
-              <td class="myidicon"><a 
-                href="javascript:selectOID(\'myID\')">myID</a></td>
-              <td class="voxicon"><a 
-                href="javascript:selectOID(\'Vox\')">Vox</a></td>
-            </tr>
-            <tr>
-              <td class="flickricon"><a 
-                href="javascript:selectOID(\'Flickr\')">Flickr</a></td>
-              <td class="myopenidicon"><a 
-                href="javascript:selectOID(\'myOpenID\')">myOpenID</a></td>
-              <td class="wordpressicon"><a 
-                href="javascript:selectOID(\'WordPress\')">WordPress</a></td>
-            </tr>
-            <tr>
-              <td class="getopenidicon"><a 
-                href="javascript:selectOID(\'GetOpenID\')">GetOpenID</a></td>
-              <td class="myspaceicon"><a 
-                href="javascript:selectOID(\'MySpace\')">MySpace</a></td>
-              <td class="yahooicon"><a 
-                href="javascript:selectOID(\'Yahoo\')">Yahoo</a></td>
-            </tr>
-            <tr>
-              <td class="googleicon"><a 
-                href="javascript:selectOID(\'Google\')">Google</a></td>
-              <td class="myvidoopicon"><a 
-                href="javascript:selectOID(\'myVidoop\')">myVidoop</a></td>
-              <td class="yiidicon"><a 
-                href="javascript:selectOID(\'Yiid\')">Yiid</a></td>
-            </tr>
-            <tr>
-              <td colspan="3" class="centered"><a 
-                target="_blank"
-                href="https://www.myopenid.com/signup">Don\'t have an
-                OpenID? Get one!</a></td>
-            </tr>
-          </table>
-          </li>
-        </ul>
-        </td>
-        </tr>
-      </table>
-      </div>
-      </div>
-      ';
+    echo '
+      </th>
+      <td class="openiddrop">
+      <ul>
+        <li><h3><img id="currentopenidicon" src=" ' , 
+             '/images/' , strtolower($openid->getProvider()) , '.png' ,
+             '" width="16" height="16" alt="' , $openid->getProvider() ,
+             '"/><img src="/images/droparrow.png" 
+             width="8" height="16" alt="&dArr;"/></h3>
+        <table class="providertable">
+        ';
 
-      echo '
-      <p>
-      <label for="keepidp" title="' , $helptext , 
-      '" class="helpcursor">Remember this selection:</label>
-      <input type="checkbox" name="keepidp" id="keepidp" ' , 
-      (($keepidp == 'checked') ? 'checked="checked" ' : '') ,
-      'title="' , $helptext , '" class="helpcursor" />
-      </p>
-      <p>';
+    /* Print out the dropdown table of OpenID Providers w/ icons */
+    $numoids = count($oidarray);
+    $numrows = intval(($numoids-1)/3) + 1;
+    for ($row = 0; $row < $numrows; $row++) {
+        echo '  <tr>
+            ';
+        for ($col = 0; $col < 3; $col++) {
+            $arridx = $row + $col*$numrows;
+            if ($arridx < $oidarray) {
+                echo '<td class="' . getIconName($oidarray[$arridx]) . 
+                    '"><a href="javascript:selectOID(\'' . $oidarray[$arridx] .
+                    '\')">' . $oidarray[$arridx] . '</a></td>
+            ';
+            }
+        }
+        echo '</tr>
+        ';
+    }
 
-      echo $csrf->getHiddenFormElement();
-
-      echo '
-      <input type="hidden" name="useopenid" id="useopenid" value="' , 
-      (($useopenid == '1') ? '1' : '0') , '"/>
-      <input type="hidden" name="hiddenopenid" id="hiddenopenid" value="' ,
-      $openid->getProvider() , '"/>
-      <input type="submit" name="submit" class="submit helpcursor" 
-      title="Click to proceed to your selected organization\'s login page."
-      value="Log On" />
-      </p>
-
-      <div id="starthere3" style="display:';
-
-      if ($useopenid == '1') {
-          echo 'none">';
-      } else {
-          echo 'inline">';
-      }
-
-      echo '
-      <p>
-      ';
-
-      echo '
-      <a title="'.$insteadtext.'" class="smaller"
-        href="javascript:showHideDiv(\'starthere\',-1); useOpenID(\'1\')">Use OpenID instead</a>
-      ';
-
-      echo '
-      </p>
-      </div>
-
-      <div id="starthere4" style="display:';
-
-      if ($useopenid == '1') {
-          echo 'inline">';
-      } else {
-          echo 'none">';
-      }
-
-      echo '
-      <p>
-      ';
-
-      echo '
-      <a title="'.$insteadtext.'" class="smaller"
-        href="javascript:showHideDiv(\'starthere\',-1); useOpenID(\'0\')">Use InCommon instead</a>
-      ';
-
-      echo '
-      </p>
-      </div>
-
-      <noscript>
-      <div class="nojs">
-      Javascript is disabled.  OpenID authentication requires that
-      Javascript be enabled in your browser.
-      </div>
-      </noscript>
-      ';
-
-      $openiderror = getSessionVar('openiderror');
-      if (strlen($openiderror) > 0) {
-          echo "<div class=\"openiderror\">$openiderror</div>";
-          unsetSessionVar('openiderror');
-      }
-
-      echo '
-      </fieldset>
-      </form>
+    echo '  <tr>
+            <td colspan="3" class="centered"><a target="_blank"
+              href="https://www.myopenid.com/signup">Don\'t have an
+              OpenID? Get one!</a></td>
+          </tr>
+        </table>
+        </li>
+      </ul>
+      </td>
+      </tr>
+    </table>
     </div>
+    </div>
+
+    <p>
+    <label for="keepidp" title="' , $helptext , 
+    '" class="helpcursor">Remember this selection:</label>
+    <input type="checkbox" name="keepidp" id="keepidp" ' , 
+    (($keepidp == 'checked') ? 'checked="checked" ' : '') ,
+    'title="' , $helptext , '" class="helpcursor" />
+    </p>
+    <p>';
+
+    echo $csrf->getHiddenFormElement();
+
+    echo '
+    <input type="hidden" name="useopenid" id="useopenid" value="' , 
+    (($useopenid == '1') ? '1' : '0') , '"/>
+    <input type="hidden" name="hiddenopenid" id="hiddenopenid" value="' ,
+    $openid->getProvider() , '"/>
+    <input type="submit" name="submit" class="submit helpcursor" 
+    title="Click to proceed to your selected organization\'s login page."
+    value="Log On" />
+    </p>
+
+    <div id="starthere3" style="display:';
+
+    if ($useopenid == '1') {
+        echo 'none">';
+    } else {
+        echo 'inline">';
+    }
+
+    echo '
+    <p>
+
+    <a title="'.$insteadtext.'" class="smaller"
+      href="javascript:showHideDiv(\'starthere\',-1); useOpenID(\'1\')">Use OpenID instead</a>
     ';
+
+    echo '
+    </p>
+    </div>
+
+    <div id="starthere4" style="display:';
+
+    if ($useopenid == '1') {
+        echo 'inline">';
+    } else {
+        echo 'none">';
+    }
+
+    echo '
+    <p>
+
+    <a title="'.$insteadtext.'" class="smaller"
+      href="javascript:showHideDiv(\'starthere\',-1); useOpenID(\'0\')">Use InCommon instead</a>
+
+    </p>
+    </div>
+
+    <noscript>
+    <div class="nojs">
+    Javascript is disabled.  OpenID authentication requires that
+    Javascript be enabled in your browser.
+    </div>
+    </noscript>
+    ';
+
+    $openiderror = getSessionVar('openiderror');
+    if (strlen($openiderror) > 0) {
+        echo "<div class=\"openiderror\">$openiderror</div>";
+        unsetSessionVar('openiderror');
+    }
+
+    echo '
+    </fieldset>
+    </form>
+  </div>
+  ';
+}
+
+
+/************************************************************************
+ * Function  : getIconName                                              *
+ * Parameter : The pretty print name of an OpenID provider.             *
+ * Returns   : The CSS icon name.                                       *
+ * This function is called to get the CSS names of the little OpenID    *
+ * icons used in the OpenID WAYF.  It basically takes in a pretty print *
+ * name of an OpenID provider, transforms the string to lowercase,      *
+ * removes any non-alpha chars, and tacks "icon" on to the end.         *
+ ************************************************************************/
+function getIconName($oidprovider)
+{
+    $retval = strtolower($oidprovider);
+    $retval = preg_replace('/\W/','',$retval);
+    return($retval . 'icon');
 }
 
 /************************************************************************

@@ -62,6 +62,7 @@ function selectOID(provider)
     'NetLog'      : 'http://netlog.com/username' ,
     'OneLogin'    : 'https://app.onelogin.com/openid/username' ,
     'OpenID'      : 'http://username' ,
+    'Steam'       : 'http://steamcommunity.com/openid' ,
     'Verisign'    : 'http://pip.verisignlabs.com' ,
     'Vox'         : 'http://username.vox.com' ,
     'WordPress'   : 'http://username.wordpress.com' ,

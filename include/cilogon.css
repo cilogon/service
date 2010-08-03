@@ -643,6 +643,9 @@ div.openiderror {
 .openidicon {
   background: #eee url('/images/openid.png') no-repeat left center;
 }
+.steamicon {
+  background: #eee url('/images/steam.png') no-repeat left center;
+}
 .verisignicon {
   background: #eee url('/images/verisign.png') no-repeat left center;
 }
