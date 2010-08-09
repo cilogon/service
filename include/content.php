@@ -363,6 +363,11 @@ function printWAYF()
     }
 
     echo '
+    <div class="smaller">
+    By selecting "Log On", you agree to our <a target="_blank" 
+    href="http://ca.cilogon.org/policy/privacy">privacy policy</a>.
+    </div>
+
     </fieldset>
     </form>
   </div>

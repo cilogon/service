@@ -256,6 +256,9 @@ div.wayf {
 .ontop {
   display: block;
 }
+.smaller {
+  font-size: x-small;
+}
 div.wayf fieldset {
   text-align: center;
   border: 0;
@@ -264,9 +267,6 @@ div.wayf fieldset {
 div.wayf fieldset p {
   margin-top: 1em;
   text-align: center;
-}
-div.wayf fieldset p a.smaller {
-  font-size: x-small;
 }
 div.providerselection {
   height: 2em;
