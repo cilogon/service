@@ -249,7 +249,19 @@ function printMainPage()
     href="http://www.javatester.org/version.html">Java 1.5 or higher</a>
     installed on your computer and enabled in your web browser.
     </p>
+    ';
 
+    /* Output the user's Certificate Subject DN. */
+    $uid = getSessionVar('uid');
+    $store = new store();
+    $store->getUserObj($uid);
+    if (!($store->getUserSub('status') & 1)) {  // STATUS_OK codes are even
+        $dn = $store->getUserSub('getDN');
+        $dn = preg_replace('/\s+email=.+$/','',$dn);
+        echo '<p>Your certificate subject is "<tt>' , $dn , '</tt>".</p>';
+    }
+
+    echo '
     <div class="taskdiv">
     <table cellpadding="10" cellspacing="0" class="tasktable">
     <tr class="taskbox">
