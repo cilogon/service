@@ -437,9 +437,11 @@ function handleGotUser()
         // If the user got a new DN due to changed SAML attributes,
         // print out a notification page.
         $store = new store();
-        if ($status == $store->STATUS['STATUS_OK_USER_CHANGED']) {
+        if ($status == $store->STATUS['STATUS_OK_NEW_USER']) {
+            printNewUserPage();
+        } elseif ($status == $store->STATUS['STATUS_OK_USER_CHANGED']) {
             printUserChangedPage();
-        } else { // STATUS_OK or STATUS_OK_NEW_USER
+        } else { // STATUS_OK
             printMainPage();
         }
     }
@@ -523,6 +525,78 @@ function handleGSISSHTermWebApplet()
         ';
         printFooter();
     }
+}
+
+/************************************************************************
+ * Function   : printNewUserPage                                        *
+ * This function prints out a notification page to new users showing    *
+ * that this is the first time they have logged in with a particular    *
+ * identity provider.                                                   *
+ ************************************************************************/
+function printNewUserPage()
+{
+    global $log;
+
+    $log->info('New User page.');
+
+    $dn = '';
+    $uid = getSessionVar('uid');
+    $store = new store();
+    $store->getUserObj($uid);
+    if (!($store->getUserSub('status') & 1)) {  // STATUS_OK codes are even
+        $dn      = $store->getUserSub('getDN');
+        $dn      = preg_replace('/\s+email=.+$/','',$dn);
+    }
+
+    printHeader('New User');
+    printPageHeader('Welcome New User');
+
+    echo '
+    <div class="boxed">
+      <div class="boxheader">
+        Logged On With ' , getSessionVar('idpname') , '
+      </div>
+    <p>
+    Welcome! Your new certificate subject is as follows. 
+    </p>
+    <blockquote><tt>' , $dn , '</tt></blockquote>
+    <p>
+    You may need to register this certificate subject with relying parties.
+    </p>
+    <p>
+    You will not see this page again unless the CILogon Service assigns you
+    a new certificate subject.  This may occur in the following situations:
+    </p>
+    <ul>
+    <li>You log on to the CILogon Service using an identity provider other
+    than ' , getSessionVar('idpname') , '.
+    </li>
+    <li>You log on using a different ' , getSessionVar('idpname') , '
+    identity.
+    </li>
+    <li>The CILogon Service has experienced an internal error.
+    </li>
+    </ul>
+    <p>
+    </p>
+    ';
+
+    echo '
+    <p>
+    Click the "Proceed" button to continue.  If you have any questions,
+    please contact us at the email address at the bottom of the page.
+    </p>
+    <div>
+    ';
+    printFormHead(getScriptDir());
+    echo '
+    <input type="submit" name="submit" class="submit" 
+     value="Proceed" />
+    </form>
+    </div>
+    </div>
+    ';
+    printFooter();
 }
 
 /************************************************************************
