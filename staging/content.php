@@ -97,7 +97,7 @@ function printFooter($footer='')
     the <a target="_blank" href="http://www.nsf.gov/">National Science
     Foundation</a> under grant number <a target="_blank"
     href="http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0943633">0943633</a>.</p>
-    <p>Any opinions, findings and conclusions or recomendations expressed
+    <p>Any opinions, findings and conclusions or recommendations expressed
     in this material are those of the author(s) and do not necessarily
     reflect the views of the National Science Foundation.</p>
     <p>Please send any questions or comments about this
