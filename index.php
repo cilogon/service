@@ -189,6 +189,12 @@ function printLogonPage()
       the CILogon Service.  Alternatively, you can <a target="_blank"
       href="/requestidp/">make a request for your organization</a> to appear
       in the list of available organizations.
+      Identity Provider administrators can view the 
+      <a target="_blank"
+      href="https://wiki.cites.uiuc.edu/wiki/display/UIID/POP3RP-CILogon">InCommon Participant Operational Practices</a> document for the CILogon Service
+      and then <a target="_blank"
+      href="/secure/testidp/">test and add</a>
+      their identity provider to the CILogon Service.
       </p>
       <h2>Can I Use OpenID Instead?</h2>
       <p>
@@ -271,9 +277,31 @@ function printMainPage()
     printFormHead(
         $perl_config->getParam('GridShibCAURL').'shibCILaunchGSCA.jnlp',true);
         
+    $maxlifetime = round($perl_config->getParam(
+        'CA','MaximumCredLifetime') / 3600);
+    $certlifetime = getCookieVar('certlifetime');
+    if ((strlen($certlifetime) == 0) || ($certlifetime <= 0)) {
+        $certlifetime = round($perl_config->getParam(
+            'CA','DefaultCredLifetime') / 3600);
+    }
+
     echo '
       <input type="submit" name="submit" class="submit"
-       value="Download Certificate" />
+       value="Download Certificate" onclick="handleLifetime();" />
+      <div class="lifetime">
+      Lifetime: <input type="text" name="certlifetime" id="certlifetime"
+      value="' , $certlifetime, '" size="4" maxlength="4" /> hours (' , 
+      $maxlifetime, ' max)
+      <input type="hidden" name="maxlifetime" id="maxlifetime" value="' ,
+      $maxlifetime , '" />
+      <input type="hidden" name="RequestedLifetime" id="RequestedLifetime" 
+      value="' , ($certlifetime * 3600) , '" />
+      </div>
+      <noscript>
+      <div class="nojs smaller">
+      JavaScript must be enabled to specify Lifetime.
+      </div>
+      </noscript>
       </form>
       </td>
       <td class="description">
@@ -370,10 +398,6 @@ function printFormHead($action,$gsca=false) {
     echo $csrf->getHiddenFormElement();
 
     if ($gsca) {
-        echo '
-        <input type="hidden" name="lifetime" value="default" />
-        <input type="hidden" name="lifetimeUnit" value="hours" />';
-
         $trustCADir = $perl_config->getParam("TrustRoots","TrustRootsPath");
         if ((strlen($trustCADir) > 0) && (is_readable($trustCADir))) {
             echo '
