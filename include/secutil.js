@@ -57,3 +57,56 @@ function showHideDiv(whichDiv,showhide)
     }
 }
 
+/***************************************************************************
+ * Function  : handleLifetime                                              *
+ * This function is specific to the "Download Certificate" button area on  *
+ * the "Get And Use Your CILogon Certificate" page.  It handles the issue  *
+ * with the "Lifetime" of the certificate.  The GridShib-CA code expects   *
+ * a RequestedLifetime field in seconds, but the cilogon.org site prompts  *
+ * the user for hours.  So this fUnction transforms the visible            *
+ * certlifetime field (in hours) to the hidden RequestedLifetime field     *
+ * (in seconds).  It also sets a cooke for the certlifetime field so that  *
+ * it can be populated with the new value on the user's next visit.        *
+ ***************************************************************************/
+function handleLifetime()
+{
+  /* Get the certlifetime field entered by the user */
+  var certlifetimefield = document.getElementById('certlifetime');
+  if (certlifetimefield !== null) {
+    var certlifetimefieldvalue = parseInt(certlifetimefield.value);
+    if (isNaN(certlifetimefieldvalue)) {
+      certlifetimefieldvalue = 12;
+    }
+
+    /* Try to get the hidden maxlifetime field value, or default to 10 days */
+    var maxlifetimefield = document.getElementById('maxlifetime');
+    var maxlifetimefieldvalue = 240; 
+    if (maxlifetimefield !== null) {
+      maxlifetimefieldvalue = parseInt(maxlifetimefield.value);
+    }
+
+    /* Make sure the certlifetime is within bounds */
+    if (certlifetimefieldvalue < 1) {
+      certlifetimefieldvalue = 1;
+    }
+    if (certlifetimefieldvalue > maxlifetimefieldvalue) {
+      certlifetimefieldvalue = maxlifetimefieldvalue;
+    }
+
+    /* Set the hidden RequestedLifetime field, in seconds */
+    var requestedlifetimefield = document.getElementById('RequestedLifetime'); 
+    if (requestedlifetimefield !== null) {
+      requestedlifetimefield.value = certlifetimefieldvalue * 3600;
+    }
+
+    /* Set the cookie for the certlifetime field for next visit */
+    var today  = new Date();
+    var expire = new Date();
+    expire.setTime(today.getTime() + 365*24*3600000);
+    var cookiestr = "certlifetime=" + escape(certlifetimefieldvalue) +
+      ";expires=" + expire.toGMTString() + ";path=/;secure";
+    document.cookie = cookiestr;
+  }
+
+  return true;
+}
