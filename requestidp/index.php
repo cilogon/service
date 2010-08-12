@@ -194,10 +194,14 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
       </div>
       <p>
       If you are the administrator of an Identity Provider (<acronym
-      title="Identity Provider">IdP</acronym>), you can <a target="_blank"
-      href="/secure/testidp/">test your IdP</a> to verify attribute release
-      policy.  If all required attributes have been released by your
-      organization, you can easily make it available to users of the CILogon
+      title="Identity Provider">IdP</acronym>), you can view the
+      <a target="_blank"
+      href="https://wiki.cites.uiuc.edu/wiki/display/UIID/POP3RP-CILogon">InCommon Participant Operational Practices</a> document for the CILogon Service
+      and then
+      <a target="_blank"
+      href="/secure/testidp/">test your IdP</a> to verify you are releasing the required attributes.
+      If all required attributes have been released by your
+      organization, you can immediately make it available to users of the CILogon
       Service.
       </p>
     </div>
