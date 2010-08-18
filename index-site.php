@@ -5,7 +5,6 @@ require_once('include/autoloader.php');
 require_once('include/content.php');
 require_once('include/shib.php');
 require_once('include/myproxy.php');
-require_once('Auth/OpenID/Consumer.php');
 
 /* Read in the whitelist of currently available IdPs. */
 $white = new whitelist();
