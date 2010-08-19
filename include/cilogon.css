@@ -4,7 +4,7 @@ html {
   padding: 0;
 }
 body {
-  font-family: sans-serif;
+  font-family: Arial,sans-serif;
   color: #030;
   background: #fff;
   margin: 0;
@@ -84,7 +84,7 @@ input.submit {
   font-weight: bold;
   font-size: 110%;
   color: #030;
-  background-color: #aba;
+  background-color: #aca;
 }
 p.javaapplet {
   text-align: center;
@@ -147,7 +147,7 @@ div.logoheader {
   height: 80px;
   width: 100%;
   min-width: 600px;
-  font-family: sans-serif;
+  font-family: Arial,sans-serif;
 }
 div.logoheader h1 {
   background: transparent url("/images/cilogon-logo-60x60.png") no-repeat top left;
@@ -420,7 +420,7 @@ tr.taskbox td.buttons input.submitmore {
   font-weight: bold;
   font-size: 110%;
   color: #030;
-  background-color: #aba;
+  background-color: #aca;
   margin-top: 1em;
 }
 tr.taskbox td.description {
