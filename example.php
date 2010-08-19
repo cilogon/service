@@ -16,9 +16,12 @@ printPageHeader('Examples of CILogon Service Buttons and Links');
 
 <p>
 This page provides several examples of form buttons and links that website
-administrators can include in their sites to link to the CILogon Service.
-CILogon provides two distinct web endpoints. In the examples that follow,
-be sure to use the appropriate URL (and any needed parameters) to suit your
+designers can include in their sites to link to the CILogon Service.  The
+various images may also be included in presentations.
+</p>
+<p>
+CILogon provides two distinct web endpoints. In the examples that follow, be
+sure to use the appropriate URL (and any additional parameters) to suit your
 needs.
 </p>
 
@@ -55,26 +58,30 @@ for simple hyperlinks (<tt>&lt;a href="..."&gt;</tt>).
 If you use a <tt>&lt;form&gt;</tt> to route users from your site to the
 CILogon Service, you will need to set the "<tt>action=...</tt>" and
 "<tt>method=...</tt>" parameters appropriately for your site.  
-If your site's pages are generated
-server-side (say via PHP or ASP), you can set the target for the
-"<tt>action</tt>" parameter to be one of your site's pages, and then
-redirect to the appropriate CILogon Service URL.  Otherwise, you can set the
-target for the "<tt>action</tt>" parameter to be the CILogon Service URL
-directly.  Note that for the CILogon Delegation Service, the URL
-<em>must</em> contain the "<tt>oauth_token=...</tt>" parameter, so your
-website must somehow generate the correct HTML.
+If your site can process <tt>&lt;form&gt;</tt> submission,
+you can set the target for the "<tt>action</tt>" parameter to be one of your
+site's pages, and then redirect to the appropriate CILogon Service URL.
+Otherwise, you can set the target for the "<tt>action</tt>" parameter to be
+the CILogon Service URL directly.  
+</p>
+<p>
+Note that for the CILogon Delegation
+Service, the URL <em>must</em> contain the "<tt>oauth_token=...</tt>"
+parameter, so your website must somehow generate the correct HTML.
 </p>
 <p>
 If you use a hyperlink to route users to the CILogon site, you simply put
 the URL of the CILogon site endpoint into the <tt>href="..."</tt> parameter.
 Again note that for the CILogon Delegation Service, the URL <em>must</em>
 contain the "<tt>oauth_token=...</tt> parameter, so your website will
-probably need to generate the HTML output dynamically.
+probably need to generate the HTML output dynamically (e.g. via PHP or ASP).
 </p>
 
 <p>
-For the purposes of these examples, we will use the end-user CILogon Service
-URL as the "<tt>action</tt>" parameter. 
+For the purposes of these examples, we will assume that the current page can
+process forms, so the "<tt>action</tt>" parameter will be "<tt>#</tt>".  For
+the anchors (hyperlinks), we will use the end-user CILogon Service
+URL (https://cilogon.org) in the "<tt>href</tt>" parameter. 
 </p>
 
 <h2>Text-Only Button</h2>
@@ -91,28 +98,30 @@ colors used by the CILogon site.
     <input type="submit" name="cisubmit1" id="cisubmit1" 
       value="CILogon Service" 
       title="Click to get a certificate via the CILogon Service."
-      style="font-family:arial,sans-serif; font-style:italic; 
+      style="font-family:Arial,sans-serif; font-style:italic; 
       font-weight:bold; font-size:large; color:#030; 
-      background-color:#aba; cursor:help;" 
+      background-color:#aca; cursor:help;" 
       onclick="return false;"
       />
     </form>
     </td>
-    <td>
+    <td align="right">
     <form action="#" method="post">
     <textarea cols="68" rows="8">
 &lt;form action="#" method="post"&gt;
 &lt;input type="submit" name="cisubmit1" id="cisubmit1" 
 value="CILogon Service" 
 title="Click to get a certificate via the CILogon Service."
-style="font-family:arial,sans-serif; font-style:italic; 
+style="font-family:Arial,sans-serif; font-style:italic; 
 font-weight:bold; font-size:large; color:#030; 
-background-color:#aba; cursor:help;" /&gt;
+background-color:#aca; cursor:help;" /&gt;
 &lt;/form&gt;</textarea>
     </form>
     </td>
   </tr>
 </table>
+
+<hr style="width:70%";
 
 <h2>Image Button</h2>
 
@@ -135,7 +144,7 @@ are available at the bottm of the page.
       />
     </form>
     </td>
-    <td>
+    <td align="right">
     <form action="#" method="post">
     <textarea cols="68" rows="7">
 &lt;form action="#" method="post"&gt;
@@ -150,12 +159,14 @@ style="cursor:help;" /&gt;
   </tr>
 </table>
 
+<hr style="width:70%";
+
 <h2>Basic Hyperlink</h2>
 
 <p>
-You can put an image and some text inside a standard &lt;a href="..."&gt;
-tag if you want a basic link.  Here is one example using a CILogon icon and
-some CSS stylized text.
+You can put an image and some text inside a standard <tt>&lt;a
+href="..."&gt;</tt> tag if you want a basic link.  Here is one example using
+a CILogon icon and some CSS stylized text.
 </p>
 
 <table width="100%" cellspacing="0" cellpadding="10" 
@@ -164,32 +175,36 @@ some CSS stylized text.
   <tr>
     <td>
       <a href="https://cilogon.org/" 
-      style="font-family:arial,sans-serif; font-style:italic;
+      style="font-family:Arial,sans-serif; font-style:italic;
       font-weight:bold; font-size:x-large; color:#696;"><img 
       style="border-style:none; vertical-align:middle"
       src="https://cilogon.org/images/cilogon-logo-24x24-b.png"
-      alt="CILogo"/>Get Certificate</a>
+      alt=""/>Get Certificate</a>
     </td>
-  <td>
-    <form action="#" method="post">
-    <textarea cols="68" rows="6">
+    <td align="right">
+      <form action="#" method="post">
+      <textarea cols="68" rows="6">
 &lt;a href="https://cilogon.org/" 
-style="font-family:arial,sans-serif; font-style:italic;
+style="font-family:Arial,sans-serif; font-style:italic;
 font-weight:bold; font-size:x-large; color:#696;"&gt;&lt;img 
 style="border-style:none; vertical-align:middle"
 src="https://cilogon.org/images/cilogon-logo-24x24-b.png"
-alt="CILogo"&gt;Get Certificate&lt;/a&gt;</textarea>
-    </form>
-  </td>
+alt=""&gt;Get Certificate&lt;/a&gt;</textarea>
+      </form>
+    </td>
   </tr>
 </table>
+
+<hr style="width:70%";
 
 <h2>Hyperlink In A &lt;div&gt;</h2>
 
 <p>
 Here is another example putting both the icon image and the associated text
 inside a <tt>&lt;div&gt;</tt> element, and then adding a border/frame
-decoration to make it look like a button.
+decoration to make it look like a button.  Notice the addition of the
+<tt>onclick</tt> method (which requires JavaScript to be enabled) to the
+<tt>&lt;div&gt;</tt> to make the entire "button" clickable.
 </p>
 
 <table width="100%" cellspacing="0" cellpadding="10" 
@@ -198,27 +213,27 @@ decoration to make it look like a button.
   <tr>
     <td>
       <div style="border: 5px outset #696; cursor:pointer;
-      display:inline-block; padding:5px;" 
+      display:inline-block; padding:3px;" 
       onclick="location.href='http://cilogon.org'">
       <a href="https://cilogon.org" 
-      style="font-family:arial,sans-serif; font-style:italic;
-      font-weight:bold; font-size:x-large; color:#363;
+      style="font-family:Arial,sans-serif; font-style:italic;
+      font-weight:bold; font-size:28px; color:#363;
       text-decoration:none;">
         <img src="https://cilogon.org/images/cilogon-logo-32x32.png"
-             alt="CILogo" style="vertical-align:middle"/> CILogon Service</a>
+             alt="" style="vertical-align:middle"/>&nbsp;CILogon&nbsp;Service</a>
       </div>
     </td>
-    <td>
+    <td align="right">
     <form action="#" method="post">
     <textarea cols="68" rows="9">
-&lt;div style="border: 5px outset #696; cursor:pointer; padding:5px;
+&lt;div style="border: 5px outset #696; cursor:pointer; padding:3px;
 display:inline-block;" onclick="location.href='http://cilogon.org'"&gt;
 &lt;a href="https://cilogon.org" 
-style="font-family:arial,sans-serif; font-style:italic;
-font-weight:bold; font-size:x-large; color:#363; 
-text-decoration:none;"&gt;&lt;img alt="CILogo"
+style="font-family:Arial,sans-serif; font-style:italic;
+font-weight:bold; font-size:28px; color:#363; 
+text-decoration:none;"&gt;&lt;img alt=""
 src="https://cilogon.org/images/cilogon-logo-32x32.png"
-style="vertical-align:middle"/&gt; CILogon Service&lt;/a&gt;
+style="vertical-align:middle"/&gt;&amp;nbsp;CILogon&amp;nbsp;Service&lt;/a&gt;
 &lt;/div&gt;</textarea>
     </form>
     </td>
@@ -229,6 +244,25 @@ style="vertical-align:middle"/&gt; CILogon Service&lt;/a&gt;
 <hr />
 
 <h1>More Images For Buttons</h1>
+
+<p>
+Below are buttons you may use on your website.  You can either download
+these images and put them on your site, or you may reference them directly
+from the cilogon.org site.  Hover your mouse cursor over each image
+to see the URL for the image.
+</p>
+
+<p>
+The last entry in the table is a link to a huge 5000 x 5000 icon that you
+can resize down to a size suitable for your site.  Right-click on the "View"
+link to save to your local computer.
+</p>
+
+<p>
+The font used for the "CILogon" text is <a target="_blank"
+href="http://web.nickshanks.com/fonts/microsoft-core-web-fonts">Arial</a>,
+with font-weight <strong>bold</strong>, and font-style <em>italic</em>. 
+</p>
 
 <table cellpadding="5" width="100%"
   style="border-width:1px; border-spacing:1px;
@@ -241,104 +275,104 @@ style="vertical-align:middle"/&gt; CILogon Service&lt;/a&gt;
   </tr>
   <tr style="border-width:1px; border-top-style:solid">
     <th rowspan="2">16 px</th>
-    <th><img src="images/cilogon-logon-16-w.png" alt="CILogo"
+    <th><img src="images/cilogon-logon-16-w.png" alt=""
              title="https://cilogon.org/images/cilogon-logon-16-w.png"/></th>
-    <th><img src="images/cilogon-ci-16-w.png" alt="CILogo"
+    <th><img src="images/cilogon-ci-16-w.png" alt=""
              title="https://cilogon.org/images/cilogon-ci-16-w.png"/></th>
-    <th><img src="images/cilogon-logo-16x16.png" alt="CILogo"
+    <th><img src="images/cilogon-logo-16x16.png" alt=""
              title="https://cilogon.org/images/cilogon-logo-16x16.png"/></th>
   </tr>
   <tr>
-    <th><img src="images/cilogon-logon-16-g.png" alt="CILogo"
+    <th><img src="images/cilogon-logon-16-g.png" alt=""
              title="https://cilogon.org/images/cilogon-logon-16-g.png"/></th>
-    <th><img src="images/cilogon-ci-16-g.png" alt="CILogo"
+    <th><img src="images/cilogon-ci-16-g.png" alt=""
              title="https://cilogon.org/images/cilogon-ci-16-g.png"/></th>
-    <th><img src="images/cilogon-logo-16x16-b.png" alt="CILogo"
+    <th><img src="images/cilogon-logo-16x16-b.png" alt=""
              title="https://cilogon.org/images/cilogon-logo-16x16-b.png"/></th>
   </tr>
   <tr style="border-width:1px; border-top-style:solid">
     <th rowspan="2">24 px</th>
-    <th><img src="images/cilogon-logon-24-w.png" alt="CILogo"
+    <th><img src="images/cilogon-logon-24-w.png" alt=""
          title="https://cilogon.org/images/cilogon-logon-24-w.png"/></th>
-    <th><img src="images/cilogon-ci-24-w.png" alt="CILogo"
+    <th><img src="images/cilogon-ci-24-w.png" alt=""
          title="https://cilogon.org/images/cilogon-ci-24-w.png"/></th>
-    <th><img src="images/cilogon-logo-24x24.png" alt="CILogo"
+    <th><img src="images/cilogon-logo-24x24.png" alt=""
          title="https://cilogon.org/images/cilogon-logo-24x24.png"/></th>
   </tr>
   <tr>
-    <th><img src="images/cilogon-logon-24-g.png" alt="CILogo"
+    <th><img src="images/cilogon-logon-24-g.png" alt=""
          title="https://cilogon.org/images/cilogon-logon-24-g.png"/></th>
-    <th><img src="images/cilogon-ci-24-g.png" alt="CILogo"
+    <th><img src="images/cilogon-ci-24-g.png" alt=""
          title="https://cilogon.org/images/cilogon-ci-24-g.png"/></th>
-    <th><img src="images/cilogon-logo-24x24-b.png" alt="CILogo"
+    <th><img src="images/cilogon-logo-24x24-b.png" alt=""
          title="https://cilogon.org/images/cilogon-logo-24x24-b.png"/></th>
   </tr>
   <tr style="border-width:1px; border-top-style:solid">
     <th rowspan="2">32 px</th>
-    <th><img src="images/cilogon-logon-32-w.png" alt="CILogo"
+    <th><img src="images/cilogon-logon-32-w.png" alt=""
          title="https://cilogon.org/images/cilogon-logon-32-w.png"/></th>
-    <th><img src="images/cilogon-ci-32-w.png" alt="CILogo"
+    <th><img src="images/cilogon-ci-32-w.png" alt=""
          title="https://cilogon.org/images/cilogon-ci-32-w.png"/></th>
-    <th><img src="images/cilogon-logo-32x32.png" alt="CILogo"
+    <th><img src="images/cilogon-logo-32x32.png" alt=""
          title="https://cilogon.org/images/cilogon-logo-32x32.png"/></th>
   </tr>
   <tr>
-    <th><img src="images/cilogon-logon-32-g.png" alt="CILogo"
+    <th><img src="images/cilogon-logon-32-g.png" alt=""
          title="https://cilogon.org/images/cilogon-logon-32-g.png"/></th>
-    <th><img src="images/cilogon-ci-32-g.png" alt="CILogo"
+    <th><img src="images/cilogon-ci-32-g.png" alt=""
          title="https://cilogon.org/images/cilogon-ci-32-g.png"/></th>
-    <th><img src="images/cilogon-logo-32x32-b.png" alt="CILogo"
+    <th><img src="images/cilogon-logo-32x32-b.png" alt=""
          title="https://cilogon.org/images/cilogon-logo-32x32-b.png"/></th>
   </tr>
   <tr style="border-width:1px; border-top-style:solid">
     <th rowspan="2">40 px</th>
-    <th><img src="images/cilogon-logon-40-w.png" alt="CILogo"
+    <th><img src="images/cilogon-logon-40-w.png" alt=""
          title="https://cilogon.org/images/cilogon-logon-40-w.png"/></th>
-    <th><img src="images/cilogon-ci-40-w.png" alt="CILogo"
+    <th><img src="images/cilogon-ci-40-w.png" alt=""
          title="https://cilogon.org/images/cilogon-ci-40-w.png"/></th>
-    <th><img src="images/cilogon-logo-40x40.png" alt="CILogo"
+    <th><img src="images/cilogon-logo-40x40.png" alt=""
          title="https://cilogon.org/images/cilogon-logo-40x40.png"/></th>
   </tr>
   <tr>
-    <th><img src="images/cilogon-logon-40-g.png" alt="CILogo"
+    <th><img src="images/cilogon-logon-40-g.png" alt=""
          title="https://cilogon.org/images/cilogon-logon-40-g.png"/></th>
-    <th><img src="images/cilogon-ci-40-g.png" alt="CILogo"
+    <th><img src="images/cilogon-ci-40-g.png" alt=""
          title="https://cilogon.org/images/cilogon-ci-40-g.png"/></th>
-    <th><img src="images/cilogon-logo-40x40-b.png" alt="CILogo"
+    <th><img src="images/cilogon-logo-40x40-b.png" alt=""
          title="https://cilogon.org/images/cilogon-logo-40x40-b.png"/></th>
   </tr>
   <tr style="border-width:1px; border-top-style:solid">
     <th rowspan="2">48 px</th>
-    <th><img src="images/cilogon-logon-48-w.png" alt="CILogo"
+    <th><img src="images/cilogon-logon-48-w.png" alt=""
          title="https://cilogon.org/images/cilogon-logon-48-w.png"/></th>
-    <th><img src="images/cilogon-ci-48-w.png" alt="CILogo"
+    <th><img src="images/cilogon-ci-48-w.png" alt=""
          title="https://cilogon.org/images/cilogon-ci-48-w.png"/></th>
-    <th><img src="images/cilogon-logo-48x48.png" alt="CILogo"
+    <th><img src="images/cilogon-logo-48x48.png" alt=""
          title="https://cilogon.org/images/cilogon-logo-48x48.png"/></th>
   </tr>
   <tr>
-    <th><img src="images/cilogon-logon-48-g.png" alt="CILogo"
+    <th><img src="images/cilogon-logon-48-g.png" alt=""
          title="https://cilogon.org/images/cilogon-logon-48-g.png"/></th>
-    <th><img src="images/cilogon-ci-48-g.png" alt="CILogo"
+    <th><img src="images/cilogon-ci-48-g.png" alt=""
          title="https://cilogon.org/images/cilogon-ci-48-g.png"/></th>
-    <th><img src="images/cilogon-logo-48x48-b.png" alt="CILogo"
+    <th><img src="images/cilogon-logo-48x48-b.png" alt=""
          title="https://cilogon.org/images/cilogon-logo-48x48-b.png"/></th>
   </tr>
   <tr style="border-width:1px; border-top-style:solid">
     <th rowspan="2">64 px</th>
-    <th><img src="images/cilogon-logon-64-w.png" alt="CILogo"
+    <th><img src="images/cilogon-logon-64-w.png" alt=""
          title="https://cilogon.org/images/cilogon-logon-64-w.png"/></th>
-    <th><img src="images/cilogon-ci-64-w.png" alt="CILogo"
+    <th><img src="images/cilogon-ci-64-w.png" alt=""
          title="https://cilogon.org/images/cilogon-ci-64-w.png"/></th>
-    <th><img src="images/cilogon-logo-64x64.png" alt="CILogo"
+    <th><img src="images/cilogon-logo-64x64.png" alt=""
          title="https://cilogon.org/images/cilogon-logo-64x64.png"/></th>
   </tr>
   <tr>
-    <th><img src="images/cilogon-logon-64-g.png" alt="CILogo"
+    <th><img src="images/cilogon-logon-64-g.png" alt=""
          title="https://cilogon.org/images/cilogon-logon-64-g.png"/></th>
-    <th><img src="images/cilogon-ci-64-g.png" alt="CILogo"
+    <th><img src="images/cilogon-ci-64-g.png" alt=""
          title="https://cilogon.org/images/cilogon-ci-64-g.png"/></th>
-    <th><img src="images/cilogon-logo-64x64-b.png" alt="CILogo"
+    <th><img src="images/cilogon-logo-64x64-b.png" alt=""
          title="https://cilogon.org/images/cilogon-logo-64x64-b.png"/></th>
   </tr>
   <tr style="border-width:1px; border-top-style:solid">
