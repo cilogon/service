@@ -150,11 +150,11 @@ div.logoheader {
   font-family: Arial,sans-serif;
 }
 div.logoheader h1 {
-  background: transparent url("/images/cilogon-logo-60x60.png") no-repeat top left;
-  margin-top: 10px;
-  margin-left: 10px;
-  width: 60px;
-  height: 60px;
+  background: transparent url("/images/cilogon-service-header.png") no-repeat top left;
+  margin-top: 8px;
+  margin-left: 5px;
+  width: 458px;
+  height: 64px;
   float: left;
 }
 div.logoheader h1 span {

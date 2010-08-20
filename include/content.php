@@ -67,8 +67,6 @@ function printHeader($title='',$extra='')
     <body>
     <div class="logoheader">
        <h1><span>[Icon]</span></h1>
-       <h2><span>CILogon Service</span><span 
-           class="raised">CILogon Service</span></h2>
     </div>
     <div class="pagecontent">
      ';
