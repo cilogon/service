@@ -160,28 +160,6 @@ div.logoheader h1 {
 div.logoheader h1 span {
   display: none;
 }
-div.logoheader h2 {
-  float: left;
-  color: #030;
-  position: relative;
-  font-size: 300%;
-  margin-left: 10px;
-  margin-top: 10px;
-  width: 9em;
-  font-style: italic;
-  font-weight: bold;
-}
-div.logoheader h2 span {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-}
-div.logoheader h2 span.raised {
-  top: 2px;
-  left: 2px;
-  color: #696;
-  clear: both;
-}
 /***** End the "CILogon Service" header at the top of each page *****/
 
 /***** Begin PageHeader titlebox *****/
