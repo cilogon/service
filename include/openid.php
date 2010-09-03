@@ -55,6 +55,7 @@ class openid {
         /* 'certifi.ca'  => 'http://certifi.ca/username' , */
         'Chi.mp'      => 'http://username.mp' ,
         'clavid'      => 'http://username.clavid.com' ,
+        'Clickpass'   => 'http://clickpass.com/public/username' ,
         'Flickr'      => 'http://flickr.com/photos/username' ,
         'GetOpenID'   => 'http://getopenid.com/username' ,
         'Google'      => 'http://google.com/accounts/o8/id' ,
@@ -71,7 +72,7 @@ class openid {
         'OpenID'      => 'http://username' ,
         'Steam'       => 'http://steamcommunity.com/openid' ,
         'Verisign'    => 'http://pip.verisignlabs.com' ,
-        'Vox'         => 'http://username.vox.com' ,
+        /* 'Vox'         => 'http://username.vox.com' , */
         'WordPress'   => 'http://username.wordpress.com' ,
         'Yahoo'       => 'http://yahoo.com' ,
         'Yiid'        => 'http://yiid.com'
