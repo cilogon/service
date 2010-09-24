@@ -57,6 +57,7 @@ class openid {
         'clavid'      => 'http://username.clavid.com' ,
         'Clickpass'   => 'http://clickpass.com/public/username' ,
         'Flickr'      => 'http://flickr.com/photos/username' ,
+        'Fupei'       => 'http://id.fupei.com/username' ,
         'GetOpenID'   => 'http://getopenid.com/username' ,
         'Google'      => 'http://google.com/accounts/o8/id' ,
         'Hyves'       => 'http://hyves.nl' ,

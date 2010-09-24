@@ -586,6 +586,9 @@ div.openiderror {
 .flickricon {
   background: #eee url('/images/flickr.png') no-repeat left center;
 }
+.fupeiicon {
+  background: #eee url('/images/fupei.png') no-repeat left center;
+}
 .getopenidicon {
   background: #eee url('/images/getopenid.png') no-repeat left center;
 }
