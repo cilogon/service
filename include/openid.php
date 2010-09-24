@@ -72,10 +72,8 @@ class openid {
         'OpenID'      => 'http://username' ,
         'Steam'       => 'http://steamcommunity.com/openid' ,
         'Verisign'    => 'http://pip.verisignlabs.com' ,
-        /* 'Vox'         => 'http://username.vox.com' , */
         'WordPress'   => 'http://username.wordpress.com' ,
-        'Yahoo'       => 'http://yahoo.com' ,
-        'Yiid'        => 'http://yiid.com'
+        'Yahoo'       => 'http://yahoo.com' 
     );
 
     /* The actual OpenID provider to be used.  Corresponds to one of    *
