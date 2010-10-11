@@ -576,36 +576,36 @@ function redirectToGetOpenIDUser($providerId='',$username='username',
         } else {
             $consumer = new Auth_OpenID_Consumer($datastore);
             $auth_request = $consumer->begin($openid->getURL());
-        }
 
-        if (!$auth_request) {
-            $_SESSION['openiderror'] = $openiderrorstr;
-        } else {
-            if ($auth_request->shouldSendRedirect()) {
-                $redirect_url = $auth_request->redirectURL(
-                    'https://' . HOSTNAME . '/',
-                    'https://' . HOSTNAME . '/getopeniduser/');
-                if (Auth_OpenID::isFailure($redirect_url)) {
-                    $_SESSION['openiderror'] = $openiderrorstr;
-                } else {
-                    $log->info('OpenID Login="' . $providerId . '"');
-                    header("Location: " . $redirect_url);
-                }
+            if (!$auth_request) {
+                $_SESSION['openiderror'] = $openiderrorstr;
             } else {
-                $form_id = 'openid_message';
-                $form_html = $auth_request->htmlMarkup(
-                    'https://' . HOSTNAME . '/',
-                    'https://' . HOSTNAME . '/getopeniduser/',
-                    false, array('id' => $form_id));
-                if (Auth_OpenID::isFailure($form_html)) {
-                    $_SESSION['openiderror'] = $openiderrorstr;
+                if ($auth_request->shouldSendRedirect()) {
+                    $redirect_url = $auth_request->redirectURL(
+                        'https://' . HOSTNAME . '/',
+                        'https://' . HOSTNAME . '/getopeniduser/');
+                    if (Auth_OpenID::isFailure($redirect_url)) {
+                        $_SESSION['openiderror'] = $openiderrorstr;
+                    } else {
+                        $log->info('OpenID Login="' . $providerId . '"');
+                        header("Location: " . $redirect_url);
+                    }
                 } else {
-                    $log->info('OpenID Login="' . $providerId . '"');
-                    print $form_html;
+                    $form_id = 'openid_message';
+                    $form_html = $auth_request->htmlMarkup(
+                        'https://' . HOSTNAME . '/',
+                        'https://' . HOSTNAME . '/getopeniduser/',
+                        false, array('id' => $form_id));
+                    if (Auth_OpenID::isFailure($form_html)) {
+                        $_SESSION['openiderror'] = $openiderrorstr;
+                    } else {
+                        $log->info('OpenID Login="' . $providerId . '"');
+                        print $form_html;
+                    }
                 }
-            }
 
-            $openid->disconnect();
+                $openid->disconnect();
+            }
         }
 
         if (strlen(getSessionVar('openiderror')) > 0) {
