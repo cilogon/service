@@ -148,15 +148,13 @@ function printLogonPage()
       The CILogon Service allows users to authenticate
       with their home organization and obtain a
       certificate for secure access to <a target="_blank"
-      href="http://www.nsf.gov/">NSF</a> <a target="_blank"
       href="http://www.nsf.gov/oci">CyberInfrastructure</a> (<acronym
-      title="CyberInfrastructure">CI</acronym>) projects. Additional
+      title="CyberInfrastructure">CI</acronym>). Additional
       information can be found at <a target="_blank"
-      href="http://www.cilogon.org/service">www.cilogon.org</a>.
+      href="http://www.cilogon.org/">www.cilogon.org</a>.
       </p>
       <p class="equation">
       <span>CILogon + Your Organization = Secure Access to 
-      <acronym title="National Science Foundation">NSF</acronym>
       <acronym title="CyberInfrastructure">CI</acronym></span>
       </p>
       <h2>How Does The CILogon Service Work?</h2>
@@ -185,7 +183,7 @@ function printLogonPage()
       the drop-down list in the &quot;Start Here&quot; menu, you can
       register for a free user account at <a target="_blank"
       href="http://www.protectnetwork.org/">ProtectNetwork</a> for use with
-      the CILogon Service.  Alternatively, you can <a target="_blank"
+      the CILogon Service.  Also, you can <a target="_blank"
       href="/requestidp/">make a request for your organization</a> to appear
       in the list of available organizations.
       Identity Provider administrators can view the 
@@ -206,6 +204,13 @@ function printLogonPage()
       authentication.  However, the certificates issued to OpenID users may
       be accepted by fewer cyberinfrastructure resource providers than those
       issued to InCommon users.  
+      </p>
+      <h2>What If I Have More Questions?</h2>
+      <p>
+      Please see the <a target="_blank"
+      href="http://www.cilogon.org/faq">CILogon FAQ</a> for answers to
+      frequently asked questions. If your question is not answered there,
+      please use the email address at the bottom of this page to contact us.
       </p>
       <p class="note">
       <strong>Note:</strong> You must enable cookies in your web browser to
@@ -245,11 +250,9 @@ function printMainPage()
     <p>
     You are logged on to the CILogon Service.  You can now download a
     certificate to your local computer and then use it to securely access
-    <acronym title="National Science Foundation">NSF</acronym>
-    cyberinfrastructure resources.  For example, you can use your
+    cyberinfrastructure.  For example, you can use your
     certificate with GSI-SSHTerm to connect to the command
-    line of <acronym 
-    title="National Science Foundation">NSF</acronym> cyberinfrastructure
+    line of cyberinfrastructure
     resources.  Note that you will need <a target="_blank"
     href="http://www.javatester.org/version.html">Java 1.5 or higher</a>
     installed on your computer and enabled in your web browser.
