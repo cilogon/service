@@ -177,6 +177,89 @@ function getScriptDir($fullurl=false) {
     return $retval;
 }
 
+/************************************************************************
+ * Function  : readArrayFromFile                                        *
+ * Parameter : The name of the file to read.                            *
+ * Return    : An array containing the contents of the file.            *
+ * This function reads in the contents of a file into an array. It is   *
+ * assumed that the file contains lines of the form:                    *
+ *     key value                                                        *
+ * where "key" and "value" are separated by whitespace.  The "key"      *
+ * portion of the string may not contain any whitespace, but the        *
+ * "value" part of the line may contain whitespace. Any empty lines     *
+ * in the file are skipped.  Note that this assumes that each "key"     *
+ * in the file is unique.  If there is any problem reading the file,    *
+ * the resulting array will be empty.                                   *
+ ************************************************************************/
+function readArrayFromFile($filename) {
+    $retarray = array();
+    if (is_readable($filename)) {
+        $lines = file($filename,FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line_num => $line) {
+            $values = preg_split('/\s+/',$line,2);
+            $retarray[$values[0]] = $values[1];
+        }
+    }
+
+    return $retarray;
+}
+
+/************************************************************************
+ * Function  : writeArrayToFile                                         *
+ * Parameters: (1) The name of the file to write.                       *
+ *             (2) The array to be written to the file.                 *
+ * Return    : True if successfully wrote file, false otherwise.        *
+ * This funtion writes an array (with key=>value pairs) to a file, each *
+ * line will be of the form:                                            *
+ *     key value                                                        *
+ * The "key" and "value" strings are separated by a space. Note that    *
+ * a "key" may not contain any whitespace (e.g. tabs), but a "value"    *
+ * may contain whitespace.                                              *
+ ************************************************************************/
+function writeArrayToFile($filename,$thearray) {
+    $retval = false;  // Assume write failed
+    if ($fh = fopen($filename,'w')) {
+        foreach ($thearray as $key => $value) {
+            fwrite($fh,"$key $value\n");
+        }
+        fclose($fh);
+        $retval = true;
+    }
+
+    return $retval;
+}
+
+/************************************************************************
+ * Function  : parseGridShibConf                                        *
+ * Parameter : (Optional) Full path location of gridshib-ca.conf file.  *
+ *             Defaults to                                              *
+ *             '/usr/local/gridshib-ca-2.0.0/conf/gridshib-ca.conf'.    *
+ * Return    : An array containing the various configuration parameters *
+ *             in the gridshib-ca.conf file.                            *
+ * This function parses the gridshib-ca.conf file and returns an array  *
+ * containing the various options.  It uses the PHP PEAR::Config        *
+ * package to parse the config file.  The gridshib-ca.conf file is      *
+ * MOSTLY an Apache-style config file.  However, each option has an     *
+ * extra ' = ' prepended, so you will need to strip these off each      *
+ * config option.  For example, to get the 'MaximumCredLifetime' value  *
+ * which is in the 'CA' section, you would do the following:            *
+ *     $gridshibconf = parseGridShibConf();                             */
+//     $life = preg_replace('/^\s*=\s*/','',                            *
+//             $gridshibconf['root']['CA']['MaximumCredLifetime']);     *
+/************************************************************************/
+function parseGridShibConf($conffile=
+    '/usr/local/gridshib-ca-2.0.0/conf/gridshib-ca.conf') {
+    require_once('Config.php');
+    $conf = new Config;
+    $root =& $conf->parseConfig($conffile,'Apache');
+    $gridshibconf = array();
+    if (!(PEAR::isError($root))) {
+        $gridshibconf = $root->toArray();
+    }
+    return $gridshibconf;
+}
+
+
 /* Start a secure PHP session */
 startPHPSession();
 
@@ -184,4 +267,7 @@ startPHPSession();
 $thehostname = getServerVar('HTTP_HOST');
 define('HOSTNAME',((strlen($thehostname) > 0) ? 
     $thehostname : 'cilogon.org'));
+
+// require_once('timeit.php');
+// $timeit = new timeit();
 ?>
