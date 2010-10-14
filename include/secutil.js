@@ -65,15 +65,16 @@ function showHideDiv(whichDiv,showhide)
  * a RequestedLifetime field in seconds, but the cilogon.org site prompts  *
  * the user for hours.  So this fUnction transforms the visible            *
  * certlifetime field (in hours) to the hidden RequestedLifetime field     *
- * (in seconds).  It also sets a cooke for the certlifetime field so that  *
- * it can be populated with the new value on the user's next visit.        *
+ * (in seconds).  It also sets a cooke for the certlifetime field and      *
+ * Download Root CAs checkbox so that they can be populated with the new   *
+ * values on the user's next visit.                                        *
  ***************************************************************************/
 function handleLifetime()
 {
   /* Get the certlifetime field entered by the user */
   var certlifetimefield = document.getElementById('certlifetime');
   if (certlifetimefield !== null) {
-    var certlifetimefieldvalue = parseInt(certlifetimefield.value);
+    var certlifetimefieldvalue = parseInt(certlifetimefield.value,10);
     if (isNaN(certlifetimefieldvalue)) {
       certlifetimefieldvalue = 12;
     }
@@ -82,7 +83,7 @@ function handleLifetime()
     var maxlifetimefield = document.getElementById('maxlifetime');
     var maxlifetimefieldvalue = 240; 
     if (maxlifetimefield !== null) {
-      maxlifetimefieldvalue = parseInt(maxlifetimefield.value);
+      maxlifetimefieldvalue = parseInt(maxlifetimefield.value,10);
     }
 
     /* Make sure the certlifetime is within bounds */
@@ -106,6 +107,20 @@ function handleLifetime()
     var cookiestr = "certlifetime=" + escape(certlifetimefieldvalue) +
       ";expires=" + expire.toGMTString() + ";path=/;secure";
     document.cookie = cookiestr;
+
+    /* Set the (opposite) cookie for the Download Root CAs checkbox */
+    var downloadrootcasbox = document.getElementById('DownloadTrustroots');
+    if (downloadrootcasbox !== null) {
+      var downloadrootcasboxvalue = downloadrootcasbox.checked;
+      if (downloadrootcasboxvalue.toString() == 'true') {
+        cookiestr = "notrustcerts=;" + 
+                    "expires=Thu, 01-Jan-70 00:00:01 GMT;path=/;secure";
+      } else {
+        cookiestr = "notrustcerts=notrustcerts;expires=" + 
+                    expire.toGMTString() + ";path=/;secure";
+      }
+      document.cookie = cookiestr;
+    }
   }
 
   return true;
