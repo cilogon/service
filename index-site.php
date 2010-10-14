@@ -1,6 +1,8 @@
 <?php
 
 require_once('include/util.php');
+// global $timeit;
+// $timeit->printTime('Starting index-site.php...');
 require_once('include/autoloader.php');
 require_once('include/content.php');
 require_once('include/shib.php');
@@ -122,6 +124,7 @@ switch ($submit) {
     break; // End default case
 
 } // End switch($submit)
+// $timeit->printTime('Exiting switch ($submit)');
 
 /************************************************************************
  * Function   : printLogonPage                                          *
@@ -232,8 +235,8 @@ function printLogonPage()
  ************************************************************************/
 function printMainPage()
 {
-    global $perl_config;
     global $log;
+    $gridshibconf = parseGridShibConf();
 
     $log->info('Get And Use Certificate page hit.');
 
@@ -252,39 +255,31 @@ function printMainPage()
     certificate to your local computer and then use it to securely access
     cyberinfrastructure.  For example, you can use your
     certificate with GSI-SSHTerm to connect to the command
-    line of cyberinfrastructure
+    line of cyberinfrastructure 
     resources.  Note that you will need <a target="_blank"
     href="http://www.javatester.org/version.html">Java 1.5 or higher</a>
     installed on your computer and enabled in your web browser.
     </p>
-    ';
 
-    /* Output the user's Certificate Subject DN. */
-    $uid = getSessionVar('uid');
-    $store = new store();
-    $store->getUserObj($uid);
-    if (!($store->getUserSub('status') & 1)) {  // STATUS_OK codes are even
-        $dn = $store->getUserSub('getDN');
-        $dn = preg_replace('/\s+email=.+$/','',$dn);
-        echo '<p>Your certificate subject is "<tt>' , $dn , '</tt>".</p>';
-    }
+    <p>
+    Your certificate subject is "<tt>' , getSessionVar('dn') , '</tt>".
+    </p>
 
-    echo '
     <div class="taskdiv">
     <table cellpadding="10" cellspacing="0" class="tasktable">
     <tr class="taskbox">
       <td class="buttons">
     ';
 
-    printFormHead(
-        $perl_config->getParam('GridShibCAURL').'shibCILaunchGSCA.jnlp',true);
+    printFormHead(preg_replace('/^\s*=\s*/','',
+        $gridshibconf['root']['GridShibCAURL']).'shibCILaunchGSCA.jnlp',true);
         
-    $maxlifetime = round($perl_config->getParam(
-        'CA','MaximumCredLifetime') / 3600);
+    $maxlifetime = round(preg_replace('/^\s*=\s*/','',
+        $gridshibconf['root']['CA']['MaximumCredLifetime']) / 3600);
     $certlifetime = getCookieVar('certlifetime');
     if ((strlen($certlifetime) == 0) || ($certlifetime <= 0)) {
-        $certlifetime = round($perl_config->getParam(
-            'CA','DefaultCredLifetime') / 3600);
+        $certlifetime = round(preg_replace('/^\s*=\s*/','',
+            $gridshibconf['root']['CA']['DefaultCredLifetime']) / 3600);
     }
 
     echo '
@@ -299,6 +294,31 @@ function printMainPage()
       <input type="hidden" name="RequestedLifetime" id="RequestedLifetime" 
       value="' , ($certlifetime * 3600) , '" />
       </div>
+      ';
+
+      $trustCADir = preg_replace('/^\s*=\s*/','',
+          $gridshibconf['root']['TrustRoots']['TrustRootsPath']);
+      if ((strlen($trustCADir) > 0) && (is_readable($trustCADir))) {
+          $trusthelptext = 'Check this checkbox to download a set of IGTF and CILogon CA certificates to your $HOME/.globus/certificates directory for authentication to other services.';
+          $downloadtrustcerts = 'checked';
+          $notrustcerts = getCookieVar('notrustcerts');
+          if ($notrustcerts == 'notrustcerts') {
+              $downloadtrustcerts = '';
+          }
+          echo '
+          <div class="lifetime">
+          <label for="DownloadTrustroots" title="', $trusthelptext, 
+          '" class="helpcursor">Download Root CAs</label>
+          <input type="checkbox" name="DownloadTrustroots"
+                 id="DownloadTrustroots" value="true" class="helpcursor"
+                 title="', $trusthelptext, '" ',
+                 (($downloadtrustcerts == 'checked') ? 
+                     'checked="checked" ' : ''), ' />
+          </div>
+          ';
+      }
+
+      echo '
       <noscript>
       <div class="nojs smaller">
       JavaScript must be enabled to specify Lifetime.
@@ -391,8 +411,6 @@ function printMainPage()
  ************************************************************************/
 function printFormHead($action,$gsca=false) {
     global $csrf;
-    global $perl_csrf;
-    global $perl_config;
 
     echo '
     <form action="' , $action , '" method="post">
@@ -400,20 +418,11 @@ function printFormHead($action,$gsca=false) {
     echo $csrf->getHiddenFormElement();
 
     if ($gsca) {
-        $trustCADir = $perl_config->getParam("TrustRoots","TrustRootsPath");
-        if ((strlen($trustCADir) > 0) && (is_readable($trustCADir))) {
-            echo '
-            <input type="hidden" name="DownloadTrustroots" value="true" />
-            ';
-        }
-
-        $hiddencsrf = $perl_csrf->getFormElement();
-        // Fix for when Perl/PHP returns a string as an array element
-        if (is_array($hiddencsrf)) {
-            echo key($hiddencsrf) , "\n";
-        } else {
-            echo $hiddencsrf , "\n";
-        }
+        /* Output hidden form element for GridShib-CA */
+        echo '
+        <input type="hidden" name="CSRFProtection" value="' .
+        $csrf->getTokenValue() . '" />
+        ';
     }
 }
 
@@ -565,15 +574,6 @@ function printNewUserPage()
 
     $log->info('New User page.');
 
-    $dn = '';
-    $uid = getSessionVar('uid');
-    $store = new store();
-    $store->getUserObj($uid);
-    if (!($store->getUserSub('status') & 1)) {  // STATUS_OK codes are even
-        $dn      = $store->getUserSub('getDN');
-        $dn      = preg_replace('/\s+email=.+$/','',$dn);
-    }
-
     printHeader('New User');
     printPageHeader('Welcome New User');
 
@@ -585,7 +585,7 @@ function printNewUserPage()
     <p>
     Welcome! Your new certificate subject is as follows. 
     </p>
-    <blockquote><tt>' , $dn , '</tt></blockquote>
+    <blockquote><tt>' , getSessionVar('dn') , '</tt></blockquote>
     <p>
     You may need to register this certificate subject with relying parties.
     </p>
