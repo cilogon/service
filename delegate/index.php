@@ -208,6 +208,13 @@ function printLogonPage()
       be accepted by fewer cyberinfrastructure resource providers than those
       issued to InCommon users.  
       </p>
+      <h2>What If I Have More Questions?</h2>
+      <p>
+      Please see the <a target="_blank"
+      href="http://www.cilogon.org/faq">CILogon FAQ</a> for answers to
+      frequently asked questions. If your question is not answered there,
+      please use the email address at the bottom of this page to contact us.
+      </p>
       <p class="note">
       <strong>Note:</strong> You must enable cookies in your web browser to
       use this site.
