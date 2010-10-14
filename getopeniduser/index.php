@@ -1,6 +1,8 @@
 <?php
 
 require_once('../include/util.php');
+// $timeit = new timeit("/tmp/timing2.txt");
+// $timeit->printTime("Staring getopeniduser...");
 require_once('../include/autoloader.php');
 require_once('../include/content.php');
 require_once('Auth/OpenID/Consumer.php');
@@ -19,6 +21,7 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
 } else {
     printServerVars();
 }
+// $timeit->printTime("Ending getopeniduser.....");
 
 /************************************************************************
  * Function   : getUserAndRespond                                       *
@@ -90,13 +93,15 @@ function getUserAndRespond($responseurl) {
                            array_search($_SESSION['status'],$store->STATUS)
                           );
         } else {
-            $_SESSION['loa'] = 'openid';
-            $_SESSION['idp'] = $providerId;
+            $_SESSION['loa']     = 'openid';
+            $_SESSION['idp']     = $providerId;
             $_SESSION['idpname'] = $providerId;
+            $dn = $store->getUserSub('getDN');
+            $_SESSION['dn']      = preg_replace('/\s+email=.+$/','',$dn);
         }
 
-        // Set additional session variables needed by the calling script
         $_SESSION['submit'] = getSessionVar('responsesubmit');
+
         $csrf->setTheCookie();
         $csrf->setTheSession();
     } else {

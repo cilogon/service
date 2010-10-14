@@ -87,9 +87,11 @@ function getUserAndRespond($responseurl) {
                       );
     } else {
         // Set additional session variables needed by the calling script
-        $_SESSION['loa'] = $shibarray['Level of Assurance'];
-        $_SESSION['idp'] = $shibarray['Identity Provider'];
+        $_SESSION['loa']     = $shibarray['Level of Assurance'];
+        $_SESSION['idp']     = $shibarray['Identity Provider'];
         $_SESSION['idpname'] = $shibarray['Organization Name'];
+        $dn = $store->getUserSub('getDN');
+        $_SESSION['dn']      = preg_replace('/\s+email=.+$/','',$dn);
     }
 
     $_SESSION['submit'] = getSessionVar('responsesubmit');
