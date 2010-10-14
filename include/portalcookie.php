@@ -85,7 +85,7 @@ class portalcookie {
      * This should be called before any HTML is output.                 *
      ********************************************************************/
     public static function removeTheCookie() {
-        setcookie(self::tokenname,'',time()-3600,'/','',true);
+        setcookie(self::cookiename,'',time()-3600,'/','',true);
     }
 
     /********************************************************************
