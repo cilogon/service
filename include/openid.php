@@ -24,10 +24,10 @@ require_once('Auth/OpenID/FileStore.php');
  *                  of the database.properties file utilized to connect *
  *                  to the PostgreSQL database.  It is used by the      *
  *                  OpenID consumer to store temporary tokens.          *
-                fileStoreDirectory - the full path to the apache-owned  *
-                    directory for storing OpenID information to be used *
-                    by the "FileStore" module. Note that this directory *
-                    must exist and be owner (or group) 'apache'.        *
+ *              fileStoreDirectory - the full path to the apache-owned  *
+ *                  directory for storing OpenID information to be used *
+ *                  by the "FileStore" module. Note that this directory *
+ *                  must exist and be owner (or group) 'apache'.        *
  *                                                                      *
  * Example usage:                                                       *
  *    require_once('openid.php');                                       *
