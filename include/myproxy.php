@@ -1,7 +1,7 @@
 <?php
 
 /* Define several MyProxy default variables */
-define('MYPROXY_LOGON','/usr/local/myproxy-2048/bin/myproxy-logon');
+define('MYPROXY_LOGON','/usr/bin/myproxy-logon');
 define('MYPROXY_HOST','myproxy.cilogon.org');
 define('MYPROXY_PORT','7512');
 define('MYPROXY_LIFETIME','12');
