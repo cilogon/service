@@ -2,6 +2,7 @@
 
 require_once("util.php");
 require_once("autoloader.php");
+require_once("Config.php");
 
 /* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
 define('GETUSER_URL','https://' . HOSTNAME . '/secure/getuser/');
@@ -10,17 +11,6 @@ define('GETOPENIDUSER_URL','https://' . HOSTNAME . '/getopeniduser/');
 /* The csrf token object to set the CSRF cookie and print the hidden */
 /* CSRF form element.  Be sure to do "global $csrf" to use it.       */
 $csrf = new csrf();
-
-/* Do GridShibCA perl stuff first so we can set the cookie (which    */
-/* must be done before any HTML can be output) and eventually print  */
-/* the CSRF value to a hidden form element.  Be sure to do           */
-/* "global $perl_config" / "global $perl_csrf" if using the          */
-/* variables from within a function.                                 */
-$perl = new Perl();
-$perl->eval("BEGIN {unshift(@INC,'/usr/local/gridshib-ca-2.0.0/perl');}");
-$perl->eval('use GridShibCA::Config;');
-$perl_config = new Perl('GridShibCA::Config');
-$perl_csrf = $perl_config->getCSRF();
 
 
 /************************************************************************
@@ -34,9 +24,9 @@ $perl_csrf = $perl_config->getCSRF();
 function printHeader($title='',$extra='')
 {
     global $csrf;       // Initialized above
-    global $perl_csrf; 
     $csrf->setTheCookie();
-    setcookie($perl_csrf->TokenName,$perl_csrf->Token,0,'/','',true);
+    // Set the CSRF cookie used by GridShib-CA
+    setcookie('CSRFProtection',$csrf->getTokenValue(),0,'/','',true);
 
     echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -152,9 +142,15 @@ function printWAYF()
 {
     global $csrf;
 
-    $incommon    = new incommon();
-    $whitelist   = new whitelist();
-    $idps        = $incommon->getOnlyWhitelist($whitelist);
+    $whiteidpsfile = '/var/www/html/include/whiteidps.txt';
+
+    $idps = readArrayFromFile($whiteidpsfile);
+    if (count($idps) == 0) {
+        $incommon    = new incommon();
+        $whitelist   = new whitelist();
+        $idps        = $incommon->getOnlyWhitelist($whitelist);
+        writeArrayToFile($whiteidpsfile,$idps);
+    }
     $providerId  = getCookieVar('providerId');
     $keepidp     = getCookieVar('keepidp');
     $useopenid   = getCookieVar('useopenid');
@@ -275,6 +271,7 @@ function printWAYF()
         ';
     }
 
+
     echo '  <tr>
             <td colspan="3" class="centered"><a target="_blank"
               href="https://www.myopenid.com/signup">Don\'t have an
@@ -371,7 +368,6 @@ function printWAYF()
   </div>
   ';
 }
-
 
 /************************************************************************
  * Function  : getIconName                                              *
@@ -613,6 +609,5 @@ function redirectToGetOpenIDUser($providerId='',$username='username',
         }
     }
 }
-
 
 ?>
