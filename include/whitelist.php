@@ -1,5 +1,6 @@
 <?php
 
+require_once('util.php');
 require_once('autoloader.php');
 
 /************************************************************************
@@ -8,7 +9,8 @@ require_once('autoloader.php');
  *              the CILogon Service.  You can read in the current list  *
  *              of whitelisted entityIDs.  You can also manage the      *
  *              list of entityIDs by adding new entityIDs or deleting   *
- *              existing entityIDs, then (re)writing the file to disk.  *
+ *              existing entityIDs, then (re)writing the file to disk   *
+ *              or database.                                            *
  *                                                                      *
  *              There is one constant in the class that you should      *
  *              set for your particular set up:                         *
@@ -32,7 +34,7 @@ require_once('autoloader.php');
 class whitelist {
 
     /* Set the constants to correspond to your particular set up.       */
-    const defaultFilename = '/var/www/html/include/whitelist.xml';
+    const defaultFilename = '/var/www/html/include/whitelist.txt';
 
     /* The $whitearray holds the list of entityIDs in the whitelist     *
      * file.  The keys of the array are the actual entityIDs (to allow  *
@@ -68,7 +70,7 @@ class whitelist {
      * called.                                                          *
      ********************************************************************/
     function read() {
-        return $this->readFromStore();
+        return $this->readFromFile();
     }
 
     /********************************************************************
@@ -77,19 +79,16 @@ class whitelist {
      *             false otherwise.                                     *
      * This function reads in the whitelist file containing the list    *
      * of entityIDs to be shown on the CILogon Service page.  The       *
-     * entityIDs are stored in the $whitearray as the keys.  The        *
-     * <EntityID></EntityID> tags are stripped off.                     *
+     * entityIDs are stored in the $whitearray as the keys.             *
      ********************************************************************/
     function readFromFile() {
         $retval = false;  // Assume read failed
         $this->clear();
         if (is_readable($this->getFilename())) {
-            $xmlstr = '<?xml version="1.0"?><Dummy>';
-            $xmlstr .= @file_get_contents($this->getFilename());
-            $xmlstr .= '</Dummy>';
-            $xml = new SimpleXMLElement($xmlstr);
+            $lines = file($this->getFilename(),
+                          FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
 
-            foreach ($xml->children() as $entityID) {
+            foreach ($lines as $line_num=>$entityID) {
                 $this->add((string)$entityID);
                 $retval = true;
             }
@@ -141,14 +140,12 @@ class whitelist {
      ********************************************************************/
     function writeToFile() {
          $retval = false; // Assume write failed
-         if (is_writable($this->getFilename())) {
-             if ($fh = fopen($this->getFilename(),'w')) {
-                 foreach ($this->whitearray as $key => $value) {
-                     fwrite($fh,"<EntityId>$key</EntityId>\n");
-                 }
-                 fclose($fh);
-                 $retval = true;
+         if ($fh = fopen($this->getFilename(),'w')) {
+             foreach ($this->whitearray as $key => $value) {
+                 fwrite($fh,"$key\n");
              }
+             fclose($fh);
+             $retval = true;
          }
          return $retval;
     }
