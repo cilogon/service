@@ -27,7 +27,11 @@ if ($submit == ADD_SUBMIT_TEXT) {
     $entityID = $shibarray['Identity Provider'];
     if (($incommon->exists($entityID)) &&
         ($whitelist->add($entityID))) {
-        $whitelist->write();
+        $whitelist->write();  // Save new entityID to database
+        // Also write whitelist out to file, and update whiteidps.txt file
+        $whitelist->writeToFile();
+        $idps = $incommon->getOnlyWhitelist($whitelist);
+        writeArrayToFile('/var/www/html/include/whiteidps.txt',$idps);
         sendNotificationEmail();
     }
 }
