@@ -3,16 +3,21 @@
 require_once('../include/whitelist.php');
 require_once('../include/util.php');
 
-if ($argc == 2) {
+if (($argc == 2) || ($argc == 3)) {
     $command = $argv[1];
+    $filename = whitelist::defaultFilename;
+    if ($argc == 3) {
+        $filename = $argv[2];
+    }
 
     if (strlen($command) > 0) {
-        $white = new whitelist();
+        $white = null;
+        $white = new whitelist($filename);
 
         switch ($command) {
             case 'showfile':
                 $white->readFromFile();
-                echo "EntityIDs in the whitelist.xml file:\n";
+                echo "EntityIDs in the file '$filename':\n";
                 foreach ($white->whitearray as $key => $value) {
                     echo "    $key\n";
                 }
@@ -49,13 +54,14 @@ if ($argc == 2) {
 
 function printUsage()
 {
-    echo "Usage: whitelist.php COMMAND\n";
+    echo "Usage: whitelist.php COMMAND {FILE}\n";
     echo "     where COMMAND is one of the following:\n";
-    echo "         showfile - show the contents of the whilelist.xml file\n";
+    echo "         showfile - show the contents of the whilelist file\n";
     echo "         showdb   - show the contents of the database whitelist\n";
-    echo "         filetodb - put contents of whitelist.xml in database\n";
-    echo "         dbtofile - put contents of database in whitelist.xml\n";
-    echo "     Note: file resides in /var/www/html/include/whitelist.xml\n";
+    echo "         filetodb - put contents of whitelist in database\n";
+    echo "         dbtofile - put contents of database in whitelist file\n";
+    echo "     FILE is the optional full path name of the whitelist file\n";
+    echo "         (defaults to ", whitelist::defaultFilename ,")\n";
 }
 
 ?>
