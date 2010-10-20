@@ -1,7 +1,7 @@
 <?php
 
-require_once('../include/autoloader.php');
 require_once('../include/util.php');
+require_once('../include/autoloader.php');
 
 if (($argc == 2) || ($argc == 3)) {
 
