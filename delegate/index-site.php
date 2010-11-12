@@ -7,7 +7,7 @@ require_once('../include/shib.php');
 require_once('Auth/OpenID/Consumer.php');
 
 /* The full URL of the 'delegation/authorized' OAuth script. */
-define('AUTHORIZED_URL','https://' . HOSTNAME . '/delegation/authorized');
+define('AUTHORIZED_URL','http://localhost:8080/delegation/authorized');
 
 /* Read in the whitelist of currently available IdPs. */
 $white = new whitelist();
