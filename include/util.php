@@ -269,5 +269,5 @@ define('HOSTNAME',((strlen($thehostname) > 0) ?
     $thehostname : 'cilogon.org'));
 
 // require_once('timeit.php');
-// $timeit = new timeit();
+// $timeit = new timeit(timeit::defaultFilename,true);
 ?>
