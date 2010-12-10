@@ -12,28 +12,28 @@ if (($argc == 2) || ($argc == 3)) {
     }
     
     if (strlen($uid) > 0) {
-        $store = new store();
+        $dbs = new dbservice();
         if ($last) {
-            $store->getLastUserObj($uid);
+            $dbs->getLastArchivedUser($uid);
         } else {
-            $store->getUserObj($uid);
+            $dbs->getUser($uid);
         }
-        $status = $store->getUserSub('status');
+        $status = $dbs->status;
         echo "status = " . $status . " = " . 
-            array_search($status,$store->STATUS) . "\n";
-        echo "uid = " . $store->getUserSub('uid') . "\n";
-        echo "firstName = " . $store->getUserSub('firstName') . "\n";
-        echo "lastName = " . $store->getUserSub('lastName') . "\n";
-        echo "remoteUser = " . $store->getUserSub('remoteUser') . "\n";
-        echo "idp = " . $store->getUserSub('idp') . "\n";
-        echo "idpDisplayName = " . $store->getUserSub('idpDisplayName') . "\n";
-        echo "email = " . $store->getUserSub('email') . "\n";
-        echo "dn = " . $store->getUserSub('getDN') . "\n";
-        echo "serialString = " . $store->getUserSub('serialString') . "\n";
+            array_search($status,dbservice::$STATUS) . "\n";
+        echo "uid = $dbs->user_uid\n";
+        echo "first_name = $dbs->first_name\n";
+        echo "last_name = $dbs->last_name\n";
+        echo "remote_user = $dbs->remote_user\n";
+        echo "idp = $dbs->idp\n";
+        echo "idp_display_name = $dbs->idp_display_name\n";
+        echo "email = $dbs->email\n";
+        echo "distinguished_name = $dbs->distinguished_name\n";
+        echo "serial_string = $dbs->serial_string\n";
     }
 } else {
     echo "Usage: " . $argv[0] . "  UID [last]\n";
-    echo "    where UID is a persistent store user identifier\n";
+    echo "    where UID is a database user identifier\n";
     echo "          [last] if set to 1 returns 'last archived' user info\n";
 }
 

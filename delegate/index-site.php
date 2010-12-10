@@ -12,9 +12,6 @@ define('AUTHORIZED_URL','http://localhost:8080/delegation/authorized');
 /* Read in the whitelist of currently available IdPs. */
 $white = new whitelist();
 
-/* Get a default OpenID object to be used in case of OpenID logon. */
-$openid = new openid();
-
 /* Loggit object for logging info to syslog. */
 $log = new loggit();
 
@@ -41,32 +38,18 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
             } else {
                 setcookie('keepidp','',time()-3600,'/','',true);
             }
-            if (getPostVar('useopenid') == '1') { // Use OpenID authentication
-                setcookie('useopenid','1',time()+60*60*24*365,'/','',true);
-                // Verify that OpenID provider is in list of providers
-                $openidproviderPost = getPostVar('hiddenopenid');
-                $usernamePost = getPostVar('username');
-                if ($openid->exists($openidproviderPost)) {
-                    setcookie('providerId',$openidproviderPost,
-                              time()+60*60*24*365,'/','',true);
-                    setcookie('username',$usernamePost,
-                              time()+60*60*24*365,'/','',true);
-                    redirectToGetOpenIDUser($openidproviderPost,$usernamePost);
-                } else { // OpenID provider is not in provider list
-                    printLogonPage();
-                }
-            } else { // Use InCommon authentication
-                setcookie('useopenid','',time()-3600,'/','',true);
-                // Verify that InCommon providerId is in the whitelist
-                $providerIdPost = getPostVar('providerId');
-                if ($white->exists($providerIdPost)) {
-                    setcookie('providerId',$providerIdPost,
-                              time()+60*60*24*365,'/','',true);
-                    setcookie('username','',time()-3600,'/','',true);
-                    redirectToGetUser($providerIdPost);
-                } else { // Either providerId not set or not in whitelist
-                    printLogonPage();
-                }
+            $providerIdPost = getPostVar('providerId');
+            if (openid::urlExists($providerIdPost)) { // Use OpenID authn
+                setcookie('providerId',$providerIdPost,
+                          time()+60*60*24*365,'/','',true);
+                redirectToGetOpenIDUser($providerIdPost);
+            } elseif ($white->exists($providerIdPost)) { // Use InCommon authn
+                setcookie('providerId',$providerIdPost,
+                          time()+60*60*24*365,'/','',true);
+                redirectToGetUser($providerIdPost);
+            } else { // Either providerId not set or not in whitelist
+                setcookie('providerId','',time()-3600,'/','',true);
+                printLogonPage();
             }
         break; // End case 'Log On'
 
@@ -74,7 +57,8 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
             handleGotUser();
         break; // End case 'gotuser'
 
-        case 'Proceed': // Proceed after 'User Changed' paged
+        case 'Proceed':   // Proceed after 'User Changed' paged
+        case 'Continue' : // After error condition from getuser script
             // Verify the PHP session contains valid info
             if (verifyCurrentSession()) {
                 printMainPage();
@@ -85,14 +69,13 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
             }
         break; // End case 'Proceed'
 
-        case 'Allow':        // User allows delegation of certificate
-        case 'Always Allow': // Remember delegation for current portal
-            handleAllowDelegation(($submit == 'Always Allow'));
-        break; // End case 'Allow' or 'Always Allow'
+        case 'OK':  // User allows delegation of certificate
+            handleAllowDelegation(strlen(getPostVar('rememberok')) > 0);
+        break; // End case 'OK'
 
-        case 'Deny': // User denies delegation of certificate
-            printDenyPage();
-        break; // End case 'Deny'
+        case 'Cancel': // User denies delegation of certificate
+            printCancelPage();
+        break; // End case 'Cancel'
 
         default: // No submit button clicked nor PHP session submit variable set
             /* If both the "keepidp" and the "providerId" cookies were set *
@@ -102,22 +85,13 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
             $providerIdCookie = getCookieVar('providerId');
             if ((strlen($providerIdCookie) > 0) && 
                 (strlen(getCookieVar('keepidp')) > 0)) {
-                if (getCookieVar('useopenid') == '1') { // Use OpenID auth
-                    $usernameCookie = getCookieVar('username');
-                    if (($openid->exists($providerIdCookie)) &&
-                        (strlen($usernameCookie) > 0))
-                    {
-                        redirectToGetOpenIDUser(
-                            $providerIdCookie,$usernameCookie);
-                    } else {
-                        printLogonPage();
-                    }
-                } else { // Use InCommon authentication
-                    if ($white->exists($providerIdCookie)) {
-                        redirectToGetUser($providerIdCookie);
-                    } else { 
-                        printLogonPage();
-                    }
+                if (openid::urlExists($providerIdCookie)) { // Use OpenID authn
+                    redirectToGetOpenIDUser($providerIdCookie);
+                } elseif ($white->exists($providerIdCookie)) { // Use InCommon
+                    redirectToGetUser($providerIdCookie);
+                } else { // $providerIdCookie not in whitelist
+                    setcookie('providerId','',time()-3600,'/','',true);
+                    printLogonPage();
                 }
             } else { // One of the cookies for providerId or keepidp was not set
                 printLogonPage();
@@ -142,87 +116,21 @@ function printLogonPage()
     $log->info('Welcome page hit.');
 
     printHeader('Welcome To The CILogon Delegation Service');
-    printPageHeader('Welcome To The CILogon Delegation Service');
 
     echo '
-    <div class="welcome">
-      <div class="boxheader">
-        About The CILogon Delegation Service
-      </div>
-      <h2>What Is The CILogon Delegation Service?</h2>
-      <p>
-      The CILogon Delegation Service allows community portals to get a
-      certificate on behalf of a user.  Once a user authenticates
-      with a home organization, the CILogon Delegation Service 
-      delegates a certficate back to the user\'s community portal.
+    <div class="boxed">
+      <br class="clear"/>
+     <p>
+      Please log on to delegate a certificate to
+      "' , htmlspecialchars(getSessionVar('portalname')) , '".
       </p>
-      <p>
-      Below is the community portal requesting a certificate to be delegated
-      on your behalf.  If this information does not look correct, do not
-      proceed.
-      </p>
-      <div class="portalinfo">
-      <pre> Portal Name: ',htmlspecialchars(getSessionVar('portalname')),' 
-' ,       ' Portal URL : ',htmlspecialchars(getSessionVar('successuri')),
-' </pre>
-      </div>
-      <h2>How Does The CILogon Delegation Service Work?</h2>
-      <p>
-      The CILogon Service is a member of <a target="_blank"
-      href="http://www.incommonfederation.org/">InCommon</a>, a formal
-      federation of over 200 universities, agencies, and organizations.
-      Many of these organizations maintain an authentication service to
-      provide their users with web single sign-on.  An InCommon organization
-      can partner with the CILogon Service to provide user information for
-      the purpose of issuing certificates.  These certificates can then be
-      delegated to community portals for use by their users.
-      </p>
-      <h2>How Do I Use The CILogon Delegation Service?</h2>
-      <p>
-      Select your organization from the drop-down list, then click the
-      &quot;Log On&quot; button.  You will be redirected to your
-      organization\'s login page.  After you authenticate with your
-      organization as you typically would, you will be redirected back to
-      the CILogon Delegation Service.  Then you will be able to delegate a
-      certificate to your community portal.  
-      </p>
-      <h2>What If I Don\'t See My Organization Listed?</h2>
-      <p>
-      If you don\'t have an account with any of the organizations listed in
-      the drop-down list in the &quot;Start Here&quot; menu, you can
-      register for a free user account at <a target="_blank"
-      href="http://www.protectnetwork.org/">ProtectNetwork</a> for use with
-      the CILogon Delegation Service.  Alternatively, you can <a target="_blank"
-      href="/requestidp/">make a request for your organization</a> to appear
-      in the list of available organizations.
-      </p>
-      <h2>Can I Use OpenID Instead?</h2>
-      <p>
-      The CILogon Service also supports the use of <a target="_blank"
-      href="http://openid.net/">OpenID</a> as an alternate authentication
-      mechanism.  Many users have an OpenID account without even knowing it.
-      For example, you can use your <a target="_blank"
-      href="http://google.com/profiles/me">Google</a> or <a target="_blank"
-      href="http://openid.yahoo.com/">Yahoo</a> account for OpenID
-      authentication.  However, the certificates issued to OpenID users may
-      be accepted by fewer cyberinfrastructure resource providers than those
-      issued to InCommon users.  
-      </p>
-      <h2>What If I Have More Questions?</h2>
-      <p>
-      Please see the <a target="_blank"
-      href="http://www.cilogon.org/faq">CILogon FAQ</a> for answers to
-      frequently asked questions. If your question is not answered there,
-      please use the email address at the bottom of this page to contact us.
-      </p>
-      <p class="note">
-      <strong>Note:</strong> You must enable cookies in your web browser to
-      use this site.
-      </p>
-    </div>
     ';
 
     printWAYF();
+
+    echo '
+    </div> <!-- End boxed -->
+    ';
 
     printFooter();
 }
@@ -240,14 +148,10 @@ function printBadOAuthTokenPage()
     $log->warn('Missing or invalid oauth_token.');
 
     printHeader('CILogon Delegation Service');
-    printPageHeader('This Is The CILogon Delegation Service');
 
     echo '
     <div class="boxed">
-      <div class="boxheader">
-        The CILogon Delegation Service Is For Delegating Certificates To 
-        Portals
-      </div>
+      <br class="clear"/>
       <p>
       You have reached the CILogon Delegation Service.  This service is for
       use by Community Portals to obtain certificates for their users.  
@@ -263,7 +167,7 @@ function printBadOAuthTokenPage()
       local computer, please try the <a target="_blank"
       href="https://' , HOSTNAME , '/">CILogon Service</a>.
       </p>
-      <p class="note">
+      <p>
       <strong>Note:</strong> You must enable cookies in your web browser to
       use this site.
       </p>
@@ -276,10 +180,10 @@ function printBadOAuthTokenPage()
 /************************************************************************
  * Function   : printMainPage                                           *
  * This function prints out the HTML for the main page where the user   *
- * is presented with the portal information and asked to either Allow   *
- * or Deny delegation of a certificate to the portal.  We first check   *
+ * is presented with the portal information and asked to either allow   *
+ * or deny delegation of a certificate to the portal.  We first check   *
  * to see if the "remember" cookie has been set for this portal.  If    *
- * so, then we automatically "Always Allow" delegation.  Otherwise,     *
+ * so, then we automatically always approve delegation.  Otherwise,     *
  * we print out the HTML for the <form> buttons.                        *
  ************************************************************************/
 function printMainPage()
@@ -302,83 +206,71 @@ function printMainPage()
     }
 
     // If 'remember' is set for the current portal, then automatically
-    // click the 'Always Allow' button for the user.
+    // click the 'OK' button for the user.
     if ($remember == 1) {
         handleAllowDelegation(true);
     } else {
-        // User did not click 'Always Allow' before, so show the
-        // HTML to prompt user for Allow or Deny delegation.
+        // User did not check 'Remember OK' before, so show the
+        // HTML to prompt user for OK or Cancel delegation.
 
         $log->info('Allow Or Deny Delegation page hit.');
 
-        $scriptdir = getScriptDir();
-
-        $lifetimetext = "Enter the lifetime of the certificate to be delegated to the portal. Time is in hours. Valid entries are between 1 and 240 hours (inclusive).";
-        $remembertext = "By clicking this button, you permit future delegations to this portal without your explicit approval (i.e., you will automatically bypass this page for this portal). The parameters related to the delegation (e.g., certificate lifetime) will be remembered. You will need to clear your browser's cookies to return here."; 
+        $lifetimetext = "Specify the lifetime of the certificate to be delegated. Maximum value is 240 hours.";
+        $remembertext ="Check this box to automatically approve certificate delegation for this portal on future visits. The certificate lifetime will be remembered. You will need to clear your browser's cookies to return here.";
 
         printHeader('Confirm Allow Delegation');
-        printPageHeader('Welcome ' . getSessionVar('idpname') . ' User');
 
         echo '
         <div class="boxed">
-          <div class="boxheader">
-            Confirm That You Want To Delegate A Certificate
-          </div>
+        <br class="clear"/>
         <p>
-        You are logged on to the CILogon Delegation Service.  The portal
-        below is requesting a delegated certificate for use on your behalf.
-        You must now allow (or deny) this delegation to occur.  Please look
-        at the information provided by the portal below.  If this
-        information appears correct, then allow the delegation to occur.
-        Otherwise, deny the request, or navigate away from this page.
+        The portal below is requesting a certificate for you. 
+        If this information appears correct, then OK the request.
+        Otherwise, cancel the request or navigate away from this page.
         </p>
 
-        <div class="portalinfo">
-        <pre> Portal Name   : ',htmlspecialchars(getSessionVar('portalname')),'
-' ,         ' Portal URL    : ',htmlspecialchars(getSessionVar('successuri')),'
-' ,         ' Delegation URL: ',htmlspecialchars(getSessionVar('callbackuri')),
-        '</pre>
-        </div>
+        <table class="certinfo">
+        <tr title="The Portal Name is provided by the portal to the CILogon Service and has not been authenticated.">
+          <th>Portal&nbsp;Name:</th>
+          <td>' , htmlspecialchars(getSessionVar('portalname')) , '</td>
+        </tr>
+        <tr title="The Portal URL is the location to which the portal requests you to return upon successful delegation of the certificate.">
+          <th>Portal&nbsp;URL:</th> 
+          <td>' , htmlspecialchars(getSessionVar('successuri')) , '</td>
+        </tr>
+        <tr title="The Delegation URL is the location to which the CILogon Service will send your certificate.">
+          <th>Delegation&nbsp;URL:</th>
+          <td>' , htmlspecialchars(getSessionVar('callbackuri')) , '</td>
+        </tr>
+        </table>
 
-        <div class="allowdiv">
-        <table>
-        <tr>
-        <td>
+        <div class="actionbox">
         ';
 
-        printFormHead($scriptdir);
+        printFormHead(getScriptDir());
 
         echo '
+        <fieldset>
         <p>
         <label for="lifetime" title="' , $lifetimetext , '" 
         class="helpcursor">Certificate Lifetime (in hours):</label>
         <input type="text" name="lifetime" id="lifetime" title="' ,
-        $lifetimetext. '" class="helpcursor" size="3" maxlength="3" 
+        $lifetimetext , '" class="helpcursor" size="3" maxlength="3" 
         value="' , $lifetime , '" />
         </p>
         <p>
-        <input type="submit" name="submit" class="submit" value="Allow" />
+        <label for="rememberok" title="', $remembertext , '"
+        class="helpcursor">Remember my OK for this portal:</label>
+        <input type="checkbox" name="rememberok" id="rememberok"
+        title="', $remembertext, '" class="helpcursor" />
         </p>
         <p>
-        <input type="submit" name="submit" class="submit helpcursor" 
-        title="'.$remembertext.'"
-        value="Always Allow" />
+        <input type="submit" name="submit" class="submit" value="OK" />
+        &nbsp;
+        <input type="submit" name="submit" class="submit" value="Cancel" />
         </p>
+        </fieldset>
         </form>
-        </td>
-        <td>
-        ';
-
-        printFormHead($scriptdir);
-
-        echo '
-        <p>
-        <input type="submit" name="submit" class="submit" value="Deny" />
-        </p>
-        </form>
-        </td>
-        </tr>
-        </table>
         </div>
         </div>
         ';
@@ -387,23 +279,21 @@ function printMainPage()
 }
 
 /************************************************************************
- * Function   : printDenyPage                                           *
+ * Function   : printCancelPage                                         *
  * This function prints out the HTML for when the user clicked the      *
- * "Deny" button on the "Allow Delegation" page.  It gives the user a   *
+ * "Cancel" button on the "Allow Delegation" page.  It gives the user a *
  * link back to the portal via the "failure URL".                       *
  ************************************************************************/
-function printDenyPage() {
+function printCancelPage() {
     printHeader('Delegation Denied');
-    printPageHeader('Welcome ' . getSessionVar('idpname') . ' User');
 
     echo '
     <div class="boxed">
-      <div class="boxheader">
-        You Have Denied Delegation Of A Certificate To Your Portal
-      </div>
+    <br class="clear"/>
     <p>
-    You have explicitly denied delegation of a certificate to the portal "' ,
-    getSessionVar('portalname') , '".  Below is a link to return to the
+    You have canceled delegation of a certificate to  "' ,
+    htmlspecialchars(getSessionVar('portalname')) , '".  
+    Below is a link to return to the
     portal.  This link has been provided by the portal to be used when
     delegation of a certificate fails.
     </p>
@@ -416,7 +306,7 @@ function printDenyPage() {
 
     <div class="returnlink">
       <a href="' , getSessionVar('failureuri') , '">Return to ' ,
-      getSessionVar('portalname') , '</a>
+      htmlspecialchars(getSessionVar('portalname')) , '</a>
     </div>
     </div>
     ';
@@ -425,11 +315,11 @@ function printDenyPage() {
 
 /************************************************************************
  * Function   : handleAllowDelegation                                   *
- * Parameters : True if the user selected 'Always Allow' delegation.    *
- * This fuction is called when the user clicks one of the 'Allow' or    *
- * 'Always Allow' buttons, or when the user had previously clicked      *
- * the 'Always Allow' button which saved the 'remember' cookie for the  *
- * current portal.  It first reads the cookie for the portal and        *
+ * Parameters : True if the user selected to always allow delegation.   *
+ * This fuction is called when the user clicks the 'OK' button on the   *
+ * main page, or when the user had previously checked the 'Remember     *
+ * my OK for this portal' checkbox which saved the 'remember' cookie    *
+ * for the current portal. It first reads the cookie for the portal and *
  * updates the 'lifetime' and 'remember' parameters, then (re)saves     *
  * the cookie.  Then it calls out to the 'delegation/authorized'        *
  * servlet in order to do the back-end certificate delegation process.  *
@@ -466,7 +356,7 @@ function handleAllowDelegation($always=false)
         $lifetime = 240;
     }
 
-    // Set the 'remember' cookie for when 'Always Allow' is clicked
+    // Set the 'remember' cookie for when "Remember OK" checkbox is checked
     $portal->setPortalRemember(getSessionVar('callbackuri'),(int)$always);
     $portal->setPortalLifetime(getSessionVar('callbackuri'),$lifetime);
     $portal->write();  // Save the cookie with the updated values
@@ -486,6 +376,9 @@ function handleAllowDelegation($always=false)
         curl_setopt($ch,CURLOPT_URL,$url);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
         curl_setopt($ch,CURLOPT_TIMEOUT,30);
+        /* Following two options are needed by polo-staging */
+        curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,1);
+        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
         $output = curl_exec($ch);
         if (!empty($output)) { 
             $httpcode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
@@ -527,28 +420,16 @@ function handleAllowDelegation($always=false)
     if ($always) {
         $log->info("Automatically returning to portal's " .
                    ($success ? 'success' : 'failure') . ' url.');
-        header('Location: ' . ($success ? getSessionVar('successuri') :
-                                          getSessionVar('failureuri')));
+        $location = 'Location: ' .
+            getSessionVar($success ? 'successuri' : 'failureuri');
+        unsetGetUserSessionVars();
+        unsetPortalSessionVars();
+        header($location);
     } else {
-        $headertext = 'Delegation Failed';
-        if ($success) {
-            $headertext = 'Delegation Successful';
-        }
-
-        printHeader($headertext);
-        printPageHeader($headertext);
+        printHeader('Delegation ' . ($success ? 'Successful' : 'Failed'));
 
         echo '
         <div class="boxed">
-          <div class="boxheader">
-        ';
-        if ($success) {
-            echo 'Successful Delegation Of Certificate To Your Portal';
-        } else {
-            echo 'Failed To Delegate Certificate To Your Portal';
-        }
-        echo '
-          </div>
         <div>
         <div class="icon">
         ';
@@ -561,8 +442,9 @@ function handleAllowDelegation($always=false)
         if ($success) {
             echo '
             <p>
-            A certificate has been delegated to the portal "' ,
-            getSessionVar('portalname') , '".  Below is a link to return to
+            The CILogon Service has issued a certificate to "' ,
+            htmlspecialchars(getSessionVar('portalname')) , '".  
+            Below is a link to return to
             your portal to use the delegated certificate.
             </p>
             ';
@@ -606,7 +488,8 @@ function handleAllowDelegation($always=false)
             echo '
             <p>
             We were unable to delegate a certificate to the portal "' ,
-            getSessionVar('portalname') , '".  Below is a link to return to
+            htmlspecialchars(getSessionVar('portalname')) , '".  
+            Below is a link to return to
             the portal.  This link has been provided by the portal to be
             used when delegation of a certificate fails.
             </p>
@@ -615,368 +498,16 @@ function handleAllowDelegation($always=false)
         echo '
         <div class="returnlink">
           <a href="' , 
-          getSessionVar(($success ? 'successuri' : 'failureuri')) , 
+          getSessionVar($success ? 'successuri' : 'failureuri') , 
           '">Return to ' ,
-          getSessionVar('portalname') , '</a>
+          htmlspecialchars(getSessionVar('portalname')) , '</a>
         </div>
         </div>
         ';
         printFooter();
-    }
-}
-
-/************************************************************************
- * Function   : printFormHead                                           *
- * Parameters : (1) The value of the form's "action" parameter.         *
- *              (2) (Optional) True if extra hidden tags should be      *
- *                  output for the GridShib-CA client application.      *
- *                  Defaults to false.                                  *
- * This function prints out the opening <form> tag for displaying       *
- * submit buttons.  The first parameter is used for the "action" value  *
- * of the <form>.  This function outputs a hidden csrf field in the     *
- * form block.  If the second parameter is given and set to true, then  *
- * additional hidden input elements are also output to be used when the *
- * the GridShib-CA client launches.                                     *
- ************************************************************************/
-function printFormHead($action) {
-    global $csrf;
-
-    echo '
-    <form action="' , $action , '" method="post">
-    ';
-    echo $csrf->getHiddenFormElement();
-}
-
-/************************************************************************
- * Function   : handleGotUser                                           *
- * This function is called upon return from the "secure/getuser" script *
- * which should have set the 'uid' and 'status' PHP session variables.  *
- * It verifies that the status return is one of STATUS_OK_* (even       *
- * values).  If the return is STATUS_OK_
- ************************************************************************/
-function handleGotUser()
-{
-    global $log;
-
-    $uid = getSessionVar('uid');
-    $status = getSessionVar('status');
-    # If empty 'uid' or 'status' or odd-numbered status code, error!
-    if ((strlen($uid) == 0) || (strlen($status) == 0) || ($status & 1)) {
-        $log->error('Failed to getuser.');
-
         unsetGetUserSessionVars();
-        printHeader('Error Logging On');
-        printPageHeader('ERROR Logging On');
-
-        echo '
-        <div class="boxed">
-          <div class="boxheader">
-            Unable To Log On
-          </div>
-        ';
-        printErrorBox('An internal error has occurred.  System
-            administrators have been notified.  This may be a temporary
-            error.  Please try again later, or contact us at the the email
-            address at the bottom of the page.');
-
-        echo '
-        <div>
-        ';
-        printFormHead(getScriptDir());
-        echo '
-        <input type="submit" name="submit" class="submit" value="Proceed" />
-        </form>
-        </div>
-        </div>
-        ';
-        printFooter();
-    } else { // Got one of the STATUS_OK* status codes
-        // If the user got a new DN due to changed SAML attributes,
-        // print out a notification page.
-        $store = new store();
-        if ($status == $store->STATUS['STATUS_OK_NEW_USER']) {
-            printNewUserPage();
-        } elseif ($status == $store->STATUS['STATUS_OK_USER_CHANGED']) {
-            printUserChangedPage();
-        } else { // STATUS_OK or STATUS_OK_NEW_USER
-            printMainPage();
-        }
+        unsetPortalSessionVars();
     }
-}
-
-/************************************************************************
- * Function   : printNewUserPage                                        *
- * This function prints out a notification page to new users showing    *
- * that this is the first time they have logged in with a particular    *
- * identity provider.                                                   *
- ************************************************************************/
-function printNewUserPage()
-{
-    global $log;
-
-    $log->info('New User page.');
-
-    $dn = '';
-    $uid = getSessionVar('uid');
-    $store = new store();
-    $store->getUserObj($uid);
-    if (!($store->getUserSub('status') & 1)) {  // STATUS_OK codes are even
-        $dn      = $store->getUserSub('getDN');
-        $dn      = preg_replace('/\s+email=.+$/','',$dn);
-    }
-
-    printHeader('New User');
-    printPageHeader('Welcome New User');
-
-    echo '
-    <div class="boxed">
-      <div class="boxheader">
-        Logged On With ' , getSessionVar('idpname') , '
-      </div>
-    <p>
-    Welcome! Your new certificate subject is as follows. 
-    </p>
-    <blockquote><tt>' , $dn , '</tt></blockquote>
-    <p>
-    You may need to register this certificate subject with relying parties.
-    </p>
-    <p>
-    You will not see this page again unless the CILogon Delegation Service
-    assigns you a new certificate subject.  This may occur in the following
-    situations:
-    </p>
-    <ul>
-    <li>You log on to the CILogon Delegation Service using an identity
-    provider other than ' , getSessionVar('idpname') , '.
-    </li>
-    <li>You log on using a different ' , getSessionVar('idpname') , '
-    identity.
-    </li>
-    <li>The CILogon Delegation Service has experienced an internal error.
-    </li>
-    </ul>
-    <p>
-    </p>
-    ';
-
-    echo '
-    <p>
-    Click the "Proceed" button to continue.  If you have any questions,
-    please contact us at the email address at the bottom of the page.
-    </p>
-    <div>
-    ';
-    printFormHead(getScriptDir());
-    echo '
-    <input type="submit" name="submit" class="submit" 
-     value="Proceed" />
-    </form>
-    </div>
-    </div>
-    ';
-    printFooter();
-}
-
-/************************************************************************
- * Function   : printUserChangedPage                                    *
- * This function prints out a notification page informing the user that *
- * some of their attributes have changed, which will affect the         *
- * contents of future issued certificates.  This page shows which       *
- * attributes are different (displaying both old and new values) and    *
- * what portions of the certificate are affected.                       *
- ************************************************************************/
-function printUserChangedPage()
-{
-    global $log;
-
-    $log->info('User IdP attributes changed.');
-
-    $uid = getSessionVar('uid');
-    $store = new store();
-    $store->getUserObj($uid);
-    if (!($store->getUserSub('status') & 1)) {  // STATUS_OK codes are even
-        $idpname = $store->getUserSub('idpDisplayName');
-        $first   = $store->getUserSub('firstName');
-        $last    = $store->getUserSub('lastName');
-        $email   = $store->getUserSub('email');
-        $dn      = $store->getUserSub('getDN');
-        $dn      = preg_replace('/\s+email=.+$/','',$dn);
-        $store->getLastUserObj($uid);
-        if (!($store->getUserSub('status') & 1)) {  // STATUS_OK codes are even
-            $previdpname = $store->getUserSub('idpDisplayName');
-            $prevfirst   = $store->getUserSub('firstName');
-            $prevlast    = $store->getUserSub('lastName');
-            $prevemail   = $store->getUserSub('email');
-            $prevdn      = $store->getUserSub('getDN');
-            $prevdn      = preg_replace('/\s+email=.+$/','',$prevdn);
-
-            $tablerowodd = true;
-
-            printHeader('Certificate Information Changed');
-            printPageHeader('Notice: User Information Changed');
-
-            echo '
-            <div class="boxed">
-              <div class="boxheader">
-                Some Of Your Information Has Changed
-              </div>
-            <p>
-            One or more of the attributes released by your organization has
-            changed since the last time you logged on to the CILogon
-            Delegation Service.  This will affect your certificates as
-            described below.
-            </p>
-
-            <div class="userchanged">
-            <table cellpadding="5">
-              <tr class="headings">
-                <th>Attribute</th>
-                <th>Previous Value</th>
-                <th>Current Value</th>
-              </tr>
-            ';
-
-            if ($idpname != $previdpname) {
-                echo '
-                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
-                  <th>Organization Name:</th>
-                  <td>'.$previdpname.'</td>
-                  <td>'.$idpname.'</td>
-                </tr>
-                ';
-                $tablerowodd = !$tablerowodd;
-            }
-
-            if ($first != $prevfirst) {
-                echo '
-                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
-                  <th>First Name:</th>
-                  <td>'.$prevfirst.'</td>
-                  <td>'.$first.'</td>
-                </tr>
-                ';
-                $tablerowodd = !$tablerowodd;
-            }
-
-            if ($last != $prevlast) {
-                echo '
-                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
-                  <th>Last Name:</th>
-                  <td>'.$prevlast.'</td>
-                  <td>'.$last.'</td>
-                </tr>
-                ';
-                $tablerowodd = !$tablerowodd;
-            }
-
-            if ($email != $prevemail) {
-                echo '
-                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
-                  <th>Email Address:</th>
-                  <td>'.$prevemail.'</td>
-                  <td>'.$email.'</td>
-                </tr>
-                ';
-                $tablerowodd = !$tablerowodd;
-            }
-
-            echo '
-            </table>
-            </div>
-            ';
-
-            if (($idpname != $previdpname) ||
-                ($first != $prevfirst) ||
-                ($last != $prevlast)) {
-                echo '
-                <p>
-                The above changes to your attributes will cause your
-                <strong>certificate subject</strong> to change.  You may be
-                required to re-register with relying parties using this new
-                certificate subject.
-                </p>
-                <p>
-                <blockquote>
-                <table cellspacing="0">
-                  <tr>
-                    <td>Previous Subject DN:</td>
-                    <td>' , $prevdn , '</td>
-                  </tr>
-                  <tr>
-                    <td>Current Subject DN:</td>
-                    <td>' , $dn , '</td>
-                  </tr>
-                </table>
-                </blockquote>
-                </p>
-                ';
-            }
-
-            if ($email != $prevemail) {
-                echo '
-                <p>
-                Your new certificate will contain your <strong>updated email
-                address</strong>.
-                This may change how your certificate may be used in email
-                clients.  Possible problems which may occur include:
-                </p>
-                <ul>
-                <li>If your "from" address does not match what is contained in
-                    the certificate, recipients may fail to verify your signed
-                    email messages.</li>
-                <li>If the email address in the certificate does not match the
-                    destination address, senders may have difficulty encrypting
-                    email addressed to you.</li>
-                </ul>
-                ';
-            }
-
-            echo '
-            <p>
-            If you have any questions, please contact us at the email
-            address at the bottom of the page.
-            </p>
-            <div>
-            ';
-            printFormHead(getScriptDir());
-            echo '
-            <input type="submit" name="submit" class="submit" 
-             value="Proceed" />
-            </form>
-            </div>
-            </div>
-            ';
-            printFooter();
-
-            
-        } else {  // Database error, should never happen
-            $log->error('Database error reading previous user attributes.');
-            unsetGetUserSessionVars();
-            printLogonPage();
-        }
-    } else {  // Database error, should never happen
-        $log->error('Database error reading current user attributes.');
-        unsetGetUserSessionVars();
-        printLogonPage();
-    }
-    
-}
-
-/************************************************************************
- * Function   : unsetGetUserSessionVars                                    *
- * This function removes all of the PHP session variables related to    *
- * the 'secure/getuser' script.  This will force the user to log on     *
- * (again) with their IdP and call the 'getuser' script to repopulate   *
- * the PHP session.                                                     *
- ************************************************************************/
-function unsetGetUserSessionVars()
-{
-    unsetSessionVar('submit');
-    unsetSessionVar('uid');
-    unsetSessionVar('status');
-    unsetSessionVar('loa');
-    unsetSessionVar('idp');
-    unsetSessionVar('idpname');
 }
 
 /************************************************************************
@@ -1000,21 +531,16 @@ function verifyOAuthToken($token='')
     // If passing in the OAuth $token, try to get the associated info
     // from the persistent store and put it into the PHP session.
     if (strlen($token) > 0) {
-        $store = new store();
-        $store->getPortalObj($token);
-        $status = $store->getPortalSub('status');
+        $dbs = new dbservice();
+        $dbs->getPortalParameters($token);
+        $status = $dbs->status;
         setOrUnsetSessionVar('portalstatus',$status);
         if (!($status & 1)) {  // STATUS_OK* codes are even-numbered
-            setOrUnsetSessionVar('callbackuri',
-                $store->getPortalSub('callbackUri'));
-            setOrUnsetSessionVar('failureuri',
-                $store->getPortalSub('failureUri'));
-            setOrUnsetSessionVar('successuri',
-                $store->getPortalSub('successUri'));
-            setOrUnsetSessionVar('portalname',
-                $store->getPortalSub('name'));
-            setOrUnsetSessionVar('tempcred',
-                $store->getPortalSub('tempCred'));
+            setOrUnsetSessionVar('callbackuri',$dbs->cilogon_callback);
+            setOrUnsetSessionVar('failureuri',$dbs->cilogon_failure);
+            setOrUnsetSessionVar('successuri',$dbs->cilogon_success);
+            setOrUnsetSessionVar('portalname',$dbs->cilogon_portal_name);
+            setOrUnsetSessionVar('tempcred',$dbs->oauth_token);
         }
     }
 

@@ -108,9 +108,9 @@ class whitelist {
     function readFromStore() {
         $retval = false;  // Assume read failed, or empty Idp list
         $this->clear();
-        $store = new store();
-        $store->perlobj->eval('@idps = CILogon::Store->getIdps();');
-        foreach ($store->perlobj->array->idps as $value) {
+        $dbs = new dbservice();
+        $dbs->getIdps();
+        foreach ($dbs->idp_uids as $value) {
             $this->add($value);
             $retval = true;
         }
@@ -160,14 +160,8 @@ class whitelist {
     function writeToStore() {
         $retval = false;  // Assume write failed
         if (count($this->whitearray) > 0) {
-            $store = new store();
-            $store->perlobj->eval('@newidps = ();');
-            foreach ($this->whitearray as $key => $value) {
-                $store->perlobj->eval('push(@newidps,\'' . $key . '\');');
-            }
-            $store->perlobj->eval(
-                '$result = CILogon::Store->saveIdps(@newidps);');
-            $retval = ($store->perlobj->result > 0);
+            $dbs = new dbservice();
+            $retval = $dbs->setIdpsFromKeys($this->whitearray);
         }
         return $retval;
     }

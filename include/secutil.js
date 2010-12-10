@@ -1,3 +1,8 @@
+function init()
+{
+  return true;
+}
+
 /***************************************************************************
  * Function  : showHideDiv                                                 *
  * Parameters: (1) the id string of the <div> to show or hide.             *
@@ -63,65 +68,81 @@ function showHideDiv(whichDiv,showhide)
  * the "Get And Use Your CILogon Certificate" page.  It handles the issue  *
  * with the "Lifetime" of the certificate.  The GridShib-CA code expects   *
  * a RequestedLifetime field in seconds, but the cilogon.org site prompts  *
- * the user for hours.  So this fUnction transforms the visible            *
- * certlifetime field (in hours) to the hidden RequestedLifetime field     *
- * (in seconds).  It also sets a cooke for the certlifetime field and      *
- * Download Root CAs checkbox so that they can be populated with the new   *
- * values on the user's next visit.                                        *
+ * the user for hours/days/months. So this fUnction transforms the visible *
+ * certlifetime field to the hidden RequestedLifetime field (in seconds).  *
+ * It also sets a cookie for the certlifetime field and the hour/day/      *
+ * month selector so that they can be populated correctly upon the user's  *
+ * next visit.                                                             *
  ***************************************************************************/
 function handleLifetime()
 {
-  /* Get the certlifetime field entered by the user */
-  var certlifetimefield = document.getElementById('certlifetime');
+  /* Get the various lifetime interface objects */
+  var certlifetimefield      = document.getElementById('certlifetime');
+  var maxlifetimefield       = document.getElementById('maxlifetime');
+  var requestedlifetimefield = document.getElementById('RequestedLifetime'); 
+  var certmultiplierselect   = document.getElementById('certmultiplier');
+
+  var certlifetimefieldvalue = 12;      /* Default lifetime is 12 hours */
+  var certmultiplierselectvalue = 3600; /* Default unit is hours */
+  var maxlifetimefieldvalue = 34257600; /* Default max lifetime is 13 months */
+
+  /* Get the number in the lifetime field */
   if (certlifetimefield !== null) {
-    var certlifetimefieldvalue = parseInt(certlifetimefield.value,10);
+    certlifetimefieldvalue = parseFloat(certlifetimefield.value);
     if (isNaN(certlifetimefieldvalue)) {
       certlifetimefieldvalue = 12;
     }
+  }
 
-    /* Try to get the hidden maxlifetime field value, or default to 10 days */
-    var maxlifetimefield = document.getElementById('maxlifetime');
-    var maxlifetimefieldvalue = 240; 
-    if (maxlifetimefield !== null) {
-      maxlifetimefieldvalue = parseInt(maxlifetimefield.value,10);
-    }
-
-    /* Make sure the certlifetime is within bounds */
-    if (certlifetimefieldvalue < 1) {
-      certlifetimefieldvalue = 1;
-    }
-    if (certlifetimefieldvalue > maxlifetimefieldvalue) {
-      certlifetimefieldvalue = maxlifetimefieldvalue;
-    }
-
-    /* Set the hidden RequestedLifetime field, in seconds */
-    var requestedlifetimefield = document.getElementById('RequestedLifetime'); 
-    if (requestedlifetimefield !== null) {
-      requestedlifetimefield.value = certlifetimefieldvalue * 3600;
-    }
-
-    /* Set the cookie for the certlifetime field for next visit */
-    var today  = new Date();
-    var expire = new Date();
-    expire.setTime(today.getTime() + 365*24*3600000);
-    var cookiestr = "certlifetime=" + escape(certlifetimefieldvalue) +
-      ";expires=" + expire.toGMTString() + ";path=/;secure";
-    document.cookie = cookiestr;
-
-    /* Set the (opposite) cookie for the Download Root CAs checkbox */
-    var downloadrootcasbox = document.getElementById('DownloadTrustroots');
-    if (downloadrootcasbox !== null) {
-      var downloadrootcasboxvalue = downloadrootcasbox.checked;
-      if (downloadrootcasboxvalue.toString() == 'true') {
-        cookiestr = "notrustcerts=;" + 
-                    "expires=Thu, 01-Jan-70 00:00:01 GMT;path=/;secure";
-      } else {
-        cookiestr = "notrustcerts=notrustcerts;expires=" + 
-                    expire.toGMTString() + ";path=/;secure";
-      }
-      document.cookie = cookiestr;
+  /* Get the multiplier (hours/days/months) as seconds */
+  if (certmultiplierselect !== null) {
+    var certmultiplierselectindex = certmultiplierselect.selectedIndex;
+    if (certmultiplierselectindex >= 0) {
+      certmultiplierselectvalue = 
+        certmultiplierselect.options[certmultiplierselectindex].value;
     }
   }
+
+  /* Get the hidden maxlifetime field value */
+  if (maxlifetimefield !== null) {
+    maxlifetimefieldvalue = parseInt(maxlifetimefield.value,10);
+  }
+
+  /* Calculate requested cert lifetime in seconds */
+  var requestedcertlifetime = 
+    Math.round(certlifetimefieldvalue * certmultiplierselectvalue);
+
+  /* Make sure the certlifetime is within bounds, reset text input if needed */
+  var needtoreset = false;
+  if (requestedcertlifetime < 0) {
+    requestedcertlifetime = 0;
+    needtoreset = true;
+  }
+  if (requestedcertlifetime > maxlifetimefieldvalue) {
+    requestedcertlifetime = maxlifetimefieldvalue;
+    needtoreset = true;
+  }
+  if (needtoreset) {
+    certlifetimefieldvalue = 
+      Math.round(100 * requestedcertlifetime / certmultiplierselectvalue) / 100;
+    certlifetimefield.value = certlifetimefieldvalue;
+  }
+
+  /* Set the hidden RequestedLifetime field, in seconds */
+  if (requestedlifetimefield !== null) {
+    requestedlifetimefield.value = requestedcertlifetime;
+  }
+
+  /* Set the cookie for the certlifetime field and hour/day/month selector */
+  var today  = new Date();
+  var expire = new Date();
+  expire.setTime(today.getTime() + 365*24*3600000);
+  var cookiestr = "certlifetime=" + escape(certlifetimefieldvalue) +
+    ";expires=" + expire.toGMTString() + ";path=/;secure";
+  document.cookie = cookiestr;
+  cookiestr = "certmultiplier=" + escape(certmultiplierselectvalue) +
+    ";expires=" + expire.toGMTString() + ";path=/;secure";
+  document.cookie = cookiestr;
 
   return true;
 }

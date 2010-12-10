@@ -1,10 +1,9 @@
 <?php
 
 require_once('../include/util.php');
-// $timeit = new timeit("/tmp/timing2.txt");
-// $timeit->printTime("Staring getopeniduser...");
 require_once('../include/autoloader.php');
 require_once('../include/content.php');
+require_once('../include/dbservice.php');
 require_once('Auth/OpenID/Consumer.php');
 
 /* Check the csrf cookie against either a hidden <form> element or a *
@@ -21,7 +20,6 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
 } else {
     printServerVars();
 }
-// $timeit->printTime("Ending getopeniduser.....");
 
 /************************************************************************
  * Function   : getUserAndRespond                                       *
@@ -38,7 +36,7 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
 function getUserAndRespond($responseurl) {
     global $csrf;
 
-    $store = new store();
+    $dbs = new dbservice();
     $openid = new openid();
     $openidid = '';
 
@@ -76,27 +74,28 @@ function getUserAndRespond($responseurl) {
          * database user id and status code of the database query. */
         $providerId = getCookieVar('providerId');
         if ((strlen($openidid) > 0) && (strlen($providerId) > 0) &&
-            ($openid->exists($providerId))) {
-            $store->getUserObj($openidid, $providerId);
-            $_SESSION['uid']    = $store->getUserSub('uid');
-            $_SESSION['status'] = $store->getUserSub('status');
+            (openid::urlExists($providerId))) {
+            $dbs->getUser($openidid,$providerId);
+            $_SESSION['uid']    = $dbs->user_uid;
+            $_SESSION['status'] = $dbs->status;
         } else {
             $_SESSION['uid']    = '';
-            $_SESSION['status'] = $store->STATUS['STATUS_ERROR_MISSING_PARAMETER'];
+            $_SESSION['status'] = 
+                dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR'];
         }
 
-        // If 'status' is not STATUS_OK_*, then send an error email
+        // If 'status' is not STATUS_OK*, then send an error email
         if (($_SESSION['status']) & 1) { // Bad status codes are odd-numbered
             sendErrorEmail($openidid,
                            $providerId,
                            $_SESSION['uid'],
-                           array_search($_SESSION['status'],$store->STATUS)
+                           array_search($_SESSION['status'],dbservice::$STATUS)
                           );
         } else {
             $_SESSION['loa']     = 'openid';
             $_SESSION['idp']     = $providerId;
-            $_SESSION['idpname'] = $providerId;
-            $dn = $store->getUserSub('getDN');
+            $_SESSION['idpname'] = openid::getProviderName($providerId);
+            $dn = $dbs->distinguished_name;
             $_SESSION['dn']      = preg_replace('/\s+email=.+$/','',$dn);
         }
 

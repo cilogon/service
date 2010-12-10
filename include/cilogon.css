@@ -17,6 +17,11 @@ p {
 img {
   border-style: none;
 }
+img.floatrightclear {
+  float: right; 
+  clear: right; 
+  margin: 4px; 
+}
 a {
   color: #363;
   outline: none;
@@ -48,9 +53,6 @@ div.boxed {
   min-width: 350px;
   padding: 2px;
 }
-div.boxed div.javaapplet {
-  text-align: center;
-}
 div.boxheader {
   border: 1px solid #696;
   text-align: center;
@@ -59,7 +61,7 @@ div.boxheader {
   padding-top: 2px;
   padding-bottom: 2px;
 }
-div.nojs {
+.nojs {
   border: 1px solid #933;
   text-align: center;
   background-color: #fcc;
@@ -71,36 +73,13 @@ br.clear {
 .helpcursor {
   cursor: help;
 }
-p.equation {
-  text-align: center;
-  font-weight: bold;
-  font-style: italic;
-}
-p.equation span {
-  border: 1px dotted #aca;
-  padding: 5px;
-}
 input.submit {
   font-weight: bold;
   font-size: 110%;
   color: #030;
   background-color: #aca;
 }
-p.javaapplet {
-  text-align: center;
-  padding-top: 1em;
-  padding-bottom: 1em;
-}
-applet.gsisshterm {
-  border-style: solid;
-  border-width: 1px;
-}
-p.note {
-  text-align: center;
-  font-size: small;
-}
 div.portalinfo {
-  /* width: inherit; */
   margin-left: 3em;
   margin-right: 3em;
   border: 1px dashed #888;
@@ -120,15 +99,14 @@ div.noticebanner {
   padding: 0.5em;
   margin: 1em 3em;
 }
-div.lifetime {
-  text-align: center;
-  margin-top: 1em;
-}
 .centered {
   padding-left: 0;
   padding-right: 0;
   text-align: center;
   vertical-align: middle;
+}
+.smaller {
+  font-size: x-small;
 }
 .zeroheight {
   display: block;
@@ -163,37 +141,10 @@ div.logoheader h1 span {
 /***** End the "CILogon Service" header at the top of each page *****/
 
 /***** Begin PageHeader titlebox *****/
-div.t {
-  background-image: url("/images/t.jpg"); 
-  background-position: top left;
-  background-repeat: no-repeat;
-  padding-top: 5px; 
-  margin-top: 10px;
-  margin-left: 10%;
-}
-div.b {
-  background-image: url("/images/b.jpg"); 
-  background-position: bottom right;
-  background-repeat: no-repeat;
-  padding-bottom: 5px;
-  margin-bottom: 10px;
-  margin-right: 10%;
-}
-div.l {
-  background-image: url("/images/l.jpg"); 
-  background-position: top left;
-  background-repeat: no-repeat;
-  padding-left: 5px;
-}
-div.r {
-  background-image: url("/images/r.jpg"); 
-  background-position: bottom right;
-  background-repeat: no-repeat;
-  padding-right: 5px;
-}
 div.titlebox {
+  margin: 10px 10%;
   padding: 20px;
-  border: 1px solid #696;
+  border: 3px ridge #696;
   text-align: center;
   font-size: x-large;
   background-color: #f5fff5;
@@ -207,79 +158,73 @@ div.footer {
   margin-top: 2px;
   margin-bottom: 2px;
 }
-
 div.footer p {
   text-align: center;
   font-size: x-small;
   margin: 0px;
 }
-
 div.footer a:link {
   color: #696;
   text-decoration: none;
 }
-
 div.footer a:visited {
   color: #696;
   text-decoration: none;
 }
 /***** End page footer *****/
 
-/***** Begin WAYF list of whitelisted entityIDs *****/
-div.wayf {
+/***** Begin actionbox containing action buttons and WAYF *****/
+div.actionbox,
+div.certactionbox,
+div.tokenactionbox {
   border: 1px solid #888;
   text-align: center;
-  float: right;
-  width: 38%;
-  min-width: 230px;
-  padding: 2px;
-  background: #eee;
+  width: 375px;
+  margin: 1em auto;
+  padding: 1em 0;
 }
-.ontop {
-  display: block;
-}
-.smaller {
-  font-size: x-small;
-}
-div.wayf fieldset {
-  text-align: center;
+div.actionbox fieldset,
+div.certactionbox fieldset,
+div.tokenactionbox fieldset {
   border: 0;
   padding: 0;
-}
-div.wayf fieldset p {
-  margin-top: 1em;
-  text-align: center;
-}
-div.providerselection {
-  height: 2em;
   margin: 0;
-  padding: 0;
-  border: 0;
+}
+div.actionbox p,
+div.certactionbox p,
+div.tokenactionbox p {
+  text-align: center;
 }
 select#providerId {
   font-size: 8pt;
 }
-/***** End WAYF *****/
+p.openiderror {
+  border: 3px double red;
+  text-align: center;
+  background-color: #fcc;
+  margin: 1em;
+}
+/***** End actionbox *****/
 
-/***** Begin Welcome page text *****/
-div.welcome {
+/***** Begin certinfo table *****/
+table.certinfo {
+  margin: 1em;
+  width: 96%;
   border: 1px solid #888;
-  float: left;
-  width: 59%;
-  min-width: 350px;
-  padding: 2px;
-  margin-bottom: 1em;
+  border-spacing: 0;
+  border-collapse: collapse;
 }
-div.welcome h2 {
-  font-size: medium;
-  color: #696;
-  font-weight: bold;
+table.certinfo a:link {
+  text-decoration: none;
 }
-div.welcome p {
-  margin-left: 1em;
-  margin-right: 1em;
+table.certinfo a:visited {
+  text-decoration: none;
 }
-/***** End Welcome page text *****/
+table.certinfo th {
+  text-align: right;
+  padding-right: 1em;
+}
+/***** End certinfo table *****/
 
 /***** Begin contactform on the requestidp page *****/
 div.contactform {
@@ -378,44 +323,6 @@ div.summarytext p.addsubmit {
 }
 /***** End summary div on testidp page *****/
 
-/***** Begin taskbox on the main page *****/
-div.taskdiv {
-  margin: 1em;
-}
-div.taskdiv table.tasktable {
-  border-spacing: 0 1em;
-}
-tr.taskbox  {
-  border: 1px solid #888;
-}
-tr.taskbox td.buttons {
-  text-align: center;
-  border-left: 1px solid #888;
-  border-top: 1px solid #888;
-  border-bottom: 1px solid #888;
-}
-tr.taskbox td.buttons input.submitmore {
-  font-weight: bold;
-  font-size: 110%;
-  color: #030;
-  background-color: #aca;
-  margin-top: 1em;
-}
-tr.taskbox td.description {
-  text-align: justify;
-  vertical-align: top;
-  border-right: 1px solid #888;
-  border-top: 1px solid #888;
-  border-bottom: 1px solid #888;
-}
-tr.taskbox td.description h2 {
-  font-size: medium;
-  color: #696;
-  font-weight: bold;
-  margin-top: 0;
-}
-/***** End taskbox on the main page *****/
-
 /***** Begin errorbox and associated icon/text *****/
 div.errorbox {
   margin: 1em;
@@ -480,173 +387,11 @@ div.allowdiv table td {
 }
 /***** End allowdiv *****/
 
-/***** Begin OpenID stuff *****/
-#openidurl {
-  font-size: 8pt;
-  padding-top: 2px;
-  padding-bottom: 1px;
-  padding-left: 3px;
-  padding-right: 1px;
+/***** Begin skincilogonlogo *****/
+div.skincilogonlogo {
+  float: right;
+  top: 0;
+  right: 0;
+  margin: 5px;
 }
-#openidusername {
-  border: 1px solid #ddd;
-  font-family: monospace;
-  font-size: 8pt;
-  outline: none;
-}
-.openiddrop {
-  position: relative;
-  z-index: 100;
-  display: inline;
-}
-.openiddrop img {
-  vertical-align: middle;
-}
-.openiddrop ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  display: inline;
-}
-.openiddrop ul li {
-  display: inline;
-  position: relative;
-}
-.openiddrop ul li h3 {
-  display: inline;
-  border: 2px outset #888;
-  padding: 0px 2px 2px 2px;
-  background: #eee url('/images/clear.png') no-repeat;
-}
-.openiddrop ul li table {
-  display: none;
-  position: absolute;
-  border: 2px outset #888;
-  top: 21px;
-  right: 4px;
-}
-.openiddrop ul li:hover table {
-  display: block;
-}
-table.providertable {
-  border-width: 0;
-  border-spacing: 0;
-  border-collapse: collapse;
-  margin: 0;
-  padding: 0;
-  text-align: left;
-}
-table.providertable tr td {
-  padding: 2px 8px 2px 18px;
-}
-table.openidtable {
-  border-width: 0;
-  border-spacing: 0;
-  border-collapse: collapse;
-  width: 100%; 
-  margin: 0;
-  padding: 0;
-  table-layout: fixed;
-}
-table.openidtable th {
-  border: 1px solid #ccc;
-  background-color: #eee;
-  padding: 0;
-  font-weight: normal;
-}
-table.openidtable td {
-  border: 0px solid #000;
-  background-color: #eee;
-  padding: 0;
-}
-div.openiderror {
-  border: 3px double red;
-  text-align: center;
-  background-color: #fcc;
-  margin: 1em;
-}
-.aolicon {
-  background: #eee url('/images/aol.png') no-repeat left center;
-}
-.bloggericon {
-  background: #eee url('/images/blogger.png') no-repeat left center;
-}
-.certificaicon {
-  background: #eee url('/images/certifi.ca.png') no-repeat left center;
-}
-.chimpicon {
-  background: #eee url('/images/chi.mp.png') no-repeat left center;
-}
-.clavidicon {
-  background: #eee url('/images/clavid.png') no-repeat left center;
-}
-.clickpassicon {
-  background: #eee url('/images/clickpass.png') no-repeat left center;
-}
-.flickricon {
-  background: #eee url('/images/flickr.png') no-repeat left center;
-}
-.fupeiicon {
-  background: #eee url('/images/fupei.png') no-repeat left center;
-}
-.getopenidicon {
-  background: #eee url('/images/getopenid.png') no-repeat left center;
-}
-.googleicon {
-  background: #eee url('/images/google.png') no-repeat left center;
-}
-.hyvesicon {
-  background: #eee url('/images/hyves.png') no-repeat left center;
-}
-.identityicon {
-  background: #eee url('/images/identity.net.png') no-repeat left center;
-}
-.launchpadicon {
-  background: #eee url('/images/launchpad.png') no-repeat left center;
-}
-.liquididicon {
-  background: #eee url('/images/liquidid.png') no-repeat left center;
-}
-.livejournalicon {
-  background: #eee url('/images/livejournal.png') no-repeat left center;
-}
-.myidicon {
-  background: #eee url('/images/myid.png') no-repeat left center;
-}
-.myopenidicon {
-  background: #eee url('/images/myopenid.png') no-repeat left center;
-}
-.myspaceicon {
-  background: #eee url('/images/myspace.png') no-repeat left center;
-}
-.myvidoopicon {
-  background: #eee url('/images/myvidoop.png') no-repeat left center;
-}
-.netlogicon {
-  background: #eee url('/images/netlog.png') no-repeat left center;
-}
-.oneloginicon {
-  background: #eee url('/images/onelogin.png') no-repeat left center;
-}
-.openidicon {
-  background: #eee url('/images/openid.png') no-repeat left center;
-}
-.steamicon {
-  background: #eee url('/images/steam.png') no-repeat left center;
-}
-.verisignicon {
-  background: #eee url('/images/verisign.png') no-repeat left center;
-}
-.voxicon {
-  background: #eee url('/images/vox.png') no-repeat left center;
-}
-.wordpressicon {
-  background: #eee url('/images/wordpress.png') no-repeat left center;
-}
-.yahooicon {
-  background: #eee url('/images/yahoo.png') no-repeat left center;
-}
-.yiidicon {
-  background: #eee url('/images/yiid.png') no-repeat left center;
-}
-/***** End OpenID stuff *****/
+/***** End skincilogonlogo *****/

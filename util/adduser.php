@@ -19,18 +19,17 @@ if ($argc == 7) {
         (strlen($lastname) > 0) &&
         (strlen($emailaddr) > 0)) {
 
-        $store = new store();
-        $store->getUserObj($remoteuser, $idp, $idpname, 
-                           $firstname, $lastname, $emailaddr);
+        $dbs = new dbservice();
+        $dbs->getUser($remoteuser, $idp, $idpname, 
+                      $firstname, $lastname, $emailaddr);
 
-        printInfo($store);
+        printInfo($dbs);
 
-        if ($store->getUserSub('status') == 
-            $store->STATUS['STATUS_OK_USER_CHANGED']) {
-            echo "\n----- USER CHANGED -----\n\n";
-            $uid = $store->getUserSub('uid');
-            $store->getLastUserObj($uid);
-            printInfo($store);
+        if ($dbs->status == dbservice::$STATUS['STATUS_USER_UPDATED']) {
+            echo "\n----- USER UPDATED -----\n\n";
+            $uid = $dbs->user_uid;
+            $dbs->getLastArchivedUser($uid);
+            printInfo($dbs);
         }
     } else {
         printUsage();
@@ -44,10 +43,10 @@ if ($argc == 7) {
     if ((strlen($remoteuser) > 0) &&
         (strlen($idp) > 0)) {
 
-        $store = new store();
-        $store->getUserObj($remoteuser, $idp);
+        $dbs = new dbservice();
+        $dbs->getUser($remoteuser, $idp);
 
-        printInfo($store);
+        printInfo($dbs);
     } else {
         printUsage();
     }
@@ -62,14 +61,12 @@ function printUsage() {
     echo "Note: The first usage is for OpenID.  The second usage is for InCommon.\n";
 }
 
-function printInfo($store)
+function printInfo($dbs)
 {
-    $uid = $store->getUserSub('uid');
-    echo "uid = $uid\n";
-    $status = $store->getUserSub('status');
-    echo "status = $status = " . array_search($status,$store->STATUS) . "\n";
-    $dn = $store->getUserSub('getDN');
-    echo "dn = $dn\n";
+    echo "uid = $dbs->user_uid\n";
+    $status = $dbs->status;
+    echo "status = $status = " . array_search($status,dbservice::$STATUS)."\n";
+    echo "dn = $dbs->distinguished_name\n";
 }
 
 ?>

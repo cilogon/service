@@ -150,26 +150,34 @@ function startPHPSession()
 
 /************************************************************************
  * Function  : getScriptDir                                             *
- * Parameter : (Optional) Boolean to make the script a "full" url by    *
- *             prepending "https://<hostname>" to the script name.      *
- *             Defaults to false.                                       *
- * Return    : The directory or full url of the current script.         *
+ * Parameters: (1) (Optional) Boolean to prepend "http(s)://" to the    *
+ *                 script name.  Defaults to false.                     *
+ *             (2) (Optional) Boolean to strip off the trailing         *
+ *                 filename (e.g. index.php) from the path.  Defaults   *
+ *                 to true (i.e. defaults to directory only without    *
+ *                 the trailing filename).                              *
+ * Return    : The directory or url of the current script, with or      *
+ *             without the trailing .php filename.                      *
  * This function returns the directory (or full url) of the script that *
  * is currently running.  The returned directory/url is terminated by   *
- * a '/' character.  This function is useful for those scripts named    *
- * index.php were we don't want to actually see "index.php" in the      *
- * address bar.                                                         *
+ * a '/' character (unless the second parameter is set to true).  This  *
+ * function is useful for those scripts named index.php were we don't   *
+ * want to actually see "index.php" in the address bar (again, unless   *
+ * the second parameter is set to true).                                *
  ************************************************************************/
-function getScriptDir($fullurl=false) {
-    $sn = getServerVar('SCRIPT_NAME');
-    $retval = dirname($sn);
+function getScriptDir($prependhttp=false,$stripfile=true) {
+    $retval = getServerVar('SCRIPT_NAME');
+    if ($stripfile) {
+        $retval = dirname($retval);
+    }
     if ($retval == '.') {
         $retval = '';
     }
-    if ((strlen($retval) == 0) || ($retval[strlen($retval)-1] != '/')) {
+    if ((strlen($retval) == 0) || 
+        ($stripfile && ($retval[strlen($retval)-1] != '/'))) {
         $retval .= '/';  // Append a slash if necessary
     }
-    if ($fullurl) {  // Prepend http(s)://hostname
+    if ($prependhttp) {  // Prepend http(s)://hostname
         $retval = 'http' . 
                   ((strtolower(getServerVar('HTTPS')) == 'on') ? 's' : '') .
                   '://' . getServerVar('HTTP_HOST') . $retval;
@@ -233,7 +241,7 @@ function writeArrayToFile($filename,$thearray) {
  * Function  : parseGridShibConf                                        *
  * Parameter : (Optional) Full path location of gridshib-ca.conf file.  *
  *             Defaults to                                              *
- *             '/usr/local/gridshib-ca-2.0.0/conf/gridshib-ca.conf'.    *
+ *             '/usr/local/gridshib-ca/conf/gridshib-ca.conf'.          *
  * Return    : An array containing the various configuration parameters *
  *             in the gridshib-ca.conf file.                            *
  * This function parses the gridshib-ca.conf file and returns an array  *
@@ -248,7 +256,7 @@ function writeArrayToFile($filename,$thearray) {
 //             $gridshibconf['root']['CA']['MaximumCredLifetime']);     *
 /************************************************************************/
 function parseGridShibConf($conffile=
-    '/usr/local/gridshib-ca-2.0.0/conf/gridshib-ca.conf') {
+    '/usr/local/gridshib-ca/conf/gridshib-ca.conf') {
     require_once('Config.php');
     $conf = new Config;
     $root =& $conf->parseConfig($conffile,'Apache');

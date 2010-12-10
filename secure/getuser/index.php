@@ -35,7 +35,7 @@ function getUserAndRespond($responseurl) {
     global $csrf;
 
     $shibarray = getShibInfo();
-    $store = new store();
+    $dbs = new dbservice();
 
     /* If either firstname or lastname is empty but displayName *
      * is okay, extract first/last name from the displayName.   */
@@ -60,21 +60,22 @@ function getUserAndRespond($responseurl) {
         (strlen($firstname) > 0) &&
         (strlen($lastname) > 0) &&
         (strlen($shibarray['Email Address']) > 0)) {
-        $store->getUserObj($shibarray['User Identifier'],
-                           $shibarray['Identity Provider'],
-                           $shibarray['Organization Name'],
-                           $firstname,
-                           $lastname,
-                           $shibarray['Email Address']
-                          );
-        $_SESSION['uid']    = $store->getUserSub('uid');
-        $_SESSION['status'] = $store->getUserSub('status');
+        $dbs->getUser($shibarray['User Identifier'],
+                      $shibarray['Identity Provider'],
+                      $shibarray['Organization Name'],
+                      $firstname,
+                      $lastname,
+                      $shibarray['Email Address']
+                     );
+        $_SESSION['uid']    = $dbs->user_uid;
+        $_SESSION['status'] = $dbs->status;
     } else {
         $_SESSION['uid']    = '';
-        $_SESSION['status'] = $store->STATUS['STATUS_ERROR_MISSING_PARAMETER'];
+        $_SESSION['status'] = 
+            dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR'];
     }
 
-    // If 'status' is not STATUS_OK_*, then send an error email
+    // If 'status' is not STATUS_OK*, then send an error email
     if (($_SESSION['status']) & 1) { // Bad status codes are odd-numbered
         sendErrorEmail($shibarray['User Identifier'],
                        $shibarray['Identity Provider'],
@@ -83,14 +84,14 @@ function getUserAndRespond($responseurl) {
                        $lastname,
                        $shibarray['Email Address'],
                        $_SESSION['uid'],
-                       array_search($_SESSION['status'],$store->STATUS)
+                       array_search($_SESSION['status'],dbservice::$STATUS)
                       );
     } else {
         // Set additional session variables needed by the calling script
         $_SESSION['loa']     = $shibarray['Level of Assurance'];
         $_SESSION['idp']     = $shibarray['Identity Provider'];
         $_SESSION['idpname'] = $shibarray['Organization Name'];
-        $dn = $store->getUserSub('getDN');
+        $dn = $dbs->distinguished_name;
         $_SESSION['dn']      = preg_replace('/\s+email=.+$/','',$dn);
     }
 

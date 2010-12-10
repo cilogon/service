@@ -8,14 +8,15 @@ if ($argc == 2) {
     $uid = $argv[1];
 
     if (strlen($uid) > 0) {
-        $store = new store();
-        $store->perlobj->eval(
-            '$removeduid = CILogon::Store->_removeUser(\''.$uid.'\');');
-        echo "Removed uid = " . $store->perlobj->removeduid . "\n";
+        $dbs = new dbservice();
+        $dbs->removeUser($uid);
+        $status = $dbs->status;
+        echo "status = $status = " . array_search($status,dbservice::$STATUS) .
+            "\n";
     }
 } else {
     echo "Usage: " . $argv[0] . " UID\n";
-    echo "    where UID is a persistent store user identifier\n";
+    echo "    where UID is a database user identifier\n";
 }
 
 ?>

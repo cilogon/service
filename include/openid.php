@@ -8,14 +8,16 @@ require_once('Auth/OpenID/FileStore.php');
 
 /************************************************************************
  * Class name : openid                                                  *
- * Description: This class aids in the formation of OpenID user URLs.   *
- *              There is a public array $providerarray which lists      *
- *              the available OpenID Providers (as the keys of the      *
- *              array) and their corresponding URLs (as the values of   *
- *              the array).  If the URL has the string 'username' in    *
- *              it, this must be replaced by the user's actual account  *
- *              username.  This substitution is done automatically by   *
- *              the getURL() method.                                    *
+ * Description: This class serves two purposes:                         *
+ *              (1) It maintains a list of OpenID provider URLs and     *
+ *                  their corresponding display names.  The list of     *
+ *                  OpenID providers is stored in the static array      *
+ *                  $providerUrls.  There are static methods for        *
+ *                  looking in this array for a given OpenID provider   *
+ *                  by URL or by display name.                          *
+ *              (2) It gets "storage" for the OpenID library. This      *
+ *                  file-based or database-based storage is needed by   *
+ *                  the Janrain OpenID library for OpenID connections.  *
  *                                                                      *
  *              There are constants in the class that you should set    *
  *              for your particular set up:                             *
@@ -28,173 +30,102 @@ require_once('Auth/OpenID/FileStore.php');
  *                  directory for storing OpenID information to be used *
  *                  by the "FileStore" module. Note that this directory *
  *                  must exist and be owner (or group) 'apache'.        *
- *                                                                      *
- * Example usage:                                                       *
- *    require_once('openid.php');                                       *
- *    $openid = new openid();                                           *
- *    $openid->setProvider('Blogger');                                  *
- *    $openid->setUsername('johndoe');                                  *
- *    // OR simply $openid = new openid('Blogger','johndoe');           *
- *    $url = $openid->getURL();                                         *
- *    // Now do an OpenID login using the $url                          *
  ************************************************************************/
 
 class openid {
 
     /* Set the constants to correspond to your particular set up.       */
     const databasePropertiesFile = '/var/www/config/database.properties';
-    const fileStoreDirectory = '/var/run/openid';
+    const fileStoreDirectory     = '/var/run/openid';
 
-    /* The $providerarray lists all of the supported OpenID providers   *
-     * as the keys and their corresponding URLs as the values.  If      *
-     * there is the string 'username' in the URL, it needs to be        *
-     * replaced  by the actual user's username for the URL to be valid. */
-    public $providerarray = array(
-        'AOL'         => 'http://openid.aol.com' ,
-        'Blogger'     => 'http://username.blogspot.com' ,
-        /* 'certifi.ca'  => 'http://certifi.ca/username' , */
-        'Chi.mp'      => 'http://username.mp' ,
-        'clavid'      => 'http://username.clavid.com' ,
-        'Clickpass'   => 'http://clickpass.com/public/username' ,
-        'Flickr'      => 'http://flickr.com/photos/username' ,
-        'Fupei'       => 'http://id.fupei.com/username' ,
-        'GetOpenID'   => 'http://getopenid.com/username' ,
-        'Google'      => 'http://google.com/accounts/o8/id' ,
-        'Hyves'       => 'http://hyves.nl' ,
-        'LaunchPad'   => 'http://login.launchpad.net' ,
-        'LiquidID'    => 'http://username.liquidid.net' ,
-        'LiveJournal' => 'http://username.livejournal.com' ,
-        'myID'        => 'http://myid.net' ,
-        'myOpenID'    => 'http://myopenid.com' ,
-        'MySpace'     => 'http://myspace.com' ,
-        'myVidoop'    => 'http://myvidoop.com' ,
-        'NetLog'      => 'http://netlog.com/username' ,
-        'OneLogin'    => 'https://app.onelogin.com/openid/username' ,
-        'OpenID'      => 'http://username' ,
-        'Steam'       => 'http://steamcommunity.com/openid' ,
-        'Verisign'    => 'http://pip.verisignlabs.com' ,
-        'WordPress'   => 'http://username.wordpress.com' ,
-        'Yahoo'       => 'http://yahoo.com' 
+    /* The $providerUrls array is a list of all supported OpenID IdP    *
+     * URLs (as the keys) and their associated display names (as the    *
+     * values). This key=>value ordering was chosen to align with the   *
+     * InCommon IdP=>DisplayName whiteids.txt file. Note that only      *
+     * OpenID providers which do NOT require a username in the URL are  *
+     * supported at this time.                                          */
+    public static $providerUrls = array(
+        'http://google.com/accounts/o8/id' => 'Google' ,
+        'http://pip.verisignlabs.com'      => 'Verisign' ,
+        'http://yahoo.com'                 => 'Yahoo'
     );
 
-    /* The actual OpenID provider to be used.  Corresponds to one of    *
-     * keys in the $providerarray.                                      */
-    protected $provider;
-
-    /* If the OpenID Provider URL has the string 'username' in it, it   *
-     * must be replaced with the actual user's account username.        */
-    protected $username;
-
-    protected $db = null;
+    /* Database connection for the OpenID library.                      */
+    protected $db;
 
     /********************************************************************
      * Function  : __construct - default constructor                    *
-     * Parameters: (1) The name of the OpenID provider, corresponding   *
-     *                 to one of the keys in the $providerarray.        *
-     *                 Defaults to 'OpenID'.                            *
-     *             (2) The user's account username to be utilized when  *
-     *                 forming the OpenID URL containing the string     *
-     *                 'username'.  Defaults to 'username'.             *
      * Returns   : A new openid object.                                 *
-     * Default constructor.  This mehthod sets the $provider and        *
-     * $username to the passed in values.  These can be (re)set after   *
-     * ojbect creation by the setProvider() and setUsername() methods.  *
+     * Default constructor.  This method initializes the storage needed *
+     * by the OpenID consumer library.                                  *
      ********************************************************************/
-    function __construct($provider='OpenID',$username='username') {
-        $this->setProvider($provider);
-        $this->setUsername($username);
+    function __construct() {
+        $this->db = null;
     }
 
     /********************************************************************
-     * Function  : getProvider                                          *
-     * Returns   : The OpenID provider to be utilized.                  *
-     * This method returns the class variable $provider.                *
+     * Function  : __destruct                                           *
+     * Default destructor.  Closes the database connection.             *
      ********************************************************************/
-    function getProvider() {
-        return $this->provider;
+    function __destruct() {
+        $this->disconnect();
     }
 
     /********************************************************************
-     * Function  : setProvider                                          *
-     * Parameter : The OpenID provider to be utilized.                  *
-     * This method sets the class variable $provider to the passed-in   *
-     * OpenID provider.  It first checks to see if the parameter is a   *
-     * key in the $providerarray.  If so, it sets $provider.  Otherwise *
-     * no action is taken.                                              *
+     * Function  : getProviderUrl                                       *
+     * Parameter : The display name of an OpenID provider.              *
+     * Returns   : The corresponding OpenID provider URL, or empty      *
+     *             string if no such URL is found.                      *
+     * This method takes in an OpenID display name and returns the      *
+     * corresponding URL.                                               *
      ********************************************************************/
-    function setProvider($provider) {
-        if ($this->exists($provider)) {
-            $this->provider = $provider;
+    public static function getProviderUrl($name) {
+        $retval = '';
+        $url = array_search($name,self::$providerUrls);
+        if (($url !== false) && (strlen($url) > 0)) {
+            $retval = $url;
         }
+        return $retval;
     }
 
     /********************************************************************
-     * Function  : getUsername                                          *
-     * Returns   : The user's account username.                         *
-     * This method returns the class variable $username.                *
+     * Function  : getProviderName                                      *
+     * Parameter : The URL of an OpenID provider.                       *
+     * Returns   : The corresponding OpenID provider display name, or   *
+     *             empty string if no such display name is found.       *
+     * This method takes in an OpenID provider URL and returns the      *
+     * corresponding display name.                                      *
      ********************************************************************/
-    function getUsername() {
-        return $this->username;
-    }
-
-    /********************************************************************
-     * Function  : setUsername                                          *
-     * Parameter : The username to be put in the OpenID URL.            *
-     * This method sets the class variable $username.                   *
-     ********************************************************************/
-    function setUsername($username) {
-        $username = trim($username);
-        $this->username = $username;
-    }
-
-    /********************************************************************
-     * Function  : exists                                               *
-     * Parameter : The name of an OpenID Provider.                      *
-     * Returns   : True if the OpenID provider exists in the            *
-     *             $providerarray.  False otherwise.                    *
-     * This method takes a string for an OpenID provider.  The          *
-     * $providerarray is searched for this string.  If found, true is   *
-     * returned.                                                        *
-     ********************************************************************/
-    function exists($provider) {
-        return isset($this->providerarray[$provider]);
-    }
-
-    /********************************************************************
-     * Function  : getURL                                               *
-     * Returns   : The OpenID URL to be used for an OpenID login.       *
-     * This method returns the URL to be used for an OpenID login.  If  *
-     * the URL in the $providerarray contains the string 'username',    *
-     * the class variable $username is substituted, giving a user-      *
-     * specific URL.  Otherwise, the URL is simply returned without any *
-     * string replacement.                                              *
-     ********************************************************************/
-    function getURL() {
-        $url = $this->providerarray[$this->getProvider()];
-        return preg_replace('/username/',$this->username,$url);
-    }
-
-    /********************************************************************
-     * Function  : getInputTextURL                                      *
-     * Returns   : The OpenID URL to be used for an OpenID login,       *
-     *             replacing any 'username' string with an <input       *
-     *             type="text"> form element.                           *
-     * This method is similar to getURL, but rather than simply         *
-     * replacing any 'username' string with the class variable          *
-     * $username, a full <input type="text"> form element is inserted.  *
-     * This is useful when outputting the OpenID logon form.            *
-     ********************************************************************/
-    function getInputTextURL() {
-        $url = $this->providerarray[$this->getProvider()];
-        $len = strlen($this->username) + 1;
-        if ($len > 20) {
-            $len = 20;
+    public static function getProviderName($url) {
+        $retval = '';
+        if (isset(self::$providerUrls[$url])) {
+            $retval = self::$providerUrls[$url];
         }
-        return preg_replace('/username/',
-               '<input type="text" name="username" size="' . $len . '" '.
-               'value="' .  $this->username . '" id="openidusername" ' .
-               'onfocus="setInterval(\'boxExpand()\',1);" />',
-               $url);
+        return $retval;
+    }
+
+    /********************************************************************
+     * Function  : urlExists                                            *
+     * Parameter : The URL of an OpenID provider.                       *
+     * Returns   : True if the URL exists in the list of OpenID         *
+     *             providers.  False otherwise.                         *
+     * This is a convenience method which returns true if the passed-in *
+     * URL exists in the list of OpenID providers.                      *
+     ********************************************************************/
+    public static function urlExists($url) {
+        return (strlen(self::getProviderName($url)) > 0);
+    }
+
+    /********************************************************************
+     * Function  : nameExists                                           *
+     * Parameter : The display name of an OpenID provider.              *
+     * Returns   : True if the name exists in the list of OpenID        *
+     *             providers.  False otherwise.                         *
+     * This is a convenience method which returns true if the passed-in *
+     * display name exists in the list of OpenID providers.             *
+     ********************************************************************/
+    public static function nameExists($name) {
+        return (strlen(self::getProviderUrl($name)) > 0);
     }
 
     /********************************************************************

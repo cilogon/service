@@ -4,6 +4,15 @@ require_once("util.php");
 require_once("autoloader.php");
 require_once("Config.php");
 
+/* If needed, set the "Notification" banner text to a non-empty value   */
+/* and uncomment the "define" statement in order to display a           */
+/* notification box at the top of each page.                            */
+/*
+define('BANNER_TEXT','The CILogon Service may be unavailable for short periods
+    on Sunday November 21 between 5am and 8am Central Time
+    due to University of Illinois network maintenance.');
+*/
+
 /* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
 define('GETUSER_URL','https://' . HOSTNAME . '/secure/getuser/');
 define('GETOPENIDUSER_URL','https://' . HOSTNAME . '/getopeniduser/');
@@ -36,8 +45,12 @@ function printHeader($title='',$extra='')
     <meta http-equiv="X-XRDS-Location" 
           content="https://' , HOSTNAME , '/cilogon.xrds"/>
     <link rel="stylesheet" type="text/css" href="/include/cilogon.css" />
-    <script type="text/javascript" src="/include/secutil.js"></script>
-    <script type="text/javascript" src="/include/openid.js"></script>
+    ';
+
+    printSkin();
+
+    echo '<script type="text/javascript" src="/include/secutil.js"></script>
+    <script type="text/javascript" src="/include/deployJava.js"></script>
 
     <!--[if IE]>
     <style type="text/css">
@@ -54,12 +67,33 @@ function printHeader($title='',$extra='')
     echo '
     </head>
 
-    <body>
+    <body onload="init();">
+    ';
+
+    $skinvar = getSessionVar('cilogon_skin');
+    if ((strlen($skinvar) > 0) &&
+        (is_readable($_SERVER{'DOCUMENT_ROOT'} . "/skin/$skinvar/skin.css"))) {
+        echo '
+        <div class="skincilogonlogo">
+        <a target="_blank" href="http://www.cilogon.org/faq/"><img
+        src="/images/cilogon-logo-48x48-b.png" alt="CILogon" 
+        title="CILogon Service" /></a>
+        </div>
+        ';
+    }
+
+    echo '
     <div class="logoheader">
        <h1><span>[CILogon Service]</span></h1>
     </div>
     <div class="pagecontent">
      ';
+
+    if ((defined('BANNER_TEXT')) && (strlen(BANNER_TEXT) > 0)) {
+        echo '
+        <div class="noticebanner">' , BANNER_TEXT , '</div>
+        ';
+    }
 }
 
 /************************************************************************
@@ -78,6 +112,12 @@ function printFooter($footer='')
     echo '
     <br class="clear" />
     <div class="footer">
+    <a target="_blank" href="http://www.cilogon.org/faq"><img
+    src="/images/infoIcon.png" class="floatrightclear" 
+    width="14" height="14" alt="CILogon FAQ" title="CILogon FAQ" /></a>
+    <p>For questions about this site, please see the <a target="_blank"
+    href="http://www.cilogon.org/faq">FAQs</a> or send email to <a
+    href="mailto:help@cilogon.org">help&nbsp;@&nbsp;cilogon.org</a>.</p>
     <p>Know <a target="_blank"
     href="http://ca.cilogon.org/responsibilities">your responsibilities</a>
     for using the CILogon Service.</p>
@@ -88,9 +128,6 @@ function printFooter($footer='')
     <p>Any opinions, findings and conclusions or recommendations expressed
     in this material are those of the author(s) and do not necessarily
     reflect the views of the National Science Foundation.</p>
-    <p>Please send any questions or comments about this
-    site to <a
-    href="mailto:help@cilogon.org">help&nbsp;@&nbsp;cilogon.org</a>.</p>
     </div> <!-- Close "footer" div -->
     </div> <!-- Close "pagecontent" div -->
     </body>
@@ -107,27 +144,79 @@ function printFooter($footer='')
  * the four edges of the box and then outlines the inner box.           *
  ************************************************************************/
 function printPageHeader($text) {
-/*
     echo '
-    <div class="noticebanner">
-    The CILogon Service is in beta testing.
-    Unscheduled service outages may occur.
-    The next scheduled outage is <em>Friday, July 23</em>.
+    <div class="titlebox">' , $text , '
     </div>
     ';
-*/
+}
+
+/************************************************************************
+ * Function   : printFormHead                                           *
+ * Parameters : (1) The value of the form's "action" parameter.         *
+ *              (2) (Optional) True if extra hidden tags should be      *
+ *                  output for the GridShib-CA client application.      *
+ *                  Defaults to false.                                  *
+ * This function prints out the opening <form> tag for displaying       *
+ * submit buttons.  The first parameter is used for the "action" value  *
+ * of the <form>.  This function outputs a hidden csrf field in the     *
+ * form block.  If the second parameter is given and set to true, then  *
+ * additional hidden input elements are also output to be used when the *
+ * the GridShib-CA client launches.                                     *
+ ************************************************************************/
+function printFormHead($action,$gsca=false) {
+    global $csrf;
 
     echo '
-    <div class="t">
-    <div class="b">
-    <div class="l">
-    <div class="r">
-    <div class="titlebox">' , $text , '</div>
-    </div>
-    </div>
-    </div>
-    </div>
+    <form action="' , $action , '" method="post">
     ';
+    echo $csrf->getHiddenFormElement();
+
+    if ($gsca) {
+        /* Output hidden form element for GridShib-CA */
+        echo '
+        <input type="hidden" name="CSRFProtection" value="' .
+        $csrf->getTokenValue() . '" />
+        ';
+    }
+}
+
+/************************************************************************
+ * Function   : printSkin                                               *
+ * This function looks for a GET variable named either "skin" or        *
+ * "cilogon_skin", or a PHP session variable named "cilogon_skin".  If  *
+ * any of these is found, it checks to see if there is a skin           *
+ * subdirectory of the same value containing a skin.css file.  If so,   *
+ * it outputs the necessary <link> tag to include the stylesheet.  This *
+ * function is called by the printHeader() function.                    *
+ ************************************************************************/
+function printSkin() 
+{
+    /* First, attempt to read the URL parameter for either 'skin=' or *
+     * 'cilogon_skin='.  If we find either one, then set the PHP      *
+     * session variable 'cilogon_skin' and continue processing.       */
+    $skinvar = getGetVar('skin');
+    if (strlen($skinvar) == 0) {
+        $skinvar = getGetVar('cilogon_skin');
+    }
+    if (strlen($skinvar) > 0) {
+        $_SESSION['cilogon_skin'] = $skinvar;
+    }
+
+    /* Check for the PHP session variable 'cilogon_skin'.  If found   *
+     * verify that it points to a valid skin subdirectory containing  *
+     * a skin.css file.  Then print out the corresponding <link> tag. */
+    $skinvar = getSessionVar('cilogon_skin');
+    if (strlen($skinvar) > 0) {
+        if (is_readable($_SERVER{'DOCUMENT_ROOT'} . 
+                        "/skin/$skinvar/skin.css")) {
+            echo '
+            <link rel="stylesheet" type="text/css" 
+             href="/skin/' , $skinvar , '/skin.css" />
+            ';
+        } else { // Problem reading skin.css - delete PHP session variable
+            unsetSessionVar('cilogon_skin');
+        }
+    }
 }
 
 /************************************************************************
@@ -143,7 +232,17 @@ function printWAYF()
     global $csrf;
 
     $whiteidpsfile = '/var/www/html/include/whiteidps.txt';
+    $helptext = "Check this box to bypass the welcome page on subsequent visits and proceed directly to the selected identity provider. You will need to clear your browser's cookies to return here."; 
 
+    $keepidp     = getCookieVar('keepidp');
+    $providerId  = getCookieVar('providerId');
+    if (strlen($providerId) == 0) {
+        $providerId = openid::getProviderUrl('Google');
+    }
+
+    /* Try to read in a file containing a list of IdPs mapped to their */
+    /* display names.  If the file is empty, read in the list of       */
+    /* whitelisted IdPs (from file) and write out the mapping file.    */
     $idps = readArrayFromFile($whiteidpsfile);
     if (count($idps) == 0) {
         $incommon    = new incommon();
@@ -151,141 +250,43 @@ function printWAYF()
         $idps        = $incommon->getOnlyWhitelist($whitelist);
         writeArrayToFile($whiteidpsfile,$idps);
     }
-    $providerId  = getCookieVar('providerId');
-    $keepidp     = getCookieVar('keepidp');
-    $useopenid   = getCookieVar('useopenid');
-    $username    = getCookieVar('username');
-    if (strlen($username) == 0) {
-        $username = 'username';
-    }
-    $openid = new openid();
-    if ($useopenid == '1') {
-        $openid->setProvider($providerId);
-        $openid->setUsername($username);
-    }
-    $oidarray = array();
 
-    $helptext = "By checking this box, you can bypass the welcome page on subsequent visits and proceed directly to your organization's authentication site. You will need to clear your brower's cookies to return here."; 
-    $insteadtext = "By clicking this link, you change the type of authentication used for the CILogon Service. You can select either InCommon or OpenID authentication.";
+    /* Add the list of OpenID providers into the $idps array so as to  */
+    /* have a single selection list.  Keys are the IdP identifiers,    */
+    /* values are the provider display names, sorted by names.         */
+    foreach (openid::$providerUrls as $url => $name) {
+        $idps[$url] = $name;
+    }
+    natcasesort($idps);
 
     echo '
-    <div class="wayf">
-      <div class="boxheader">
-        Start Here
-      </div>
+    <div class="actionbox">
 
       <form action="' , getScriptDir() , '" method="post">
       <fieldset>
 
-      <div id="starthere1" style="display:';
-
-      if ($useopenid == '1') {
-          echo 'none">';
-      } else {
-          echo 'inline">';
-      }
-
-      echo '
       <p>
-      Select An InCommon Organization:
+      Select An Identity Provider:
       </p>
-      <div class="providerselection">
+
+      <p>
       <select name="providerId" id="providerId">
     ';
 
     foreach ($idps as $entityId => $idpName) {
-        echo '<option value="' , $entityId , '"';
+        echo '    <option value="' , $entityId , '"';
         if ($entityId == $providerId) {
             echo ' selected="selected"';
         }
-        echo '>' , $idpName , '</option>' , "\n";
+        echo '>' , htmlentities($idpName) , '</option>' , "\n    ";
     }
+
+    echo '  </select>
+      </p>
+    ';
+
 
     echo '
-      </select>
-      </div>
-      </div>
-
-      <!-- Preload all OpenID icons -->
-      <div class="zeroheight">
-        ';
-
-    /* Print out all OpenID icons to avoid loading later */
-    $oidnum = 0;
-    foreach ($openid->providerarray as $oname => $ourl) {
-        $oidarray[$oidnum++] = $oname;  // Put Provider names in numbered array
-        echo '<div class="' . getIconName($oname) . '"></div>
-        ';
-    }
-
-    echo '</div>
-    <div id="starthere2" style="display:';
-
-    if ($useopenid == '1') {
-        echo 'inline">';
-    } else {
-        echo 'none">';
-    }
-
-    echo '
-    <p>
-    Select An OpenID Provider:
-    </p>
-    <div class="providerselection">
-    <table class="openidtable">
-      <col width="85%" />
-      <col width="15%" />
-      <tr>
-      <th id="openidurl">';
-
-    echo $openid->getInputTextURL();
-
-    echo '
-      </th>
-      <td class="openiddrop">
-      <ul>
-        <li><h3><img id="currentopenidicon" src=" ' , 
-             '/images/' , strtolower($openid->getProvider()) , '.png' ,
-             '" width="16" height="16" alt="' , $openid->getProvider() ,
-             '"/><img src="/images/droparrow.png" 
-             width="8" height="16" alt="&dArr;"/></h3>
-        <table class="providertable">
-        ';
-
-    /* Print out the dropdown table of OpenID Providers w/ icons */
-    $numoids = count($oidarray);
-    $numrows = intval(($numoids-1)/3) + 1;
-    for ($row = 0; $row < $numrows; $row++) {
-        echo '  <tr>
-            ';
-        for ($col = 0; $col < 3; $col++) {
-            $arridx = $row + $col*$numrows;
-            if ($arridx < $oidarray) {
-                echo '<td class="' . getIconName($oidarray[$arridx]) . 
-                    '"><a href="javascript:selectOID(\'' . $oidarray[$arridx] .
-                    '\')">' . $oidarray[$arridx] . '</a></td>
-            ';
-            }
-        }
-        echo '</tr>
-        ';
-    }
-
-
-    echo '  <tr>
-            <td colspan="3" class="centered"><a target="_blank"
-              href="https://www.myopenid.com/signup">Don\'t have an
-              OpenID? Get one!</a></td>
-          </tr>
-        </table>
-        </li>
-      </ul>
-      </td>
-      </tr>
-    </table>
-    </div>
-    </div>
-
     <p>
     <label for="keepidp" title="' , $helptext , 
     '" class="helpcursor">Remember this selection:</label>
@@ -293,96 +294,35 @@ function printWAYF()
     (($keepidp == 'checked') ? 'checked="checked" ' : '') ,
     'title="' , $helptext , '" class="helpcursor" />
     </p>
+
     <p>';
 
     echo $csrf->getHiddenFormElement();
 
     echo '
-    <input type="hidden" name="useopenid" id="useopenid" value="' , 
-    (($useopenid == '1') ? '1' : '0') , '"/>
-    <input type="hidden" name="hiddenopenid" id="hiddenopenid" value="' ,
-    $openid->getProvider() , '"/>
     <input type="submit" name="submit" class="submit helpcursor" 
-    title="Click to proceed to your selected organization\'s login page."
+    title="Proceed to the selected identity provider."
     value="Log On" />
     </p>
-
-    <div id="starthere3" style="display:';
-
-    if ($useopenid == '1') {
-        echo 'none">';
-    } else {
-        echo 'inline">';
-    }
-
-    echo '
-    <p>
-
-    <a title="'.$insteadtext.'" class="smaller"
-      href="javascript:showHideDiv(\'starthere\',-1); useOpenID(\'1\')">Use OpenID instead</a>
-    ';
-
-    echo '
-    </p>
-    </div>
-
-    <div id="starthere4" style="display:';
-
-    if ($useopenid == '1') {
-        echo 'inline">';
-    } else {
-        echo 'none">';
-    }
-
-    echo '
-    <p>
-
-    <a title="'.$insteadtext.'" class="smaller"
-      href="javascript:showHideDiv(\'starthere\',-1); useOpenID(\'0\')">Use InCommon instead</a>
-
-    </p>
-    </div>
-
-    <noscript>
-    <div class="nojs">
-    Javascript is disabled.  OpenID authentication requires that
-    Javascript be enabled in your browser.
-    </div>
-    </noscript>
     ';
 
     $openiderror = getSessionVar('openiderror');
     if (strlen($openiderror) > 0) {
-        echo "<div class=\"openiderror\">$openiderror</div>";
+        echo "<p class=\"openiderror\">$openiderror</p>";
         unsetSessionVar('openiderror');
     }
 
     echo '
-    <div class="smaller">
+    </fieldset>
+
+    <p class="smaller">
     By selecting "Log On", you agree to our <a target="_blank" 
     href="http://ca.cilogon.org/policy/privacy">privacy policy</a>.
-    </div>
+    </p>
 
-    </fieldset>
     </form>
   </div>
   ';
-}
-
-/************************************************************************
- * Function  : getIconName                                              *
- * Parameter : The pretty print name of an OpenID provider.             *
- * Returns   : The CSS icon name.                                       *
- * This function is called to get the CSS names of the little OpenID    *
- * icons used in the OpenID WAYF.  It basically takes in a pretty print *
- * name of an OpenID provider, transforms the string to lowercase,      *
- * removes any non-alpha chars, and tacks "icon" on to the end.         *
- ************************************************************************/
-function getIconName($oidprovider)
-{
-    $retval = strtolower($oidprovider);
-    $retval = preg_replace('/\W/','',$retval);
-    return($retval . 'icon');
 }
 
 /************************************************************************
@@ -419,7 +359,7 @@ function printIcon($icon,$popuptext='')
  * (1) The persistent store 'uid', the Identity Provider 'idp', the     *
  *     IdP Display Name 'idpname', and the 'status' (of getUser()) are  *
  *     all non-empty strings.                                           *
- * (2) The 'status' (of getUser()) is even (i.e. STATUS_OK_*).          *
+ * (2) The 'status' (of getUser()) is even (i.e. STATUS_OK).            *
  * (3) If $providerId is passed-in, it must match 'idp'.                *
  * If all checks are good, then this function returns true.             *
  ************************************************************************/
@@ -427,13 +367,15 @@ function verifyCurrentSession($providerId='')
 {
     $retval = false;
 
-    $uid = getSessionVar('uid');
-    $idp = getSessionVar('idp');
+    $uid     = getSessionVar('uid');
+    $idp     = getSessionVar('idp');
     $idpname = getSessionVar('idpname');
-    $status = getSessionVar('status');
+    $status  = getSessionVar('status');
+    $dn      = getSessionVar('dn');
     if ((strlen($uid) > 0) && (strlen($idp) > 0) && 
         (strlen($idpname) > 0) && (strlen($status) > 0) &&
-        (!($status & 1))) {  // All STATUS_OK_* codes are even
+        (strlen($dn) > 0) &&
+        (!($status & 1))) {  // All STATUS_OK codes are even
         if ((strlen($providerId) == 0) || ($providerId == $idp)) {
             $retval = true;
         }
@@ -531,12 +473,10 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser')
  * error, set the 'openiderror' PHP session variable and redisplay the  *
  * main logon screen.                                                   *
  ************************************************************************/
-function redirectToGetOpenIDUser($providerId='',$username='username',
-                                 $responsesubmit='gotuser') 
+function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') 
 {
     global $csrf;
     global $log;
-    global $openid;
 
     $openiderrorstr = 'Internal OpenID error. Please try logging in with Shibboleth.';
 
@@ -563,15 +503,14 @@ function redirectToGetOpenIDUser($providerId='',$username='username',
         $csrf->setTheSession();
 
         $auth_request = null;
-        $openid->setProvider($providerId);
-        $openid->setUsername($username);
+        $openid = new openid();
         $datastore = $openid->getStorage();
 
         if ($datastore == null) {
             $_SESSION['openiderror'] = $openiderrorstr;
         } else {
             $consumer = new Auth_OpenID_Consumer($datastore);
-            $auth_request = $consumer->begin($openid->getURL());
+            $auth_request = $consumer->begin($providerId);
 
             if (!$auth_request) {
                 $_SESSION['openiderror'] = $openiderrorstr;
@@ -579,7 +518,7 @@ function redirectToGetOpenIDUser($providerId='',$username='username',
                 if ($auth_request->shouldSendRedirect()) {
                     $redirect_url = $auth_request->redirectURL(
                         'https://' . HOSTNAME . '/',
-                        'https://' . HOSTNAME . '/getopeniduser/');
+                        GETOPENIDUSER_URL);
                     if (Auth_OpenID::isFailure($redirect_url)) {
                         $_SESSION['openiderror'] = $openiderrorstr;
                     } else {
@@ -590,7 +529,7 @@ function redirectToGetOpenIDUser($providerId='',$username='username',
                     $form_id = 'openid_message';
                     $form_html = $auth_request->htmlMarkup(
                         'https://' . HOSTNAME . '/',
-                        'https://' . HOSTNAME . '/getopeniduser/',
+                        GETOPENIDUSER_URL,
                         false, array('id' => $form_id));
                     if (Auth_OpenID::isFailure($form_html)) {
                         $_SESSION['openiderror'] = $openiderrorstr;
@@ -607,6 +546,357 @@ function redirectToGetOpenIDUser($providerId='',$username='username',
         if (strlen(getSessionVar('openiderror')) > 0) {
             printLogonPage();
         }
+    }
+}
+
+/************************************************************************
+ * Function   : printErrorBox                                           *
+ * Parameter  : HTML error text to be output.                           *
+ * This function prints out a bordered box with an error icon and any   *
+ * passed-in error HTML text.  The error icon and text are output to    *
+ * a <table> so as to keep the icon to the left of the error text.      *
+ ************************************************************************/
+function printErrorBox($errortext) 
+{
+    echo '
+    <div class="errorbox">
+    <table cellpadding="5">
+    <tr>
+    <td>
+    ';
+    printIcon('error');
+    echo '&nbsp;
+    </td>
+    <td> ' , $errortext , '
+    </td>
+    </tr>
+    </table>
+    </div>
+    ';
+}
+
+/************************************************************************
+ * Function   : unsetGetUserSessionVars                                 *
+ * This function removes all of the PHP session variables related to    *
+ * the getuser scripts.  This will force the user to log on (again)     *
+ * with their IdP and call the 'getuser' script to repopulate the PHP   *
+ * session.                                                     *
+ ************************************************************************/
+function unsetGetUserSessionVars()
+{
+    unsetSessionVar('submit');
+    unsetSessionVar('uid');
+    unsetSessionVar('status');
+    unsetSessionVar('loa');
+    unsetSessionVar('idp');
+    unsetSessionVar('idpname');
+    unsetSessionVar('dn');
+}
+
+/************************************************************************
+ * Function   : unsetPortalSessionVars                                  *
+ * This function removes all of the PHP session variables related to    *
+ * portal delegation.                                                   *
+ ************************************************************************/
+function unsetPortalSessionVars()
+{
+    unsetSessionVar('portalstatus');
+    unsetSessionVar('callbackuri');
+    unsetSessionVar('successuri');
+    unsetSessionVar('failureuri');
+    unsetSessionVar('portalname');
+    unsetSessionVar('tempcred');
+    unsetSessionVar('dn');
+}
+
+/************************************************************************
+ * Function   : handleGotUser                                           *
+ * This function is called upon return from one of the getuser scripts  *
+ * which should have set the 'uid' and 'status' PHP session variables.  *
+ * It verifies that the status return is one of STATUS_OK (even         *
+ * values).  If the return is STATUS_OK then it checks if we have a     *
+ * new or changed user and prints that page as appropriate.  Otherwise  *
+ * it continues to the MainPage.                                        *
+ ************************************************************************/
+function handleGotUser()
+{
+    global $log;
+
+    $uid = getSessionVar('uid');
+    $status = getSessionVar('status');
+    # If empty 'uid' or 'status' or odd-numbered status code, error!
+    if ((strlen($uid) == 0) || (strlen($status) == 0) || ($status & 1)) {
+        $log->error('Failed to getuser.');
+
+        unsetGetUserSessionVars();
+        printHeader('Error Logging On');
+
+        echo '
+        <div class="boxed">
+        ';
+        printErrorBox('An internal error has occurred.  System
+            administrators have been notified.  This may be a temporary
+            error.  Please try again later, or contact us at the the email
+            address at the bottom of the page.');
+
+        echo '
+        <div>
+        ';
+        printFormHead(getScriptDir());
+        echo '
+        <input type="submit" name="submit" class="submit" value="Continue" />
+        </form>
+        </div>
+        </div>
+        ';
+        printFooter();
+    } else { // Got one of the STATUS_OK status codes
+        // If the user got a new DN due to changed SAML attributes,
+        // print out a notification page.
+        if ($status == dbservice::$STATUS['STATUS_NEW_USER']) {
+            printNewUserPage();
+        } elseif ($status == dbservice::$STATUS['STATUS_USER_UPDATED']) {
+            printUserChangedPage();
+        } else { // STATUS_OK
+            printMainPage();
+        }
+    }
+}
+
+/************************************************************************
+ * Function   : printNewUserPage                                        *
+ * This function prints out a notification page to new users showing    *
+ * that this is the first time they have logged in with a particular    *
+ * identity provider.                                                   *
+ ************************************************************************/
+function printNewUserPage()
+{
+    global $log;
+
+    $log->info('New User page.');
+
+    printHeader('New User');
+
+    echo '
+    <div class="boxed">
+    <br class="clear"/>
+    <p>
+    Welcome! Your new certificate subject is as follows. 
+    </p>
+    <p>
+    <blockquote><tt>' , getSessionVar('dn') , '</tt></blockquote>
+    </p>
+    <p>
+    You may need to register this certificate subject with relying parties.
+    </p>
+    <p>
+    You will not see this page again unless the CILogon Service assigns you
+    a new certificate subject.  This may occur in the following situations:
+    </p>
+    <ul>
+    <li>You log on to the CILogon Service using an identity provider other
+    than ' , getSessionVar('idpname') , '.
+    </li>
+    <li>You log on using a different ' , getSessionVar('idpname') , '
+    identity.
+    </li>
+    <li>The CILogon Service has experienced an internal error.
+    </li>
+    </ul>
+    <p>
+    Click the "Proceed" button to continue.  If you have any questions,
+    please contact us at the email address at the bottom of the page.
+    </p>
+    <div class="centered">
+    ';
+    printFormHead(getScriptDir());
+    echo '
+    <input type="submit" name="submit" class="submit" value="Proceed" />
+    </form>
+    <br class="clear"/>
+    </div>
+    </div>
+    ';
+    printFooter();
+}
+
+/************************************************************************
+ * Function   : printUserChangedPage                                    *
+ * This function prints out a notification page informing the user that *
+ * some of their attributes have changed, which will affect the         *
+ * contents of future issued certificates.  This page shows which       *
+ * attributes are different (displaying both old and new values) and    *
+ * what portions of the certificate are affected.                       *
+ ************************************************************************/
+function printUserChangedPage()
+{
+    global $log;
+
+    $log->info('User IdP attributes changed.');
+
+    $uid = getSessionVar('uid');
+    $dbs = new dbservice();
+    $dbs->getUser($uid);
+    if (!($dbs->status & 1)) {  // STATUS_OK codes are even
+        $idpname = $dbs->idp_display_name;
+        $first   = $dbs->first_name;
+        $last    = $dbs->last_name;
+        $email   = $dbs->email;
+        $dn      = $dbs->distinguished_name;
+        $dn      = preg_replace('/\s+email=.+$/','',$dn);
+        $dbs->getLastArchivedUser($uid);
+        if (!($dbs->status & 1)) {  // STATUS_OK codes are even
+            $previdpname = $dbs->idp_display_name;
+            $prevfirst   = $dbs->first_name;
+            $prevlast    = $dbs->last_name;
+            $prevemail   = $dbs->email;
+            $prevdn      = $dbs->distinguished_name;
+            $prevdn      = preg_replace('/\s+email=.+$/','',$prevdn);
+
+            $tablerowodd = true;
+
+            printHeader('Certificate Information Changed');
+
+            echo '
+            <div class="boxed">
+            <br class="clear"/>
+            <p>
+            One or more of the attributes released by your organization has
+            changed since the last time you logged on to the CILogon
+            Service.  This will affect your certificates as described below.
+            </p>
+
+            <div class="userchanged">
+            <table cellpadding="5">
+              <tr class="headings">
+                <th>Attribute</th>
+                <th>Previous Value</th>
+                <th>Current Value</th>
+              </tr>
+            ';
+
+            if ($idpname != $previdpname) {
+                echo '
+                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
+                  <th>Organization Name:</th>
+                  <td>'.$previdpname.'</td>
+                  <td>'.$idpname.'</td>
+                </tr>
+                ';
+                $tablerowodd = !$tablerowodd;
+            }
+
+            if ($first != $prevfirst) {
+                echo '
+                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
+                  <th>First Name:</th>
+                  <td>'.$prevfirst.'</td>
+                  <td>'.$first.'</td>
+                </tr>
+                ';
+                $tablerowodd = !$tablerowodd;
+            }
+
+            if ($last != $prevlast) {
+                echo '
+                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
+                  <th>Last Name:</th>
+                  <td>'.$prevlast.'</td>
+                  <td>'.$last.'</td>
+                </tr>
+                ';
+                $tablerowodd = !$tablerowodd;
+            }
+
+            if ($email != $prevemail) {
+                echo '
+                <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
+                  <th>Email Address:</th>
+                  <td>'.$prevemail.'</td>
+                  <td>'.$email.'</td>
+                </tr>
+                ';
+                $tablerowodd = !$tablerowodd;
+            }
+
+            echo '
+            </table>
+            </div>
+            ';
+
+            if (($idpname != $previdpname) ||
+                ($first != $prevfirst) ||
+                ($last != $prevlast)) {
+                echo '
+                <p>
+                The above changes to your attributes will cause your
+                <strong>certificate subject</strong> to change.  You may be
+                required to re-register with relying parties using this new
+                certificate subject.
+                </p>
+                <p>
+                <blockquote>
+                <table cellspacing="0">
+                  <tr>
+                    <td>Previous Subject DN:</td>
+                    <td>' , $prevdn , '</td>
+                  </tr>
+                  <tr>
+                    <td>Current Subject DN:</td>
+                    <td>' , $dn , '</td>
+                  </tr>
+                </table>
+                </blockquote>
+                </p>
+                ';
+            }
+
+            if ($email != $prevemail) {
+                echo '
+                <p>
+                Your new certificate will contain your <strong>updated email
+                address</strong>.
+                This may change how your certificate may be used in email
+                clients.  Possible problems which may occur include:
+                </p>
+                <ul>
+                <li>If your "from" address does not match what is contained in
+                    the certificate, recipients may fail to verify your signed
+                    email messages.</li>
+                <li>If the email address in the certificate does not match the
+                    destination address, senders may have difficulty encrypting
+                    email addressed to you.</li>
+                </ul>
+                ';
+            }
+
+            echo '
+            <p>
+            If you have any questions, please contact us at the email
+            address at the bottom of the page.
+            </p>
+            <div class="centered">
+            ';
+            printFormHead(getScriptDir());
+            echo '
+            <input type="submit" name="submit" class="submit" value="Proceed" />
+            </form>
+            <br class="clear"/>
+            </div>
+            </div>
+            ';
+            printFooter();
+
+            
+        } else {  // Database error, should never happen
+            $log->error('Database error reading previous user attributes.');
+            unsetGetUserSessionVars();
+            printLogonPage();
+        }
+    } else {  // Database error, should never happen
+        $log->error('Database error reading current user attributes.');
+        unsetGetUserSessionVars();
+        printLogonPage();
     }
 }
 
