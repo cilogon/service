@@ -1,0 +1,104 @@
+/***** Begin basic elements *****/
+body {
+  font-family: times,serif;
+  color: #003;
+}
+a {
+  color: #036;
+}
+a:visited {
+  color: #003; 
+}
+a:hover, a:active {
+  color: #369;
+}
+/***** End basic elements *****/
+
+/***** Begin a few misc elements *****/
+div.boxheader {
+  border: 1px solid #369;
+  background-color: #9cf;
+}
+input.submit {
+  color: #003;
+  background-color: #8ac;
+}
+/***** End a few misc element *****/
+
+/***** Begin the "CILogon Service" header at the top of each page *****/
+div.logoheader {
+  background: none;
+  height: 116px;
+}
+div.logoheader h1 {
+  background: transparent url("/skin/OOI/ooi-logo.png") no-repeat top left;
+  margin-top: 8px;
+  margin-left: 5px;
+  width: 196px;
+  height: 100px;
+  float: left;
+}
+/***** End the "CILogon Service" header at the top of each page *****/
+
+/***** Begin PageHeader titlebox *****/
+div.titlebox {
+  border: 3px ridge #369;
+  background-color: #f0f5ff;
+}
+/***** End PageHeader titlebox *****/
+
+/***** Begin page footer *****/
+div.footer a:link {
+  color: #369;
+}
+div.footer a:visited {
+  color: #369;
+}
+/***** End page footer *****/
+
+/***** Begin actionbox containing action buttons and WAYF *****/
+div.actionbox,
+div.certactionbox,
+div.tokenactionbox {
+  border: 3px outset #369;
+}
+/***** End actionbox *****/
+
+/***** Begin summary div on testidp page *****/
+div.summary {
+  background-color: #def;
+}
+/***** End summary div on testidp page *****/
+
+/***** Begin userchanged div and table *****/
+div.userchanged table {
+  border: 1px solid #369;
+}
+div.userchanged table tr th {
+  border: 1px solid #369;
+  background-color: #def;
+}
+div.userchanged table tr.headings th {
+  border: 1px solid #369;
+  background-color: #def;
+}
+div.userchanged table tr td {
+  border: 1px solid #369;
+  background-color: #def;
+}
+div.userchanged table tr.odd th {
+  border: 1px solid #369;
+  background-color: #f0faff;
+}
+div.userchanged table tr.odd td {
+  border: 1px solid #369;
+  background-color: #f0faff;
+}
+/***** End userchanged div and table *****/
+
+/***** Begin allowdiv and submit buttons *****/
+div.allowdiv table td {
+  background-color: #f0f5ff;
+}
+/***** End allowdiv *****/
+
