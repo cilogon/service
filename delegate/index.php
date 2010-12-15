@@ -120,7 +120,7 @@ function printLogonPage()
     echo '
     <div class="boxed">
       <br class="clear"/>
-     <p>
+      <p>
       Please log on to delegate a certificate to
       "' , htmlspecialchars(getSessionVar('portalname')) , '".
       </p>
