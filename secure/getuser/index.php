@@ -67,35 +67,35 @@ function getUserAndRespond($responseurl) {
                       $lastname,
                       $shibarray['Email Address']
                      );
-        $_SESSION['uid']    = $dbs->user_uid;
-        $_SESSION['status'] = $dbs->status;
+        setOrUnsetSessionVar('uid',$dbs->user_uid);
+        setOrUnsetSessionVar('status',$dbs->status);
     } else {
-        $_SESSION['uid']    = '';
-        $_SESSION['status'] = 
-            dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR'];
+        setOrUnsetSessionVar('uid');
+        setOrUnsetSessionVar('status',
+            dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']);
     }
 
     // If 'status' is not STATUS_OK*, then send an error email
-    if (($_SESSION['status']) & 1) { // Bad status codes are odd-numbered
+    if (getSessionVar('status') & 1) { // Bad status codes are odd-numbered
         sendErrorEmail($shibarray['User Identifier'],
                        $shibarray['Identity Provider'],
                        $shibarray['Organization Name'],
                        $firstname, 
                        $lastname,
                        $shibarray['Email Address'],
-                       $_SESSION['uid'],
-                       array_search($_SESSION['status'],dbservice::$STATUS)
+                       getSessionVar('uid'),
+                       array_search(getSessionVar('status'),dbservice::$STATUS)
                       );
     } else {
         // Set additional session variables needed by the calling script
-        $_SESSION['loa']     = $shibarray['Level of Assurance'];
-        $_SESSION['idp']     = $shibarray['Identity Provider'];
-        $_SESSION['idpname'] = $shibarray['Organization Name'];
         $dn = $dbs->distinguished_name;
-        $_SESSION['dn']      = preg_replace('/\s+email=.+$/','',$dn);
+        setOrUnsetSessionVar('dn',preg_replace('/\s+email=.+$/','',$dn));
+        setOrUnsetSessionVar('loa',$shibarray['Level of Assurance']);
+        setOrUnsetSessionVar('idp',$shibarray['Identity Provider']);
+        setOrUnsetSessionVar('idpname',$shibarray['Organization Name']);
     }
 
-    $_SESSION['submit'] = getSessionVar('responsesubmit');
+    setOrUnsetSessionVar('submit',getSessionVar('responsesubmit'));
     unsetSessionVar('responsesubmit');
 
     $csrf->setTheCookie();

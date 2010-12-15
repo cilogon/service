@@ -199,7 +199,7 @@ function printSkin()
         $skinvar = getGetVar('cilogon_skin');
     }
     if (strlen($skinvar) > 0) {
-        $_SESSION['cilogon_skin'] = $skinvar;
+        setOrUnsetSessionVar('cilogon_skin',$skinvar);
     }
 
     /* Check for the PHP session variable 'cilogon_skin'.  If found   *
@@ -429,9 +429,9 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser')
         printMainPage();
     } else { // Otherwise, redirect to the getuser script
         // Set PHP session varilables needed by the getuser script
-        $_SESSION['responseurl'] = getScriptDir(true);
-        $_SESSION['submit'] = 'getuser';
-        $_SESSION['responsesubmit'] = $responsesubmit;
+        setOrUnsetSessionVar('responseurl',getScriptDir(true));
+        setOrUnsetSessionVar('submit','getuser');
+        setOrUnsetSessionVar('responsesubmit',$responsesubmit);
         $csrf->setTheCookie();
         $csrf->setTheSession();
 
@@ -496,9 +496,9 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser')
     } else { // Otherwise, redirect to the getopeniduser script
         // Set PHP session varilables needed by the getopeniduser script
         unsetSessionVar('openiderror');
-        $_SESSION['responseurl'] = getScriptDir(true);
-        $_SESSION['submit'] = 'getuser';
-        $_SESSION['responsesubmit'] = $responsesubmit;
+        setOrUnsetSessionVar('responseurl',getScriptDir(true));
+        setOrUnsetSessionVar('submit','getuser');
+        setOrUnsetSessionVar('responsesubmit',$responsesubmit);
         $csrf->setTheCookie();
         $csrf->setTheSession();
 
@@ -507,20 +507,20 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser')
         $datastore = $openid->getStorage();
 
         if ($datastore == null) {
-            $_SESSION['openiderror'] = $openiderrorstr;
+            setOrUnsetSessionVar('openiderror',$openiderrorstr);
         } else {
             $consumer = new Auth_OpenID_Consumer($datastore);
             $auth_request = $consumer->begin($providerId);
 
             if (!$auth_request) {
-                $_SESSION['openiderror'] = $openiderrorstr;
+                setOrUnsetSessionVar('openiderror',$openiderrorstr);
             } else {
                 if ($auth_request->shouldSendRedirect()) {
                     $redirect_url = $auth_request->redirectURL(
                         'https://' . HOSTNAME . '/',
                         GETOPENIDUSER_URL);
                     if (Auth_OpenID::isFailure($redirect_url)) {
-                        $_SESSION['openiderror'] = $openiderrorstr;
+                        setOrUnsetSessionVar('openiderror',$openiderrorstr);
                     } else {
                         $log->info('OpenID Login="' . $providerId . '"');
                         header("Location: " . $redirect_url);
@@ -532,7 +532,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser')
                         GETOPENIDUSER_URL,
                         false, array('id' => $form_id));
                     if (Auth_OpenID::isFailure($form_html)) {
-                        $_SESSION['openiderror'] = $openiderrorstr;
+                        setOrUnsetSessionVar('openiderror',$openiderrorstr);
                     } else {
                         $log->info('OpenID Login="' . $providerId . '"');
                         print $form_html;
@@ -580,7 +580,7 @@ function printErrorBox($errortext)
  * This function removes all of the PHP session variables related to    *
  * the getuser scripts.  This will force the user to log on (again)     *
  * with their IdP and call the 'getuser' script to repopulate the PHP   *
- * session.                                                     *
+ * session.                                                             *
  ************************************************************************/
 function unsetGetUserSessionVars()
 {
@@ -591,6 +591,8 @@ function unsetGetUserSessionVars()
     unsetSessionVar('idp');
     unsetSessionVar('idpname');
     unsetSessionVar('dn');
+    unsetSessionVar('tokenvalue');
+    unsetSessionvar('tokenexpire');
 }
 
 /************************************************************************
@@ -707,13 +709,14 @@ function printNewUserPage()
     Click the "Proceed" button to continue.  If you have any questions,
     please contact us at the email address at the bottom of the page.
     </p>
-    <div class="centered">
+    <div>
     ';
     printFormHead(getScriptDir());
     echo '
+    <p class="centered">
     <input type="submit" name="submit" class="submit" value="Proceed" />
+    </p>
     </form>
-    <br class="clear"/>
     </div>
     </div>
     ';
@@ -875,13 +878,14 @@ function printUserChangedPage()
             If you have any questions, please contact us at the email
             address at the bottom of the page.
             </p>
-            <div class="centered">
+            <div>
             ';
             printFormHead(getScriptDir());
             echo '
+            <p class="centered">
             <input type="submit" name="submit" class="submit" value="Proceed" />
+            </p>
             </form>
-            <br class="clear"/>
             </div>
             </div>
             ';

@@ -43,7 +43,8 @@ function getUserAndRespond($responseurl) {
     unsetSessionVar('openiderror');
     $datastore = $openid->getStorage();
     if ($datastore == null) {
-        $_SESSION['openiderror'] = 'Internal OpenID error. Please try logging in with Shibboleth.';
+        setOrUnsetSessionVar('openiderror',
+            'Internal OpenID error. Please try logging in with Shibboleth.');
     } else {
         $consumer = new Auth_OpenID_Consumer($datastore);
         $response = $consumer->complete(getScriptDir(true));
@@ -51,18 +52,19 @@ function getUserAndRespond($responseurl) {
         // Check the response status.
         if ($response->status == Auth_OpenID_CANCEL) {
             // This means the authentication was canceled.
-            $_SESSION['openiderror'] = 'OpenID logon canceled. ' . 
-                'Please try again.';
+            setOrUnsetSessionVar('openiderror',
+                'OpenID logon canceled. Please try again.');
         } elseif ($response->status == Auth_OpenID_FAILURE) {
             // Authentication failed; display an error message.
-            $_SESSION['openiderror'] = 'OpenID authentication failed: ' .
-                $response->message . '. Please try again.' ;
+            setOrUnsetSessionVar('openiderror',
+                'OpenID authentication failed: ' . 
+                $response->message . '. Please try again.');
         } elseif ($response->status == Auth_OpenID_SUCCESS) {
             // This means the authentication succeeded; extract the identity.
             $openidid = htmlentities($response->getDisplayIdentifier());
         } else {
-            $_SESSION['openiderror'] = 'OpenID logon error. ' . 
-                                        'Please try again.';
+            setOrUnsetSessionVar('openiderror',
+                'OpenID logon error. Please try again.');
         }
 
         $openid->disconnect();
@@ -76,30 +78,32 @@ function getUserAndRespond($responseurl) {
         if ((strlen($openidid) > 0) && (strlen($providerId) > 0) &&
             (openid::urlExists($providerId))) {
             $dbs->getUser($openidid,$providerId);
-            $_SESSION['uid']    = $dbs->user_uid;
-            $_SESSION['status'] = $dbs->status;
+            setOrUnsetSessionVar('uid',$dbs->user_uid);
+            setOrUnsetSessionVar('status',$dbs->status);
         } else {
-            $_SESSION['uid']    = '';
-            $_SESSION['status'] = 
-                dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR'];
+            setOrUnsetSessionVar('uid');
+            setOrUnsetSessionVar('status',
+                dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']);
         }
 
         // If 'status' is not STATUS_OK*, then send an error email
-        if (($_SESSION['status']) & 1) { // Bad status codes are odd-numbered
+        if (getSessionVar('status') & 1) { // Bad status codes are odd-numbered
             sendErrorEmail($openidid,
                            $providerId,
-                           $_SESSION['uid'],
-                           array_search($_SESSION['status'],dbservice::$STATUS)
+                           getSessionVar('uid'),
+                           array_search(getSessionVar('status'),
+                               dbservice::$STATUS)
                           );
         } else {
-            $_SESSION['loa']     = 'openid';
-            $_SESSION['idp']     = $providerId;
-            $_SESSION['idpname'] = openid::getProviderName($providerId);
             $dn = $dbs->distinguished_name;
-            $_SESSION['dn']      = preg_replace('/\s+email=.+$/','',$dn);
+            setOrUnsetSessionVar('dn',preg_replace('/\s+email=.+$/','',$dn));
+            setOrUnsetSessionVar('loa','openid');
+            setOrUnsetSessionVar('idp',$providerId);
+            setOrUnsetSessionVar('idpname',
+                openid::getProviderName($providerId));
         }
 
-        $_SESSION['submit'] = getSessionVar('responsesubmit');
+        setOrUnsetSessionVar('submit',getSessionVar('responsesubmit'));
 
         $csrf->setTheCookie();
         $csrf->setTheSession();
