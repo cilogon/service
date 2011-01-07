@@ -113,8 +113,8 @@ function printFooter($footer='')
     <br class="clear" />
     <div class="footer">
     <a target="_blank" href="http://www.cilogon.org/faq"><img
-    src="/images/infoIcon.png" class="floatrightclear" 
-    width="14" height="14" alt="CILogon FAQ" title="CILogon FAQ" /></a>
+    src="/images/questionIcon.png" class="floatrightclear" 
+    width="40" height="40" alt="CILogon FAQ" title="CILogon FAQ" /></a>
     <p>For questions about this site, please see the <a target="_blank"
     href="http://www.cilogon.org/faq">FAQs</a> or send email to <a
     href="mailto:help@cilogon.org">help&nbsp;@&nbsp;cilogon.org</a>.</p>
