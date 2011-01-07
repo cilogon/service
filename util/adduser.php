@@ -26,7 +26,8 @@ if ($argc == 7) {
         printInfo($dbs);
 
         if ($dbs->status == dbservice::$STATUS['STATUS_USER_UPDATED']) {
-            echo "\n----- USER UPDATED -----\n\n";
+            echo "-------------- USER UPDATED --------------\n";
+            echo "----- Last Archived User Information -----\n";
             $uid = $dbs->user_uid;
             $dbs->getLastArchivedUser($uid);
             printInfo($dbs);
