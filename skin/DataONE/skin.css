@@ -97,6 +97,9 @@ div.titlebox {
 div.footer {
   border: 1px solid #D6DDB9;
 }
+div.footer p {
+  font-size: small;
+}
 div.footer a,
 div.footer a:link,
 div.footer a:visited {
