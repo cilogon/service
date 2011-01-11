@@ -403,7 +403,7 @@ function generateToken() {
     $gridshibconf = parseGridShibConf();
 
     $ch = curl_init();
-    if ($ch != false) {
+    if ($ch !== false) {
         $url = 'https://' . HOSTNAME . preg_replace('/^\s*=\s*/','',
             $gridshibconf['root']['GridShibCAURL']) . 'shibCILaunchGSCA.jnlp';
         curl_setopt($ch,CURLOPT_URL,$url);
