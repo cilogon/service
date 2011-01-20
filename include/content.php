@@ -343,11 +343,11 @@ function printWAYF()
  ************************************************************************/
 function printIcon($icon,$popuptext='')
 {
-    echo '&nbsp;<span';
+    echo '<span';
     if (strlen($popuptext) > 0) {
         echo ' class="helpcursor"';
     }
-    echo '><img src="/images/' , $icon , 'Icon.png" 
+    echo '>&nbsp;<img src="/images/' , $icon , 'Icon.png" 
           alt="&laquo; ' , ucfirst($icon) , '" ';
     if (strlen($popuptext) > 0) {
         echo 'title="' , $popuptext , '" ';
