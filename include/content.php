@@ -266,7 +266,13 @@ function printWAYF()
       <fieldset>
 
       <p>
-      Select An Identity Provider:
+      Select An Identity Provider:<a target="_blank" 
+          style="text-decoration:none"
+          href="http://www.cilogon.org/selectidp">';
+
+      printIcon('info','Help Me Choose');
+
+      echo '</a>
       </p>
 
       <p>
@@ -315,7 +321,7 @@ function printWAYF()
     echo '
     </fieldset>
 
-    <p class="smaller">
+    <p class="privacypolicy">
     By selecting "Log On", you agree to our <a target="_blank" 
     href="http://ca.cilogon.org/policy/privacy">privacy policy</a>.
     </p>

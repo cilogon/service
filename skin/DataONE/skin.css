@@ -120,6 +120,9 @@ div.certactionbox,
 div.tokenactionbox {
   border: 1px solid #D6DDB9;
 }
+p.privacypolicy {
+  font-size: small;
+}
 /***** End actionbox *****/
 
 /***** Begin summary div on testidp page *****/

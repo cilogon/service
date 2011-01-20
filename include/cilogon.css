@@ -204,6 +204,9 @@ p.openiderror {
   background-color: #fcc;
   margin: 1em;
 }
+p.privacypolicy {
+  font-size: x-small;
+}
 /***** End actionbox *****/
 
 /***** Begin certinfo table *****/
