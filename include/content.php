@@ -76,7 +76,7 @@ function printHeader($title='',$extra='')
         echo '
         <div class="skincilogonlogo">
         <a target="_blank" href="http://www.cilogon.org/faq/"><img
-        src="/images/cilogon-logo-48x48-b.png" alt="CILogon" 
+        src="/images/poweredbycilogon.png" alt="CILogon" 
         title="CILogon Service" /></a>
         </div>
         ';
