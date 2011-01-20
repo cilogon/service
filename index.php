@@ -305,7 +305,7 @@ function printMainPage()
         $tokenvaluetext = 'Copy and paste the one-time-use activation code into your CILogon-enabled application to download a certificate.';
     } else {
         $tokenvalue = 'For CILogon-enabled Applications:';
-        $tokenvaluetext = 'Click the button below to display a one-time-use activation code for CILogon-enabled applications. You can copy and paste this code into the application to download a certificate.';
+        $tokenvaluetext = 'Click the button below to display a one-time-use activation code for CILogon-enabled applications. You can copy and paste this code into the application to download a certificate. See http://www.cilogon.org/enabled for more information.';
     }
     if ((strlen($tokenexpire) > 0) && ($tokenexpire > 0)) {
         $expire = $tokenexpire - time();
