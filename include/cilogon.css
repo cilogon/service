@@ -176,7 +176,9 @@ div.footer a:visited {
 /***** Begin actionbox containing action buttons and WAYF *****/
 div.actionbox,
 div.certactionbox,
-div.tokenactionbox {
+div.tokenactionbox,
+div.logoffactionbox,
+div.logofftextbox {
   border: 1px solid #888;
   text-align: center;
   width: 375px;
@@ -185,15 +187,28 @@ div.tokenactionbox {
 }
 div.actionbox fieldset,
 div.certactionbox fieldset,
-div.tokenactionbox fieldset {
+div.tokenactionbox fieldset,
+div.logoffactionbox fieldset {
   border: 0;
   padding: 0;
   margin: 0;
 }
 div.actionbox p,
 div.certactionbox p,
-div.tokenactionbox p {
+div.tokenactionbox p,
+div.logoffactionbox p,
+div.logofftextbox p {
   text-align: center;
+}
+div.logofftextbox {
+  border: none;
+  display: block;
+  width: 0;
+  height: 0;
+  line-height:0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
 }
 select#providerId {
   font-size: 8pt;

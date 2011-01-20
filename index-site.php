@@ -136,9 +136,10 @@ function printMainPage()
 {
     global $log;
     $gridshibconf = parseGridShibConf();
+    $idpname = getSessionVar('idpname');
 
     $downloadcerttext = "Download a certificate to your local computer. Clicking this button should launch a Java Web Start (JWS) application, which requires Java to be installed on your computer and enabled in your web browser.";
-    $logofftext = "End your CILogon session and return to the welcome page. Note that this will not log you out at your identity provider.";
+    $logofftext = "End your CILogon session and return to the welcome page.  Note that this will not log you out at $idpname.";
     $generatetokentext = "Get a new one-time-use activation code for CILogon-enabled applications.";
 
     $log->info('Get And Use Certificate page hit.');
@@ -157,7 +158,7 @@ function printMainPage()
       </tr>
       <tr>
         <th>Identity&nbsp;Provider:</th>
-        <td>' , getSessionVar('idpname') , '</td>
+        <td>' , $idpname , '</td>
       </tr>
       <tr>
         <th><a target="_blank" 
@@ -369,7 +370,7 @@ function printMainPage()
       </form>
     </div> <!-- tokenactionbox -->
 
-    <div class="actionbox">
+    <div class="logoffactionbox">
     ';
 
     printFormHead($scriptdir);
@@ -380,7 +381,13 @@ function printMainPage()
       title="' , $logofftext , '" value="Log Off" />
       </p>
       </form>
-    </div>
+    </div> <!-- logoffactionbox -->
+
+    <div class="logofftextbox">
+      <p>
+      To log off, please quit your browser.
+      <p>
+    </div> <!-- logofftextbox -->
     </div>
     ';
     printFooter();
