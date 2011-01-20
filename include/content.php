@@ -345,14 +345,11 @@ function printIcon($icon,$popuptext='')
 {
     echo '<span';
     if (strlen($popuptext) > 0) {
-        echo ' class="helpcursor"';
+        echo ' class="helpcursor" title="' , $popuptext , '"';
     }
     echo '>&nbsp;<img src="/images/' , $icon , 'Icon.png" 
-          alt="&laquo; ' , ucfirst($icon) , '" ';
-    if (strlen($popuptext) > 0) {
-        echo 'title="' , $popuptext , '" ';
-    }
-    echo 'width="14" height="14" /></span>';
+          alt="&laquo; ' , ucfirst($icon) , '"
+          width="14" height="14" /></span>';
 }
 
 /************************************************************************
