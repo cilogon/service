@@ -139,7 +139,7 @@ function printMainPage()
     $idpname = getSessionVar('idpname');
 
     $downloadcerttext = "Download a certificate to your local computer. Clicking this button should launch a Java Web Start (JWS) application, which requires Java to be installed on your computer and enabled in your web browser.";
-    $logofftext = "End your CILogon session and return to the welcome page.  Note that this will not log you out at $idpname.";
+    $logofftext = "End your CILogon session and return to the welcome page. Note that this will not log you out at $idpname.";
     $generatetokentext = "Get a new one-time-use activation code for CILogon-enabled applications.";
 
     $log->info('Get And Use Certificate page hit.');
