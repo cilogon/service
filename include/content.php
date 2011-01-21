@@ -595,7 +595,9 @@ function unsetGetUserSessionVars()
     unsetSessionVar('idpname');
     unsetSessionVar('dn');
     unsetSessionVar('tokenvalue');
-    unsetSessionvar('tokenexpire');
+    unsetSessionVar('tokenexpire');
+    unsetSessionVar('activation');
+    unsetSessionVar('pkcs12');
 }
 
 /************************************************************************
