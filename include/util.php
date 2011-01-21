@@ -267,6 +267,54 @@ function parseGridShibConf($conffile=
     return $gridshibconf;
 }
 
+/************************************************************************
+ * Function  : tempDir                                                  *
+ * Parameters: (1) The full path to the containing directory.           *
+ *             (2) (Optional) A prefix for the new temporary directory. *
+ *                 Defaults to nothing.                                 *
+ *             (3) (Optional) Access permissions for the new temporary  *
+ *                 directory. Defaults to 0755.                         *
+ * Return    : Full path to the newly created temporary directory.      *
+ * This function creates a temporary subdirectory within the specified  * 
+ * subdirectory.  The new directory name is composed of 16 hexadecimal  *
+ * letters, plus any prefix if you specify one.  The full path of the   *
+ * the newly created directory is returned.                             *
+/************************************************************************/
+function tempDir($dir,$prefix='',$mode=0775) {
+    if (substr($dir,-1) != '/') {
+        $dir .= '/';
+    }
+
+    $path = '';
+    do {
+        $path = $dir . $prefix . sprintf("%08X%08X",mt_rand(),mt_rand());
+    } while (!mkdir($path,$mode,true));
+
+    return $path;
+}
+
+/************************************************************************
+ * Function  : deleteDir                                                *
+ * Parameters: The (possibly non-empty) directory to delete.            *
+ * This function deletes a directory and all of its contents.           *
+/************************************************************************/
+function deleteDir($dir) {
+    if (is_dir($dir)) {
+        $objects = scandir($dir);
+        foreach ($objects as $object) {
+            if ($object != "." && $object != "..") {
+                if (filetype($dir."/".$object) == "dir") {
+                    deleteDir($dir."/".$object);
+                } else {
+                    @unlink($dir."/".$object);
+                }
+            }
+        }
+        reset($objects);
+        @rmdir($dir);
+    }
+}
+
 
 /* Start a secure PHP session */
 startPHPSession();
