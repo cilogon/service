@@ -59,7 +59,8 @@ div.footer a:visited {
 /***** Begin actionbox containing action buttons and WAYF *****/
 div.actionbox,
 div.certactionbox,
-div.tokenactionbox {
+div.tokenactionbox,
+div.logoffactionbox {
   border: 3px outset #369;
 }
 /***** End actionbox *****/
