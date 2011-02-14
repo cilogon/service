@@ -247,7 +247,7 @@ function printMainPage()
         <div class="actionbox">
         ';
 
-        printFormHead(getScriptDir());
+        printFormHead();
 
         echo '
         <fieldset>
@@ -534,13 +534,13 @@ function verifyOAuthToken($token='')
         $dbs = new dbservice();
         $dbs->getPortalParameters($token);
         $status = $dbs->status;
-        setOrUnsetSessionVar('portalstatus',$status);
+        setSessionVar('portalstatus',$status);
         if (!($status & 1)) {  // STATUS_OK* codes are even-numbered
-            setOrUnsetSessionVar('callbackuri',$dbs->cilogon_callback);
-            setOrUnsetSessionVar('failureuri',$dbs->cilogon_failure);
-            setOrUnsetSessionVar('successuri',$dbs->cilogon_success);
-            setOrUnsetSessionVar('portalname',$dbs->cilogon_portal_name);
-            setOrUnsetSessionVar('tempcred',$dbs->oauth_token);
+            setSessionVar('callbackuri',$dbs->cilogon_callback);
+            setSessionVar('failureuri',$dbs->cilogon_failure);
+            setSessionVar('successuri',$dbs->cilogon_success);
+            setSessionVar('portalname',$dbs->cilogon_portal_name);
+            setSessionVar('tempcred',$dbs->oauth_token);
         }
     }
 

@@ -9,7 +9,7 @@
 
   <body>
   <h1>The CILogon Service is currently undergoing maintenance.</h1>
-  <h1>Please try again in 1 hour.</h1>
+  <h1>Please try again in 15 minutes.</h1>
   <h1>Visit <a href="http://www.cilogon.org/">www.cilogon.org</a> for more
       information.</h1>
   </body>

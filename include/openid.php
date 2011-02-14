@@ -166,7 +166,10 @@ class openid {
                 'hostspec' => $props['org.cilogon.database.host'],
                 'database' => $props['org.cilogon.database.databaseName']
             );
-            $this->db =& DB::connect($dsn);
+            $opts = array(
+                'persistent' => true
+            );
+            $this->db =& DB::connect($dsn,$opts);
             if (PEAR::isError($this->db)) {
                 $this->db = null;
             }

@@ -2,7 +2,6 @@
 
 require_once("util.php");
 require_once("autoloader.php");
-require_once("Config.php");
 
 /* If needed, set the "Notification" banner text to a non-empty value   */
 /* and uncomment the "define" statement in order to display a           */
@@ -49,15 +48,15 @@ function printHeader($title='',$extra='')
 
     printSkin();
 
-    echo '<script type="text/javascript" src="/include/secutil.js"></script>
+    echo '<script type="text/javascript" src="/include/cilogon.js"></script>
     <script type="text/javascript" src="/include/deployJava.js"></script>
 
-    <!--[if IE]>
+<!--[if IE]>
     <style type="text/css">
       body { behavior: url(/include/csshover3.htc); }
       .openiddrop ul li div { right: 0px; }
     </style>
-    <![endif]-->
+<![endif]-->
     ';
 
     if (strlen($extra) > 0) {
@@ -67,7 +66,7 @@ function printHeader($title='',$extra='')
     echo '
     </head>
 
-    <body onload="init();">
+    <body>
     ';
 
     $skinvar = getSessionVar('cilogon_skin');
@@ -152,24 +151,32 @@ function printPageHeader($text) {
 
 /************************************************************************
  * Function   : printFormHead                                           *
- * Parameters : (1) The value of the form's "action" parameter.         *
+ * Parameters : (1) (Optional) The value of the form's "action"         *
+ *                  parameter. Defaults to getScriptDir().              *
  *              (2) (Optional) True if extra hidden tags should be      *
  *                  output for the GridShib-CA client application.      *
  *                  Defaults to false.                                  *
  * This function prints out the opening <form> tag for displaying       *
  * submit buttons.  The first parameter is used for the "action" value  *
- * of the <form>.  This function outputs a hidden csrf field in the     *
- * form block.  If the second parameter is given and set to true, then  *
- * additional hidden input elements are also output to be used when the *
- * the GridShib-CA client launches.                                     *
+ * of the <form>.  If omitted, getScriptDir() is called to get the      *
+ * location of the current script.  This function outputs a hidden csrf *
+ * field in the form block.  If the second parameter is given and set   *
+ * to true, then an additional hidden input element is output to be     *
+ * utilized by the GridShib-CA client.                                  *
  ************************************************************************/
-function printFormHead($action,$gsca=false) {
+function printFormHead($action='',$gsca=false) {
     global $csrf;
+    static $formnum = 0;
+
+    if (strlen($action) == 0) {
+        $action = getScriptDir();
+    }
 
     echo '
-    <form action="' , $action , '" method="post">
+    <form action="' , $action , '" method="post" 
+     autocomplete="off" id="form' , sprintf("%02d",++$formnum) , '">
     ';
-    echo $csrf->getHiddenFormElement();
+    echo $csrf->hiddenFormElement();
 
     if ($gsca) {
         /* Output hidden form element for GridShib-CA */
@@ -199,7 +206,7 @@ function printSkin()
         $skinvar = getGetVar('cilogon_skin');
     }
     if (strlen($skinvar) > 0) {
-        setOrUnsetSessionVar('cilogon_skin',$skinvar);
+        setSessionVar('cilogon_skin',$skinvar);
     }
 
     /* Check for the PHP session variable 'cilogon_skin'.  If found   *
@@ -233,10 +240,11 @@ function printWAYF()
 
     $whiteidpsfile = '/var/www/html/include/whiteidps.txt';
     $helptext = "Check this box to bypass the welcome page on subsequent visits and proceed directly to the selected identity provider. You will need to clear your browser's cookies to return here."; 
+    $searchtext = "Enter characters to search for in the list above.";
 
     $keepidp     = getCookieVar('keepidp');
     $providerId  = getCookieVar('providerId');
-    if (strlen($providerId) == 0) {
+    if (strlen($providerId) == 0) { // No providerId? Default to Google.
         $providerId = openid::getProviderUrl('Google');
     }
 
@@ -276,7 +284,9 @@ function printWAYF()
       </p>
 
       <p>
-      <select name="providerId" id="providerId">
+      <select name="providerId" id="providerId" size="4"
+       onkeypress="enterKeySubmit(event)"
+       ondblclick="document.getElementById(\'wayflogonbutton\').click()">
     ';
 
     foreach ($idps as $entityId => $idpName) {
@@ -288,11 +298,17 @@ function printWAYF()
     }
 
     echo '  </select>
-      </p>
-    ';
+    </p>
 
+    <p id="listsearch" class="zeroheight">
+    <label for="searchlist" class="helpcursor" title="' , 
+    $searchtext , '">Search:</label>
+    <input type="text" name="searchlist" id="searchlist" value=""
+    size="30" onkeyup="searchOptions(this.value)" 
+    title="' , $searchtext , '" />
+<!--[if IE]><input type="text" style="display:none;" disabled="disabled" size="1"/><![endif]-->
+    </p>
 
-    echo '
     <p>
     <label for="keepidp" title="' , $helptext , 
     '" class="helpcursor">Remember this selection:</label>
@@ -303,12 +319,12 @@ function printWAYF()
 
     <p>';
 
-    echo $csrf->getHiddenFormElement();
+    echo $csrf->hiddenFormElement();
 
     echo '
     <input type="submit" name="submit" class="submit helpcursor" 
     title="Proceed to the selected identity provider."
-    value="Log On" />
+    value="Log On" id="wayflogonbutton" />
     </p>
     ';
 
@@ -432,15 +448,15 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser')
         printMainPage();
     } else { // Otherwise, redirect to the getuser script
         // Set PHP session varilables needed by the getuser script
-        setOrUnsetSessionVar('responseurl',getScriptDir(true));
-        setOrUnsetSessionVar('submit','getuser');
-        setOrUnsetSessionVar('responsesubmit',$responsesubmit);
+        setSessionVar('responseurl',getScriptDir(true));
+        setSessionVar('submit','getuser');
+        setSessionVar('responsesubmit',$responsesubmit);
         $csrf->setTheCookie();
         $csrf->setTheSession();
 
         // Set up the "header" string for redirection thru InCommon WAYF
         $redirect = 
-            'Location: https://' . HOSTNAME . '/Shibboleth.sso/WAYF/InCommon?' .
+            'Location: https://' . HOSTNAME . '/Shibboleth.sso/Login?' .
             'target=' . urlencode(GETUSER_URL);
         if (strlen($providerId) > 0) {
             $redirect .= '&providerId=' . urlencode($providerId);
@@ -499,9 +515,9 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser')
     } else { // Otherwise, redirect to the getopeniduser script
         // Set PHP session varilables needed by the getopeniduser script
         unsetSessionVar('openiderror');
-        setOrUnsetSessionVar('responseurl',getScriptDir(true));
-        setOrUnsetSessionVar('submit','getuser');
-        setOrUnsetSessionVar('responsesubmit',$responsesubmit);
+        setSessionVar('responseurl',getScriptDir(true));
+        setSessionVar('submit','getuser');
+        setSessionVar('responsesubmit',$responsesubmit);
         $csrf->setTheCookie();
         $csrf->setTheSession();
 
@@ -510,20 +526,20 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser')
         $datastore = $openid->getStorage();
 
         if ($datastore == null) {
-            setOrUnsetSessionVar('openiderror',$openiderrorstr);
+            setSessionVar('openiderror',$openiderrorstr);
         } else {
             $consumer = new Auth_OpenID_Consumer($datastore);
             $auth_request = $consumer->begin($providerId);
 
             if (!$auth_request) {
-                setOrUnsetSessionVar('openiderror',$openiderrorstr);
+                setSessionVar('openiderror',$openiderrorstr);
             } else {
                 if ($auth_request->shouldSendRedirect()) {
                     $redirect_url = $auth_request->redirectURL(
                         'https://' . HOSTNAME . '/',
                         GETOPENIDUSER_URL);
                     if (Auth_OpenID::isFailure($redirect_url)) {
-                        setOrUnsetSessionVar('openiderror',$openiderrorstr);
+                        setSessionVar('openiderror',$openiderrorstr);
                     } else {
                         $log->info('OpenID Login="' . $providerId . '"');
                         header("Location: " . $redirect_url);
@@ -535,7 +551,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser')
                         GETOPENIDUSER_URL,
                         false, array('id' => $form_id));
                     if (Auth_OpenID::isFailure($form_html)) {
-                        setOrUnsetSessionVar('openiderror',$openiderrorstr);
+                        setSessionVar('openiderror',$openiderrorstr);
                     } else {
                         $log->info('OpenID Login="' . $providerId . '"');
                         print $form_html;
@@ -594,10 +610,8 @@ function unsetGetUserSessionVars()
     unsetSessionVar('idp');
     unsetSessionVar('idpname');
     unsetSessionVar('dn');
-    unsetSessionVar('tokenvalue');
-    unsetSessionVar('tokenexpire');
     unsetSessionVar('activation');
-    unsetSessionVar('pkcs12');
+    unsetSessionVar('p12');
 }
 
 /************************************************************************
@@ -649,7 +663,7 @@ function handleGotUser()
         echo '
         <div>
         ';
-        printFormHead(getScriptDir());
+        printFormHead();
         echo '
         <input type="submit" name="submit" class="submit" value="Continue" />
         </form>
@@ -682,6 +696,9 @@ function printNewUserPage()
 
     $log->info('New User page.');
 
+    $dn = getSessionVar('dn');
+    $dn = preg_replace('/\s+email=.+$/','',$dn);
+
     printHeader('New User');
 
     echo '
@@ -691,7 +708,7 @@ function printNewUserPage()
     Welcome! Your new certificate subject is as follows. 
     </p>
     <p>
-    <blockquote><tt>' , getSessionVar('dn') , '</tt></blockquote>
+    <blockquote><tt>' , $dn , '</tt></blockquote>
     </p>
     <p>
     You may need to register this certificate subject with relying parties.
@@ -716,7 +733,7 @@ function printNewUserPage()
     </p>
     <div>
     ';
-    printFormHead(getScriptDir());
+    printFormHead();
     echo '
     <p class="centered">
     <input type="submit" name="submit" class="submit" value="Proceed" />
@@ -885,7 +902,7 @@ function printUserChangedPage()
             </p>
             <div>
             ';
-            printFormHead(getScriptDir());
+            printFormHead();
             echo '
             <p class="centered">
             <input type="submit" name="submit" class="submit" value="Proceed" />

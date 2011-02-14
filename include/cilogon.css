@@ -175,17 +175,21 @@ div.footer a:visited {
 
 /***** Begin actionbox containing action buttons and WAYF *****/
 div.actionbox,
+div.p12actionbox,
 div.certactionbox,
 div.tokenactionbox,
 div.logoffactionbox,
 div.logofftextbox {
   border: 1px solid #888;
+  display: block;
   text-align: center;
   width: 375px;
   margin: 1em auto;
   padding: 1em 0 0 0;
+  line-height: 1em;
 }
 div.actionbox fieldset,
+div.p12actionbox fieldset,
 div.certactionbox fieldset,
 div.tokenactionbox fieldset,
 div.logoffactionbox fieldset {
@@ -194,23 +198,30 @@ div.logoffactionbox fieldset {
   margin: 0;
 }
 div.actionbox p,
+div.p12actionbox p,
 div.certactionbox p,
 div.tokenactionbox p,
 div.logoffactionbox p,
 div.logofftextbox p {
   text-align: center;
 }
+div.p12actionbox label {
+  width: 10em;
+  float: left;
+  text-align: right;
+  display: block;
+}
+div.certactionbox,
+div.tokenactionbox,
 div.logofftextbox {
   border: none;
-  display: block;
-  width: 0;
-  height: 0;
-  line-height:0;
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
+  display: none;
 }
 select#providerId {
+  font-size: 8pt;
+  width: 300px;
+}
+input#searchlist {
   font-size: 8pt;
 }
 p.openiderror {
@@ -221,6 +232,14 @@ p.openiderror {
 }
 p.privacypolicy {
   font-size: x-small;
+}
+p.certificatelifetime {
+  display: none;
+}
+img.hourglass {
+  display: none;
+  position: absolute;
+  margin-left: 2em;
 }
 /***** End actionbox *****/
 

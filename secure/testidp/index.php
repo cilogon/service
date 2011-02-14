@@ -112,7 +112,7 @@ function printTestPage()
             <form action="' , getScriptDir() , '" method="post">
               <input class="submit" type="submit" name="submit"
                      value="' , ADD_SUBMIT_TEXT , '" />' ,
-            $csrf->getHiddenFormElement() , '
+            $csrf->hiddenFormElement() , '
             </form>
             </p>
             ';

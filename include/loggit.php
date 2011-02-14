@@ -56,18 +56,20 @@ class loggit {
         $envs    = array('REMOTE_ADDR',
                          'REMOTE_USER',
                          'HTTP_SHIB_IDENTITY_PROVIDER',
-                         'HTTP_SHIB_SESSION_ID');
+                         'HTTP_SHIB_SESSION_ID'
+                        );
         $cookies = array('providerId',
-                         'CSRFProtection');
+                         'CSRFProtection'
+                        );
         $envstr = ' ';
         foreach ($envs as $value) {
-            if (isset($_SERVER[$value])) {
+            if ((isset($_SERVER[$value])) && (strlen($_SERVER[$value]) > 0)) {
                 $envstr .= $value . '="' . $_SERVER[$value] . '" ';
             }
         }
 
         foreach ($cookies as $value) {
-            if (isset($_COOKIE[$value])) {
+            if ((isset($_COOKIE[$value])) && (strlen($_COOKIE[$value]) > 0)) {
                 $envstr .= $value . '="' . $_COOKIE[$value] . '" ';
             }
         }

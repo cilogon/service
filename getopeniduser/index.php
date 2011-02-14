@@ -43,7 +43,7 @@ function getUserAndRespond($responseurl) {
     unsetSessionVar('openiderror');
     $datastore = $openid->getStorage();
     if ($datastore == null) {
-        setOrUnsetSessionVar('openiderror',
+        setSessionVar('openiderror',
             'Internal OpenID error. Please try logging in with Shibboleth.');
     } else {
         $consumer = new Auth_OpenID_Consumer($datastore);
@@ -52,18 +52,18 @@ function getUserAndRespond($responseurl) {
         // Check the response status.
         if ($response->status == Auth_OpenID_CANCEL) {
             // This means the authentication was canceled.
-            setOrUnsetSessionVar('openiderror',
+            setSessionVar('openiderror',
                 'OpenID logon canceled. Please try again.');
         } elseif ($response->status == Auth_OpenID_FAILURE) {
             // Authentication failed; display an error message.
-            setOrUnsetSessionVar('openiderror',
+            setSessionVar('openiderror',
                 'OpenID authentication failed: ' . 
                 $response->message . '. Please try again.');
         } elseif ($response->status == Auth_OpenID_SUCCESS) {
             // This means the authentication succeeded; extract the identity.
             $openidid = htmlentities($response->getDisplayIdentifier());
         } else {
-            setOrUnsetSessionVar('openiderror',
+            setSessionVar('openiderror',
                 'OpenID logon error. Please try again.');
         }
 
@@ -78,11 +78,11 @@ function getUserAndRespond($responseurl) {
         if ((strlen($openidid) > 0) && (strlen($providerId) > 0) &&
             (openid::urlExists($providerId))) {
             $dbs->getUser($openidid,$providerId);
-            setOrUnsetSessionVar('uid',$dbs->user_uid);
-            setOrUnsetSessionVar('status',$dbs->status);
+            setSessionVar('uid',$dbs->user_uid);
+            setSessionVar('status',$dbs->status);
         } else {
-            setOrUnsetSessionVar('uid');
-            setOrUnsetSessionVar('status',
+            setSessionVar('uid');
+            setSessionVar('status',
                 dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']);
         }
 
@@ -95,15 +95,14 @@ function getUserAndRespond($responseurl) {
                                dbservice::$STATUS)
                           );
         } else {
-            $dn = $dbs->distinguished_name;
-            setOrUnsetSessionVar('dn',preg_replace('/\s+email=.+$/','',$dn));
-            setOrUnsetSessionVar('loa','openid');
-            setOrUnsetSessionVar('idp',$providerId);
-            setOrUnsetSessionVar('idpname',
+            setSessionVar('dn',$dbs->distinguished_name);
+            setSessionVar('loa','openid');
+            setSessionVar('idp',$providerId);
+            setSessionVar('idpname',
                 openid::getProviderName($providerId));
         }
 
-        setOrUnsetSessionVar('submit',getSessionVar('responsesubmit'));
+        setSessionVar('submit',getSessionVar('responsesubmit'));
 
         $csrf->setTheCookie();
         $csrf->setTheSession();

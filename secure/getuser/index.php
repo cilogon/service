@@ -67,11 +67,11 @@ function getUserAndRespond($responseurl) {
                       $lastname,
                       $shibarray['Email Address']
                      );
-        setOrUnsetSessionVar('uid',$dbs->user_uid);
-        setOrUnsetSessionVar('status',$dbs->status);
+        setSessionVar('uid',$dbs->user_uid);
+        setSessionVar('status',$dbs->status);
     } else {
-        setOrUnsetSessionVar('uid');
-        setOrUnsetSessionVar('status',
+        setSessionVar('uid');
+        setSessionVar('status',
             dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']);
     }
 
@@ -88,14 +88,13 @@ function getUserAndRespond($responseurl) {
                       );
     } else {
         // Set additional session variables needed by the calling script
-        $dn = $dbs->distinguished_name;
-        setOrUnsetSessionVar('dn',preg_replace('/\s+email=.+$/','',$dn));
-        setOrUnsetSessionVar('loa',$shibarray['Level of Assurance']);
-        setOrUnsetSessionVar('idp',$shibarray['Identity Provider']);
-        setOrUnsetSessionVar('idpname',$shibarray['Organization Name']);
+        setSessionVar('dn',$dbs->distinguished_name);
+        setSessionVar('loa',$shibarray['Level of Assurance']);
+        setSessionVar('idp',$shibarray['Identity Provider']);
+        setSessionVar('idpname',$shibarray['Organization Name']);
     }
 
-    setOrUnsetSessionVar('submit',getSessionVar('responsesubmit'));
+    setSessionVar('submit',getSessionVar('responsesubmit'));
     unsetSessionVar('responsesubmit');
 
     $csrf->setTheCookie();

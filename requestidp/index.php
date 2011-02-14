@@ -189,7 +189,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
 
     echo '
       </fieldset>
-      ' ,  $csrf->getHiddenFormElement() , '
+      ' ,  $csrf->hiddenFormElement() , '
       </form>
       </div>
       <p>

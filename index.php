@@ -4,6 +4,7 @@ require_once('include/util.php');
 require_once('include/autoloader.php');
 require_once('include/content.php');
 require_once('include/shib.php');
+require_once('include/myproxy.php');
 
 /* Read in the whitelist of currently available IdPs. */
 $white = new whitelist();
@@ -55,10 +56,9 @@ switch ($submit) {
         handleGotUser();
     break; // End case 'gotuser'
 
-    case 'Go Back': // Return to the 'Download Certificate' page
+    case 'Go Back': // Return to the Main page
     case 'Proceed': // Proceed after 'User Changed' page
-        // Verify the PHP session contains valid info
-        if (verifyCurrentSession()) {
+        if (verifyCurrentSession()) { // Verify PHP session contains valid info
             printMainPage();
         } else { // Otherwise, redirect to the 'Welcome' page
             unsetGetUserSessionVars();
@@ -66,10 +66,20 @@ switch ($submit) {
         }
     break; // End case 'Go Back' / 'Proceed'
 
+    case 'Get New Certificate':
+        if (verifyCurrentSession()) { // Verify PHP session contains valid info
+            generateP12();
+            printMainPage();
+        } else { // Otherwise, redirect to the 'Welcome' page
+            unsetGetUserSessionVars();
+            printLogonPage();
+        }
+    break; // End case 'Get New Certificate'
+
     case 'Get New Activation Code':
         // Verify the PHP session contains valid info
         if (verifyCurrentSession()) {
-            generateToken();
+            generateActivationCode();
             printMainPage();
         } else { // Otherwise, redirect to the 'Welcome' page
             unsetGetUserSessionVars();
@@ -104,7 +114,8 @@ switch ($submit) {
  * Function   : printLogonPage                                          *
  * This function prints out the HTML for the main cilogon.org page.     *
  * Explanatory text is shown as well as a button to log in to an IdP    *
- * and get rerouted to the Shibboleth protected service script.         *
+ * and get rerouted to the Shibboleth protected service script, or the  *
+ * OpenID script.                                                       *
  ************************************************************************/
 function printLogonPage()
 {
@@ -123,63 +134,93 @@ function printLogonPage()
     echo '
     </div> <!-- End boxed -->
     ';
-
     printFooter();
 }
 
 /************************************************************************
  * Function   : printMainPage                                           *
  * This function prints out the HTML for the main page where the user   *
- * can download a certificate.                                          *
+ * can download a certificate or generate an Activation Code.           *
  ************************************************************************/
 function printMainPage()
 {
     global $log;
-    $gridshibconf = parseGridShibConf();
-    $idpname = getSessionVar('idpname');
-
-    $downloadcerttext = "Download a certificate to your local computer. Clicking this button should launch a Java Web Start (JWS) application, which requires Java to be installed on your computer and enabled in your web browser.";
-    $logofftext = "End your CILogon session and return to the welcome page. Note that this will not log you out at $idpname.";
-    $generatetokentext = "Get a new one-time-use activation code for CILogon-enabled applications.";
 
     $log->info('Get And Use Certificate page hit.');
-
-    $scriptdir = getScriptDir();
 
     printHeader('Get Your Certificate');
 
     echo '
     <div class="boxed">
+    ';
 
+    printCertInfo();
+    printGetCertificate();
+    printDownloadCertificate();
+    printGetActivationCode();
+    printLogOff();
+
+    echo '
+    </div> <!-- boxed -->
+    ';
+    printFooter();
+}
+
+/************************************************************************
+ * Function   : printCertInfo                                           *
+ * This function prints the certificate information table at the top    *
+ * of the main page.                                                    *
+ ************************************************************************/
+function printCertInfo() {
+    $dn = getSessionVar('dn');
+    $dn = preg_replace('/\s+email=.+$/','',$dn);
+
+    echo '
     <table class="certinfo">
       <tr>
         <th>Certificate&nbsp;Subject:</th>
-        <td>' , getSessionVar('dn') , '</td>
+        <td>' , $dn , '</td>
       </tr>
       <tr>
         <th>Identity&nbsp;Provider:</th>
-        <td>' , $idpname , '</td>
+        <td>' , getSessionVar('idpname') , '</td>
       </tr>
       <tr>
         <th><a target="_blank" 
         href="http://ca.cilogon.org/loa">Level&nbsp;of&nbsp;Assurance:</a></th>
-        <td>';
-        $loa = getSessionVar('loa');
-        if ($loa == 'openid') {
-          echo '<a href="http://ca.cilogon.org/policy/openid"
-                target="_blank">OpenID</a>';
-        } elseif($loa == 'http://incommonfederation.org/assurance/silver') {
-          echo '<a href="http://ca.cilogon.org/policy/silver"
-                target="_blank">Silver</a>';
-        } else {
-          echo '<a href="http://ca.cilogon.org/policy/basic"
-                target="_blank">Basic</a>';
-        }
-        echo '
+        <td>
+    ';
+
+    $loa = getSessionVar('loa');
+    if ($loa == 'openid') {
+        echo '<a href="http://ca.cilogon.org/policy/openid"
+              target="_blank">OpenID</a>';
+    } elseif ($loa == 'http://incommonfederation.org/assurance/silver') {
+        echo '<a href="http://ca.cilogon.org/policy/silver"
+              target="_blank">Silver</a>';
+    } else {
+        echo '<a href="http://ca.cilogon.org/policy/basic"
+              target="_blank">Basic</a>';
+    }
+    echo '
         </td>
       </tr>
     </table>
+    ';
+}
 
+/************************************************************************
+ * Function   : printDownloadCertificate                                *
+ * This function prints the "Download Certificate" box, which uses the  *
+ * GridShib-CA JWS client to download a certificate for the user.       *
+ ************************************************************************/
+function printDownloadCertificate() {
+    $gridshibconf = parseGridShibConf();
+    $idpname = getSessionVar('idpname');
+
+    $downloadcerttext = "Download a certificate to your local computer. Clicking this button should launch a Java Web Start (JWS) application, which requires Java to be installed on your computer and enabled in your web browser.";
+
+    echo '
     <div class="certactionbox">
     ';
 
@@ -200,8 +241,6 @@ function printMainPage()
     }
 
     $lifetimetext = "Specify the certificate lifetime. Maximum value is " . 
-        round(($maxlifetime/3600),2) . " hours / " .
-        round(($maxlifetime/86400),2) . " days / " .
         round(($maxlifetime/2635200),2) . " months.";
 
     $maxcleartextlifetime = preg_replace('/^\s*=\s*/','',
@@ -250,161 +289,386 @@ function printMainPage()
       href="http://www.javatester.org/version.html">Java</a>.
       </p>
       </fieldset>
-      ';
 
-      echo '
-      <script type="text/javascript">
-//<![CDATA[
-      function init() {
-        var certlifetimeinput = document.getElementById("certlifetime");
-        if (certlifetimeinput !== null) {
-          certlifetimeinput.disabled = false;
-        }
-        var certmultiplierselect = document.getElementById("certmultiplier");
-        if (certmultiplierselect !== null) {
-          certmultiplierselect.disabled = false;
-        }
-        var mayneedjavapara = document.getElementById("mayneedjava");
-        if (mayneedjavapara !== null) {
-          if (!deployJava.isWebStartInstalled("1.6.0")) {
-            mayneedjavapara.style.display = "block";
-            mayneedjavapara.style.height = "1.5em";
-            mayneedjavapara.style.width = "auto";
-            mayneedjavapara.style.lineHeight = "auto";
-            mayneedjavapara.style.overflow = "visible";
-          }
-        }
-        return true;
-      }
-//]]>
-      </script>
       <noscript>
       <div class="nojs smaller">
       JavaScript must be enabled to specify Lifetime.
       </div>
       </noscript>
+
       </form>
     </div> <!-- certactionbox -->
+    ';
+}
 
+/************************************************************************
+ * Function   : printGetCertificate                                     *
+ * This function prints the "Get New Certificate" box on the main page. *
+ * If the 'p12' PHP session variable is valid, it is read and a         *
+ * link for the usercred.p12 file is presented to the user.             *
+ ************************************************************************/
+function printGetCertificate() {
+    global $csrf;
+
+    $downloadcerttext = "Clicking this button will generate a link to a new certificate, which you can download to your local computer. The certificate is valid for up to 13 months."; 
+    $p12linktext = "Left-click this link to import the certificate into your broswer / operating system. (Firefox users see the FAQ.) Right-click this link and select 'Save As...' to save the certificate to your desktop.";
+    $lifetimetext = "Specify the certificate lifetime. Maximum value is 13 months.";
+    $passwordtext1 = 'Enter a password of at least 12 characters to protect your certificate.';
+    $passwordtext2 = 'Re-enter your password to verify.';
+
+    validateP12();
+    $p12expire = '';
+    $p12dir = '';
+    $p12 = getSessionVar('p12');
+    if (preg_match('/([^\t]*)\t(.*)/',$p12,$match)) {
+        $p12expire = $match[1];
+        $p12dir = $match[2];
+    }
+        
+    $p12link = '';
+    if ((strlen($p12dir) > 0) &&
+        (is_readable(getServerVar('DOCUMENT_ROOT').'/pkcs12/'.$p12dir))) {
+        $p12link = getScriptDir(true).'pkcs12/'.$p12dir.'/usercred.p12';
+    }
+    if ((strlen($p12link) > 0) && (strlen($p12expire) > 0)) {
+        $p12link = '<a href="' . $p12link . 
+            '">&raquo; Click Here To Download Your Certificate &laquo;</a>';
+    }
+    if ((strlen($p12expire) > 0) && ($p12expire > 0)) {
+        $expire = $p12expire - time();
+        $minutes = floor($expire % 3600 / 60);
+        $seconds = $expire % 60;
+        $p12expire = 'Link Expires: ' . 
+            sprintf("%02dm:%02ds",$minutes,$seconds);
+    } else {
+        $p12expire = '';
+    }
+
+    $p12lifetime = getSessionVar('p12lifetime');
+    if ((strlen($p12lifetime) == 0) || ($p12lifetime == 0)) {
+        $p12lifetime = getCookieVar('p12lifetime');
+    }
+    $p12multiplier = getSessionVar('p12multiplier');
+    if ((strlen($p12multiplier) == 0) || ($p12multiplier == 0)) {
+        $p12multiplier = getCookieVar('p12multiplier');
+    }
+    $maxlifetime = 9516; // In hours = 13 months
+    if ((strlen($p12lifetime) == 0) || ($p12lifetime <= 0)) {
+        $p12lifetime = 13;      // Default to 13 months
+        $p12multiplier = 732;
+    }
+    if ((strlen($p12multiplier) == 0) || ($p12multiplier <= 0)) {
+        $p12multiplier = 732;   // Default to months
+        if ($p12lifetime > 13) {
+            $p12lifetime = 13;
+        }
+    }
+    if (($p12lifetime * $p12multiplier) > $maxlifetime) {
+        $p12lifetime = 13;      // Default to 13 months
+        $p12multiplier = 732;
+    }
+
+    echo '
+    <div class="p12actionbox">
+    ';
+
+    printFormHead();
+
+    echo '
+      <fieldset>
+      ';
+
+      $p12error = getSessionVar('p12error');
+      if (strlen($p12error) > 0) {
+          echo "<p class=\"openiderror\">$p12error</p>";
+          unsetSessionVar('p12error');
+      }
+
+      echo '
+      <p class="certificatelifetime">
+      <label for="p12lifetime" title="' , $lifetimetext ,
+      '" class="helpcursor">Certificate Lifetime:</label>
+      <input type="text" name="p12lifetime" id="p12lifetime" 
+      title="', $lifetimetext , 
+      '" class="helpcursor" value="' , $p12lifetime ,
+      '" size="8" maxlength="8"/> 
+      <select title="' , $lifetimetext , 
+      '" class="helpcursor" id="p12multiplier" name="p12multiplier">
+      <option value="1"' , 
+          (($p12multiplier==1) ? ' selected="selected"' : '') , 
+          '>hours</option>
+      <option value="24"' ,
+          (($p12multiplier==24) ? ' selected="selected"' : '') ,
+          '>days</option>
+      <option value="732"' ,
+          (($p12multiplier==732) ? ' selected="selected"' : '') ,
+          '>months</option>
+      </select>
+      <img src="/images/blankIcon.png" width="14" height="14" alt=""/>
+      </p>
+
+      <p>
+      <label for="password1" class="helpcursor" title="' ,
+      $passwordtext1 , '">Enter Password:</label>
+      <input type="password" name="password1" id="password1"
+      size="25" title="' , $passwordtext1 , '" onkeyup="checkPassword()"/>
+      <img src="/images/blankIcon.png" width="14" height="14" alt="" 
+      id="pw1icon"/>
+      </p>
+      <p>
+      <label for="password2" class="helpcursor" title="' ,
+      $passwordtext2 , '">Confirm Password:</label>
+      <input type="password" name="password2" id="password2"
+      size="25" title="' , $passwordtext2 , '" onkeyup="checkPassword()"/>
+      <img src="/images/blankIcon.png" width="14" height="14" alt="" 
+      id="pw2icon"/>
+      </p>
+      <p>
+      <input type="submit" name="submit" class="submit helpcursor" 
+      title="' , $downloadcerttext , '" value="Get New Certificate"
+      onclick="showHourglass(\'p12\')"/>
+      <img src="/images/hourglass.gif" width="32" height="32 alt="" 
+      class="hourglass" id="p12hourglass"/>
+      </p>
+      <p id="p12value" class="helpcursor" title="' , 
+          $p12linktext , '">' , $p12link , '</p>
+      <p id="p12expire">' , $p12expire , '</p>
+
+      </fieldset>
+      </form>
+    </div> <!-- p12actionbox -->
+    ';
+}
+
+/************************************************************************
+ * Function   : printGetActivationCode                                  *
+ * This function prints the "Get New Activation Code" box on the main   *
+ * page.  If the 'activation' PHP session variable is valid, it is      *
+ * shown at the bottom of the box.  The Activation Code can be used by  *
+ * the GridShib-CA python client to fetch a certificate.                *
+ ************************************************************************/
+function printGetActivationCode() {
+    $generatecodetext = "Get a new one-time-use activation code for CILogon-enabled applications.";
+    $tokenhelptext = "Click the button below to display a one-time-use activation code for CILogon-enabled applications. You can copy and paste this code into the application to download a certificate. See FAQ for more information.";
+    $tokenvaluetext = 'Copy and paste the one-time-use activation code into your CILogon-enabled application to download a certificate.';
+
+    echo '
     <div class="tokenactionbox">
     ';
     
-    /* Print out the box for the Certificate Token, which can be used by *
-     * the GridShib-CA python client to download a certificate.  The     *
-     * JavaScript in the following section is a countdown timer showing  *
-     * the remaining validity time for the given token.                  */
+    printFormHead(getScriptDir());
 
-    printFormHead($scriptdir);
-
-    validateToken();
-    $tokenvalue = getSessionVar('tokenvalue');
-    $tokenexpire = getSessionVar('tokenexpire');
-    $tokenvaluetext = '';
+    validateActivationCode();
+    $tokenvalue = '';
+    $tokenexpire = '';
+    $activation = getSessionVar('activation');
+    if (preg_match('/([^\t]*)\t(.*)/',$activation,$match)) {
+        $tokenexpire = $match[1];
+        $tokenvalue = $match[2];
+    }
     if ((strlen($tokenvalue) > 0) && (strlen($tokenexpire) > 0)) {
         $tokenvalue = 'Activation&nbsp;Code: ' . $tokenvalue;
-        $tokenvaluetext = 'Copy and paste the one-time-use activation code into your CILogon-enabled application to download a certificate.';
-    } else {
-        $tokenvalue = 'For CILogon-enabled Applications:';
-        $tokenvaluetext = 'Click the button below to display a one-time-use activation code for CILogon-enabled applications. You can copy and paste this code into the application to download a certificate. See http://www.cilogon.org/enabled for more information.';
     }
     if ((strlen($tokenexpire) > 0) && ($tokenexpire > 0)) {
         $expire = $tokenexpire - time();
         $minutes = floor($expire % 3600 / 60);
         $seconds = $expire % 60;
-        $tokenexpire = 'Expires: ' . 
+        $tokenexpire = 'Code Expires: ' . 
             sprintf("%02dm:%02ds",$minutes,$seconds);
     } else {
         $tokenexpire = '';
     }
 
     echo '
+      <p class="helpcursor" title="' , 
+          $tokenhelptext , '">For CILogon-enabled Applications:</p>
+      <p>
+
+      <input type="submit" name="submit" class="submit helpcursor" 
+      title="' , $generatecodetext , '" value="Get New Activation Code" 
+      onclick="showHourglass(\'token\')"/>
+      <img src="/images/hourglass.gif" width="32" height="32 alt="" 
+      class="hourglass" id="tokenhourglass"/>
+      </p>
       <p id="tokenvalue" class="helpcursor" title="' , 
           $tokenvaluetext , '">' , $tokenvalue , '</p>
       <p id="tokenexpire">' , $tokenexpire , '</p>
-      <script type="text/javascript">
-//<![CDATA[
-        function countdown() {
-          var tokenexpire = document.getElementById(\'tokenexpire\');
-          if (tokenexpire !== null) {
-            var expiretext = tokenexpire.innerHTML;
-            if ((expiretext !== null) && (expiretext.length > 0)) {
-              var matches = expiretext.match(/\d+/g);
-              if (matches.length == 2) {
-                var minutes = parseInt(matches[0],10);
-                var seconds = parseInt(matches[1],10);
-                if ((minutes > 0) || (seconds > 0)) {
-                  seconds -= 1;
-                  if (seconds < 0) {
-                    minutes -= 1;
-                    if (minutes >= 0) {
-                      seconds = 59;
-                    }
-                  }
-                  if ((seconds > 0) || (minutes > 0)) {
-                    tokenexpire.innerHTML = "Expires: " + 
-                      ((minutes < 10) ? "0" : "") + minutes + "m:" +
-                      ((seconds < 10) ? "0" : "") + seconds + "s";
-                      setTimeout(countdown,1000);
-                  } else {
-                    tokenexpire.innerHTML = "";
-                    var tokenvalue = document.getElementById(\'tokenvalue\');
-                    if (tokenvalue !== null) {
-                      tokenvalue.innerHTML = 
-                        "For CILogon-enabled Applications:";
-                      tokenvalue.title = "Click the button below to display a one-time-use activation code for CILogon-enabled applications. You can copy and paste this code into the application to download a certificate.";
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-        countdown();
-//]]>
-      </script>
 
-      <p>
-      <input type="submit" name="submit" class="submit helpcursor" 
-      title="' , $generatetokentext , '" value="Get New Activation Code" />
-      </p>
       </form>
     </div> <!-- tokenactionbox -->
+    ';
+}
 
+/************************************************************************
+ * Function   : printLogOff                                             *
+ * This function prints the Log Off boxes at the bottom of the main     *
+ * page.                                                                *
+ ************************************************************************/
+function printLogOff() {
+    $logofftext = 'End your CILogon session and return to the welcome page. ' .
+                  'Note that this will not log you out at ' .
+                  getSessionVar('idpname') . '.';
+
+    echo '
     <div class="logoffactionbox">
     ';
 
-    printFormHead($scriptdir);
+    printFormHead();
 
     echo '
       <p>
       <input type="submit" name="submit" class="submit helpcursor" 
       title="' , $logofftext , '" value="Log Off" />
       </p>
-      </form>
+    </form>
     </div> <!-- logoffactionbox -->
-
+    
     <div class="logofftextbox">
-      <p>
-      To log off, please quit your browser.
-      <p>
+      <p>To log off, please quit your browser.<p>
     </div> <!-- logofftextbox -->
-    </div>
     ';
-    printFooter();
 }
 
 /************************************************************************
- * Function   : generateToken                                           *
- * This function is called when the user clicks the "Generate New       *
- * Token" button.  It basically does the same thing as when the user    *
- * clicks the "Download Certificate", i.e. it calls the function to     *
- * create a .jnlp file.  However, this method uses 'curl' to slurp in   *
- * the resulting .jnlp file and scans for the AuthenticationToken       *
- * in the file.  This is printed out to the user.  The token can be     *
- * used by the GridShib-CA python client to fetch a certificate.        *
+ * Function   : generateP12                                             *
+ * This function is called when the user clicks the "Get New            *
+ * Certificate" button. It first reads in the password fields and       *
+ * verifies that they are valid (i.e. they are long enough and match).  *
+ * Then it gets a credential from the MyProxy server and converts that  *
+ * certificate into a PKCS12 which is written to disk.  If everything   *
+ * succeeds, the temporary pkcs12 directory and lifetime is saved to    *
+ * the 'p12' PHP session variable, which is read later when the Main    *
+ * Page HTML is shown.                                                  *
  ************************************************************************/
-function generateToken() {
+function generateP12() {
+    global $log;
+
+    /* Get the entered p12lifetime and p12multiplier and set the cookies. */
+    $maxlifetime = 9516; // In hours = 13 months
+    $p12lifetime   = getPostVar('p12lifetime');
+    $p12multiplier = getPostVar('p12multiplier');
+    $lifetime = $p12lifetime * $p12multiplier;
+    if ($lifetime <= 0) { // In case user entered negative number
+        $lifetime = $maxlifetime;
+        $p12lifetime = 13;
+        $p12multiplier = 732;
+    } elseif ($lifetime > $maxlifetime) { // Set max value based on multiplier
+        $lifetime = $maxlifetime;
+        if ($p12multiplier == 1) {
+            $p12lifetime = 9516;  // 13 months in hours
+        } elseif ($p12multiplier == 24) {
+            $p12lifetime = 396.5; // 13 months in days
+        } else { 
+            $p12lifetime = 13;    // 13 months (in months)
+            $p12multiplier = 732;
+        }
+    }
+    setcookie('p12lifetime',$p12lifetime,time()+60*60*24*365,'/','',true);
+    setcookie('p12multiplier',$p12multiplier,time()+60*60*24*365,'/','',true);
+    setSessionVar('p12lifetime',$p12lifetime);
+    setSessionVar('p12multiplier',$p12multiplier);
+
+    /* Verify that the password is at least 12 characters long. */
+    $password1 = getPostVar('password1');
+    $password2 = getPostVar('password2');
+    if (strlen($password1) < 12) {   
+        setSessionVar('p12error',
+            'Password must have at least 12 characters.');
+        return; // SHORT PASSWORD - NO FURTHER PROCESSING NEEDED!
+    }
+
+    /* Verify that the two password entry fields matched. */
+    if ($password1 != $password2) {
+        setSessionVar('p12error','Passwords did not match.');
+        return; // MISMATCHED PASSWORDS - NO FURTHER PROCESSING NEEDED!
+    }
+
+    /* Set the port based on the Level of Assurance */
+    $port = 7512;
+    $loa = getSessionVar('loa');
+    if ($loa == 'http://incommonfederation.org/assurance/silver') {
+        $port = 7514;
+    } elseif ($loa == 'openid') {
+        $port = 7516;
+    }
+
+    $dn = getSessionVar('dn');
+    if (strlen($dn) > 0) {
+        /* Attempt to fetch a credential from the MyProxy server */
+        $cert = getMyProxyCredential($dn,'','myproxy.cilogon.org',
+            $port,$lifetime,'/var/www/config/hostcred.pem','');
+
+        /* The 'openssl pkcs12' command is picky in that the private  *
+         * key must appear BEFORE the public certificate. But MyProxy *
+         * returns the private key AFTER. So swap them around.        */
+        $cert2 = '';
+        if (preg_match('/-----BEGIN CERTIFICATE-----([^-]+)' . 
+                       '-----END CERTIFICATE-----[^-]*' . 
+                       '-----BEGIN RSA PRIVATE KEY-----([^-]+)' .
+                       '-----END RSA PRIVATE KEY-----/',$cert,$match)) {
+            $cert2 = "-----BEGIN RSA PRIVATE KEY-----" .
+                     $match[2] . "-----END RSA PRIVATE KEY-----\n".
+                     "-----BEGIN CERTIFICATE-----" .
+                     $match[1] . "-----END CERTIFICATE-----";
+        }
+
+        if (strlen($cert2) > 0) { // Successfully got a certificate!
+            /* Create a temporary directory in /var/www/html/pkcs12/ */
+            $tdirparent = getServerVar('DOCUMENT_ROOT') . '/pkcs12/';
+            $polonum = '3';   // Prepend the polo? number to directory
+            if (preg_match('/(\d+)\./',php_uname('n'),$polomatch)) {
+                $polonum = $polomatch[1];
+            }
+            $tdir = tempDir($tdirparent,$polonum);
+            $p12dir = str_replace($tdirparent,'',$tdir);
+            $p12file = $tdir . '/usercred.p12';
+
+            /* Call the openssl pkcs12 program to convert certificate */
+            exec('/bin/env ' .
+                 'CILOGON_PKCS12_PW=' . escapeshellarg($password1) . ' ' .
+                 '/usr/bin/openssl pkcs12 -export ' .
+                 '-passout env:CILOGON_PKCS12_PW ' .
+                 "-out $p12file " .
+                 '<<< ' . escapeshellarg($cert2)
+                );
+
+            /* Verify the usercred.p12 file was actually created */
+            $size = @filesize($p12file);
+            if (($size !== false) && ($size > 0)) {
+                $p12 = (time()+300) . "\t" . $p12dir;
+                setSessionVar('p12',$p12);
+                $log->info('Generated New User Certificate="'.$p12dir.'"');
+            } else { // Empty or missing usercred.p12 file - shouldn't happen!
+                setSessionVar('p12error',
+                    'Error creating certificate. Please try again.');
+                deleteDir($tdir); // Remove the temporary directory
+                $log->info("Error creating certificate - missing usercred.p12");
+            }
+        } else { // The myproxy-logon command failed - shouldn't happen!
+            setSessionVar('p12error',
+                'Error! Unable to create certificate.');
+            $log->info("Error creating certificate - myproxy-logon failed");
+        }
+    } else { // Couldn't find the 'dn' PHP session value - shouldn't happen!
+        setSessionVar('p12error',
+            'Missing username. Please enable cookies.');
+        $log->info("Error creating certificate - missing dn session variable");
+    }
+}
+
+/************************************************************************
+ * Function   : generateActivationCode                                  *
+ * This function is called when the user clicks the "Get New Activation *
+ * Code" button.  It calls the GridShib CA functionality to create a    *
+ * .jnlp file, uses 'curl' to slurp in the resulting .jnlp file, and    *
+ * scans for the AuthenticationToken in the file.  This is stored in    *
+ * the 'activation' PHP session value to be output to the user when     *
+ * the Main Page is redrawn. The token can be used by the GridShib-CA   *
+ * python client to fetch a certificate.                                *
+ ************************************************************************/
+function generateActivationCode() {
     global $csrf;
+    global $log;
 
     $tokenvalue = '';
     $gridshibconf = parseGridShibConf();
@@ -441,39 +705,67 @@ function generateToken() {
         }
         curl_close($ch);
 
+        /* If we got a valid AuthenticationToken, store it in the session */
         session_start();
         if (strlen($tokenvalue) > 0) {
-            setOrUnsetSessionVar('tokenvalue',$tokenvalue);
             $tokenlifetime = preg_replace('/^\s*=\s*/','',
                 $gridshibconf['root']['Session']['CredentialRetrieverClientLifetime']);
-            if ((strlen($tokenlifetime) <= 0) || ($tokenlifetime == 0)) {
+            if ((strlen($tokenlifetime) == 0) || ($tokenlifetime == 0)) {
                 $tokenlifetime = 300;
             }
-            setOrUnsetSessionVar('tokenexpire',time()+$tokenlifetime);
+            $activation = (time()+$tokenlifetime) . "\t" . $tokenvalue;
+            setSessionVar('activation',$activation);
+            $log->info('Generated New Activation Code="'.$tokenvalue.'"');
         }
     }
 }
 
 /************************************************************************
- * Function   : validateToken                                           *
- * This function is called just before the certificate token is printed *
- * out to HTML.  It checks to see if the PHP session value              *
- * 'tokenexpire' (which is the expiration time in Unix seconds) is      *
- * greater than the current time().  If not, then it unsets the PHP     *
- * session variables 'tokenexpire' and 'tokenvalue'.                    *
+ * Function   : validateP12                                             *
+ * This function is called just before the "Download your certificate"  *
+ * link is printed out to HTML. It checks to see if the p12 is still    *
+ * valid time-wise, and also that the pkcs12 download directory is      *
+ * readable. If not, then it unsets the PHP session variable 'p12'.     *
  ************************************************************************/
-function validateToken() {
-    $tokenvalue = getSessionVar('tokenvalue');
-    $tokenexpire = getSessionVar('tokenexpire');
+function validateP12() {
+    $p12dir = '';
+    $p12expire = '';
+    $p12 = getSessionVar('p12');
+    if (preg_match('/([^\t]*)\t(.*)/',$p12,$match)) {
+        $p12expire = $match[1];
+        $p12dir = $match[2];
+    }
+
+    /* Verify that the p12expire and p12dir values are valid */
+    if ((strlen($p12expire) == 0) ||
+        ($p12expire == 0) ||
+        (time() > $p12expire) ||
+        (strlen($p12dir) == 0) ||
+        (!is_readable(getServerVar('DOCUMENT_ROOT').'/pkcs12/'.$p12dir))) {
+        unsetSessionVar('p12');
+    }
+}
+
+/************************************************************************
+ * Function   : validateActivationCode                                  *
+ * This function is called just before the certificate token is printed *
+ * out to HTML.  It checks to see if the activation token value is      *
+ * expired. If so, it unsets the PHP session variable 'activation'.     *
+ ************************************************************************/
+function validateActivationCode() {
+    $tokenvalue = '';
+    $tokenexpire = '';
+    $activation = getSessionVar('activation');
+    if (preg_match('/([^\t]*)\t(.*)/',$activation,$match)) {
+        $tokenexpire = $match[1];
+        $tokenvalue = $match[2];
+    }
 
     /* If there is a tokenexpire value, check against current time */
-    if ((strlen($tokenexpire) > 0) && ($tokenexpire > 0)) {
-        if (time() > $tokenexpire) {
-            unsetSessionVar('tokenvalue');
-            unsetSessionVar('tokenexpire');
-        }
-    } else {
-        unsetSessionVar('tokenvalue');
+    if ((strlen($tokenexpire) == 0) ||
+        ($tokenexpire == 0) ||
+        (time() > $tokenexpire)) {
+        unsetSessionVar('activation');
     }
 }
 

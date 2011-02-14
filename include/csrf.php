@@ -1,5 +1,7 @@
 <?
 
+require_once('util.php');
+
 /************************************************************************
  * Class name : csrf                                                    *
  * Description: This class creates and manages CSRF (cross-site request *
@@ -18,7 +20,7 @@
  *    $csrf = new csrf();                                               *
  *    $csrf->setTheCookie();                                            *
  *    // Output an HTML <form> block                                    *
- *    echo $csrf->getHiddenFormElement();                               *
+ *    echo $csrf->hiddenFormElement();                                  *
  *    // Close </form> block                                            *
  *                                                                      *
  *    // When user submits the form, first check for csrf equality      *
@@ -84,12 +86,12 @@ class csrf {
     }
 
     /********************************************************************
-     * Function  : getHiddenFormElement                                 *
+     * Function  : hiddenFormElement                                    *
      * Returns   : The string of an <input> HTML element.               *
      * Returns an <input ...> form element of type 'hidden' with the    *
      * name and value set to the csrf tokenname and tokenvalue.         *
      ********************************************************************/
-    function getHiddenFormElement() {
+    function hiddenFormElement() {
         return '<input type="hidden" name="' . $this->getTokenName() .
                '" value="' . $this->getTokenValue() .  '" />';
     }
@@ -111,11 +113,7 @@ class csrf {
      * returns an empty string otherwise.                               *
      ********************************************************************/
     public static function getTheCookie() {
-        $retval = '';
-        if (isset($_COOKIE[self::tokenname])) {
-            $retval = $_COOKIE[self::tokenname];
-        }
-        return $retval;
+        return getCookieVar(self::tokenname);
     }
 
     /********************************************************************
@@ -143,10 +141,7 @@ class csrf {
         $retval = false;  // Assume csrf values don't match
 
         $csrfcookievalue = self::getTheCookie();
-        $csrfformvalue = "";
-        if (isset($_POST[self::tokenname])) {
-            $csrfformvalue = $_POST[self::tokenname];
-        }
+        $csrfformvalue = getPostVar(self::tokenname);
         if ((strlen($csrfcookievalue) > 0) &&
             (strlen($csrfformvalue) > 0) &&
             (strcmp($csrfcookievalue,$csrfformvalue) == 0)) {
@@ -163,7 +158,7 @@ class csrf {
      * session_start()) before you call this method.                    *
      ********************************************************************/
     function setTheSession() {
-        $_SESSION[$this->getTokenName()] = $this->getTokenValue();
+        setSessionVar($this->getTokenName(),$this->getTokenValue());
     }
 
     /********************************************************************
@@ -174,11 +169,7 @@ class csrf {
      * or returns an empty string otherwise.                            *
      ********************************************************************/
     public static function getTheSession() {
-        $retval = '';
-        if (isset($_SESSION[self::tokenname])) {
-            $retval = $_SESSION[self::tokenname];
-        }
-        return $retval;
+        return getSessionVar(self::tokenname);
     }
 
     /********************************************************************
@@ -186,10 +177,7 @@ class csrf {
      * Removes the csrf value from the PHP session.                     *
      ********************************************************************/
     public static function removeTheSession() {
-        if (isset($_SESSION[self::tokenname])) {
-            $_SESSION[self::tokenname] = null;
-            unset($_SESSION[self::tokenname]);
-        }
+        unsetSessionVar(self::tokenname);
     }
 
     /********************************************************************

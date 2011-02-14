@@ -1,7 +1,7 @@
 <?php
 
 /* NOTE: Look at the bottom of this file to see that it calls           *
- * startPHPSession().  Thus you simply need to require_once(util.php)   *
+ * startPHPSession().  Thus you simply need to require_once('util.php') *
  * at the top of your PHP code to start a PHP session.  Also there is   *
  * a "define()" for HOSTNAME at the bottom of this file which allows    *
  * you to manually change the hostname used in various URLs.            */
@@ -103,21 +103,24 @@ function unsetSessionVar($sess)
 }
 
 /************************************************************************
- * Function   : setOrUnsetSessionVar                                    *
- * Parameters : (1) The name of the PHP session variable to set or      *
- *                  unset.                                              *
+ * Function   : setSessionVar                                           *
+ * Parameters : (1) The name of the PHP session variable to set (or     *
+ *                  unset).                                             *
  *              (2) The value of the PHP session variable (to set),     *
  *                  or empty string (to unset).  Defaults to empty      *
  *                  string (implies unset the session variable).        *
- * Returns    : True if the PHP session variable was set, else false.   *
+ * Returns    : True if the PHP session variable was set to a           *
+ *              non-empty string, false if variable was unset or if the *
+ *              specified session variable was not previously set.      *
  * This function can set or unset a given PHP session variable.         *
  * The first parameter is the PHP session variable to set/unset.  If    *
  * the second parameter is the empty string, then the session variable  *
  * is unset.  Otherwise, the session variable is set to the second      *
  * parameter.  The function returns true if the session variable was    *
- * set, false otherwise.  Normally, the return value can be ignored.    *
+ * set to a non-empty value, false otherwise.  Normally, the return     *
+ * value can be ignored.                                                *
  ************************************************************************/
-function setOrUnsetSessionVar($key,$value='') 
+function setSessionVar($key,$value='') 
 {
     $retval = false;  // Assume we want to unset the session variable
     if (strlen($key) > 0) {  // Make sure session variable name was passed in
@@ -134,14 +137,17 @@ function setOrUnsetSessionVar($key,$value='')
 /************************************************************************
  * Function  : startPHPSession                                          *
  * This function starts a secure PHP session and should be called at    *
- * at the beginning of each script before any HTML is output.  It also  *
- * does a trick of setting a 'lastaccess' time so that the $_SESSION    *
- * variable does not expire without warning.                            *
+ * at the beginning of each script before any HTML is output.  It sets  *
+ * the session_id to be something that is unique across multiple        *
+ * machines.  It also does a trick of setting a 'lastaccess' time so    *
+ * that the $_SESSION variable does not expire without warning.         *
  ************************************************************************/
 function startPHPSession()
 {
     ini_set('session.cookie_secure',true);
-    if (session_id() == "") session_start();
+    if (session_id() == "") {
+        session_start();
+    }
     if ((!isset($_SESSION['lastaccess']) || 
         (time() - $_SESSION['lastaccess']) > 60)) {
         $_SESSION['lastaccess'] = time();
@@ -161,7 +167,7 @@ function startPHPSession()
  * This function returns the directory (or full url) of the script that *
  * is currently running.  The returned directory/url is terminated by   *
  * a '/' character (unless the second parameter is set to true).  This  *
- * function is useful for those scripts named index.php were we don't   *
+ * function is useful for those scripts named index.php where we don't  *
  * want to actually see "index.php" in the address bar (again, unless   *
  * the second parameter is set to true).                                *
  ************************************************************************/
@@ -273,7 +279,7 @@ function parseGridShibConf($conffile=
  *             (2) (Optional) A prefix for the new temporary directory. *
  *                 Defaults to nothing.                                 *
  *             (3) (Optional) Access permissions for the new temporary  *
- *                 directory. Defaults to 0755.                         *
+ *                 directory. Defaults to 0775.                         *
  * Return    : Full path to the newly created temporary directory.      *
  * This function creates a temporary subdirectory within the specified  * 
  * subdirectory.  The new directory name is composed of 16 hexadecimal  *
@@ -295,10 +301,11 @@ function tempDir($dir,$prefix='',$mode=0775) {
 
 /************************************************************************
  * Function  : deleteDir                                                *
- * Parameters: The (possibly non-empty) directory to delete.            *
+ * Parameters: (1) The (possibly non-empty) directory to delete.        *
+ *             (2) Shred the file before deleting? Defaults to false.   *
  * This function deletes a directory and all of its contents.           *
 /************************************************************************/
-function deleteDir($dir) {
+function deleteDir($dir,$shred=false) {
     if (is_dir($dir)) {
         $objects = scandir($dir);
         foreach ($objects as $object) {
@@ -306,7 +313,11 @@ function deleteDir($dir) {
                 if (filetype($dir."/".$object) == "dir") {
                     deleteDir($dir."/".$object);
                 } else {
-                    @unlink($dir."/".$object);
+                    if ($shred) {
+                      @exec('/bin/env /usr/bin/shred -u -z '.$dir."/".$object);
+                    } else {
+                      @unlink($dir."/".$object);
+                    }
                 }
             }
         }
