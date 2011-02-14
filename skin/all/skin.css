@@ -1,0 +1,11 @@
+div.certactionbox,
+div.tokenactionbox,
+div.logofftextbox {
+  border: 1px solid #888;
+  display: block;
+}
+
+p.certificatelifetime {
+  display: block;
+}
+

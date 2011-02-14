@@ -119,24 +119,13 @@ div.actionbox,
 div.certactionbox,
 div.tokenactionbox,
 div.logofftextbox {
+  display: block;
   border: 1px solid #D6DDB9;
 }
+div.p12actionbox,
 div.logoffactionbox {
-  display: block;
-  width: 0;
-  height: 0;
-  line-height:0;
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
+  display: none;
   border: none;
-}
-div.logofftextbox {
-  width: 375px;
-  height: auto;
-  line-height: auto;
-  margin: 0 auto 1em auto;
-  padding: 1em 0 0 0;
 }
 p.privacypolicy {
   font-size: small;
