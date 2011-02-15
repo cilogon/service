@@ -409,7 +409,7 @@ function printGetCertificate() {
 
       <p>
       <label for="password1" class="helpcursor" title="' ,
-      $passwordtext1 , '">Enter Password:</label>
+      $passwordtext1 , '">Enter A Password:</label>
       <input type="password" name="password1" id="password1"
       size="25" title="' , $passwordtext1 , '" onkeyup="checkPassword()"/>
       <img src="/images/blankIcon.png" width="14" height="14" alt="" 
