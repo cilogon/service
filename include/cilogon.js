@@ -292,6 +292,7 @@ function searchOptions(value) {
   var idpsselected;
   var seltext;
   var selindex;
+  var lowval;
   if (idps !== null) {
     /* Figure out which (if any) IdP was previously highlighted */
     idpsselected = idps.selectedIndex;
@@ -302,8 +303,9 @@ function searchOptions(value) {
 
     /* Scan thru the <options> for substrings matching the "Search" field */
     idps.options.length = 0;
+    lowval = value.toLowerCase();
     for (i = 0; i < idpstext.length; i++) {
-      if (idpstext[i].toLowerCase().indexOf(value) !== -1) {
+      if (idpstext[i].toLowerCase().indexOf(lowval) !== -1) {
         addOption(idpstext[i],idpsvalue[i]);
       }
     }
