@@ -385,6 +385,28 @@ function printGetCertificate() {
       }
 
       echo '
+      <p>
+      Password Protect Your New Certificate:
+      </p>
+
+      <p>
+      <label for="password1" class="helpcursor" title="' ,
+      $passwordtext1 , '">Enter A Password:</label>
+      <input type="password" name="password1" id="password1"
+      size="25" title="' , $passwordtext1 , '" onkeyup="checkPassword()"/>
+      <img src="/images/blankIcon.png" width="14" height="14" alt="" 
+      id="pw1icon"/>
+      </p>
+
+      <p>
+      <label for="password2" class="helpcursor" title="' ,
+      $passwordtext2 , '">Confirm Password:</label>
+      <input type="password" name="password2" id="password2"
+      size="25" title="' , $passwordtext2 , '" onkeyup="checkPassword()"/>
+      <img src="/images/blankIcon.png" width="14" height="14" alt="" 
+      id="pw2icon"/>
+      </p>
+
       <p class="certificatelifetime">
       <label for="p12lifetime" title="' , $lifetimetext ,
       '" class="helpcursor">Certificate Lifetime:</label>
@@ -408,28 +430,13 @@ function printGetCertificate() {
       </p>
 
       <p>
-      <label for="password1" class="helpcursor" title="' ,
-      $passwordtext1 , '">Enter A Password:</label>
-      <input type="password" name="password1" id="password1"
-      size="25" title="' , $passwordtext1 , '" onkeyup="checkPassword()"/>
-      <img src="/images/blankIcon.png" width="14" height="14" alt="" 
-      id="pw1icon"/>
-      </p>
-      <p>
-      <label for="password2" class="helpcursor" title="' ,
-      $passwordtext2 , '">Confirm Password:</label>
-      <input type="password" name="password2" id="password2"
-      size="25" title="' , $passwordtext2 , '" onkeyup="checkPassword()"/>
-      <img src="/images/blankIcon.png" width="14" height="14" alt="" 
-      id="pw2icon"/>
-      </p>
-      <p>
       <input type="submit" name="submit" class="submit helpcursor" 
       title="' , $downloadcerttext , '" value="Get New Certificate"
       onclick="showHourglass(\'p12\')"/>
       <img src="/images/hourglass.gif" width="32" height="32 alt="" 
       class="hourglass" id="p12hourglass"/>
       </p>
+
       <p id="p12value" class="helpcursor" title="' , 
           $p12linktext , '">' , $p12link , '</p>
       <p id="p12expire">' , $p12expire , '</p>
