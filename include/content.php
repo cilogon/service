@@ -286,8 +286,7 @@ function printWAYF()
 
       <p>
       <select name="providerId" id="providerId" size="4"
-       onkeypress="enterKeySubmit(event)"
-       ondblclick="document.getElementById(\'wayflogonbutton\').click()">
+       onkeypress="enterKeySubmit(event)" ondblclick="doubleClickSubmit()">
     ';
 
     foreach ($idps as $entityId => $idpName) {

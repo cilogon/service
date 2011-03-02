@@ -346,6 +346,34 @@ function enterKeySubmit(event) {
 }
 
 /***************************************************************************
+ * Function  : doubleClickSubmit                                           *
+ * This function is called when the user double-clicks on the WAYF's       *
+ * <select> list.  It checks to see if the user is running Safari on       *
+ * Mac OS X.  If not, then it "clicks" the WAYF's "submit" button.  This   *
+ * extra check is necessary because Safari on Mac sends a double-click     *
+ * event even on the arrow scroll buttons.  This is bad behavior by the    *
+ * browser, so we simply ignore the double-click.                          *
+ ***************************************************************************/
+function doubleClickSubmit() {
+  var vendor;
+  var platform;
+  var logonbutton = document.getElementById("wayflogonbutton");
+  if (logonbutton !== null) {
+    vendor = navigator.vendor;
+    platform = navigator.platform;
+    /* Don't click the "Submit" button for Safari on Mac OS X */
+    if ((vendor === null) ||
+        (platform === null) ||
+        (vendor.length === 0) ||
+        (platform.length === 0) ||
+        (vendor.indexOf('Apple') === -1) ||
+        (platform.indexOf('Mac') === -1)) {
+      logonbutton.click();
+    }
+  }
+}
+
+/***************************************************************************
  * Function  : textInputFocus                                              *
  * This function looks for the "Search" text field on the WAYF page or the *
  * "Enter Password" text field on the Main Page.  If either is found, it   *
