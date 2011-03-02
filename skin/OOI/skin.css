@@ -60,7 +60,6 @@ div.footer a:visited {
 div.actionbox,
 div.p12actionbox,
 div.certactionbox,
-div.tokenactionbox,
 div.logoffactionbox {
   border: 3px outset #369;
   display: block;
