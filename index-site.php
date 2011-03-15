@@ -713,7 +713,7 @@ function generateActivationCode() {
         curl_close($ch);
 
         /* If we got a valid AuthenticationToken, store it in the session */
-        session_start();
+        startPHPSession();
         if (strlen($tokenvalue) > 0) {
             $tokenlifetime = preg_replace('/^\s*=\s*/','',
                 $gridshibconf['root']['Session']['CredentialRetrieverClientLifetime']);
