@@ -430,5 +430,6 @@ div.skincilogonlogo {
   top: 0;
   right: 0;
   margin: 5px;
+  display: none;
 }
 /***** End skincilogonlogo *****/

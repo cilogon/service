@@ -108,3 +108,8 @@ div.allowdiv table td {
 }
 /***** End allowdiv *****/
 
+/***** Begin skincilogonlogo *****/
+div.skincilogonlogo {
+  display: inline;
+}
+/***** End skincilogonlogo *****/
