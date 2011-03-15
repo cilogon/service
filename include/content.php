@@ -20,6 +20,10 @@ define('GETOPENIDUSER_URL','https://' . HOSTNAME . '/getopeniduser/');
 /* CSRF form element.  Be sure to do "global $csrf" to use it.       */
 $csrf = new csrf();
 
+/* The configuration for the skin, if any. */
+/* Be sure to do "global $skin" to use it. */
+$skin = new skin();
+
 
 /************************************************************************
  * Function   : printHeader                                             *
@@ -32,6 +36,7 @@ $csrf = new csrf();
 function printHeader($title='',$extra='')
 {
     global $csrf;       // Initialized above
+    global $skin;
     $csrf->setTheCookie();
     // Set the CSRF cookie used by GridShib-CA
     setcookie('CSRFProtection',$csrf->getTokenValue(),0,'/','',true);
@@ -47,7 +52,7 @@ function printHeader($title='',$extra='')
     <link rel="stylesheet" type="text/css" href="/include/cilogon.css" />
     ';
 
-    printSkin();
+    $skin->printSkinLink();
 
     echo '<script type="text/javascript" src="/include/cilogon.js"></script>
     <script type="text/javascript" src="/include/deployJava.js"></script>
@@ -68,21 +73,13 @@ function printHeader($title='',$extra='')
     </head>
 
     <body>
-    ';
 
-    $skinvar = getSessionVar('cilogon_skin');
-    if ((strlen($skinvar) > 0) &&
-        (is_readable($_SERVER{'DOCUMENT_ROOT'} . "/skin/$skinvar/skin.css"))) {
-        echo '
-        <div class="skincilogonlogo">
-        <a target="_blank" href="http://www.cilogon.org/faq/"><img
-        src="/images/poweredbycilogon.png" alt="CILogon" 
-        title="CILogon Service" /></a>
-        </div>
-        ';
-    }
+    <div class="skincilogonlogo">
+    <a target="_blank" href="http://www.cilogon.org/faq/"><img
+    src="/images/poweredbycilogon.png" alt="CILogon" 
+    title="CILogon Service" /></a>
+    </div>
 
-    echo '
     <div class="logoheader">
        <h1><span>[CILogon Service]</span></h1>
     </div>
@@ -133,6 +130,8 @@ function printFooter($footer='')
     </body>
     </html>
     ';
+
+    session_write_close();
 }
 
 /************************************************************************
@@ -189,45 +188,6 @@ function printFormHead($action='',$gsca=false) {
 }
 
 /************************************************************************
- * Function   : printSkin                                               *
- * This function looks for a GET variable named either "skin" or        *
- * "cilogon_skin", or a PHP session variable named "cilogon_skin".  If  *
- * any of these is found, it checks to see if there is a skin           *
- * subdirectory of the same value containing a skin.css file.  If so,   *
- * it outputs the necessary <link> tag to include the stylesheet.  This *
- * function is called by the printHeader() function.                    *
- ************************************************************************/
-function printSkin() 
-{
-    /* First, attempt to read the URL parameter for either 'skin=' or *
-     * 'cilogon_skin='.  If we find either one, then set the PHP      *
-     * session variable 'cilogon_skin' and continue processing.       */
-    $skinvar = getGetVar('skin');
-    if (strlen($skinvar) == 0) {
-        $skinvar = getGetVar('cilogon_skin');
-    }
-    if (strlen($skinvar) > 0) {
-        setSessionVar('cilogon_skin',$skinvar);
-    }
-
-    /* Check for the PHP session variable 'cilogon_skin'.  If found   *
-     * verify that it points to a valid skin subdirectory containing  *
-     * a skin.css file.  Then print out the corresponding <link> tag. */
-    $skinvar = getSessionVar('cilogon_skin');
-    if (strlen($skinvar) > 0) {
-        if (is_readable($_SERVER{'DOCUMENT_ROOT'} . 
-                        "/skin/$skinvar/skin.css")) {
-            echo '
-            <link rel="stylesheet" type="text/css" 
-             href="/skin/' , $skinvar , '/skin.css" />
-            ';
-        } else { // Problem reading skin.css - delete PHP session variable
-            unsetSessionVar('cilogon_skin');
-        }
-    }
-}
-
-/************************************************************************
  * Function   : printWAYF                                               *
  * This function prints the whitelisted IdPs in a <select> form element *
  * which can be printed on the main login page to allow the user to     *
@@ -238,16 +198,11 @@ function printSkin()
 function printWAYF() 
 {
     global $csrf;
+    global $skin;
 
     $whiteidpsfile = '/var/www/html/include/whiteidps.txt';
     $helptext = "Check this box to bypass the welcome page on subsequent visits and proceed directly to the selected identity provider. You will need to clear your browser's cookies to return here."; 
     $searchtext = "Enter characters to search for in the list above.";
-
-    $keepidp     = getCookieVar('keepidp');
-    $providerId  = getCookieVar('providerId');
-    if (strlen($providerId) == 0) { // No providerId? Default to Google.
-        $providerId = openid::getProviderUrl('Google');
-    }
 
     /* Try to read in a file containing a list of IdPs mapped to their */
     /* display names.  If the file is empty, read in the list of       */
@@ -267,6 +222,48 @@ function printWAYF()
         $idps[$url] = $name;
     }
     natcasesort($idps);
+
+    /* Check to see if the skin's config.xml has a whitelist of IDPs.  */
+    /* If so, go thru master IdP list and keep only those IdPs in the  */
+    /* config.xml's whitelist.                                         */
+    $configwhitelist = $skin->getConfigOption('whitelist');
+    if ((is_string($configwhitelist)) && (strlen($configwhitelist) > 0)) {
+        // Transform string into array containing the string
+        $configwhitelist = array($configwhitelist);
+    }
+    if ((is_array($configwhitelist)) && (count($configwhitelist) > 0)) {
+        foreach ($idps as $entityID => $displayName) {
+            if (!in_array($entityID,$configwhitelist)) {
+                unset($idps[$entityID]);
+            }
+        }
+    }
+    /* Next, check to see if the skin's config.xml has a blacklist of  */
+    /* IdPs. If so, cull down the master IdP list removing 'bad' IdPs. */
+    $configblacklist = $skin->getConfigOption('blacklist');
+    if ((is_string($configblacklist)) && (strlen($configblacklist) > 0)) {
+        // Transform string into array containing the string
+        $configblacklist = array($configblacklist);
+    }
+    if ((is_array($configblacklist)) && (count($configblacklist) > 0)) {
+        foreach ($configblacklist as $entityID) {
+            unset($idps[$entityID]);
+        }
+    }
+
+    /* Check if the user had previously selected an IdP from the list */
+    $keepidp     = getCookieVar('keepidp');
+    $providerId  = getCookieVar('providerId');
+    if (strlen($providerId) == 0) { // No previous providerId? 
+        // Check if skin config.xml has a default IdP
+        $defaultidp = $skin->getConfigOption('defaultidp');
+        if ((strlen($defaultidp) > 0) && (isset($idps[$defaultidp]))) {
+            $providerId = $defaultidp;
+        } else { // Otherwise, default to Google
+            $providerId = openid::getProviderUrl('Google');
+        }
+    }
+
 
     echo '
     <div class="actionbox">
