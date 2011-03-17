@@ -364,6 +364,8 @@ function doubleClickSubmit() {
     /* Don't click the "Submit" button for Safari on Mac OS X */
     if ((vendor === null) ||
         (platform === null) ||
+        (vendor === undefined) ||
+        (platform === undefined) || 
         (vendor.length === 0) ||
         (platform.length === 0) ||
         (vendor.indexOf('Apple') === -1) ||
@@ -382,9 +384,11 @@ function doubleClickSubmit() {
 function textInputFocus() {
   var search = document.getElementById("searchlist");
   var passwd = document.getElementById("password1");
+  var p12actionbox = document.getElementById("p12actionbox");
   if (search !== null) {
     search.focus();
-  } else if (passwd !== null) {
+  } else if ((passwd !== null) && (p12actionbox !== null) && 
+             (p12actionbox.style.display != 'none')) {
     passwd.focus();
   }
 }
