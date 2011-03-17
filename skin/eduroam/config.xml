@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+  <defaultidp>urn:mace:incommon:idp.protectnetwork.org</defaultidp>
+
+  <blacklist>
+    <idp>http://google.com/accounts/o8/id</idp>
+    <idp>http://openid.paypal-ids.com</idp>
+    <idp>http://pip.verisignlabs.com</idp>
+    <idp>http://yahoo.com</idp>
+  </blacklist>
+
+</config>

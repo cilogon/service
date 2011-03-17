@@ -1,0 +1,55 @@
+/***** Begin basic elements *****/
+body {
+  color: #000;
+}
+a {
+  color: #00e;
+}
+a:visited {
+  color: #551a8b; 
+}
+a:hover {
+  color: none;
+}
+a:active {
+  color: #f00;
+}
+/***** End basic elements *****/
+
+/***** Begin a few misc elements *****/
+input.submit {
+  color: #000;
+  background-color: #bcd5e4;
+}
+/***** End a few misc element *****/
+
+/***** Begin page footer *****/
+div.footer a:link {
+  color: #00e;
+}
+div.footer a:visited {
+  color: #551a8b;
+}
+/***** End page footer *****/
+
+/***** Begin the "CILogon Service" header at the top of each page *****/
+div.logoheader {
+  background: none;
+  height: 64px;
+  margin-bottom: 8px;
+}
+div.logoheader h1 {
+  background: transparent url("/skin/eduroam/logo.gif") no-repeat top left;
+  margin-top: 0px;
+  margin-left: 0px;
+  width: 138px;
+  height: 50px;
+  float: left;
+}
+/***** End the "CILogon Service" header at the top of each page *****/
+
+/***** Begin skincilogonlogo *****/
+div.skincilogonlogo {
+  display: inline;
+}
+/***** End skincilogonlogo *****/

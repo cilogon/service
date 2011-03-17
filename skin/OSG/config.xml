@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This is a comment -->
+<config>
+  <defaultidp>urn:mace:incommon:clemson.edu</defaultidp>
+
+  <whitelist>
+    <idp>urn:mace:incommon:clemson.edu</idp>
+    <idp>urn:mace:incommon:lbl.gov</idp>
+    <idp>urn:mace:incommon:idp.protectnetwork.org</idp>
+  </whitelist>
+
+</config>

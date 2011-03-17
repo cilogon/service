@@ -1,0 +1,69 @@
+/***** Begin basic elements *****/
+body {
+  color: #000;
+}
+a {
+  color: #e07630;
+}
+a:visited {
+  color: #666; 
+}
+a:hover {
+  color: #fdcb25;
+}
+a:active {
+  color: #fdcb25;
+}
+/***** End basic elements *****/
+
+/***** Begin a few misc elements *****/
+input.submit {
+  color: #fff;
+  background-color: #e07630;
+  border: 0;
+}
+input.submit:hover {
+  background-color: #fdcb25;
+}
+/***** End a few misc element *****/
+
+/***** Begin page footer *****/
+div.footer a:link {
+  color: #e07630;
+}
+div.footer a:visited {
+  color: #666;
+}
+/***** End page footer *****/
+
+/***** Begin actionbox containing action buttons and WAYF *****/
+div.p12actionbox {
+  border: none;
+  display: none;
+}
+div.certactionbox {
+  border: 1px solid #888;
+  display: block;
+}
+/***** End actionbox *****/
+
+/***** Begin the "CILogon Service" header at the top of each page *****/
+div.logoheader {
+  background: none;
+  height: 81px;
+}
+div.logoheader h1 {
+  background: transparent url("/skin/OSG/template_02.gif") no-repeat top left;
+  margin-top: 0px;
+  margin-left: 44px;
+  width: 174px;
+  height: 81px;
+  float: left;
+}
+/***** End the "CILogon Service" header at the top of each page *****/
+
+/***** Begin skincilogonlogo *****/
+div.skincilogonlogo {
+  display: inline;
+}
+/***** End skincilogonlogo *****/
