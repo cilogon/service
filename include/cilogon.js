@@ -384,12 +384,13 @@ function doubleClickSubmit() {
 function textInputFocus() {
   var search = document.getElementById("searchlist");
   var passwd = document.getElementById("password1");
-  var p12actionbox = document.getElementById("p12actionbox");
   if (search !== null) {
     search.focus();
-  } else if ((passwd !== null) && (p12actionbox !== null) && 
-             (p12actionbox.style.display != 'none')) {
-    passwd.focus();
+  } else if (passwd !== null) {
+    try {
+      passwd.focus();
+    } catch (e) {
+    }
   }
 }
 
