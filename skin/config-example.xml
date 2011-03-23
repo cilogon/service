@@ -68,8 +68,8 @@
   <!--
   <pkcs12>
     <initiallifetime>
-      <number>28</number>
-      <multiplier>24</multiplier>
+      <number>13</number>
+      <multiplier>732</multiplier>
     </initiallifetime>
   </pkcs12>
   -->
@@ -90,8 +90,8 @@
   <!--
   <gsca>
     <initiallifetime>
-      <number>24</number>
-      <multiplier>86400</multiplier>
+      <number>12</number>
+      <multiplier>3600</multiplier>
     </initiallifetime>
   </gsca>
   -->
