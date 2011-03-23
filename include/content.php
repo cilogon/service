@@ -227,13 +227,16 @@ function printWAYF()
     /* If so, go thru master IdP list and keep only those IdPs in the  */
     /* config.xml's whitelist.                                         */
     $configwhitelist = $skin->getConfigOption('whitelist');
-    if ((is_string($configwhitelist)) && (strlen($configwhitelist) > 0)) {
-        // Transform string into array containing the string
-        $configwhitelist = array($configwhitelist);
-    }
-    if ((is_array($configwhitelist)) && (count($configwhitelist) > 0)) {
+    if (($configwhitelist !== null) && (!empty($configwhitelist->idp))) {
         foreach ($idps as $entityID => $displayName) {
-            if (!in_array($entityID,$configwhitelist)) {
+            $found = false;
+            foreach ($configwhitelist->idp as $whiteidp) {
+                if ($entityID == ((string)$whiteidp)) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
                 unset($idps[$entityID]);
             }
         }
@@ -241,13 +244,9 @@ function printWAYF()
     /* Next, check to see if the skin's config.xml has a blacklist of  */
     /* IdPs. If so, cull down the master IdP list removing 'bad' IdPs. */
     $configblacklist = $skin->getConfigOption('blacklist');
-    if ((is_string($configblacklist)) && (strlen($configblacklist) > 0)) {
-        // Transform string into array containing the string
-        $configblacklist = array($configblacklist);
-    }
-    if ((is_array($configblacklist)) && (count($configblacklist) > 0)) {
-        foreach ($configblacklist as $entityID) {
-            unset($idps[$entityID]);
+    if (($configblacklist !== null) && (!empty($configblacklist->idp))) {
+        foreach ($configblacklist->idp as $blackidp) {
+            unset($idps[(string)$blackidp]);
         }
     }
 
@@ -255,15 +254,14 @@ function printWAYF()
     $keepidp     = getCookieVar('keepidp');
     $providerId  = getCookieVar('providerId');
     if (strlen($providerId) == 0) { // No previous providerId? 
-        // Check if skin config.xml has a default IdP
-        $defaultidp = $skin->getConfigOption('defaultidp');
-        if ((strlen($defaultidp) > 0) && (isset($idps[$defaultidp]))) {
-            $providerId = $defaultidp;
+        // Check if skin config.xml has an initial IdP
+        $initialidp = (string)$skin->getConfigOption('initialidp');
+        if (($initialidp !== null) && (isset($idps[$initialidp]))) {
+            $providerId = $initialidp;
         } else { // Otherwise, default to Google
             $providerId = openid::getProviderUrl('Google');
         }
     }
-
 
     echo '
     <div class="actionbox">
@@ -608,7 +606,8 @@ function unsetGetUserSessionVars()
     unsetSessionVar('idpname');
     unsetSessionVar('dn');
     unsetSessionVar('activation');
-    unsetSessionVar('p12');
+    unsetSessionVar('p12lifetime');
+    unsetSessionVar('p12multiplier');
 }
 
 /************************************************************************

@@ -243,25 +243,33 @@ img.hourglass {
 }
 /***** End actionbox *****/
 
-/***** Begin certinfo table *****/
-table.certinfo {
+/***** Begin certinfo / portalinfo table *****/
+table.certinfo,
+table.portalinfo1,
+table.portalinfo2 {
   margin: 1em;
   width: 96%;
   border: 1px solid #888;
   border-spacing: 0;
   border-collapse: collapse;
 }
-table.certinfo a:link {
+table.certinfo a:link,
+table.portalinfo1 a:link,
+table.portalinfo2 a:link {
   text-decoration: none;
 }
-table.certinfo a:visited {
+table.certinfo a:visited,
+table.portalinfo1 a:visited,
+table.portalinfo2 a:visited {
   text-decoration: none;
 }
-table.certinfo th {
+table.certinfo th,
+table.portalinfo1 th,
+table.portalinfo2 th {
   text-align: right;
   padding-right: 1em;
 }
-/***** End certinfo table *****/
+/***** End certinfo / portalinfo table *****/
 
 /***** Begin contactform on the requestidp page *****/
 div.contactform {

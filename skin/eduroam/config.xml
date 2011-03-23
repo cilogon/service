@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 
-  <defaultidp>urn:mace:incommon:idp.protectnetwork.org</defaultidp>
+  <initialidp>urn:mace:incommon:idp.protectnetwork.org</initialidp>
 
   <blacklist>
     <idp>http://google.com/accounts/o8/id</idp>

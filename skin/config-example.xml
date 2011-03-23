@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This is a sample configuration file for a 'skin'.  It contains examples
+     of all of the available program options.  Simply copy this file to the
+     appropriate skin subdirectory, rename it to 'config.xml', and uncomment
+     and configure the desired sections.
+-->
+<config>
+
+  <!-- <initialidp>
+       When a user first visits the cilogon.org page, he is presented with a
+       list of IdPs.  By default, Google is initially highlighted.  You can
+       change this behavior by specifying a different initial IdP.  (Use the
+       entityId for InCommon, IdP endpoint URL for OpenID.) In the example
+       here, ProtectNetwork is selected initially.
+  -->
+  <!--
+  <initialidp>urn:mace:incommon:idp.protectnetwork.org</initialidp>
+  -->
+
+
+  <!-- <whitelist>
+       The cilogon.org service maintains a global list of available IdPs in
+       the file /var/www/html/include/whitelist.txt.  This full list is
+       typically shown to the user on the "Log On" page.  You can cull this
+       list down to a subset by listing only those IdPs you want shown for
+       the skin.  Basically, the resulting list is an intersection of the
+       global whitelist and the list of IdPs below.  (Use the entityIds for
+       InCommon, IdP endpoint URLs for OpenID.) In this example, we show
+       only IdPs starting with the letter 'P'.
+  -->
+  <!--
+  <whitelist>
+    <idp>urn:mace:incommon:psu.edu</idp>
+    <idp>urn:mace:incommon:idp.protectnetwork.org</idp>
+    <idp>https://idp.purdue.edu/idp/shibboleth</idp>
+  </whitelist>
+  -->
+
+
+  <!-- <blacklist>
+       The cilogon.org service maintains a global list of available IdPs in
+       the file /var/www/html/include/whitelist.txt.  This full list is
+       typically shown to the user on the "Log On" page.  You can remove
+       IdPs from the list by specifying them in the blacklist below.  (Use
+       the entityIds for InCommon, IdP endpoint URLs for OpenID.) In this
+       example, we remove the OpenID providers from the list.
+  -->
+  <!--
+  <blacklist>
+    <idp>http://google.com/accounts/o8/id</idp>
+    <idp>http://openid.paypal-ids.com</idp>
+    <idp>http://pip.verisignlabs.com</idp>
+    <idp>http://yahoo.com</idp>
+  </blacklist>
+  -->
+
+
+  <!-- <pkcs12>
+       This block contains options specific to the "Get New Certificate" box
+       (i.e. download a PKCS12 credential).  The <initiallifetime> block
+       allows you to specify the initial value for "Certificate Lifetime".
+       If set, you must specify BOTH <number> AND <multiplier>.
+       <number> is the value that appears in the text input box.
+       <multiplier> can be 1 (=> number is in hours), 24 (=> number is in
+       days), or 732 (=> number is in months).  The example below shows the
+       default of 13 months, which is also the maximum lifetime.
+  -->
+  <!--
+  <pkcs12>
+    <initiallifetime>
+      <number>28</number>
+      <multiplier>24</multiplier>
+    </initiallifetime>
+  </pkcs12>
+  -->
+
+
+  <!-- <gsca>
+       This block contains options specific to the "Download Certificate"
+       box (i.e. use the GridShib-CA JWS client to download a credential).
+       The <initiallifetime> block allows you to specify the initial value
+       for the "Lifetime".  Note that these values are typically set by the
+       gridshib-ca.conf file, but will be overridden by the values here.
+       If set, you must specify BOTH <number> AND <multiplier>.
+       <number> is the value that appears in the text input box.
+       <multiplier> can be 3600 (=> number is in hours), 86400 (=> number is
+       in days), or 2635200 (=> number is in months).  The example below
+       shows the default of 12 hours.  Maximum is 13 months (2635200).
+  -->
+  <!--
+  <gsca>
+    <initiallifetime>
+      <number>24</number>
+      <multiplier>86400</multiplier>
+    </initiallifetime>
+  </gsca>
+  -->
+
+
+  <!-- <delegate>
+       This block contains options specific to the "Delegate" page (i.e.
+       when a certificate is delegated to a portal).  Note that options in
+       this section are independent of each other.
+       <initiallifetime> allows you to specify the initial value for
+       "Certificate Lifetime (in hours)". This defaults to 12.  Maximum
+       value is 240.
+       <remember> If present, set to 1. The checkbox for "Remember my OK
+       for this portal" is virtually clicked when the user first visits the
+       site.  (Actually, the program simply sets a cookie for the checkbox.)
+       This means that the user's first visit will show _only_ the IdP
+       selection page as all subsequent pages will continue automatically.
+  -->
+  <!--
+  <delegate>
+    <initiallifetime>12</initiallifetime>
+    <remember>1</remember>
+  </delegate>
+  -->
+
+</config>

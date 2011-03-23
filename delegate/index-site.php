@@ -112,19 +112,38 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
 function printLogonPage()
 {
     global $log;
+    global $skin;
 
     $log->info('Welcome page hit.');
+
+    /* Check the skin config to see if we should virtually click the
+     * "Remember my OK for this portal" checkbox.  We need to do this here
+     * because we want to set the portal cookie before we go to the next
+     * page (so the page can read the cookie).
+     */
+    $skinremember = $skin->getConfigOption('delegate','remember');
+    if (($skinremember !== null) && ((int)$skinremember == 1)) {
+        $lifetime = 12; // Default to 12 hours, but check config option
+        $skinlifetime = $skin->getConfigOption('delegate','initiallifetime');
+        if (($skinlifetime !== null) && ((int)$skinlifetime > 0)) {
+            $lifetime = (int)$skinlifetime;
+        }
+        setPortalCookie((int)$skinremember,$lifetime);
+    }
 
     printHeader('Welcome To The CILogon Delegation Service');
 
     echo '
     <div class="boxed">
       <br class="clear"/>
-      <p>
-      Please log on to delegate a certificate to
-      "' , htmlspecialchars(getSessionVar('portalname')) , '".
+      <p>"' , 
+      htmlspecialchars(getSessionVar('portalname')) , 
+      '" requests that you select an Identity Provider and "Log On". 
+      If you do not approve this request, do not proceed.
       </p>
     ';
+
+    printPortalInfo('1');
 
     printWAYF();
 
@@ -154,12 +173,12 @@ function printBadOAuthTokenPage()
       <br class="clear"/>
       <p>
       You have reached the CILogon Delegation Service.  This service is for
-      use by Community Portals to obtain certificates for their users.  
+      use by third parties to obtain certificates for their users.  
       End users should not normally see this page.
       </p>
-      <p>If you arrived at this page from a community portal, there was a
+      <p>If you are seeing this page, there was a
       problem with the delegation process.
-      Please return to your portal and try again.  If the error persists,
+      Please return to the previous site and try again.  If the error persists,
       please contact us at the email address at the bottom of the page.
       </p>
       <p>
@@ -189,16 +208,22 @@ function printBadOAuthTokenPage()
 function printMainPage()
 {
     global $log;
+    global $skin;
 
     // Read the cookie containing portal 'lifetime' and 'remember' settings
-    $portalname = getSessionVar('portalname');
     $portal = new portalcookie();
     $remember = $portal->getPortalRemember(getSessionVar('callbackuri'));
     $lifetime = $portal->getPortalLifetime(getSessionVar('callbackuri'));
     // If no 'lifetime' cookie, default to 12 hours.  Otherwise,
     // make sure lifetime is between 1 and 240 hours (inclusive).
     if ((strlen($lifetime) == 0) || ($lifetime == 0)) {
-        $lifetime = 12;
+        // See if the skin specified an initial value
+        $skinlife = $skin->getConfigOption('delegate','initiallifetime');
+        if (($skinlife !== null) && ((int)$skinlife > 0)) {
+            $lifetime = (int)$skinlife;
+        } else {
+            $lifetime = 12;
+        }
     } elseif ($lifetime < 1) {
         $lifetime = 1;
     } elseif ($lifetime > 240) {
@@ -215,35 +240,25 @@ function printMainPage()
 
         $log->info('Allow Or Deny Delegation page hit.');
 
-        $lifetimetext = "Specify the lifetime of the certificate to be delegated. Maximum value is 240 hours.";
-        $remembertext ="Check this box to automatically approve certificate delegation for this portal on future visits. The certificate lifetime will be remembered. You will need to clear your browser's cookies to return here.";
+        $lifetimetext = "Specify the lifetime of the certificate to be issued. Maximum value is 240 hours.";
+        $remembertext ="Check this box to automatically approve certificate issuance to the site on future visits. The certificate lifetime will be remembered. You will need to clear your browser's cookies to return here.";
 
         printHeader('Confirm Allow Delegation');
 
         echo '
         <div class="boxed">
         <br class="clear"/>
-        <p>
-        The portal below is requesting a certificate for you. 
-        If this information appears correct, then OK the request.
-        Otherwise, cancel the request or navigate away from this page.
+        <p>"' , 
+        htmlspecialchars(getSessionVar('portalname')) , 
+        '" is requesting a certificate for you. 
+        If you approve, then "OK" the request.
+        Otherwise, "Cancel" the request or navigate away from this page.
         </p>
+        ';
 
-        <table class="certinfo">
-        <tr title="The Portal Name is provided by the portal to the CILogon Service and has not been authenticated.">
-          <th>Portal&nbsp;Name:</th>
-          <td>' , htmlspecialchars(getSessionVar('portalname')) , '</td>
-        </tr>
-        <tr title="The Portal URL is the location to which the portal requests you to return upon successful delegation of the certificate.">
-          <th>Portal&nbsp;URL:</th> 
-          <td>' , htmlspecialchars(getSessionVar('successuri')) , '</td>
-        </tr>
-        <tr title="The Delegation URL is the location to which the CILogon Service will send your certificate.">
-          <th>Delegation&nbsp;URL:</th>
-          <td>' , htmlspecialchars(getSessionVar('callbackuri')) , '</td>
-        </tr>
-        </table>
+        printPortalInfo('2');
 
+        echo '
         <div class="actionbox">
         ';
 
@@ -260,7 +275,7 @@ function printMainPage()
         </p>
         <p>
         <label for="rememberok" title="', $remembertext , '"
-        class="helpcursor">Remember my OK for this portal:</label>
+        class="helpcursor">Remember my OK for the site:</label>
         <input type="checkbox" name="rememberok" id="rememberok"
         title="', $remembertext, '" class="helpcursor" />
         </p>
@@ -279,20 +294,50 @@ function printMainPage()
 }
 
 /************************************************************************
+ * Function   : printPortalInfo                                         *
+ * Parameter  : An optional suffix to append to the "portalinfo" table  *
+ *              class name.                                             *
+ * This function prints out the portal information table at the top of  *
+ * of the page.  The optional parameter "$suffix" allows you to append  *
+ * a number (for example) to differentiate the portalinfo table on the  *
+ * log in page from the one on the main page.                           *
+ ************************************************************************/
+function printPortalInfo($suffix='') {
+    echo '
+    <table class="portalinfo' , $suffix , '">
+    <tr title="The Site Name is provided by the site to CILogon and has not been vetted.">
+      <th>Site&nbsp;Name:</th>
+      <td>' , htmlspecialchars(getSessionVar('portalname')) , '</td>
+    </tr>
+    <tr title="The Site URL is the location to which the site requests you to return upon completion.">
+      <th>Site&nbsp;URL:</th> 
+      <td>' , htmlspecialchars(getSessionVar('successuri')) , '</td>
+    </tr>
+    <tr title="The Service URL is the location to which CILogon will send a certificate containing your identity information.">
+      <th>Service&nbsp;URL:</th>
+      <td>' , htmlspecialchars(getSessionVar('callbackuri')) , '</td>
+    </tr>
+    </table>
+    ';
+}
+
+/************************************************************************
  * Function   : printCancelPage                                         *
  * This function prints out the HTML for when the user clicked the      *
  * "Cancel" button on the "Allow Delegation" page.  It gives the user a *
  * link back to the portal via the "failure URL".                       *
  ************************************************************************/
 function printCancelPage() {
+    $portalname = getSessionVar('portalname');
+
     printHeader('Delegation Denied');
 
     echo '
     <div class="boxed">
     <br class="clear"/>
     <p>
-    You have canceled delegation of a certificate to  "' ,
-    htmlspecialchars(getSessionVar('portalname')) , '".  
+    You have canceled delegation of a certificate to "' ,
+    htmlspecialchars($portalname) , '".  
     Below is a link to return to the
     portal.  This link has been provided by the portal to be used when
     delegation of a certificate fails.
@@ -306,7 +351,7 @@ function printCancelPage() {
 
     <div class="returnlink">
       <a href="' , getSessionVar('failureuri') , '">Return to ' ,
-      htmlspecialchars(getSessionVar('portalname')) , '</a>
+      htmlspecialchars($portalname) , '</a>
     </div>
     </div>
     ';
@@ -334,7 +379,6 @@ function handleAllowDelegation($always=false)
 
     $log->info('Attempting to delegate a certificate to a portal...');
 
-    $portalname = getSessionVar('portalname');
 
     // Try to get the certificate lifetime from a submitted <form>
     $lifetime = trim(getPostVar('lifetime'));
@@ -356,10 +400,7 @@ function handleAllowDelegation($always=false)
         $lifetime = 240;
     }
 
-    // Set the 'remember' cookie for when "Remember OK" checkbox is checked
-    $portal->setPortalRemember(getSessionVar('callbackuri'),(int)$always);
-    $portal->setPortalLifetime(getSessionVar('callbackuri'),$lifetime);
-    $portal->write();  // Save the cookie with the updated values
+    setPortalCookie((int)$always,$lifetime);
 
     $success = false;  // Assume delegation of certificate failed
     $certtext = '';    // Output of 'openssl x509 -noout -text -in cert.pem'
@@ -445,7 +486,7 @@ function handleAllowDelegation($always=false)
             The CILogon Service has issued a certificate to "' ,
             htmlspecialchars(getSessionVar('portalname')) , '".  
             Below is a link to return to
-            your portal to use the delegated certificate.
+            the site to use the issued certificate.
             </p>
             ';
             // If we got the cert from the 'delegation/authorized' script,
@@ -487,11 +528,9 @@ function handleAllowDelegation($always=false)
         } else {
             echo '
             <p>
-            We were unable to delegate a certificate to the portal "' ,
+            We were unable to issue a certificate to "' ,
             htmlspecialchars(getSessionVar('portalname')) , '".  
-            Below is a link to return to
-            the portal.  This link has been provided by the portal to be
-            used when delegation of a certificate fails.
+            Below is a link to return to the site.  
             </p>
             ';
         }
@@ -508,6 +547,24 @@ function handleAllowDelegation($always=false)
         unsetGetUserSessionVars();
         unsetPortalSessionVars();
     }
+}
+
+/************************************************************************
+ * Function   : setPortalCookie                                         *
+ * Parameters : (1) 1 if the "Remember my OK for this portal" checkbox  *
+ *                  has been checked.  0 otherwise.                     *
+ *              (2) The lifetime (in hours) entered in the "Certificate *
+ *                  Lifetime input box.                                 *
+ * This function is a convenience funtion to set the cookie for the     *
+ * current portal (using the callbackuri) to remember the certificate   *
+ * lifetime value and if the user checked the "Remember my OK for this  *
+ * portal" checkbox.                                                    *
+ ************************************************************************/
+function setPortalCookie($remember,$lifetime) {
+    $portal = new portalcookie();
+    $portal->setPortalRemember(getSessionVar('callbackuri'),(int)$remember);
+    $portal->setPortalLifetime(getSessionVar('callbackuri'),$lifetime);
+    $portal->write();  // Save the cookie with the updated values
 }
 
 /************************************************************************

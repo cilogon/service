@@ -62,27 +62,41 @@ div.logoheader h1 {
 /***** End the "CILogon Service" header at the top of each page *****/
 
 /***** Begin certinfo table *****/
-table.certinfo {
+table.certinfo,
+table.portalinfo1,
+table.portalinfo2 {
   margin: 1em;
   width: 96%;
   border: 1px solid #D6DDB9;
   border-spacing: 0;
   border-collapse: collapse;
 }
-table.certinfo th {
+table.certinfo th,
+table.portalinfo1 th,
+table.portalinfo2 th {
   text-align: right;
   padding-right: 1em;
 }
 table.certinfo a,
+table.portalinfo1 a,
+table.portalinfo2 a,
 table.certinfo a:link,
-table.certinfo a:visited {
+table.portalinfo1 a:link,
+table.portalinfo2 a:link,
+table.certinfo a:visited,
+table.portalinfo1 a:visited,
+table.portalinfo2 a:visited {
   color: #27638C;
   margin: 0;
   padding: 0;
   text-decoration: none;
 } 
 table.certinfo a:hover,
-table.certinfo a:active {
+table.portalinfo1 a:hover,
+table.portalinfo2 a:hover,
+table.certinfo a:active,
+table.portalinfo1 a:active,
+table.portalinfo2 a:active {
   text-decoration: underline;
 }
 

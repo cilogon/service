@@ -215,6 +215,8 @@ function printCertInfo() {
  * GridShib-CA JWS client to download a certificate for the user.       *
  ************************************************************************/
 function printDownloadCertificate() {
+    global $skin;
+
     $gridshibconf = parseGridShibConf();
     $idpname = getSessionVar('idpname');
 
@@ -232,9 +234,18 @@ function printDownloadCertificate() {
     $certlifetime   = getCookieVar('certlifetime');
     $certmultiplier = getCookieVar('certmultiplier');
     if ((strlen($certlifetime) == 0) || ($certlifetime <= 0)) {
-        $certlifetime = round(preg_replace('/^\s*=\s*/','',
-            $gridshibconf['root']['CA']['DefaultCredLifetime']) / 3600);
-        $certmultiplier = 3600;
+        // See if the skin specified an initial value
+        $skinlife = $skin->getConfigOption('gsca','initiallifetime','number');
+        $skinmult = $skin->getConfigOption('gsca','initiallifetime','multiplier');
+        if (($skinlife !== null) && ($skinmult !== null) &&
+            ((int)$skinlife > 0) && ((int)$skinmult > 0)) {
+            $certlifetime = (int)$skinlife;
+            $certmultiplier = (int)$skinmult;
+        } else { // Use gridshib-ca.conf default value
+            $certlifetime = round(preg_replace('/^\s*=\s*/','',
+                $gridshibconf['root']['CA']['DefaultCredLifetime']) / 3600);
+            $certmultiplier = 3600;
+        }
     }
     if ((strlen($certmultiplier) == 0) || ($certmultiplier <= 0)) {
         $certmultiplier = 3600;
@@ -309,6 +320,7 @@ function printDownloadCertificate() {
  ************************************************************************/
 function printGetCertificate() {
     global $csrf;
+    global $skin;
 
     $downloadcerttext = "Clicking this button will generate a link to a new certificate, which you can download to your local computer. The certificate is valid for up to 13 months."; 
     $p12linktext = "Left-click this link to import the certificate into your broswer / operating system. (Firefox users see the FAQ.) Right-click this link and select 'Save As...' to save the certificate to your desktop.";
@@ -354,8 +366,17 @@ function printGetCertificate() {
     }
     $maxlifetime = 9516; // In hours = 13 months
     if ((strlen($p12lifetime) == 0) || ($p12lifetime <= 0)) {
-        $p12lifetime = 13;      // Default to 13 months
-        $p12multiplier = 732;
+        // See if the skin specified an initial value
+        $skinlife = $skin->getConfigOption('pkcs12','initiallifetime','number');
+        $skinmult = $skin->getConfigOption('pkcs12','initiallifetime','multiplier');
+        if (($skinlife !== null) && ($skinmult !== null) &&
+            ((int)$skinlife > 0) && ((int)$skinmult > 0)) {
+            $p12lifetime = (int)$skinlife;
+            $p12multiplier = (int)$skinmult;
+        } else {
+            $p12lifetime = 13;      // Default to 13 months
+            $p12multiplier = 732;
+        }
     }
     if ((strlen($p12multiplier) == 0) || ($p12multiplier <= 0)) {
         $p12multiplier = 732;   // Default to months
