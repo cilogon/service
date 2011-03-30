@@ -60,7 +60,6 @@ function printHeader($title='',$extra='')
 <!--[if IE]>
     <style type="text/css">
       body { behavior: url(/include/csshover3.htc); }
-      .openiddrop ul li div { right: 0px; }
     </style>
 <![endif]-->
     ';
