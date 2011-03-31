@@ -52,6 +52,8 @@ function getUserAndRespond($responseurl) {
         }
     }
 
+    $validator = new EmailAddressValidator();
+
     /* If all required attributes are available, get the       *
      * database user id and status code of the database query. */
     if ((strlen($shibarray['User Identifier']) > 0) &&
@@ -59,7 +61,8 @@ function getUserAndRespond($responseurl) {
         (strlen($shibarray['Organization Name']) > 0) &&
         (strlen($firstname) > 0) &&
         (strlen($lastname) > 0) &&
-        (strlen($shibarray['Email Address']) > 0)) {
+        (strlen($shibarray['Email Address']) > 0) && 
+        ($validator->check_email_address($shibarray['Email Address']))) {
         $dbs->getUser($shibarray['User Identifier'],
                       $shibarray['Identity Provider'],
                       $shibarray['Organization Name'],
@@ -129,6 +132,8 @@ function sendErrorEmail($remote_user,$idp,$idpname,$firstname,$lastname,
     $mailmsg  = '
 CILogon Service - Failure in /secure/getuser/
 ---------------------------------------------
+Server Host   = ' . HOSTNAME . '
+Remote Address= ' . getServerVar('REMOTE_ADDR') . '
 Remote_User   = ' . 
     ((strlen($remote_user) > 0) ? $remote_user : '<MISSING>') . '
 IdP           = ' .

@@ -522,12 +522,41 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser')
         if ($datastore == null) {
             setSessionVar('openiderror',$openiderrorstr);
         } else {
+            require_once("Auth/OpenID/Consumer.php");
+            require_once("Auth/OpenID/SReg.php");
+            require_once("Auth/OpenID/AX.php");
+
             $consumer = new Auth_OpenID_Consumer($datastore);
             $auth_request = $consumer->begin($providerId);
 
             if (!$auth_request) {
                 setSessionVar('openiderror',$openiderrorstr);
             } else {
+                // Get attributes from Verisign
+                $sreg_request = Auth_OpenID_SRegRequest::build(
+                    array('fullname','email'));
+                if ($sreg_request) {
+                    $auth_request->addExtension($sreg_request);
+                }
+
+                // Get attributes from Google and Yahoo
+                $attributes = array(
+                    Auth_OpenID_AX_AttrInfo::make(
+                        'http://axschema.org/contact/email',1,1,'email'),
+                    Auth_OpenID_AX_AttrInfo::make(
+                        'http://axschema.org/namePerson/first',1,1,'firstname'),
+                    Auth_OpenID_AX_AttrInfo::make(
+                        'http://axschema.org/namePerson/last',1,1,'lastname'),
+                    Auth_OpenID_AX_AttrInfo::make(
+                        'http://axschema.org/namePerson',1,0,'fullname')
+                );
+                $ax = new Auth_OpenID_AX_FetchRequest;
+                foreach($attributes as $attr){
+                    $ax->add($attr);
+                }
+                $auth_request->addExtension($ax);
+
+                // Start the OpenID authentication request
                 if ($auth_request->shouldSendRedirect()) {
                     $redirect_url = $auth_request->redirectURL(
                         'https://' . HOSTNAME . '/',
@@ -605,6 +634,7 @@ function unsetGetUserSessionVars()
     unsetSessionVar('idpname');
     unsetSessionVar('dn');
     unsetSessionVar('activation');
+    unsetSessionVar('p12');
     unsetSessionVar('p12lifetime');
     unsetSessionVar('p12multiplier');
 }

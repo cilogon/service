@@ -5,6 +5,9 @@ require_once('../include/autoloader.php');
 require_once('../include/content.php');
 require_once('../include/dbservice.php');
 require_once('Auth/OpenID/Consumer.php');
+require_once("Auth/OpenID/SReg.php");
+require_once("Auth/OpenID/AX.php");
+
 
 /* Check the csrf cookie against either a hidden <form> element or a *
  * PHP session variable, and get the value of the "submit" element.  */
@@ -39,6 +42,11 @@ function getUserAndRespond($responseurl) {
     $dbs = new dbservice();
     $openid = new openid();
     $openidid = '';
+    $firstname = '';
+    $lastname = '';
+    $fullname = '';
+    $emailaddr = '';
+
 
     unsetSessionVar('openiderror');
     $datastore = $openid->getStorage();
@@ -62,6 +70,53 @@ function getUserAndRespond($responseurl) {
         } elseif ($response->status == Auth_OpenID_SUCCESS) {
             // This means the authentication succeeded; extract the identity.
             $openidid = htmlentities($response->getDisplayIdentifier());
+
+            // Get attributes from Verisign
+            $sreg = null;
+            $sreg_resp =
+                Auth_OpenID_SRegResponse::fromSuccessResponse($response);
+            if ($sreg_resp) {
+                $sreg = $sreg_resp->contents();
+            }
+
+            // Get attributes from Google and Yahoo
+            $ax = new Auth_OpenID_AX_FetchResponse();
+            $data = $ax->fromSuccessResponse($response)->data;
+
+            // Look for email attribute
+            if (@$sreg['email']) {
+                $emailaddr = htmlentities(@$sreg['email']);
+            } elseif (@$data['http://axschema.org/contact/email'][0]) {
+                $emailaddr = htmlentities(
+                    @$data['http://axschema.org/contact/email'][0]);
+            }
+
+
+            // Look for fullname attribute, or firstname+lastname
+            if (@$sreg['fullname']) {
+                $fullname = htmlentities(@$sreg['fullname']);
+            } elseif (@$data['http://axschema.org/namePerson'][0]) {
+                $fullname = htmlentities(
+                    @$data['http://axschema.org/namePerson'][0]);
+            } elseif ((@$data['http://axschema.org/namePerson/first'][0]) &&
+                      (@$data['http://axschema.org/namePerson/last'][0])) {
+                $fullname = htmlentities(
+                    @$data['http://axschema.org/namePerson/first'][0]) .  ' ' . 
+                        htmlentities(
+                        @$data['http://axschema.org/namePerson/last'][0]);
+            }
+
+            // If found fullname, split into firstname and lastname
+            if (strlen($fullname) > 0) {
+                $names = preg_split('/ /',$fullname,2);
+                $firstname = @$names[0];
+                $lastname =  @$names[1];
+                // If only a single name, duplicate first and last name
+                if (strlen($lastname) == 0) { 
+                    $lastname = $firstname;
+                }
+            }
+
         } else {
             setSessionVar('openiderror',
                 'OpenID logon error. Please try again.');
@@ -75,9 +130,22 @@ function getUserAndRespond($responseurl) {
         /* If all required attributes are available, get the       *
          * database user id and status code of the database query. */
         $providerId = getCookieVar('providerId');
-        if ((strlen($openidid) > 0) && (strlen($providerId) > 0) &&
-            (openid::urlExists($providerId))) {
-            $dbs->getUser($openidid,$providerId);
+        $providerName = openid::getProviderName($providerId);
+        $validator = new EmailAddressValidator();
+
+        if ((strlen($openidid) > 0) && 
+            (strlen($providerId) > 0) &&
+            (strlen($providerName) > 0)  &&
+            (strlen($firstname) > 0) &&
+            (strlen($lastname) > 0) &&
+            (strlen($emailaddr) > 0) &&
+            ($validator->check_email_address($emailaddr))) {
+            $dbs->getUser($openidid,
+                          $providerId,
+                          $providerName,
+                          $firstname,
+                          $lastname,
+                          $emailaddr);
             setSessionVar('uid',$dbs->user_uid);
             setSessionVar('status',$dbs->status);
         } else {
@@ -90,6 +158,10 @@ function getUserAndRespond($responseurl) {
         if (getSessionVar('status') & 1) { // Bad status codes are odd-numbered
             sendErrorEmail($openidid,
                            $providerId,
+                           $providerName,
+                           $firstname,
+                           $lastname,
+                           $emailaddr,
                            getSessionVar('uid'),
                            array_search(getSessionVar('status'),
                                dbservice::$STATUS)
@@ -98,8 +170,7 @@ function getUserAndRespond($responseurl) {
             setSessionVar('dn',$dbs->distinguished_name);
             setSessionVar('loa','openid');
             setSessionVar('idp',$providerId);
-            setSessionVar('idpname',
-                openid::getProviderName($providerId));
+            setSessionVar('idpname',$providerName);
         }
 
         setSessionVar('submit',getSessionVar('responsesubmit'));
@@ -120,14 +191,19 @@ function getUserAndRespond($responseurl) {
  * Function   : sendErrorEmail                                          *
  * Parameters : (1) The user's OpenID                                   *
  *              (2) The OpenID Provider                                 *
- *              (3) Persistent store user identifier                    *
- *              (4) String value of the status of getUser() call        *
+ *              (3) The OpenID Provider display name                    *
+ *              (4) The user's first name                               *
+ *              (5) The user's last name                                *
+ *              (6) The user's email address                            *
+ *              (7) Persistent store user identifier                    *
+ *              (8) String value of the status of getUser() call        *
  * This function sends an email to help@cilogon.org when there is a     *
  * problem getting the user.  This can happen when there are missing    *
- * SAML attributes in the Shibboleth session, or when the persistent    *
+ * SAML attributes in the OpenID session, or when the persistent        *
  * store getUser() call returns a bad status code.                      *
  ************************************************************************/
-function sendErrorEmail($openidid,$providerId,$uid,$statuscode) 
+function sendErrorEmail($openidid,$providerId,$providerName,
+                        $firstname,$lastname,$emailaddr,$uid,$statuscode) 
 {
     $mailto   = 'help@cilogon.org';
     $mailfrom = 'From: help@cilogon.org' . "\r\n" .
@@ -136,13 +212,23 @@ function sendErrorEmail($openidid,$providerId,$uid,$statuscode)
     $mailmsg  = '
 CILogon Service - Failure in /secure/getopeniduser/
 ---------------------------------------------------
-OpenId       = ' . 
+Server Host   = ' . HOSTNAME . '
+Remote Address= ' . getServerVar('REMOTE_ADDR') . '
+OpenId ID     = ' . 
     ((strlen($openidid) > 0) ? $openidid : '<MISSING>') . '
-Provider     = ' .
+Provider URL  = ' .
     ((strlen($providerId) > 0) ? $providerId : '<MISSING>') . '
-Database UID = ' .
+Provider Name = ' .
+    ((strlen($providerName) > 0) ? $providerName : '<MISSING>') . '
+First Name    = ' .
+    ((strlen($firstname) > 0) ? $firstname : '<MISSING>') . '
+Last Name     = ' .
+    ((strlen($lastname) > 0) ? $lastname : '<MISSING>') . '
+Email Address = ' .
+    ((strlen($emailaddr) > 0) ? $emailaddr : '<MISSING>') . '
+Database UID  = ' .
     ((strlen($uid) > 0) ? $uid : '<MISSING>') . '
-Status Code  = ' .
+Status Code   = ' .
     ((strlen($statuscode) > 0) ? $statuscode : '<MISSING>') . '
 ';
     mail($mailto,$mailsubj,$mailmsg,$mailfrom);

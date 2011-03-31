@@ -726,7 +726,7 @@ function generateActivationCode() {
             $httpcode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
             if ($httpcode == 200) {
                 if (preg_match('/AuthenticationToken = ([^<]+)/',
-                    $output,$match)) {
+                               $output,$match)) {
                     $tokenvalue = $match[1];
                 }
             }
