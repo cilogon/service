@@ -330,18 +330,13 @@ function printGetCertificate() {
 
     validateP12();
     $p12expire = '';
-    $p12dir = '';
+    $p12link = '';
     $p12 = getSessionVar('p12');
     if (preg_match('/([^\t]*)\t(.*)/',$p12,$match)) {
         $p12expire = $match[1];
-        $p12dir = $match[2];
+        $p12link = $match[2];
     }
         
-    $p12link = '';
-    if ((strlen($p12dir) > 0) &&
-        (is_readable(getServerVar('DOCUMENT_ROOT').'/pkcs12/'.$p12dir))) {
-        $p12link = getScriptDir(true).'pkcs12/'.$p12dir.'/usercred.p12';
-    }
     if ((strlen($p12link) > 0) && (strlen($p12expire) > 0)) {
         $p12link = '<a href="' . $p12link . 
             '">&raquo; Click Here To Download Your Certificate &laquo;</a>';
@@ -663,9 +658,11 @@ function generateP12() {
             /* Verify the usercred.p12 file was actually created */
             $size = @filesize($p12file);
             if (($size !== false) && ($size > 0)) {
-                $p12 = (time()+300) . "\t" . $p12dir;
+                $p12link = 'https://' . getMachineHostname() . '/pkcs12/' .
+                           $p12dir . '/usercred.p12';
+                $p12 = (time()+300) . "\t" . $p12link;
                 setSessionVar('p12',$p12);
-                $log->info('Generated New User Certificate="'.$p12dir.'"');
+                $log->info('Generated New User Certificate="'.$p12link.'"');
             } else { // Empty or missing usercred.p12 file - shouldn't happen!
                 setSessionVar('p12error',
                     'Error creating certificate. Please try again.');
@@ -752,24 +749,23 @@ function generateActivationCode() {
  * Function   : validateP12                                             *
  * This function is called just before the "Download your certificate"  *
  * link is printed out to HTML. It checks to see if the p12 is still    *
- * valid time-wise, and also that the pkcs12 download directory is      *
- * readable. If not, then it unsets the PHP session variable 'p12'.     *
+ * valid time-wise. If not, then it unsets the PHP session variable     *
+ * 'p12'.                                                               *
  ************************************************************************/
 function validateP12() {
-    $p12dir = '';
+    $p12link = '';
     $p12expire = '';
     $p12 = getSessionVar('p12');
     if (preg_match('/([^\t]*)\t(.*)/',$p12,$match)) {
         $p12expire = $match[1];
-        $p12dir = $match[2];
+        $p12link = $match[2];
     }
 
-    /* Verify that the p12expire and p12dir values are valid */
+    /* Verify that the p12expire and p12link values are valid */
     if ((strlen($p12expire) == 0) ||
         ($p12expire == 0) ||
         (time() > $p12expire) ||
-        (strlen($p12dir) == 0) ||
-        (!is_readable(getServerVar('DOCUMENT_ROOT').'/pkcs12/'.$p12dir))) {
+        (strlen($p12link) == 0)) {
         unsetSessionVar('p12');
     }
 }
@@ -795,6 +791,27 @@ function validateActivationCode() {
         (time() > $tokenexpire)) {
         unsetSessionVar('activation');
     }
+}
+
+/************************************************************************
+ * Function   : getMachineHostname                                      *
+ * Returns    : The full machine-specific hostname of this host.        *
+ * This function is utilized in the formation of the URL for the PKCS12 *
+ * credential download link.  It returns a combination of the local     *
+ * machine name (the first part of the 'uname') and the HTTP hostname   *
+ * (as defined by HOSTNAME in the util.php file).  This usually results *
+ * in something like 'polo1.cilogon.org', since polo1 is the local      *
+ * machine name, and cilogon.org is the HTTP_HOST name.                 *
+ ************************************************************************/
+function getMachineHostname() {
+    $unamesplit = preg_split('/\./',php_uname('n'));
+    $hostname = @$unamesplit[0];
+    $serversplit = preg_split('/\./',HOSTNAME);
+    if (count($serversplit) > 2) { // Delete the first component if more than 2
+        unset($serversplit[0]);
+    }
+    $url = $hostname . '.' . implode('.',$serversplit);
+    return $url;
 }
 
 ?>
