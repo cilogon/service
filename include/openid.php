@@ -48,7 +48,7 @@ class openid {
         'http://google.com/accounts/o8/id' => 'Google' ,
         'http://openid.paypal-ids.com'     => 'PayPal' , 
         'http://pip.verisignlabs.com'      => 'Verisign' ,
-        'http://yahoo.com'                 => 'Yahoo'
+        // 'http://yahoo.com'                 => 'Yahoo'
     );
 
     /* Database connection for the OpenID library.                      */
