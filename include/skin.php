@@ -60,6 +60,7 @@ class skin {
      ********************************************************************/
     function __construct() {
         $this->readSkinName();
+        $this->setMyProxyInfo();
         $this->readConfigFile();
     }
 
@@ -67,13 +68,13 @@ class skin {
      * Function  : readSkinName                                         *
      * Get the name of the skin and store it in the class variable      *
      * $skinname.  This function checks for the name of the skin in     *
-     * three places: (1) "?skin=..." URL parameter,                     *
-     * (2) "?cilogon_skin=..." URL parameter, and (3) "cilogon_skin"    *
-     * PHP session variable.  If it finds the skin name in any of       *
-     * these, it then checks to see if such a named 'skin/..."          *
-     * directory exists on the server.  If so, it sets the class        *
-     * $skinname variable AND the "cilogon_skin" PHP session variable   *
-     * (for use on future page loads by the user).                      *
+     * several places: (1) "?skin=..." URL parameter,                   *
+     * (2) "?cilogon_skin=..." URL parameter, (3) cilogon_vo form input *
+     * variable, and (4) "cilogon_skin" PHP session variable.  If it    *
+     * finds the skin name in any of these, it then checks to see if    *
+     * such a named 'skin/..." directory exists on the server.  If so,  *
+     * it sets the class $skinname variable AND the "cilogon_skin"      *
+     * PHP session variable (for use on future page loads by the user). *
      ********************************************************************/
     function readSkinName() {
         $this->skinname = '';
@@ -83,6 +84,10 @@ class skin {
         if (strlen($skinvar) == 0) {
             // Next, look for "?cilogon_skin=..."
             $skinvar = getGetVar('cilogon_skin');
+        }
+        if (strlen($skinvar) == 0) {
+            // Next, check "cilogon_vo" form input variable
+            $skinvar = getPostVar('cilogon_vo');
         }
         if (strlen($skinvar) == 0) {
             // Finally, check "cilogon_skin" PHP session variable
@@ -192,6 +197,145 @@ class skin {
         }
     }
 
+    /********************************************************************
+     * Function  : hasWhitelist                                         *
+     * Returns   : True if skin has a non-empty <whitelist>.            *
+     * This function checks for the presence of a <whitelist> block     *
+     * in the skin's config file.  There must be at least one <idp>     *
+     * in the <whitelist>.                                              *
+     ********************************************************************/
+    function hasWhitelist() {
+        $retval = false;  // Assume no <whitelist> configured
+        $whitelist = $this->getConfigOption('whitelist');
+        if (($whitelist !== null) && (!empty($whitelist->idp))) {
+            $retval = true;
+        }
+        return $retval;
+    }
+
+    /********************************************************************
+     * Function  : hasBlacklist                                         *
+     * Returns   : True if skin has a non-empty <blacklist>.            *
+     * This function checks for the presence of a <blacklist> block     *
+     * in the skin's config file.  There must be at least one <idp>     *
+     * in the <blacklist>.                                              *
+     ********************************************************************/
+    function hasBlacklist() {
+        $retval = false;  // Assume no <blacklist> configured
+        $blacklist = $this->getConfigOption('blacklist');
+        if (($blacklist !== null) && (!empty($blacklist->idp))) {
+            $retval = true;
+        }
+        return $retval;
+    }
+
+    /********************************************************************
+     * Function  : idpWhitelisted                                       *
+     * Parameter : The entityId of an IdP to check for whitelisting.    *
+     * Returns   : True if the given IdP entityId is in the skin's      *
+     *             whitelist (or if the skin doesn't have a whitelist). *
+     * This method checks to see if a given entityId of an IdP          *
+     * is whitelisted.  "Whitelisted" in this case means either (a) the *
+     * entityId is in the skin's <whitelist> list or (b) the skin       *
+     * doesn't have a <whitelist> at all.  In the second case, all IdPs *
+     * are by default "whitelisted".  If you want to find if an IdP     *
+     * should be listed in the WAYF, use "idpAvailable" which checks    *
+     * the whitelist AND the blacklist.                                 *
+     ********************************************************************/
+    function idpWhitelisted($entityId) {
+        $retval = true;  // Assume the entityId is 'whitelisted'
+        if ($this->hasWhitelist()) {
+            $whitelist = $this->getConfigOption('whitelist');
+            $found = false;
+            foreach ($whitelist->idp as $whiteidp) {
+                if ($entityId == ((string)$whiteidp)) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $retval = false;
+            }
+        }
+        return $retval;
+    }
+
+    /********************************************************************
+     * Function  : idpBlacklisted                                       *
+     * Parameter : The entityId of an IdP to check for blacklisting.    *
+     * Returns   : True if the given IdP entityId is in the skin's      *
+     *             blacklist.                                           *
+     * This method checks to see if a given entityId of an IdP          *
+     * appears in the skin's <blacklist>.                               * 
+     ********************************************************************/
+    function idpBlacklisted($entityId) {
+        $retval = false;  // Assume entityId is NOT in the blacklist
+        if ($this->hasBlacklist()) {
+            $blacklist = $this->getConfigOption('blacklist');
+            foreach ($blacklist->idp as $blackidp) {
+                if ($entityId == ((string)$blackidp)) {
+                    $retval = true;
+                    break;
+                }
+            }
+        }
+        return $retval;
+    }
+
+    /********************************************************************
+     * Function  : idpAvailable                                         *
+     * Parameter : The entityId of an IdP to check to see if it should  *
+     *             be available in the WAYF.                            *
+     * Returns   : True if the given IdP entityId is available to be    *
+     *             selected in the WAYF.                                *
+     * This method combines idpWhitelisted and idpBlacklisted to return *
+     * a "yes/no" for if a given IdP should be made available for       *
+     * selection in the WAYF.  It first checks to see if the IdP is     *
+     * whitelisted.  If not, it returns false. Otherwise, it then       *
+     * checks if the IdP is blacklisted.  If not, it returns true.      *
+     ********************************************************************/
+    function idpAvailable($entityId) {
+        $retval = false;   // Assume IdP is not available in the WAYF
+        if (($this->idpWhitelisted($entityId)) &&
+            (!$this->idpBlacklisted($entityId))) {
+                $retval = true;
+            }
+        return $retval;
+    }
+
+    /********************************************************************
+     * Function  : setMyProxyInfo                                       *
+     * This method sets the 'myproxyinfo' PHP session variable.  The    *
+     * variable has the form "info:key1=value1,key2=value2,..." and is  *
+     * passed to the 'myproxy-logon' command as part of the username    *
+     * when fetching a credential.  The MyProxy server will do extra    *
+     * processing based on the content of this "info:..." tag.  If the  *
+     * skinname is not empty, that is added to the info tag.  Also,     *
+     * the apache REMOTE_ADDR is added.  For other key=value pairs that *
+     * get added, see the code below.                                   *
+     ********************************************************************/
+    function setMyProxyInfo() {
+        $infostr = '';
+
+        // Add the skinname if available
+        if (strlen($this->skinname) > 0) {
+            $infostr .= 'cilogon_skin=' . $this->skinname;
+        }
+
+        // Add the REMOTE_ADDR
+        $remoteaddr = getServerVar('REMOTE_ADDR');
+        if (strlen($remoteaddr) > 0) {
+            $infostr .= (strlen($infostr) > 0 ? ',' : '') .  
+                        "remote_addr=$remoteaddr";
+        }
+         
+        // Finally, set the "myproxyinfo" PHP session variable
+        if (strlen($infostr) > 0) {
+            setSessionVar('myproxyinfo',"info:$infostr");
+        } else {
+            unsetSessionVar('myproxyinfo');
+        }
+    }
 }
 
 ?>

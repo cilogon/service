@@ -54,6 +54,11 @@ function getUserAndRespond($responseurl) {
 
     $validator = new EmailAddressValidator();
 
+    /* Temporary hack for IdP at boingo.ncsa.uiuc.edu */
+    if (strlen($shibarray['Organization Name']) == 0) {
+        $shibarray['Organization Name'] = 'Unspecified';
+    }
+
     /* If all required attributes are available, get the       *
      * database user id and status code of the database query. */
     if ((strlen($shibarray['User Identifier']) > 0) &&

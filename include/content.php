@@ -225,25 +225,17 @@ function printWAYF()
     /* Check to see if the skin's config.xml has a whitelist of IDPs.  */
     /* If so, go thru master IdP list and keep only those IdPs in the  */
     /* config.xml's whitelist.                                         */
-    $configwhitelist = $skin->getConfigOption('whitelist');
-    if (($configwhitelist !== null) && (!empty($configwhitelist->idp))) {
-        foreach ($idps as $entityID => $displayName) {
-            $found = false;
-            foreach ($configwhitelist->idp as $whiteidp) {
-                if ($entityID == ((string)$whiteidp)) {
-                    $found = true;
-                    break;
-                }
-            }
-            if (!$found) {
-                unset($idps[$entityID]);
+    if ($skin->hasWhitelist()) {
+        foreach ($idps as $entityId => $displayName) {
+            if (!$skin->idpWhitelisted($entityId)) {
+                unset($idps[$entityId]);
             }
         }
     }
     /* Next, check to see if the skin's config.xml has a blacklist of  */
     /* IdPs. If so, cull down the master IdP list removing 'bad' IdPs. */
-    $configblacklist = $skin->getConfigOption('blacklist');
-    if (($configblacklist !== null) && (!empty($configblacklist->idp))) {
+    if ($skin->hasBlacklist()) {
+        $configblacklist = $skin->getConfigOption('blacklist');
         foreach ($configblacklist->idp as $blackidp) {
             unset($idps[(string)$blackidp]);
         }
@@ -262,8 +254,19 @@ function printWAYF()
         }
     }
 
+
     echo '
-    <div class="actionbox">
+    <br />
+    <div class="actionbox"';
+
+    if (getSessionVar('showhelp') == 'on') {
+        echo ' style="width:92%;"';
+    }
+
+    echo '>
+    <table class="helptable">
+    <tr>
+    <td class="actioncell">
 
       <form action="' , getScriptDir() , '" method="post">
       <fieldset>
@@ -273,7 +276,7 @@ function printWAYF()
           style="text-decoration:none"
           href="http://www.cilogon.org/selectidp">';
 
-      printIcon('info','Help Me Choose');
+      printIcon('info','Help Me Choose','helpchoose');
 
       echo '</a>
       </p>
@@ -329,14 +332,96 @@ function printWAYF()
     }
 
     echo '
-    </fieldset>
-
     <p class="privacypolicy">
     By selecting "Log On", you agree to our <a target="_blank" 
     href="http://ca.cilogon.org/policy/privacy">privacy policy</a>.
     </p>
 
+    </fieldset>
+
     </form>
+  </td>
+  ';
+
+  if (getSessionVar('showhelp') == 'on') {
+      echo '
+      <td class="helpcell">
+      <div>
+      <p>
+      In order to use the CILogon Service, you must first select an identity
+      provider. An identity provider (IdP) is an organization where you have
+      an account and can log in to gain access to online services. 
+      </p>
+      <p>
+      If you are a faculty, staff, or student member of a university or
+      college, please select it for your identity
+      provider.  If your school is not listed,
+      please fill out the <a target="_blank"
+      href="https://cilogon.org/requestidp/">"request a new organization"
+      form</a>, and we will try to add your school in the future.
+      </p>
+      ';
+
+      $googleavail   = $skin->idpAvailable('http://google.com/accounts/o8/id');
+      $paypalavail   = $skin->idpAvailable('http://openid.paypal-ids.com');
+      $verisignavail = $skin->idpAvailable('http://pip.verisignlabs.com');
+      $numavail      = $googleavail + $paypalavail + $verisignavail;
+
+      if ($numavail > 0) {
+          echo '
+          <p>
+          If you have a ';
+          
+          if ($googleavail) {
+              echo '<a target="_blank"
+              href="http://google.com/profiles/me">Google</a>';
+              if ($numavail > 2) {
+                  echo ', ';
+              } elseif ($numavail == 2) {
+                  echo ' or ';
+              }
+          }
+          
+          
+          if ($paypalavail) {
+              echo '<a target="_blank"
+              href="https://openid.paypal-ids.com/">PayPal</a> ';
+              if ($numavail > 1) {
+                  echo 'or ';
+              }
+          }
+          
+          if ($verisignavail) {
+              echo ' <a target="_blank"
+              href="https://pip.verisignlabs.com/">VeriSign</a> ';
+          }
+
+          echo ' account, you can select one of these providers for
+          authenticating to the CILogon Service.
+          </p>
+          ';
+      }
+
+      if ($skin->idpAvailable('urn:mace:incommon:idp.protectnetwork.org')) {
+          echo '
+          <p>
+          Alternatively, you can <a
+          target="_blank"
+          href="https://www.protectnetwork.org/pnidm/registration.html">register
+          for a ProtectNetwork UserID</a> and use that for authenticating to
+          the CILogon Service.
+          </p>
+          ';
+      }
+
+      echo '
+      </div>
+      </td>
+      ';
+  }
+  echo '
+  </tr>
+  </table>
   </div>
   ';
 }
@@ -347,19 +432,42 @@ function printWAYF()
  *                 E.g. to show "errorIcon.png", pass in "error".       *
  *             (2) The popup "title" text to be displayed when the      *
  *                 mouse cursor hovers over the icon.  Defaults to "".  *
+ *             (3) A CSS class for the icon. Will be appended after     *
+ *                 the 'helpcursor' class.                              *
  * This function prints out the HTML for the little icons which can     *
  * appear inline with other information.  This is accomplished via the  *
  * use of wrapping the image in a <span> tag.                           *
  ************************************************************************/
-function printIcon($icon,$popuptext='')
+function printIcon($icon,$popuptext='',$class='')
 {
     echo '<span';
     if (strlen($popuptext) > 0) {
-        echo ' class="helpcursor" title="' , $popuptext , '"';
+        echo ' class="helpcursor ' , $class , '" title="' , $popuptext , '"';
     }
     echo '>&nbsp;<img src="/images/' , $icon , 'Icon.png" 
           alt="&laquo; ' , ucfirst($icon) , '"
           width="14" height="14" /></span>';
+}
+
+/************************************************************************
+ * Function   : printHelpButton                                         *
+ * This function prints the "Show Help" / "Hide Help" button in the     *
+ * upper-right corner of the main box area on the page.                 *
+ ************************************************************************/
+function printHelpButton() {
+    echo '
+    <div class="helpbutton">
+    ';
+
+    printFormHead();
+
+    echo '
+      <input type="submit" name="submit" class="helpbutton" value="' , 
+      (getSessionVar('showhelp')=='on' ? 'Hide' : 'Show') , '&#10;Help" />
+      </form>
+    </div>
+    ';
+
 }
 
 /************************************************************************
@@ -399,7 +507,7 @@ function verifyCurrentSession($providerId='')
 
 /************************************************************************
  * Function   : redirectToGetUser                                       *
- * Parameters : (1) An entityID of the authenticating IdP.  If not      *
+ * Parameters : (1) An entityId of the authenticating IdP.  If not      *
  *                  specified (or set to the empty string), we check    *
  *                  providerId PHP session variable and providerId      *
  *                  cookie (in that order) for non-empty values.        *
@@ -407,7 +515,7 @@ function verifyCurrentSession($providerId='')
  *                  variable to be set upon return from the 'getuser'   *
  *                  script.  This is utilized to control the flow of    *
  *                  this script after "getuser". Defaults to 'gotuser'. *
- * If the first parameter (a whitelisted entityID) is not specified,    *
+ * If the first parameter (a whitelisted entityId) is not specified,    *
  * we check to see if either the providerId PHP session variable or the *
  * providerId cookie is set (in that order) and use one if available.   *
  * The function then checks to see if there is a valid PHP session      *

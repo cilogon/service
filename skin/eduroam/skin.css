@@ -53,3 +53,13 @@ div.skincilogonlogo {
   display: inline;
 }
 /***** End skincilogonlogo *****/
+
+/***** Begin Help-related stuff *****/
+table.helptable td.helpcell div {
+  background-color: #eaf3ff;
+  margin-right: 1em;
+}
+tr.inforow td.helpcell {
+  background-color: #eaf3ff;
+}
+/***** End Help-related stuff *****/

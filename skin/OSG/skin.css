@@ -67,3 +67,13 @@ div.skincilogonlogo {
   display: inline;
 }
 /***** End skincilogonlogo *****/
+
+/***** Begin Help-related stuff *****/
+table.helptable td.helpcell div {
+  background-color: #ffffe3;
+  margin-right: 1em;
+}
+tr.inforow td.helpcell {
+  background-color: #ffffe3;
+}
+/***** End Help-related stuff *****/

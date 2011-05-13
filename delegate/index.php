@@ -16,8 +16,9 @@ $white = new whitelist();
 $log = new loggit();
 
 /* Check the csrf cookie against either a hidden <form> element or a *
- * PHP session variable, and get the value of the "submit" element.  */
-$submit = csrf::verifyCookieAndGetSubmit();
+ * PHP session variable, and get the value of the "submit" element.  *
+ * Note: replace CR/LF with space for "Show/Hide Help" buttons.      */
+$submit = str_replace("\r\n"," ",csrf::verifyCookieAndGetSubmit());
 unsetSessionVar('submit');
 
 $log->info('submit="' . $submit . '"');
@@ -77,6 +78,22 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
             printCancelPage();
         break; // End case 'Cancel'
 
+        case "Show Help": // Toggle showing of help text on and off
+        case "Hide Help":
+            if (getSessionVar('showhelp') == 'on') {
+                unsetSessionVar('showhelp');
+            } else {
+                setSessionVar('showhelp','on');
+            }
+
+            $stage = getSessionVar('stage');
+            if (($stage == 'main') && (verifyCurrentSession())) {
+                printMainPage();
+            } else {
+                printLogonPage();
+            }
+        break; // End case 'Show Help' / 'Hide Help'
+
         default: // No submit button clicked nor PHP session submit variable set
             /* If both the "keepidp" and the "providerId" cookies were set *
              * (and the providerId is a whitelisted IdP or valid OpenID    *
@@ -116,6 +133,8 @@ function printLogonPage()
 
     $log->info('Welcome page hit.');
 
+    setSessionVar('stage','logon'); // For Show/Hide Help button clicks
+
     /* Check the skin config to see if we should virtually click the
      * "Remember my OK for this portal" checkbox.  We need to do this here
      * because we want to set the portal cookie before we go to the next
@@ -135,7 +154,12 @@ function printLogonPage()
 
     echo '
     <div class="boxed">
-      <br class="clear"/>
+    ';
+
+    printHelpButton();
+
+    echo '
+      <br />
       <p>"' , 
       htmlspecialchars(getSessionVar('portalname')) , 
       '" requests that you select an Identity Provider and "Log On". 
@@ -210,6 +234,8 @@ function printMainPage()
     global $log;
     global $skin;
 
+    setSessionVar('stage','main'); // For Show/Hide Help button clicks
+
     // Read the cookie containing portal 'lifetime' and 'remember' settings
     $portal = new portalcookie();
     $remember = $portal->getPortalRemember(getSessionVar('callbackuri'));
@@ -247,7 +273,12 @@ function printMainPage()
 
         echo '
         <div class="boxed">
-        <br class="clear"/>
+        ';
+
+        printHelpButton();
+
+        echo '
+        <br />
         <p>"' , 
         htmlspecialchars(getSessionVar('portalname')) , 
         '" is requesting a certificate for you. 
@@ -259,7 +290,16 @@ function printMainPage()
         printPortalInfo('2');
 
         echo '
-        <div class="actionbox">
+        <div class="actionbox"';
+
+        if (getSessionVar('showhelp') == 'on') {
+            echo ' style="width:92%;"';
+        }
+
+        echo '>
+        <table class="helptable">
+        <tr>
+        <td class="actioncell">
         ';
 
         printFormHead();
@@ -286,7 +326,34 @@ function printMainPage()
         </p>
         </fieldset>
         </form>
-        </div>
+        </td>
+        ';
+
+        if (getSessionVar('showhelp') == 'on') {
+            echo '
+            <td class="helpcell">
+            <div>
+            <p>
+            Please enter the lifetime of the certificate to be issued.
+            Maximum value is 240 hours. 
+            </p>
+            <p>
+            If you check the "Remember my OK for the site" checkbox,
+            certificates will be issued automatically to this site on future
+            visits, using the lifetime you specify here.  You will need to
+            clear your browser\'s cookies to return to see this page again.
+            </p>
+            </div>
+            </td>
+            ';
+        }
+
+
+
+        echo '
+        </tr>
+        </table>
+        </div> <!-- actionbox -->
         </div>
         ';
         printFooter();
@@ -303,19 +370,49 @@ function printMainPage()
  * log in page from the one on the main page.                           *
  ************************************************************************/
 function printPortalInfo($suffix='') {
+    $showhelp = getSessionVar('showhelp');
+
+    $helptext = "The Site Name is provided by the site to CILogon and has not been vetted.";
+
     echo '
     <table class="portalinfo' , $suffix , '">
-    <tr title="The Site Name is provided by the site to CILogon and has not been vetted.">
-      <th>Site&nbsp;Name:</th>
-      <td>' , htmlspecialchars(getSessionVar('portalname')) , '</td>
+    <tr class="inforow">
+      <th title="' , $helptext ,'">Site&nbsp;Name:</th>
+      <td title="' , $helptext ,'">' ,
+      htmlspecialchars(getSessionVar('portalname')) , '</td>
+    ';
+
+    if ($showhelp == 'on') {
+        echo ' <td class="helpcell">' , $helptext , '</td>';
+    }
+
+    $helptext = "The Site URL is the location to which the site requests you to return upon completion."; 
+
+    echo '
     </tr>
-    <tr title="The Site URL is the location to which the site requests you to return upon completion.">
-      <th>Site&nbsp;URL:</th> 
-      <td>' , htmlspecialchars(getSessionVar('successuri')) , '</td>
+    <tr class="inforow">
+      <th title="' , $helptext , '">Site&nbsp;URL:</th> 
+      <td title="' , $helptext , '">' , htmlspecialchars(getSessionVar('successuri')) , '</td>
+    ';
+
+    if ($showhelp == 'on') {
+        echo '<td class="helpcell">' , $helptext , '</td>';
+    }
+
+    $helptext = "The Service URL is the location to which CILogon will send a certificate containing your identity information."; 
+
+    echo '
     </tr>
-    <tr title="The Service URL is the location to which CILogon will send a certificate containing your identity information.">
-      <th>Service&nbsp;URL:</th>
-      <td>' , htmlspecialchars(getSessionVar('callbackuri')) , '</td>
+    <tr class="inforow">
+      <th title="' , $helptext , '">Service&nbsp;URL:</th>
+      <td title="' , $helptext , '">' , htmlspecialchars(getSessionVar('callbackuri')) , '</td>
+      ';
+
+    if ($showhelp == 'on') {
+        echo '<td class="helpcell">' , $helptext , '</td>';
+    }
+
+    echo '
     </tr>
     </table>
     ';

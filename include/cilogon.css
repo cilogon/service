@@ -70,9 +70,6 @@ div.boxheader {
 br.clear {
   clear: both;
 }
-.helpcursor {
-  cursor: help;
-}
 input.submit {
   font-weight: bold;
   font-size: 110%;
@@ -184,7 +181,7 @@ div.logofftextbox {
   display: block;
   text-align: center;
   width: 375px;
-  margin: 1em auto;
+  margin: 0 auto 1em auto;
   padding: 1em 0 0 0;
   line-height: 1em;
 }
@@ -248,7 +245,7 @@ table.certinfo,
 table.portalinfo1,
 table.portalinfo2 {
   margin: 1em;
-  width: 96%;
+  width: 92%;
   border: 1px solid #888;
   border-spacing: 0;
   border-collapse: collapse;
@@ -267,6 +264,11 @@ table.certinfo th,
 table.portalinfo1 th,
 table.portalinfo2 th {
   text-align: right;
+  padding-right: 1em;
+}
+table.certinfo td,
+table.portalinfo1 td,
+table.portalinfo2 td {
   padding-right: 1em;
 }
 /***** End certinfo / portalinfo table *****/
@@ -441,3 +443,44 @@ div.skincilogonlogo {
   display: none;
 }
 /***** End skincilogonlogo *****/
+
+/***** Begin Help-related stuff *****/
+.helpcursor {
+  cursor: help;
+}
+.helpchoose {
+  display: none;
+}
+input.helpbutton {
+  font-weight: normal;
+  font-size: xx-small;
+  color: #fff;
+  background-color: #69f;
+  padding: 0;
+  margin: 2px 2px 0 1em;
+  float: right;
+}
+table.helptable {
+  border: none;
+  border-width: 0;
+  border-spacing: 0;
+  border-collapse: collapse;
+  padding: 0;
+}
+table.helptable td.actioncell {
+  width: auto !important;
+  width: 375px;
+  min-width: 375px;
+}
+table.helptable td.helpcell p {
+  vertical-align: middle;
+  text-align: justify;
+}
+table.helptable td.helpcell div {
+  background-color: #f3fff3;
+  margin-right: 1em;
+}
+tr.inforow td.helpcell {
+  background-color: #f3fff3;
+}
+/***** End Help-related stuff *****/
