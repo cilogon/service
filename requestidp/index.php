@@ -91,7 +91,18 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
     attributes.
     </p>
     <p>
-    You can help us by letting us know that you are
+    If you are the administrator of an Identity Provider (<acronym
+    title="Identity Provider">IdP</acronym>), you can view the <a
+    target="_blank"
+    href="https://wiki.cites.uiuc.edu/wiki/display/UIID/POP3RP-CILogon">InCommon
+    Participant Operational Practices</a> document for the CILogon Service
+    and then <a target="_blank" href="/secure/testidp/">test your IdP</a> to
+    verify you are releasing the required attributes.  If all required
+    attributes have been released by your organization, you can immediately
+    make it available to users of the CILogon Service.
+    </p>
+    <p>
+    Otherwise, you can help us by letting us know that you are
     interested in using the CILogon Service.  Please enter your contact
     information and select your organization below.  We will contact
     the appropriate administrators in an effort to have your
@@ -192,18 +203,6 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
       ' ,  $csrf->hiddenFormElement() , '
       </form>
       </div>
-      <p>
-      If you are the administrator of an Identity Provider (<acronym
-      title="Identity Provider">IdP</acronym>), you can view the
-      <a target="_blank"
-      href="https://wiki.cites.uiuc.edu/wiki/display/UIID/POP3RP-CILogon">InCommon Participant Operational Practices</a> document for the CILogon Service
-      and then
-      <a target="_blank"
-      href="/secure/testidp/">test your IdP</a> to verify you are releasing the required attributes.
-      If all required attributes have been released by your
-      organization, you can immediately make it available to users of the CILogon
-      Service.
-      </p>
     </div>
     ';
 
