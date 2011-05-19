@@ -68,13 +68,13 @@ class skin {
      * Function  : readSkinName                                         *
      * Get the name of the skin and store it in the class variable      *
      * $skinname.  This function checks for the name of the skin in     *
-     * several places: (1) "?skin=..." URL parameter,                   *
-     * (2) "?cilogon_skin=..." URL parameter, (3) cilogon_vo form input *
-     * variable, and (4) "cilogon_skin" PHP session variable.  If it    *
-     * finds the skin name in any of these, it then checks to see if    *
-     * such a named 'skin/..." directory exists on the server.  If so,  *
-     * it sets the class $skinname variable AND the "cilogon_skin"      *
-     * PHP session variable (for use on future page loads by the user). *
+     * several places: (1) In a URL parameter (can be "?skin=",         *
+     * "?cilogon_skin=", "?vo=") (2) cilogon_vo form input variable     *
+     * and (3) "cilogon_skin" PHP session variable.  If it finds the    *
+     * skin name in any of these, it then checks to see if such a named *
+     * 'skin/..." directory exists on the server.  If so, it sets the   *
+     * class variable $skinname AND the "cilogon_skin" PHP session      *
+     * variable (for use on future page loads by the user).             *
      ********************************************************************/
     function readSkinName() {
         $this->skinname = '';
@@ -84,6 +84,10 @@ class skin {
         if (strlen($skinvar) == 0) {
             // Next, look for "?cilogon_skin=..."
             $skinvar = getGetVar('cilogon_skin');
+        }
+        if (strlen($skinvar) == 0) {
+            // Next, look for "?vo=..."
+            $skinvar = getGetVar('vo');
         }
         if (strlen($skinvar) == 0) {
             // Next, check "cilogon_vo" form input variable
