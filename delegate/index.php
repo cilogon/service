@@ -501,6 +501,8 @@ function handleAllowDelegation($always=false)
 
     $success = false;  // Assume delegation of certificate failed
     $certtext = '';    // Output of 'openssl x509 -noout -text -in cert.pem'
+    $myproxyinfo = getSessionVar('myproxyinfo');
+    $myproxyinfo = ''; // DELETE THIS LINE WHEN JEFF UPDATES THE SERVLET
 
     // Now call out to the "delegation/authorized" servlet to execute
     // the delegation the credential to the portal.
@@ -510,7 +512,9 @@ function handleAllowDelegation($always=false)
                'oauth_token=' . urlencode(getSessionVar('tempcred')) . '&' .
                'cilogon_lifetime=' . $lifetime . '&' .
                'cilogon_loa=' . urlencode(getSessionVar('loa')) . '&' .
-               'cilogon_uid=' . urlencode(getSessionVar('uid'));
+               'cilogon_uid=' . urlencode(getSessionVar('uid')) . 
+               ((strlen($myproxyinfo) > 0) ? 
+                   ('&cilogon_info=' . urlencode($myproxyinfo)) : '');
         curl_setopt($ch,CURLOPT_URL,$url);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
         curl_setopt($ch,CURLOPT_TIMEOUT,30);
