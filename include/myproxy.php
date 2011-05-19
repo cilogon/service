@@ -1,7 +1,7 @@
 <?php
 
 /* Define several MyProxy default variables */
-define('MYPROXY_LOGON','/usr/bin/myproxy-logon');
+define('MYPROXY_LOGON','/usr/bin/myproxy-logon',true);
 define('MYPROXY_HOST','myproxy.cilogon.org');
 define('MYPROXY_PORT','7512');
 define('MYPROXY_LIFETIME','12');
@@ -10,7 +10,8 @@ define('MYPROXY_LIFETIME','12');
  * Function:   getMyProxyCredential()                                   *
  * Parameters: $username - The MyProxy user name (-l)                   *
  *             $passphrase - The MyProxy password for the username (-S) *
- *                 Defaults to empty string.                            *
+ *                 Defaults to empty string.  NOTE: If $passphrase is   *
+ *                 non-empty, you CANNOT set a $certreq.                *
  *             $server - The MyProxy server to connect to (-s).         *
  *                 Defaults to MYPROXY_HOST.                            *
  *             $port - The port for the MyProxy server (-p).            *
@@ -19,15 +20,24 @@ define('MYPROXY_LIFETIME','12');
  *                 Defaults to MYPROXY_LIFETIME hours.                  *
  *             $usercert - The X509_USER_CERT environment variable, OR  *
  *                 the X509_USER_PROXY environment variable if          *
- *                 $userkey is set to the empty string.                 *
+ *                 $userkey is set to the empty string.  Defaults to    *
+ *                 empty string.                                        *
  *             $userkey - The X509_USER_KEY environment variable.       *
+ *                 Defaults to empty string.                            *
+ *             $certreq - A certificate request created by the          *
+ *                 openssl req command (--certreq).  Defaults to empty  *
+ *                 string.  NOTE: If $certreq is non-empty, you CANNOT  *
+ *                 set a $passphrase.                                   *
+ *             $env - Extra environment variables in the form of        *
+ *                 space-separated "key=value" pairs.                   *
  *             $DEBUG - Set to true to show HTML formatted debug info.  *
  * Returns:    An X509 credential in a string upon success, or          *
  *                 an empty string upon failure.                        *
  ************************************************************************/
 function getMyProxyCredential(
     $username,$passphrase='',$server=MYPROXY_HOST,$port=MYPROXY_PORT,
-    $lifetime=MYPROXY_LIFETIME,$usercert='',$userkey='',$DEBUG=false) {
+    $lifetime=MYPROXY_LIFETIME,$usercert='',$userkey='',
+    $certreq='',$env='',$DEBUG=false) {
 
     $retstr = '';
 
@@ -66,21 +76,21 @@ function getMyProxyCredential(
 
     // Run the myproxy-logon command and capture the output and any error
     unset($output);
-    exec('/bin/env ' . 
-         $USER_CERT_ENV . ' ' . 
-         MYPROXY_LOGON . ' ' .
-         ' -s ' . escapeshellarg($server) .
-         " -p $port" .
-         " -t $lifetime" . 
-         ' -l ' . escapeshellarg($username) .
-         ' -S -o - ' .
-         ((strlen($passphrase) > 0) ? 
-             ('<<< ' . escapeshellarg($passphrase)) :
-             ('-n')) .
-         ' 2>&1',
-         $output,$return_val
-        );
-
+    $cmd = '/bin/env ' . 
+           $USER_CERT_ENV . ' ' . 
+           $env . ' ' .
+           MYPROXY_LOGON . ' ' .
+           ' -s ' . escapeshellarg($server) .
+           " -p $port" .
+           " -t $lifetime" . 
+           ' -l ' . escapeshellarg($username) .
+           ' -S -o -' .
+           ((strlen($certreq) > 0) ?
+               (' --certreq - <<< ' . escapeshellarg($certreq)) : '') .
+           ((strlen($passphrase) > 0) ?
+               (' <<< ' . escapeshellarg($passphrase)) : ' -n') .
+           ' 2>&1';
+    exec($cmd,$output,$return_val);
     $retstr = implode("\n",$output);
 
     if ($return_val > 0) {
