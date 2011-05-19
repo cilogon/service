@@ -1,7 +1,11 @@
 <?php
 
-require_once("util.php");
-require_once("autoloader.php");
+require_once('util.php');
+require_once('autoloader.php');
+require_once('myproxy.php');
+
+/* Loggit object for logging info to syslog. */
+$log = new loggit();
 
 /* If needed, set the "Notification" banner text to a non-empty value   */
 /* and uncomment the "define" statement in order to display a           */
@@ -740,6 +744,8 @@ function unsetGetUserSessionVars()
     unsetSessionVar('loa');
     unsetSessionVar('idp');
     unsetSessionVar('idpname');
+    unsetSessionVar('firstname');
+    unsetSessionVar('lastname');
     unsetSessionVar('dn');
     unsetSessionVar('activation');
     unsetSessionVar('p12');
@@ -1057,6 +1063,169 @@ function printUserChangedPage()
         unsetGetUserSessionVars();
         printLogonPage();
     }
+}
+
+/************************************************************************
+ * Function   : generateP12                                             *
+ * This function is called when the user clicks the "Get New            *
+ * Certificate" button. It first reads in the password fields and       *
+ * verifies that they are valid (i.e. they are long enough and match).  *
+ * Then it gets a credential from the MyProxy server and converts that  *
+ * certificate into a PKCS12 which is written to disk.  If everything   *
+ * succeeds, the temporary pkcs12 directory and lifetime is saved to    *
+ * the 'p12' PHP session variable, which is read later when the Main    *
+ * Page HTML is shown.                                                  *
+ ************************************************************************/
+function generateP12() {
+    global $log;
+
+    /* Get the entered p12lifetime and p12multiplier and set the cookies. */
+    $maxlifetime = 9516; // In hours = 13 months
+    $p12lifetime   = getPostVar('p12lifetime');
+    $p12multiplier = getPostVar('p12multiplier');
+    if (strlen($p12multiplier) == 0) {
+        $p12multiplier = 1;  // For ECP, p12lifetime is in hours
+    }
+    $lifetime = $p12lifetime * $p12multiplier;
+    if ($lifetime <= 0) { // In case user entered negative number
+        $lifetime = $maxlifetime;
+        $p12lifetime = 13;
+        $p12multiplier = 732;
+    } elseif ($lifetime > $maxlifetime) { // Set max value based on multiplier
+        $lifetime = $maxlifetime;
+        if ($p12multiplier == 1) {
+            $p12lifetime = 9516;  // 13 months in hours
+        } elseif ($p12multiplier == 24) {
+            $p12lifetime = 396.5; // 13 months in days
+        } else { 
+            $p12lifetime = 13;    // 13 months (in months)
+            $p12multiplier = 732;
+        }
+    }
+    setcookie('p12lifetime',$p12lifetime,time()+60*60*24*365,'/','',true);
+    setcookie('p12multiplier',$p12multiplier,time()+60*60*24*365,'/','',true);
+    setSessionVar('p12lifetime',$p12lifetime);
+    setSessionVar('p12multiplier',$p12multiplier);
+
+    /* Verify that the password is at least 12 characters long. */
+    $password1 = getPostVar('password1');
+    $password2 = getPostVar('password2');
+    $p12password = getPostVar('p12password');  // For ECP clients
+    if (strlen($p12password) > 0) {
+        $password1 = $p12password;
+        $password2 = $p12password;
+    }
+    if (strlen($password1) < 12) {   
+        setSessionVar('p12error',
+            'Password must have at least 12 characters.');
+        return; // SHORT PASSWORD - NO FURTHER PROCESSING NEEDED!
+    }
+
+    /* Verify that the two password entry fields matched. */
+    if ($password1 != $password2) {
+        setSessionVar('p12error','Passwords did not match.');
+        return; // MISMATCHED PASSWORDS - NO FURTHER PROCESSING NEEDED!
+    }
+
+    /* Set the port based on the Level of Assurance */
+    $port = 7512;
+    $loa = getSessionVar('loa');
+    if ($loa == 'http://incommonfederation.org/assurance/silver') {
+        $port = 7514;
+    } elseif ($loa == 'openid') {
+        $port = 7516;
+    }
+
+    $dn = getSessionVar('dn');
+    if (strlen($dn) > 0) {
+        /* Append extra info, such as 'skin', to be processed by MyProxy. */
+        $myproxyinfo = getSessionVar('myproxyinfo');
+        if (strlen($myproxyinfo) > 0) {
+            $dn .= " $myproxyinfo";
+        }
+        /* Attempt to fetch a credential from the MyProxy server */
+        $cert = getMyProxyCredential($dn,'','myproxy.cilogon.org',
+            $port,$lifetime,'/var/www/config/hostcred.pem','');
+
+        /* The 'openssl pkcs12' command is picky in that the private  *
+         * key must appear BEFORE the public certificate. But MyProxy *
+         * returns the private key AFTER. So swap them around.        */
+        $cert2 = '';
+        if (preg_match('/-----BEGIN CERTIFICATE-----([^-]+)' . 
+                       '-----END CERTIFICATE-----[^-]*' . 
+                       '-----BEGIN RSA PRIVATE KEY-----([^-]+)' .
+                       '-----END RSA PRIVATE KEY-----/',$cert,$match)) {
+            $cert2 = "-----BEGIN RSA PRIVATE KEY-----" .
+                     $match[2] . "-----END RSA PRIVATE KEY-----\n".
+                     "-----BEGIN CERTIFICATE-----" .
+                     $match[1] . "-----END CERTIFICATE-----";
+        }
+
+        if (strlen($cert2) > 0) { // Successfully got a certificate!
+            /* Create a temporary directory in /var/www/html/pkcs12/ */
+            $tdirparent = getServerVar('DOCUMENT_ROOT') . '/pkcs12/';
+            $polonum = '3';   // Prepend the polo? number to directory
+            if (preg_match('/(\d+)\./',php_uname('n'),$polomatch)) {
+                $polonum = $polomatch[1];
+            }
+            $tdir = tempDir($tdirparent,$polonum);
+            $p12dir = str_replace($tdirparent,'',$tdir);
+            $p12file = $tdir . '/usercred.p12';
+
+            /* Call the openssl pkcs12 program to convert certificate */
+            exec('/bin/env ' .
+                 'CILOGON_PKCS12_PW=' . escapeshellarg($password1) . ' ' .
+                 '/usr/bin/openssl pkcs12 -export ' .
+                 '-passout env:CILOGON_PKCS12_PW ' .
+                 "-out $p12file " .
+                 '<<< ' . escapeshellarg($cert2)
+                );
+
+            /* Verify the usercred.p12 file was actually created */
+            $size = @filesize($p12file);
+            if (($size !== false) && ($size > 0)) {
+                $p12link = 'https://' . getMachineHostname() . '/pkcs12/' .
+                           $p12dir . '/usercred.p12';
+                $p12 = (time()+300) . "\t" . $p12link;
+                setSessionVar('p12',$p12);
+                $log->info('Generated New User Certificate="'.$p12link.'"');
+            } else { // Empty or missing usercred.p12 file - shouldn't happen!
+                setSessionVar('p12error',
+                    'Error creating certificate. Please try again.');
+                deleteDir($tdir); // Remove the temporary directory
+                $log->info("Error creating certificate - missing usercred.p12");
+            }
+        } else { // The myproxy-logon command failed - shouldn't happen!
+            setSessionVar('p12error',
+                'Error! MyProxy unable to create certificate.');
+            $log->info("Error creating certificate - myproxy-logon failed");
+        }
+    } else { // Couldn't find the 'dn' PHP session value - shouldn't happen!
+        setSessionVar('p12error',
+            'Missing username. Please enable cookies.');
+        $log->info("Error creating certificate - missing dn session variable");
+    }
+}
+
+/************************************************************************
+ * Function   : getMachineHostname                                      *
+ * Returns    : The full machine-specific hostname of this host.        *
+ * This function is utilized in the formation of the URL for the PKCS12 *
+ * credential download link.  It returns a combination of the local     *
+ * machine name (the first part of the 'uname') and the HTTP hostname   *
+ * (as defined by HOSTNAME in the util.php file).  This usually results *
+ * in something like 'polo1.cilogon.org', since polo1 is the local      *
+ * machine name, and cilogon.org is the HTTP_HOST name.                 *
+ ************************************************************************/
+function getMachineHostname() {
+    $unamesplit = preg_split('/\./',php_uname('n'));
+    $hostname = @$unamesplit[0];
+    $serversplit = preg_split('/\./',HOSTNAME);
+    if (count($serversplit) > 2) { // Delete the first component if more than 2
+        unset($serversplit[0]);
+    }
+    $url = $hostname . '.' . implode('.',$serversplit);
+    return $url;
 }
 
 ?>
