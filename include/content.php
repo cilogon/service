@@ -1186,7 +1186,7 @@ function generateP12() {
             if (($size !== false) && ($size > 0)) {
                 $p12link = 'https://' . getMachineHostname() . '/pkcs12/' .
                            $p12dir . '/usercred.p12';
-                $p12 = (time()+300) . "\t" . $p12link;
+                $p12 = (time()+300) . " " . $p12link;
                 setSessionVar('p12',$p12);
                 $log->info('Generated New User Certificate="'.$p12link.'"');
             } else { // Empty or missing usercred.p12 file - shouldn't happen!

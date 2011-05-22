@@ -250,7 +250,7 @@ function printGetCertificate() {
     $p12expire = '';
     $p12link = '';
     $p12 = getSessionVar('p12');
-    if (preg_match('/([^\t]*)\t(.*)/',$p12,$match)) {
+    if (preg_match('/([^\s]*)\s(.*)/',$p12,$match)) {
         $p12expire = $match[1];
         $p12link = $match[2];
     }
@@ -586,7 +586,7 @@ function printGetActivationCode() {
     $tokenvalue = '';
     $tokenexpire = '';
     $activation = getSessionVar('activation');
-    if (preg_match('/([^\t]*)\t(.*)/',$activation,$match)) {
+    if (preg_match('/([^\s]*)\s(.*)/',$activation,$match)) {
         $tokenexpire = $match[1];
         $tokenvalue = $match[2];
     }
@@ -787,14 +787,14 @@ function generateActivationCode() {
         curl_close($ch);
 
         /* If we got a valid AuthenticationToken, store it in the session */
-        startPHPSession();
+        session_start();
         if (strlen($tokenvalue) > 0) {
             $tokenlifetime = preg_replace('/^\s*=\s*/','',
                 $gridshibconf['root']['Session']['CredentialRetrieverClientLifetime']);
             if ((strlen($tokenlifetime) == 0) || ($tokenlifetime == 0)) {
                 $tokenlifetime = 300;
             }
-            $activation = (time()+$tokenlifetime) . "\t" . $tokenvalue;
+            $activation = (time()+$tokenlifetime) . " " . $tokenvalue;
             setSessionVar('activation',$activation);
             $log->info('Generated New Activation Code="'.$tokenvalue.'"');
         }
@@ -812,7 +812,7 @@ function validateP12() {
     $p12link = '';
     $p12expire = '';
     $p12 = getSessionVar('p12');
-    if (preg_match('/([^\t]*)\t(.*)/',$p12,$match)) {
+    if (preg_match('/([^\s]*)\s(.*)/',$p12,$match)) {
         $p12expire = $match[1];
         $p12link = $match[2];
     }
@@ -836,7 +836,7 @@ function validateActivationCode() {
     $tokenvalue = '';
     $tokenexpire = '';
     $activation = getSessionVar('activation');
-    if (preg_match('/([^\t]*)\t(.*)/',$activation,$match)) {
+    if (preg_match('/([^\s]*)\s(.*)/',$activation,$match)) {
         $tokenexpire = $match[1];
         $tokenvalue = $match[2];
     }
