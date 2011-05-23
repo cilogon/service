@@ -137,17 +137,14 @@ function setSessionVar($key,$value='')
 /************************************************************************
  * Function  : startPHPSession                                          *
  * This function starts a secure PHP session and should be called at    *
- * at the beginning of each script before any HTML is output.  It sets  *
- * the session_id to be something that is unique across multiple        *
- * machines.  It also does a trick of setting a 'lastaccess' time so    *
- * that the $_SESSION variable does not expire without warning.         *
+ * at the beginning of each script before any HTML is output.  It does  *
+ * a trick of setting a 'lastaccess' time so that the $_SESSION         *
+ * variable does not expire without warning.                            *
  ************************************************************************/
 function startPHPSession()
 {
     ini_set('session.cookie_secure',true);
-    if (session_id() == "") {
-        session_start();
-    }
+    @session_start();
     if ((!isset($_SESSION['lastaccess']) || 
         (time() - $_SESSION['lastaccess']) > 60)) {
         $_SESSION['lastaccess'] = time();
