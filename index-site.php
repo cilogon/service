@@ -350,7 +350,7 @@ function printGetCertificate() {
       id="pw2icon"/>
       </p>
 
-      <p class="certificatelifetime">
+      <p class="p12certificatelifetime">
       <label for="p12lifetime" title="' , $lifetimetext ,
       '" class="helpcursor">Certificate Lifetime:</label>
       <input type="text" name="p12lifetime" id="p12lifetime" 
@@ -482,7 +482,7 @@ function printDownloadCertificate() {
 
     echo '
       <fieldset>
-      <p>
+      <p class="jwscertificatelifetime">
       <label for="certlifetime" title="' , $lifetimetext ,
       '" class="helpcursor">Lifetime:</label>
       <input type="text" name="certlifetime" id="certlifetime" 

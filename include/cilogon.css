@@ -230,7 +230,7 @@ p.openiderror {
 p.privacypolicy {
   font-size: x-small;
 }
-p.certificatelifetime {
+p.p12certificatelifetime {
   display: none;
 }
 img.hourglass {
