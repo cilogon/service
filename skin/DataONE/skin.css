@@ -131,7 +131,6 @@ div.footer a:active {
 /***** Begin actionbox containing action buttons and WAYF *****/
 div.actionbox,
 div.certactionbox,
-div.tokenactionbox,
 div.logofftextbox {
   display: block;
   border: 1px solid #D6DDB9;
@@ -143,6 +142,9 @@ div.logoffactionbox {
 }
 p.privacypolicy {
   font-size: small;
+}
+p.jwscertificatelifetime {
+  display: none;
 }
 /***** End actionbox *****/
 
@@ -199,3 +201,4 @@ tr.inforow td.helpcell {
   background-color: #def;
 }
 /***** End Help-related stuff *****/
+
