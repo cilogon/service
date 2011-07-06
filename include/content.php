@@ -716,7 +716,7 @@ function printErrorBox($errortext)
     <div class="errorbox">
     <table cellpadding="5">
     <tr>
-    <td>
+    <td valign="top">
     ';
     printIcon('error');
     echo '&nbsp;
@@ -784,29 +784,72 @@ function handleGotUser()
 
     $uid = getSessionVar('uid');
     $status = getSessionVar('status');
-    # If empty 'uid' or 'status' or odd-numbered status code, error!
+    // If empty 'uid' or 'status' or odd-numbered status code, error!
     if ((strlen($uid) == 0) || (strlen($status) == 0) || ($status & 1)) {
         $log->error('Failed to getuser.');
 
+        $idpname = getSessionVar('idpname');
         unsetGetUserSessionVars();
         printHeader('Error Logging On');
 
         echo '
         <div class="boxed">
         ';
-        printErrorBox('An internal error has occurred.  System
-            administrators have been notified.  This may be a temporary
-            error.  Please try again later, or contact us at the the email
-            address at the bottom of the page.');
+
+        // Check if the problem IdP was Google - probably no first/last name
+        if ($idpname == 'Google') {
+            printErrorBox('
+            <p>
+            There was a problem logging on.  It appears that you have
+            attempted to use Google as your identity provider, but you have
+            not yet associated a first and last name with your Google
+            account. To rectify this problem, go to the <a target="_blank"
+            href="https://www.google.com/accounts/EditUserInfo">Google
+            Account Edit Personal Information page</a>, enter a First
+            Name and a Last Name, and click the "Save" button.  (All other
+            Google account information is optional and not required by the
+            CILogon Service.)
+            </p>
+            <p>
+            After you have updated your Google account profile, click the
+            "Log On" button below to attempt to log on with your Google
+            account again.  If you have any questions, please contact us at
+            the email address at the bottom of the page.
+            </p>
+            ');
+
+            echo '
+            <div>
+            ';
+            printFormHead();
+            echo '
+            <p class="centered">
+            <input type="hidden" name="providerId" value="' ,
+            openid::getProviderUrl('Google') , '" />
+            <input type="submit" name="submit" class="submit" value="Log On" />
+            </p>
+            </form>
+            </div>
+            ';
+        } else {
+            printErrorBox('An internal error has occurred.  System
+                administrators have been notified.  This may be a temporary
+                error.  Please try again later, or contact us at the the email
+                address at the bottom of the page.');
+
+            echo '
+            <div>
+            ';
+            printFormHead();
+            echo '
+            <input type="submit" name="submit" class="submit" 
+                   value="Continue" />
+            </form>
+            </div>
+            ';
+        }
 
         echo '
-        <div>
-        ';
-        printFormHead();
-        echo '
-        <input type="submit" name="submit" class="submit" value="Continue" />
-        </form>
-        </div>
         </div>
         ';
         printFooter();
