@@ -295,7 +295,8 @@ function sendErrorEmail($remote_user,$idp,$idpname,$firstname,$lastname,
     $mailto   = 'tfleury@illinois.edu';
     $mailfrom = 'From: help@cilogon.org' . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
-    $mailsubj = 'CILogon Service - Failure in getuser script';
+    $mailsubj = 'CILogon Service on ' . HOSTNAME .
+                ' - Failure in getuser script for ' . $idpname;
     $mailmsg  = '
 CILogon Service - Failure in /secure/getuser/
 ---------------------------------------------
