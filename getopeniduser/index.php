@@ -131,6 +131,7 @@ function getUserAndRespond($responseurl) {
          * database user id and status code of the database query. */
         $providerId = getCookieVar('providerId');
         $providerName = openid::getProviderName($providerId);
+        setSessionVar('idpname',$providerName);  // Save for later use
         $validator = new EmailAddressValidator();
 
         if ((strlen($openidid) > 0) && 
@@ -170,7 +171,6 @@ function getUserAndRespond($responseurl) {
             setSessionVar('dn',$dbs->distinguished_name);
             setSessionVar('loa','openid');
             setSessionVar('idp',$providerId);
-            setSessionVar('idpname',$providerName);
         }
 
         setSessionVar('submit',getSessionVar('responsesubmit'));
@@ -208,10 +208,11 @@ function sendErrorEmail($openidid,$providerId,$providerName,
     $mailto   = 'help@cilogon.org';
     $mailfrom = 'From: help@cilogon.org' . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
-    $mailsubj = 'CILogon Service - Failure in getopeniduser script';
+    $mailsubj = 'CILogon Service on ' . HOSTNAME . 
+                ' - Failure in getopeniduser script for ' . $providerName;
     $mailmsg  = '
-CILogon Service - Failure in /secure/getopeniduser/
----------------------------------------------------
+CILogon Service - Failure in /getopeniduser/
+--------------------------------------------
 Server Host   = ' . HOSTNAME . '
 Remote Address= ' . getServerVar('REMOTE_ADDR') . '
 OpenId ID     = ' . 
