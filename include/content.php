@@ -229,7 +229,7 @@ function printWAYF()
     /* Check to see if the skin's config.xml has a whitelist of IDPs.  */
     /* If so, go thru master IdP list and keep only those IdPs in the  */
     /* config.xml's whitelist.                                         */
-    if ($skin->hasWhitelist()) {
+    if ($skin->hasIdpWhitelist()) {
         foreach ($idps as $entityId => $displayName) {
             if (!$skin->idpWhitelisted($entityId)) {
                 unset($idps[$entityId]);
@@ -238,9 +238,9 @@ function printWAYF()
     }
     /* Next, check to see if the skin's config.xml has a blacklist of  */
     /* IdPs. If so, cull down the master IdP list removing 'bad' IdPs. */
-    if ($skin->hasBlacklist()) {
-        $configblacklist = $skin->getConfigOption('blacklist');
-        foreach ($configblacklist->idp as $blackidp) {
+    if ($skin->hasIdpBlacklist()) {
+        $idpblacklist = $skin->getConfigOption('idpblacklist');
+        foreach ($idpblacklist->idp as $blackidp) {
             unset($idps[(string)$blackidp]);
         }
     }
@@ -326,6 +326,10 @@ function printWAYF()
     <input type="submit" name="submit" class="submit helpcursor" 
     title="Proceed to the selected identity provider."
     value="Log On" id="wayflogonbutton" />
+    <input type="hidden" name="previouspage" value="WAYF" />
+    <input type="submit" name="submit" class="submit helpcursor"
+    title="Cancel authentication and navigate away from this site."
+    value="Cancel" id="wayfcancelbutton" />
     </p>
     ';
 
