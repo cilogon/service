@@ -6,4 +6,15 @@
     <remember>1</remember>
   </delegate>
 
+  <portallist>
+    <portal>/ion\.oceanobservatories\.org/</portal>
+    <!--
+    <portal>/demo\.cilogon\.org/</portal>
+    -->
+  </portallist>
+
+  <portallistaction>
+    <hideportalinfo>1</hideportalinfo>
+  </portallistaction>
+
 </config>

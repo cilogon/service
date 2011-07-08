@@ -68,6 +68,9 @@ div.certactionbox {
   border: none;
   display: none;
 }
+#wayfcancelbutton {
+  display: inline;
+}
 /***** End actionbox *****/
 
 /***** Begin summary div on testidp page *****/

@@ -3,11 +3,11 @@
 
   <initialidp>urn:mace:incommon:idp.protectnetwork.org</initialidp>
 
-  <blacklist>
+  <idpblacklist>
     <idp>http://google.com/accounts/o8/id</idp>
     <idp>http://openid.paypal-ids.com</idp>
     <idp>http://pip.verisignlabs.com</idp>
     <idp>http://yahoo.com</idp>
-  </blacklist>
+  </idpblacklist>
 
 </config>

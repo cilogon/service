@@ -18,7 +18,7 @@
   -->
 
 
-  <!-- <whitelist>
+  <!-- <idpwhitelist>
        The cilogon.org service maintains a global list of available IdPs in
        the file /var/www/html/include/whitelist.txt.  This full list is
        typically shown to the user on the "Log On" page.  You can cull this
@@ -29,15 +29,15 @@
        only IdPs starting with the letter 'P'.
   -->
   <!--
-  <whitelist>
+  <idpwhitelist>
     <idp>urn:mace:incommon:psu.edu</idp>
     <idp>urn:mace:incommon:idp.protectnetwork.org</idp>
     <idp>https://idp.purdue.edu/idp/shibboleth</idp>
-  </whitelist>
+  </idpwhitelist>
   -->
 
 
-  <!-- <blacklist>
+  <!-- <idpblacklist>
        The cilogon.org service maintains a global list of available IdPs in
        the file /var/www/html/include/whitelist.txt.  This full list is
        typically shown to the user on the "Log On" page.  You can remove
@@ -46,12 +46,12 @@
        example, we remove the OpenID providers from the list.
   -->
   <!--
-  <blacklist>
+  <idpblacklist>
     <idp>http://google.com/accounts/o8/id</idp>
     <idp>http://openid.paypal-ids.com</idp>
     <idp>http://pip.verisignlabs.com</idp>
     <idp>http://yahoo.com</idp>
-  </blacklist>
+  </idpblacklist>
   -->
 
 
@@ -115,6 +115,45 @@
     <initiallifetime>12</initiallifetime>
     <remember>1</remember>
   </delegate>
+  -->
+
+
+  <!-- <portallist>
+       This block contains a list of regular expressions which attempt to
+       match up to a portal's "callback url" (a.k.a. Service URL).  Each
+       <portal> listed is actually a Perl-Compatible Regular Expression
+       (PCRE), which is matched against the callback URI as passed by the
+       portal to the CILogon Delegate service.  The callback URI typically
+       looks like "https://my.site.org/portal-service/ready". You need
+       to give a regular expression, including the delimeters (slash and 
+       pound are common).  For information about PHP's PCRE syntax, see 
+       http://www.php.net/manual/en/pcre.pattern.php .  Once you have
+       specified a list of <portal> regular expressions, you also need to
+       specify a <portallistaction> below, which tells the program what to
+       do if the portal's callback URL matches a <portal> in the list.
+       The example below matches hostnames in the ".ncsa.uiuc.edu" domain.
+  -->
+  <!--
+  <portallist>
+    <portal>/.*\.ncsa\.uiuc\.edu/</portal>
+  </portallist>
+  -->
+
+  <!-- <portallistaction>
+       This block works in conjunction with the <portallist> block. It has
+       options for what should happen if a portal callback url is found in
+       the <portallist>.  This section may grow as we find new uses for the
+       <portallist>.  The options in this section are independent of each
+       other.
+       <hideportalinfo> If present, set to 1.  This allows you to hide the
+       Portal Info block (Site Name / Site URL / Service URL) for portals
+       in the <portallist> (rather than hiding it for the entire skin, as is
+       currently possible via CSS).  
+  -->
+  <!--
+  <portallistaction>
+    <hideportalinfo>1</hideportalinfo>
+  </portallistaction>
   -->
 
 </config>
