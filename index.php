@@ -66,6 +66,10 @@ switch ($submit) {
         }
     break; // End case 'Go Back' / 'Proceed'
 
+    case 'Cancel': // Cancel button on WAYF page - go to Google
+        header('Location: http://www.google.com/');
+    break;
+
     case 'Get New Certificate':
         if (verifyCurrentSession()) { // Verify PHP session contains valid info
             generateP12();
