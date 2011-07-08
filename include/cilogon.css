@@ -238,6 +238,9 @@ img.hourglass {
   position: absolute;
   margin-left: 2em;
 }
+#wayfcancelbutton {
+  display: none;
+}
 /***** End actionbox *****/
 
 /***** Begin certinfo / portalinfo table *****/
