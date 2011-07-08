@@ -75,7 +75,18 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
         break; // End case 'OK'
 
         case 'Cancel': // User denies delegation of certificate
-            printCancelPage();
+            // If user clicked 'Cancel' on the WAYF page, return to the
+            // portal's failure URL (or Google if failure URL not set).
+            if (getPostVar('previouspage') == 'WAYF') {
+                $failureuri = getSessionVar('failureuri');
+                $location = 'http://www.google.com/';
+                if (strlen($failureuri) > 0) {
+                    $location = $failureuri;
+                }
+                header('Location: ' . $location);
+            } else { // 'Cancel' button on certificate delegate page clicked
+                printCancelPage();
+            }
         break; // End case 'Cancel'
 
         case "Show Help": // Toggle showing of help text on and off
@@ -370,8 +381,21 @@ function printMainPage()
  * log in page from the one on the main page.                           *
  ************************************************************************/
 function printPortalInfo($suffix='') {
-    $showhelp = getSessionVar('showhelp');
+    global $skin;
 
+    // If the skin has a <portallist>, and <hideportalinfo> is set, check
+    // to see if the callback URL matches one of the regular expressions in
+    // the <portallist>. If so, we do not want to show the portal info, so
+    // simply return.
+    if ($skin->hasPortalList()) {
+        $hpi = $skin->getConfigOption('portallistaction','hideportalinfo');
+        if (($hpi !== null) && ((int)$hpi == 1) &&
+            ($skin->portalListed(getSessionVar('callbackuri')))) {
+                return;
+        }
+    }
+
+    $showhelp = getSessionVar('showhelp');
     $helptext = "The Site Name is provided by the site to CILogon and has not been vetted.";
 
     echo '
@@ -475,7 +499,6 @@ function handleAllowDelegation($always=false)
     global $log;
 
     $log->info('Attempting to delegate a certificate to a portal...');
-
 
     // Try to get the certificate lifetime from a submitted <form>
     $lifetime = trim(getPostVar('lifetime'));
