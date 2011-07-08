@@ -30,17 +30,23 @@ require_once('util.php');
  *     /var/www/html/skin/config-example.xml                            *
  *                                                                      *
  * Example usage:                                                       *
- *    require_once('skin.php');                                         *
- *    $skin = new skin();                                               *
- *    // While outputting the <head> HTML block...                      *
- *    $skin->printSkinLink();                                           *
- *    // Get the value of a configuration option                        *
- *    $whitelist = $skin->getConfigOption('whitelist');                 *
- *   // Now, process entries in the $whitelist                          *
- *   if (($whitelist !== null) && (!empty($whitelist->idp))) {          *
- *       foreach ($whitelist->idp as $entityID) {                       *
+ *   require_once('skin.php');                                          *
+ *   $skin = new skin();                                                *
+ *   // While outputting the <head> HTML block...                       *
+ *   $skin->printSkinLink();                                            *
+ *   // Get the value of a configuration option                         *
+ *   $idpwhitelist = $skin->getConfigOption('idpwhitelist');            *
+ *   // Now, process entries in the $idpwhitelist                       *
+ *   if (($idpwhitelist !== null) && (!empty($idpwhitelist->idp))) {    *
+ *       foreach ($idpwhitelist->idp as $entityID) {                    *
  *           echo "<p>" , (string)$entityID , "<\p>\n";                 *
  *       }                                                              *
+ *   }                                                                  *
+ *   // Check to see if <hideportalinfo> is set                         *
+ *   $hideportalinfo = false;                                           *
+ *   $hpi=$skin->getConfigOption('portallistaction','hideportalinfo');  *
+ *   if (($hpi !== null) && ((int)$hpi > 0)) {                          *
+ *       $hideportalinfo = true;                                        *
  *   }                                                                  *
  ************************************************************************/
 
@@ -160,12 +166,13 @@ class skin {
      *             XML option, or 'null' if no such option exists.      *
      * This method returns a SimpleXMLElement block corresponding to    *
      * the passed in arguments.  For example, to get the blacklist of   *
-     * idps, call $idps = getConfigOption('blacklist') and then iterate *
-     * over $idps with foreach($idps as $idp) { ... }.  To get a single *
-     * subblock value such as the initial lifetime number for the       *
-     * GridShib-CA client, call $gscanum = (int)getConfigOption('gsca', *
-     *'initiallifetime','number').  Note that you should explicitly     *
-     * cast the values to int, string, float, etc., when you use them.  *
+     * idps, call $idps = getConfigOption('idpblacklist') and then      *
+     * iterate over $idps with foreach($idps as $idp) { ... }.  To get  *
+     * a single subblock value such as the initial lifetime number for  *
+     * the GridShib-CA client, call $gscanum =                          *
+     * (int)getConfigOption('gsca','initiallifetime','number'). Note    *
+     * that you should explicitly cast the values to int, string,       *
+     * float, etc., when you use them.                                  *
      ********************************************************************/
     function getConfigOption() {
         $retval = null;
@@ -202,32 +209,32 @@ class skin {
     }
 
     /********************************************************************
-     * Function  : hasWhitelist                                         *
-     * Returns   : True if skin has a non-empty <whitelist>.            *
-     * This function checks for the presence of a <whitelist> block     *
+     * Function  : hasIdpWhitelist                                      *
+     * Returns   : True if skin has a non-empty <idpwhitelist>.         *
+     * This function checks for the presence of a <idpwhitelist> block  *
      * in the skin's config file.  There must be at least one <idp>     *
-     * in the <whitelist>.                                              *
+     * in the <idpwhitelist>.                                           *
      ********************************************************************/
-    function hasWhitelist() {
-        $retval = false;  // Assume no <whitelist> configured
-        $whitelist = $this->getConfigOption('whitelist');
-        if (($whitelist !== null) && (!empty($whitelist->idp))) {
+    function hasIdpWhitelist() {
+        $retval = false;  // Assume no <idpwhitelist> configured
+        $idpwhitelist = $this->getConfigOption('idpwhitelist');
+        if (($idpwhitelist !== null) && (!empty($idpwhitelist->idp))) {
             $retval = true;
         }
         return $retval;
     }
 
     /********************************************************************
-     * Function  : hasBlacklist                                         *
-     * Returns   : True if skin has a non-empty <blacklist>.            *
-     * This function checks for the presence of a <blacklist> block     *
+     * Function  : hasIdpBlacklist                                      *
+     * Returns   : True if skin has a non-empty <idpblacklist>.         *
+     * This function checks for the presence of a <idpblacklist> block  *
      * in the skin's config file.  There must be at least one <idp>     *
-     * in the <blacklist>.                                              *
+     * in the <idpblacklist>.                                           *
      ********************************************************************/
-    function hasBlacklist() {
-        $retval = false;  // Assume no <blacklist> configured
-        $blacklist = $this->getConfigOption('blacklist');
-        if (($blacklist !== null) && (!empty($blacklist->idp))) {
+    function hasIdpBlacklist() {
+        $retval = false;  // Assume no <idpblacklist> configured
+        $idpblacklist = $this->getConfigOption('idpblacklist');
+        if (($idpblacklist !== null) && (!empty($idpblacklist->idp))) {
             $retval = true;
         }
         return $retval;
@@ -240,18 +247,18 @@ class skin {
      *             whitelist (or if the skin doesn't have a whitelist). *
      * This method checks to see if a given entityId of an IdP          *
      * is whitelisted.  "Whitelisted" in this case means either (a) the *
-     * entityId is in the skin's <whitelist> list or (b) the skin       *
-     * doesn't have a <whitelist> at all.  In the second case, all IdPs *
-     * are by default "whitelisted".  If you want to find if an IdP     *
-     * should be listed in the WAYF, use "idpAvailable" which checks    *
-     * the whitelist AND the blacklist.                                 *
+     * entityId is in the skin's <idpwhitelist> list or (b) the skin    *
+     * doesn't have a <idpwhitelist> at all.  In the second case, all   *
+     * IdPs are by default "whitelisted".  If you want to find if an    *
+     * IdP should be listed in the WAYF, use "idpAvailable" which       *
+     * checks the whitelist AND the blacklist.                          *
      ********************************************************************/
     function idpWhitelisted($entityId) {
         $retval = true;  // Assume the entityId is 'whitelisted'
-        if ($this->hasWhitelist()) {
-            $whitelist = $this->getConfigOption('whitelist');
+        if ($this->hasIdpWhitelist()) {
+            $idpwhitelist = $this->getConfigOption('idpwhitelist');
             $found = false;
-            foreach ($whitelist->idp as $whiteidp) {
+            foreach ($idpwhitelist->idp as $whiteidp) {
                 if ($entityId == ((string)$whiteidp)) {
                     $found = true;
                     break;
@@ -270,13 +277,13 @@ class skin {
      * Returns   : True if the given IdP entityId is in the skin's      *
      *             blacklist.                                           *
      * This method checks to see if a given entityId of an IdP          *
-     * appears in the skin's <blacklist>.                               * 
+     * appears in the skin's <idpblacklist>.                            * 
      ********************************************************************/
     function idpBlacklisted($entityId) {
-        $retval = false;  // Assume entityId is NOT in the blacklist
-        if ($this->hasBlacklist()) {
-            $blacklist = $this->getConfigOption('blacklist');
-            foreach ($blacklist->idp as $blackidp) {
+        $retval = false;  // Assume entityId is NOT in the idpblacklist
+        if ($this->hasIdpBlacklist()) {
+            $idpblacklist = $this->getConfigOption('idpblacklist');
+            foreach ($idpblacklist->idp as $blackidp) {
                 if ($entityId == ((string)$blackidp)) {
                     $retval = true;
                     break;
@@ -340,6 +347,54 @@ class skin {
             unsetSessionVar('myproxyinfo');
         }
     }
+
+    /********************************************************************
+     * Function  : hasPortalList                                        *
+     * Returns   : True if skin has a non-empty <portallist>.  This     *
+     * function checks for the presence of a <portallist> block in the  *
+     * skin's config file.  There must be at least one <portal> in the  *
+     * <portallist>.                                                    *
+     ********************************************************************/
+    function hasPortalList() {
+        $retval = false;  // Assume no <portallist> configured
+        $portallist = $this->getConfigOption('portallist');
+        if (($portallist !== null) && (!empty($portallist->portal))) {
+            $retval = true;
+        }
+        return $retval;
+    }
+
+    /********************************************************************
+     * Function  : portalListed                                         *
+     * Parameter : A "callback" URL of a portal accessing the delegate  *
+     *             service.                                             *
+     * Returns   : True if the callback URL matches one of the patterns *
+     *             in the skin's <portallist>.  False otherwise.        *
+     * This function takes in a "callback" URL of a portal passed to    *
+     * the CILogon Delegate service.  It then looks through the list    *
+     * of <portal> patterns in the skin's <portallist>.  If the         *
+     * callback URL matches any of these patterns, true is returned.    *
+     * This is used to hide the "Site Name / Site URL / Service URL"    *
+     * box on the delegation WAYF page, for example.                    *
+     ********************************************************************/
+    function portalListed($portalurl) {
+        $retval = true;  // Assume the portalurl matches a listed <portal>
+        if ($this->hasPortalList()) {
+            $portallist = $this->getConfigOption('portallist');
+            $found = false;
+            foreach ($portallist->portal as $portalmatch) {
+                if (preg_match(((string)$portalmatch),$portalurl)) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $retval = false;
+            }
+        }
+        return $retval;
+    }
+
 }
 
 ?>
