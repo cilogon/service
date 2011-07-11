@@ -284,9 +284,18 @@ function printWAYF()
 
       echo '</a>
       </p>
+      ';
 
+      // See if the skin has set a size for the IdP <select> list
+      $selectsize = 4;
+      $ils = $skin->getConfigOption('idplistsize');
+      if (($ils !== null) && ((int)$ils > 0)) {
+          $selectsize = (int)$ils;
+      }
+
+      echo '
       <p>
-      <select name="providerId" id="providerId" size="4"
+      <select name="providerId" id="providerId" size="' , $selectsize , '"
        onkeypress="enterKeySubmit(event)" ondblclick="doubleClickSubmit()">
     ';
 
@@ -322,10 +331,12 @@ function printWAYF()
 
     echo $csrf->hiddenFormElement();
 
+    $lobtext = getLogOnButtonText();
+
     echo '
     <input type="submit" name="submit" class="submit helpcursor" 
-    title="Proceed to the selected identity provider."
-    value="Log On" id="wayflogonbutton" />
+    title="Continue to the selected identity provider."
+    value="' , $lobtext , '" id="wayflogonbutton" />
     <input type="hidden" name="previouspage" value="WAYF" />
     <input type="submit" name="submit" class="submit helpcursor"
     title="Cancel authentication and navigate away from this site."
@@ -341,8 +352,9 @@ function printWAYF()
 
     echo '
     <p class="privacypolicy">
-    By selecting "Log On", you agree to our <a target="_blank" 
-    href="http://ca.cilogon.org/policy/privacy">privacy policy</a>.
+    By selecting "' , $lobtext , '", you agree to <a target="_blank"
+    href="http://ca.cilogon.org/policy/privacy">CILogon\'s privacy
+    policy</a>.
     </p>
 
     </fieldset>
@@ -356,9 +368,11 @@ function printWAYF()
       <td class="helpcell">
       <div>
       <p>
+      CILogon facilitates secure access to CyberInfrastructure (<acronym
+      title="CyberInfrastructure">CI</acronym>).
       In order to use the CILogon Service, you must first select an identity
       provider. An identity provider (IdP) is an organization where you have
-      an account and can log in to gain access to online services. 
+      an account and can log on to gain access to online services. 
       </p>
       <p>
       If you are a faculty, staff, or student member of a university or
@@ -800,6 +814,8 @@ function handleGotUser()
         <div class="boxed">
         ';
 
+        $lobtext = getLogOnButtonText();
+
         // Check if the problem IdP was Google - probably no first/last name
         if ($idpname == 'Google') {
             printErrorBox('
@@ -815,8 +831,8 @@ function handleGotUser()
             CILogon Service.)
             </p>
             <p>
-            After you have updated your Google account profile, click the
-            "Log On" button below to attempt to log on with your Google
+            After you have updated your Google account profile, click the "' ,
+            $lobtext , '" button below to attempt to log on with your Google
             account again.  If you have any questions, please contact us at
             the email address at the bottom of the page.
             </p>
@@ -830,7 +846,8 @@ function handleGotUser()
             <p class="centered">
             <input type="hidden" name="providerId" value="' ,
             openid::getProviderUrl('Google') , '" />
-            <input type="submit" name="submit" class="submit" value="Log On" />
+            <input type="submit" name="submit" class="submit" 
+            value="' , $lobtext , '" />
             </p>
             </form>
             </div>
@@ -846,8 +863,7 @@ function handleGotUser()
             ';
             printFormHead();
             echo '
-            <input type="submit" name="submit" class="submit" 
-                   value="Continue" />
+            <input type="submit" name="submit" class="submit" value="Proceed" />
             </form>
             </div>
             ';
@@ -1273,6 +1289,26 @@ function getMachineHostname() {
     }
     $url = $hostname . '.' . implode('.',$serversplit);
     return $url;
+}
+
+/************************************************************************
+ * Function   : getLogOnButtonText                                      *
+ * Returns    : The text of the "Log On" button for the WAYF, as        *
+ *              configured for the skin.  Defaults to "Log On".         *
+ * This function checks the current skin to see if <logonbuttontext>    *
+ * has been configured.  If so, it returns that value.  Otherwise,      *
+ * it returns "Log On".                                                 *
+ ************************************************************************/
+function getLogOnButtonText() {
+    global $skin;
+
+    $retval = 'Log On';
+    $lobt = $skin->getConfigOption('logonbuttontext');
+    if ($lobt !== null)  {
+        $retval = (string)$lobt;
+    }
+    return $retval;
+
 }
 
 ?>

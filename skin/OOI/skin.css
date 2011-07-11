@@ -1,16 +1,19 @@
 /***** Begin basic elements *****/
 body {
-  font-family: times,serif;
+  font-family: Geneva, Arial, Helvetica, sans-serif;
   color: #003;
 }
 a {
-  color: #036;
+  color: #4F4F77;
 }
 a:visited {
-  color: #003; 
+  color: #4F4F77; 
 }
-a:hover, a:active {
-  color: #369;
+a:hover {
+  color: #FF6600;
+}
+a:active {
+  color: #000;
 }
 /***** End basic elements *****/
 
@@ -20,23 +23,47 @@ div.boxheader {
   background-color: #9cf;
 }
 input.submit {
-  color: #003;
-  background-color: #8ac;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  border: 1px solid #DDDDDD;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+	background-color:#F5F5F5;
+  background-color: #F5F5F5;
+  background-image:-webkit-gradient(linear, 0% 20%, 0% 100%, from(#fff), to(#E6E6E6)); 
+	background-image:-moz-linear-gradient(0% 50% 270deg,#FFF, #E6E6E6);
+	color:#333333;
+  text-transform: uppercase;
+}
+div.boxed {
+  background-image:url("/skin/OOI/G1123-Wire-Waves-White-Wide.png");
+  background-color:#FFFFFF; 
+  background-repeat:no-repeat;
+  background-position:-200px -28px; 
 }
 /***** End a few misc element *****/
 
 /***** Begin the "CILogon Service" header at the top of each page *****/
 div.logoheader {
+  /*
   background: none;
-  height: 116px;
+  */
+  background-image: -webkit-gradient(linear, 0% 20%, 0% 100%, from(#fff), to(#EFF2F2)); 
+  background-image:-moz-linear-gradient(0% 50% 270deg,#FFFFFF, #EFF2F2); 
+  background-color: transparent; 
+  background-repeat: no-repeat; 
+  height: 79px;
 }
 div.logoheader h1 {
   background: transparent url("/skin/OOI/ooi-logo.png") no-repeat top left;
-  margin-top: 8px;
-  margin-left: 5px;
-  width: 196px;
-  height: 100px;
-  float: left;
+  position: absolute;
+  left: 19px;
+  top: 23px;
+  width: 697px;
+  height: 44px;
 }
 /***** End the "CILogon Service" header at the top of each page *****/
 
@@ -49,10 +76,16 @@ div.titlebox {
 
 /***** Begin page footer *****/
 div.footer a:link {
-  color: #369;
+  color: #4F4F77;
 }
 div.footer a:visited {
-  color: #369;
+  color: #4F4F77;
+}
+div.footer a:hover {
+  color: #FF6600;
+}
+div.footer a:active {
+  color: #000;
 }
 /***** End page footer *****/
 
@@ -61,8 +94,13 @@ div.actionbox,
 div.p12actionbox,
 div.certactionbox,
 div.logoffactionbox {
-  border: 3px outset #369;
+  border: 2px outset #369;
   display: block;
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+
 }
 div.certactionbox {
   border: none;

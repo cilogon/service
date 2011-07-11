@@ -33,6 +33,7 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
     switch ($submit) {
 
         case 'Log On': // Check for OpenID or InCommon usage.
+        case 'Continue': // For OOI
             // Set the cookie for keepidp if the checkbox was checked
             if (strlen(getPostVar('keepidp')) > 0) {
                 setcookie('keepidp','checked',time()+60*60*24*365,'/','',true);
@@ -58,8 +59,7 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
             handleGotUser();
         break; // End case 'gotuser'
 
-        case 'Proceed':   // Proceed after 'User Changed' paged
-        case 'Continue' : // After error condition from getuser script
+        case 'Proceed': // Proceed after 'User Changed' or Error page
             // Verify the PHP session contains valid info
             if (verifyCurrentSession()) {
                 printMainPage();
@@ -171,14 +171,32 @@ function printLogonPage()
 
     echo '
       <br />
-      <p>"' , 
-      htmlspecialchars(getSessionVar('portalname')) , 
-      '" requests that you select an Identity Provider and "Log On". 
-      If you do not approve this request, do not proceed.
-      </p>
     ';
 
-    printPortalInfo('1');
+    // If the skin has a <portallist>, and <hideportalinfo> is set, check
+    // to see if the callback URL matches one of the regular expressions in
+    // the <portallist>. If so, we do NOT want to show the portal info.
+    $showportalinfo = true;
+    if ($skin->hasPortalList()) {
+        $hpi = $skin->getConfigOption('portallistaction','hideportalinfo');
+        if (($hpi !== null) && ((int)$hpi == 1) &&
+            ($skin->portalListed(getSessionVar('callbackuri')))) {
+            $showportalinfo = false; 
+        }
+    }
+
+    if ($showportalinfo) {
+        echo '
+          <p>"' , 
+          htmlspecialchars(getSessionVar('portalname')) , 
+          '" requests that you select an Identity Provider and click "' ,
+          getLogOnButtonText() ,
+          '". If you do not approve this request, do not proceed.
+          </p>
+        ';
+
+        printPortalInfo('1');
+    }
 
     printWAYF();
 
@@ -381,20 +399,6 @@ function printMainPage()
  * log in page from the one on the main page.                           *
  ************************************************************************/
 function printPortalInfo($suffix='') {
-    global $skin;
-
-    // If the skin has a <portallist>, and <hideportalinfo> is set, check
-    // to see if the callback URL matches one of the regular expressions in
-    // the <portallist>. If so, we do not want to show the portal info, so
-    // simply return.
-    if ($skin->hasPortalList()) {
-        $hpi = $skin->getConfigOption('portallistaction','hideportalinfo');
-        if (($hpi !== null) && ((int)$hpi == 1) &&
-            ($skin->portalListed(getSessionVar('callbackuri')))) {
-                return;
-        }
-    }
-
     $showhelp = getSessionVar('showhelp');
     $helptext = "The Site Name is provided by the site to CILogon and has not been vetted.";
 

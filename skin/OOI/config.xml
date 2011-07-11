@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 
+  <idplistsize>10</idplistsize>
+
+  <logonbuttontext>Continue</logonbuttontext>
+
   <delegate>
     <initiallifetime>12</initiallifetime>
     <remember>1</remember>
@@ -8,9 +12,6 @@
 
   <portallist>
     <portal>/ion\.oceanobservatories\.org/</portal>
-    <!--
-    <portal>/demo\.cilogon\.org/</portal>
-    -->
   </portallist>
 
   <portallistaction>

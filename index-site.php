@@ -24,6 +24,7 @@ $log->info('submit="' . $submit . '"');
 switch ($submit) {
 
     case 'Log On': // Check for OpenID or InCommon usage.
+    case 'Continue': // For OOI
         // Set the cookie for keepidp if the checkbox was checked
         if (strlen(getPostVar('keepidp')) > 0) {
             setcookie('keepidp','checked',time()+60*60*24*365,'/','',true);
@@ -46,7 +47,6 @@ switch ($submit) {
     break; // End case 'Log On'
 
     case 'Log Off':   // Click the 'Log Off' button
-    case 'Continue' : // Return to Log On page after error condition
         removeShibCookies();
         unsetGetUserSessionVars();
         printLogonPage();
@@ -57,10 +57,11 @@ switch ($submit) {
     break; // End case 'gotuser'
 
     case 'Go Back': // Return to the Main page
-    case 'Proceed': // Proceed after 'User Changed' page
+    case 'Proceed': // Proceed after 'User Changed' or Error page
         if (verifyCurrentSession()) { // Verify PHP session contains valid info
             printMainPage();
         } else { // Otherwise, redirect to the 'Welcome' page
+            removeShibCookies();
             unsetGetUserSessionVars();
             printLogonPage();
         }

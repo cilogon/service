@@ -18,6 +18,16 @@
   -->
 
 
+  <!-- <idplistsize>
+       This sets the size of the IdP <select> HTML element.  If not
+       specified, it defaults to 4 (meaning 4 IdPs are shown at a time).  
+       The example below will show an IdP selection list 10 items high.
+  -->
+  <!--
+  <idplistsize>10</idplistsize>
+  -->
+
+
   <!-- <idpwhitelist>
        The cilogon.org service maintains a global list of available IdPs in
        the file /var/www/html/include/whitelist.txt.  This full list is
@@ -52,6 +62,18 @@
     <idp>http://pip.verisignlabs.com</idp>
     <idp>http://yahoo.com</idp>
   </idpblacklist>
+  -->
+
+
+  <!-- <logonbuttontext>
+       This changes the text of the "Log On" button of the WAYF.  Use this
+       setting with care since the program's control flow relies on the text
+       of the "Log On" button.  So you can't just change it to something
+       random without writing additional code to handle the new text.
+       Currently, only "Continue" is a supported alternative to "Log On".
+  -->
+  <!--
+  <logonbuttontext>Continue</logonbuttontext>
   -->
 
 
