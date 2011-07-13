@@ -799,6 +799,7 @@ function unsetPortalSessionVars()
 function handleGotUser()
 {
     global $log;
+    global $skin;
 
     $uid = getSessionVar('uid');
     $status = getSessionVar('status');
@@ -874,6 +875,18 @@ function handleGotUser()
         ';
         printFooter();
     } else { // Got one of the STATUS_OK status codes
+        // For the 'delegate' case (when there is a callbackuri in the 
+        // current PHP session), if the skin has "remember" set, then
+        // we should always go to the main page, skipping the New User
+        // and User Changed pages.
+        $callbackuri = getSessionVar('callbackuri');
+        if (strlen($callbackuri) > 0) {
+            $skinremember = $skin->getConfigOption('delegate','remember');
+            if (($skinremember !== null) && ((int)$skinremember == 1)) {
+                $status = dbservice::$STATUS['STATUS_OK'];
+            }
+        }
+
         // If the user got a new DN due to changed SAML attributes,
         // print out a notification page.
         if ($status == dbservice::$STATUS['STATUS_NEW_USER']) {
