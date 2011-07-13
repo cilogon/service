@@ -81,7 +81,7 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
                 $failureuri = getSessionVar('failureuri');
                 $location = 'http://www.google.com/';
                 if (strlen($failureuri) > 0) {
-                    $location = $failureuri;
+                    $location = $failureuri . "?reason=cancel";
                 }
                 header('Location: ' . $location);
             } else { // 'Cancel' button on certificate delegate page clicked
