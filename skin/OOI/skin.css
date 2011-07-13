@@ -38,32 +38,23 @@ input.submit {
 	color:#333333;
   text-transform: uppercase;
 }
+/*
 div.boxed {
   background-image:url("/skin/OOI/G1123-Wire-Waves-White-Wide.png");
   background-color:#FFFFFF; 
   background-repeat:no-repeat;
   background-position:-200px -28px; 
 }
+*/
 /***** End a few misc element *****/
 
 /***** Begin the "CILogon Service" header at the top of each page *****/
 div.logoheader {
-  /*
-  background: none;
-  */
-  background-image: -webkit-gradient(linear, 0% 20%, 0% 100%, from(#fff), to(#EFF2F2)); 
-  background-image:-moz-linear-gradient(0% 50% 270deg,#FFFFFF, #EFF2F2); 
-  background-color: transparent; 
-  background-repeat: no-repeat; 
-  height: 79px;
+  background: transparent url("/skin/OOI/ooi-logo.png") no-repeat top left;
+  height: 72px;
 }
 div.logoheader h1 {
-  background: transparent url("/skin/OOI/ooi-logo.png") no-repeat top left;
-  position: absolute;
-  left: 19px;
-  top: 23px;
-  width: 697px;
-  height: 44px;
+  display: none;
 }
 /***** End the "CILogon Service" header at the top of each page *****/
 
