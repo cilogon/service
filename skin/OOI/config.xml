@@ -11,7 +11,7 @@
   </delegate>
 
   <portallist>
-    <portal>/ion\.oceanobservatories\.org/</portal>
+    <portal>/.*\.oceanobservatories\.org/</portal>
   </portallist>
 
   <portallistaction>
