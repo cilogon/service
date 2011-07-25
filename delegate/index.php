@@ -529,7 +529,6 @@ function handleAllowDelegation($always=false)
     $success = false;  // Assume delegation of certificate failed
     $certtext = '';    // Output of 'openssl x509 -noout -text -in cert.pem'
     $myproxyinfo = getSessionVar('myproxyinfo');
-    $myproxyinfo = ''; // DELETE THIS LINE WHEN JEFF UPDATES THE SERVLET
 
     // Now call out to the "delegation/authorized" servlet to execute
     // the delegation the credential to the portal.
