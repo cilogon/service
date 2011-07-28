@@ -5,19 +5,19 @@
 # Authors     : Terry Fleury <tfleury@illinois.edu>                     #
 #               Scott Koranda <skoranda@gmail.com>                      #
 # Create Date : July 06, 2011                                           #
-# Last Update : July 22, 2011                                           #
+# Last Update : July 28, 2011                                           #
 #                                                                       #
-# This PERL script allows a user to get a certificate or PKCS12         #
-# credential from the CILogon Service. It can also get the contents     #
-# of any ECP-enabled Service Provider (SP). The script can be used as   #
-# an example of how a SAML ECP client works.                            #
+# This PERL script allows a user to get an end-user X.509 certificate   #
+# or PKCS12 credential from the CILogon Service. It can also get the    #
+# contents of any ECP-enabled Service Provider (SP). The script can be  #
+# used as an example of how a SAML ECP client works.                    #
 #                                                                       #
 # Studying this script is not an acceptable replacement for reading     #
 # Draft 02 of the ECP profile [ECP] available at:                       #
 # http://wiki.oasis-open.org/security/SAML2EnhancedClientProfile        #
 #                                                                       #
 # This script assumes that the server hosting the IdP has been          #
-# configured to require a type of Basic Auth (login and password)       #
+# configured to require a type of Basic Auth (username and password)    #
 # for the ECP location.                                                 #
 #                                                                       #
 #########################################################################
@@ -28,8 +28,8 @@
 use constant { 
     OPENSSL_BIN  =>'/usr/bin/openssl' ,  ### CHANGE THIS IF NECESSARY
 
-    ECP_IDPS_URL =>'https://test.cilogon.org/include/ecpidps.txt' ,
-    GET_CERT_URL =>'https://test.cilogon.org/secure/getuser/' ,
+    ECP_IDPS_URL =>'https://cilogon.org/include/ecpidps.txt' ,
+    GET_CERT_URL =>'https://cilogon.org/secure/getuser/' ,
     HEADER_ACCEPT=>'text/html; application/vnd.paos+xml' ,
     HEADER_PAOS  =>'ver="urn:liberty:paos:2003-08";"urn:oasis:names:tc:SAML:2.0:profiles:SSO:ecp"' ,
 };
@@ -38,7 +38,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.001";
+our $VERSION = "0.002";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -176,10 +176,10 @@ if ((length($idpurl) == 0) && (length($idpname) == 0)) {
     my @idpnames = sort keys %idps;
     push(@idpnames,'Specify the URL of another IdP');
     $reply = $term->get_reply(
-             prompt => 'Choose',
+             prompt   => 'Choose',
              print_me => 'Select an Identity Provider (IdP):',
-             choices => \@idpnames,
-             default => $idpnames[0]
+             choices  => \@idpnames,
+             default  => $idpnames[0]
              );
 
     if ($reply eq 'Specify the URL of another IdP') {
@@ -251,10 +251,10 @@ if (length($get) == 0) {
                    'PKCS12 credential',
                    'URL that you specify');
     $reply = $term->get_reply(
-             prompt => 'Choose',
+             prompt   => 'Choose',
              print_me => 'What do you want to get?',
-             choices => \@choices,
-             default => $choices[0]
+             choices  => \@choices,
+             default  => $choices[0]
              );
 
     $get = lc substr($reply,0,1);
@@ -300,10 +300,12 @@ if ($get eq 'c') {
         }
     } else { # Didn't specify certreq, so prompt for it
         $reply = $term->get_reply(
-                 prompt => 'Enter filename',
-                 print_me => "Enter filename containing a certificate signing request,\nor leave blank to create one on-the-fly:",
-                 default => ' ',
-                 allow => \&blankOrReadable
+                 prompt   => 'Enter filename',
+                 print_me => 'Enter filename containing a certificate ' .
+                             'signing request,' . "\n" . 
+                             'or leave blank to create one on-the-fly:',
+                 default  => ' ',
+                 allow    => \&blankOrReadable
                  );
         $certreqfile = trim($reply);
     }
@@ -362,10 +364,10 @@ if ($get eq 'c') {
             # No private key output file given. Prompt for filename.
             if (length($outkey) == 0) {
                 $reply = $term->get_reply(
-                         prompt => 'Enter filename',
+                         prompt   => 'Enter filename',
                          print_me => 'Enter filename for outputting the private key:',
-                         default => 'userkey.pem',
-                         allow => \&fileWriteable
+                         default  => 'userkey.pem',
+                         allow    => \&fileWriteable
                          );
                 $outkey = trim($reply);
             }
@@ -419,6 +421,7 @@ if ($get eq 'p') {
 
 # If getting a certificate or a credential, get the lifetime and VO
 if (($get eq 'c') || ($get eq 'p')) {
+    my $maxlifetime = (($get eq 'c') ? 277 : 9516);
     if (exists $opts{lifetime}) {
         $lifetime = 0 + $opts{lifetime}; # Convert string to number
         if ($lifetime < 0) { # Check for negative value
@@ -426,16 +429,12 @@ if (($get eq 'c') || ($get eq 'p')) {
         }
     }
     if ($lifetime == 0) {  # If no lifetime, then prompt for it
-        my $maxlifetime = 9516;
-        if ($get eq 'c') {
-            $maxlifetime = 277;
-        }
         $reply = $term->get_reply(
-                 prompt => 'Enter lifetime',
+                 prompt   => 'Enter lifetime',
                  print_me => 'Enter an integer value for the ' . $getstr .
                              ' lifetime (in hours):',
-                 default => $maxlifetime,
-                 allow => \&isPositiveInt
+                 default  => $maxlifetime,
+                 allow    => \&isPositiveInt
                  );
         $lifetime = 0 + $reply;
     }
@@ -462,7 +461,7 @@ if (($get eq 'c') || ($get eq 'p')) {
 
 # If user specified an output file for the certificate, PKCS12 credential,
 # or URL, make sure that we can write to it.  Otherwise, ask where to output
-# the result of the query, defaulting to STDOUT.
+# the result of the query.
 if (exists $opts{out}) {
     $outputfile = trim($opts{out});
     if (!fileWriteable($outputfile)) {
@@ -472,11 +471,12 @@ if (exists $opts{out}) {
     }
 }
 if (length($outputfile) == 0) {
+    my $defaultout = (($get eq 'p') ? 'usercred.p12' : 'STDOUT');
     $reply = $term->get_reply(
-             prompt => 'Enter filename',
-             print_me => "Where should the $getstr be written?" ,
-             default => 'STDOUT',
-             allow => \&fileWriteable
+             prompt   => 'Enter filename',
+             print_me => "Where should the $getstr be written?",
+             default  => $defaultout,
+             allow    => \&fileWriteable
              );
     $outputfile = trim($reply);
 }
@@ -675,17 +675,13 @@ exit 0;
 
 
 #########################################################################
-=item B<fetchIdps()>
-
-B<Returns:> A hash of IdPs in the form $idps{'idpname'} = 'idpurl'
-
-This subroutine fetches the list of Identity Providers from the CILogon
-server, using the ECP_IDPS_URL defined at the top of this file. It returns
-a hash where the keys are the "pretty print" names of the IdPs, and the
-values are the actual URLs of the IdPs. 
-
+# Subroutine: fetchIdps()                                               #
+# Returns   : A hash of IdPs in the form $idps{'idpname'} = 'idpurl'    #
+# This subroutine fetches the list of Identity Providers from the       #
+# CILogon server, using the ECP_IDPS_URL defined at the top of this     #
+# file. It returns a hash where the keys are the "pretty print" names   #
+# of the IdPs, and the values are the actual URLs of the IdPs.          #
 #########################################################################
-=cut
 sub fetchIdps
 {
     my %idps = ();
@@ -706,18 +702,13 @@ sub fetchIdps
 }
 
 #########################################################################
-=item B<isValudURL($url)>
-
-B<Parameter:> C<$url> - The URL to test for valid 'https' url.
-
-B<Returns:> 1 if passed-in URL is valid https url, 0 otherwise.
-
-This subroutine takes in a string representing a URL and tests to see
-if it is a valid SSL url (i.e. https://..../...). If the URL is valid,
-1 is return, otherwise 0 is returned.
-
+# Subroutine: isValudURL($url)                                          #
+# Parameter : $url - The URL to test for valid 'https' url.             #
+# Returns   : 1 if passed-in URL is valid https url, 0 otherwise.       #
+# This subroutine takes in a string representing a URL and tests to see #
+# if it is a valid SSL url (i.e. https://..../...). If the URL is       #
+# valid, 1 is return, otherwise 0 is returned.                          #
 #########################################################################
-=cut
 sub isValidURL
 {
     my $url = shift;
@@ -730,23 +721,19 @@ sub isValidURL
 }
 
 #########################################################################
-=item B<fileWriteable($filename)>
-
-B<Parameter:> C<$filename> - The name of a file (specified with or without
-the full path) to test for write-ability.  Can also be 'STDOUT' which
-implies write to <stdout>.
-
-B<Returns:> 1 if passed-in filename is writeable or 'STDOUT', 0 otherwise.
-
-This subroutine takes in a string representing a filename. The filename can
-be 'STDOUT', or prefixed with a directory or not (at which point the current
-working directory is assumed). It checks to see if the file already exists,
-and if so, is the file writeable. Otherwise, it checks the containing
-directory to see if a file can be created there. If so, 1 is returned,
-otherwise 0 is returned.
-
+# Subroutine: fileWriteable($filename)                                  #
+# Parameter : $filename - The name of a file (specified with or without #
+#             the full path) to test for write-ability.  Can also be    #
+#             'STDOUT' which implies write to <stdout>.                 #
+# Returns   : 1 if passed-in filename is writeable or 'STDOUT',         #
+#             0 otherwise.                                              #
+# This subroutine takes in a string representing a filename. The        #
+# filename can be 'STDOUT', or prefixed with a directory or not (at     #
+# which point the current working directory is assumed). It checks to   #
+# see if the file already exists, and if so, is the file writeable.     #
+# Otherwise, it checks the containing directory to see if a file can    #
+# be created there. If so, 1 is returned, otherwise 0 is returned.      #
 #########################################################################
-=cut
 sub fileWriteable
 {
     my $filename = trim(shift);
@@ -769,22 +756,19 @@ sub fileWriteable
 }
 
 #########################################################################
-=item B<blankOrReadable($filename)>
-
-B<Parameter:> C<$filename> - The name of a file (possibly empty) to test for
-read-ability.
-
-B<Returns:> 1 if passed-in filename is readable or blank, 0 otherwise.
-
-This subroutine takes in a string representing a filename. The filename can
-be prefixed with a directory or not (at which point the current working
-directory is assumed). It checks to see if the filename is empty or if the
-file can be read. If so, 1 is returned, otherwise 0 is returned. This
-subroutine is used by one of the get_reply() calls when prompting the user
-for a CSR to read in, blank meaning to create a CSR on-the-fly.
-
+# Subroutine: blankOrReadable($filename)                                #
+# Parameter : $filename - The name of a file (possibly empty) to test   #
+#             for read-ability.                                         #
+# Returns   : 1 if passed-in filename is readable or blank,             #
+#             0 otherwise.                                              #
+# This subroutine takes in a string representing a filename. The        #
+# filename can be prefixed with a directory or not (at which point the  #
+# current working directory is assumed). It checks to see if the        #
+# filename is empty or if the file can be read. If so, 1 is returned,   #
+# otherwise 0 is returned. This subroutine is used by one of the        #
+# get_reply() calls when prompting the user for a CSR to read in,       #
+# blank meaning to create a CSR on-the-fly.                             # 
 #########################################################################
-=cut
 sub blankOrReadable
 {
     my $filename = trim(shift);
@@ -796,16 +780,13 @@ sub blankOrReadable
 }
 
 #########################################################################
-=item B<checkOpenSSL()>
-
-B<Returns:> 1 if the OpenSSL binary is available, 0 otherwise.
-
-This subroutine checks to see if the OpenSSL binary (specified by the
-OPENSSL_BIN constant at the top of this file) is available. It actually
-calls 'openssl version' to make sure that the program really is openssl.
-
+# Subroutine: checkOpenSSL()                                            #
+# Returns   : 1 if the OpenSSL binary is available, 0 otherwise.        #
+# This subroutine checks to see if the OpenSSL binary (specified by the #
+# OPENSSL_BIN constant at the top of this file) is available. It        #
+# actually calls 'openssl version' to make sure that the program        #
+# really is openssl.                                                    # 
 #########################################################################
-=cut
 sub checkOpenSSL
 {
     my $retval = 0;
@@ -819,18 +800,13 @@ sub checkOpenSSL
 }
 
 #########################################################################
-=item B<runCmdGetStdout($cmd)>
-
-B<Parameter:> C<$cmd> - The command to execute.
-
-B<Returns:> The stdout result of executing the command.
-
-This subroutine takes in a string representing a command to execute. Just
-the <stdout> of the result of running the command is returned. Taken from
-http://faq.perl.org/perlfaq8.html#How_can_I_capture_ST
-
+# Subroutine: runCmdGetStdout($cmd)                                     #
+# Parameter : $cmd - The command to execute.                            #
+# Returns   : The stdout result of executing the command.               #
+# This subroutine takes in a string representing a command to execute.  #
+# Only the <stdout> of the result of running the command is returned.   #
+# Taken from http://faq.perl.org/perlfaq8.html#How_can_I_capture_ST     #
 #########################################################################
-=cut
 sub runCmdGetStdout
 {
     my $cmd = shift;
@@ -845,18 +821,13 @@ sub runCmdGetStdout
 }
 
 #########################################################################
-=item B<runCmdGetStderr($cmd)>
-
-B<Parameter:> C<$cmd> - The command to execute.
-
-B<Returns:> The stderr result of executing the command.
-
-This subroutine takes in a string representing a command to execute. Just
-the <stderr> of the result of running the command is returned. Taken from
-http://faq.perl.org/perlfaq8.html#How_can_I_capture_ST
-
+# Subroutine: runCmdGetStderr($cmd)                                     #
+# Parameter : $cmd - The command to execute.                            #
+# Returns   : The stderr result of executing the command.               #
+# This subroutine takes in a string representing a command to execute.  #
+# Only the <stderr> of the result of running the command is returned.   #
+# Taken from http://faq.perl.org/perlfaq8.html#How_can_I_capture_ST     #
 #########################################################################
-=cut
 sub runCmdGetStderr
 {
     my $cmd = shift;
@@ -871,18 +842,14 @@ sub runCmdGetStderr
 }
 
 #########################################################################
-=item B<isPositiveInt($num)>
-
-B<Parameter:> C<$num> - An integer to check for positivity.
-
-B<Returns:> 1 if passed-in number is positive and an integer, 0 otherwise.
-
-This subroutine takes in a number and checks to see if the number is a
-positive integer. This subroutine is used by one of the get_reply() calls
-when prompting the user for the lifetime of the credential.
-
+# Subroutine: isPositiveInt($num)                                       #
+# Parameter : $num - An integer to check for positivity.                #
+# Returns   : 1 if passed-in number is positive and an integer,         #
+#             0 otherwise.                                              #
+# This subroutine takes in a number and checks to see if the number is  #
+# a positive integer. This subroutine is used by one of the get_reply() #
+# calls when prompting the user for the lifetime of the credential.     #
 #########################################################################
-=cut
 sub isPositiveInt
 {
     my $num = shift;
@@ -890,18 +857,14 @@ sub isPositiveInt
 }
 
 #########################################################################
-=item B<trim($str)>
-
-B<Parameter:> C<$str> - A string to trim spaces from.
-
-B<Returns:> The passed-in string with leading and trailing spaces removed.
-
-This subroutine removes leading and trailing spaces from the passed-in
-string. Note that the original string is not modified. Rather, a new string
-without leading/trailing spaces is returned.
-
+# Subroutine: trim($str)                                                #
+# Parameter : $str - A string to trim spaces from.                      #
+# Returns   : The passed-in string with leading and trailing spaces     #
+#             removed.                                                  #
+# This subroutine removes leading and trailing spaces from the          #
+# passed-in string. Note that the original string is not modified.      #
+# Rather, a new string without leading/trailing spaces is returned.     #
 #########################################################################
-=cut
 sub trim
 {
     my $str = shift;
@@ -911,13 +874,10 @@ sub trim
 }
 
 #########################################################################
-=item B<resetTerm()>
-
-This subroutine is set as the interrupt handler (to catch <CTRL>+C) to 
-reset the terminal to 'echo on' and non-bold text.
-
+# Subroutine: resetTerm()                                               #
+# This subroutine is set as the interrupt handler (to catch <CTRL>+C)   #
+# to reset the terminal to 'echo on' and non-bold text.                 #
 #########################################################################
-=cut
 sub resetTerm
 { 
     if ($^O !~ /MSWin/i) {
@@ -1027,8 +987,8 @@ B<--outkey> instead to write the private key to a specific file.
 
 =item B<-k> I<filename>, B<--outkey> I<filename>
 
-Generate a new private key and write it to file when creating a certificate
-signing request (CSR) on-the-fly. Use this option if you do not have a
+When creating a certificate signing request (CSR) on-the-fly, generate a new
+private key and write it to file . Use this option if you do not have a
 private key for creating the CSR. 
 
 =item B<-t> I<hours>, B<--lifetime> I<hours>
