@@ -1,2 +1,1 @@
-https://boingo.ncsa.uiuc.edu/idp/profile/SAML2/SOAP/ECP Boingo Test IdP
-https://cumin.phys.uwm.edu/idp/profile/SAML2/SOAP/ECP LIGO Test IdP
+https://boingo.ncsa.uiuc.edu/idp/profile/SAML2/SOAP/ECP CILogon Test IdP
