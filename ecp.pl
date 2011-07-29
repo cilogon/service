@@ -38,7 +38,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.003";
+our $VERSION = "0.004";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -47,6 +47,7 @@ use Term::UI;
 use Getopt::Long qw(:config bundling);
 use Pod::Usage;
 use LWP;
+use Crypt::SSLeay;
 use HTTP::Cookies;
 use URI;
 use IPC::Open3;
@@ -56,9 +57,6 @@ use Symbol qw(gensym);
 
 # Handle <Ctrl>+C to reset the terminal to non-bold text
 $SIG{INT} = \&resetTerm;
-
-# Hack for when Perl/OpenSSL does not have the CA cert for cilogon.org
-#BEGIN { $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME}=0 };
 
 my %opts = ();
 my %idps = ();
@@ -92,6 +90,7 @@ GetOptions(\%opts, 'help|h|?',
                    'verbose|debug|v|d',
                    'version|V',
                    'quiet|q',
+                   'skipssl|s',
                    'listidps|l',
                    'idpname|n=s',
                    'idpurl|e=s',
@@ -116,6 +115,11 @@ if (exists $opts{help}) {
 if (exists $opts{version}) {
     print "ecp.pl version '" . main->VERSION . "'\n";
     exit;
+}
+ 
+# Check if the user wants to bypass SSL hostname verification
+if (exists $opts{skipssl}) {
+    $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
 }
 
 # Fetch the list of IdPs to list them now or search them later.
@@ -936,6 +940,13 @@ Output as much informational text as possible. Overrides B<--quiet>.
 =item B<-q, --quiet>
 
 Output as little informational text as possible. Overridden by B<--verbose>.
+
+=item B<-s, --skipssl>
+
+Do not do SSL/HTTPS hostname verification for the Identity Provider and the
+Service Provider. This is useful if your OpenSSL CA certificate directory
+is not configured, or if you use the B<--get url> option to fetch an
+C<https> URL protected by a self-signed SSL server certificate.
 
 =item B<-l, --listidps>
 
