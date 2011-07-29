@@ -38,7 +38,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.002";
+our $VERSION = "0.003";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -56,6 +56,9 @@ use Symbol qw(gensym);
 
 # Handle <Ctrl>+C to reset the terminal to non-bold text
 $SIG{INT} = \&resetTerm;
+
+# Hack for when Perl/OpenSSL does not have the CA cert for cilogon.org
+#BEGIN { $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME}=0 };
 
 my %opts = ();
 my %idps = ();
@@ -549,7 +552,6 @@ if (!($xmlstr =~ s#<S:Header>.*</S:Header>##i)) {
 }
 
 # Attempt to log in to the IdP with basic authorization
-#BEGIN { $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME}=0 }; # HACK FOR WINDOWS OPENSSL
 $headers = HTTP::Headers->new();
 $headers->authorization_basic($idpuser,$idppass);
 $ua->default_headers($headers);
