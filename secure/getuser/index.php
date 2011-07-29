@@ -22,7 +22,8 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
 } elseif ($submit == 'certreq') {
     getCert();
 } else {
-    printServerVars();
+    // printServerVars();
+    header('Location: https://' . HOSTNAME);
 }
 
 /************************************************************************

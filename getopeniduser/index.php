@@ -21,7 +21,8 @@ unsetSessionVar('responseurl');
 if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
     getUserAndRespond($responseurl);
 } else {
-    printServerVars();
+    // printServerVars();
+    header('Location: https://' . HOSTNAME);
 }
 
 /************************************************************************
