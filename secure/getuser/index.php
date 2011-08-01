@@ -13,7 +13,6 @@ unsetSessionVar('submit');
 
 /* Get the URL to reply to after database query. */
 $responseurl = getSessionVar('responseurl');
-unsetSessionVar('responseurl');
 
 if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
     getUserAndRespond($responseurl);
@@ -22,8 +21,11 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
 } elseif ($submit == 'certreq') {
     getCert();
 } else {
-    // printServerVars();
-    header('Location: https://' . HOSTNAME);
+    $location = 'https://' . HOSTNAME;
+    if (strlen($responseurl) > 0) {
+        $location = $responseurl;
+    }
+    header('Location: ' . $responseurl);
 }
 
 /************************************************************************
