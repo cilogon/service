@@ -263,6 +263,8 @@ function printMainPage()
     global $log;
     global $skin;
 
+    $log->info('Allow Or Deny Delegation page hit.');
+
     setSessionVar('stage','main'); // For Show/Hide Help button clicks
 
     // Read the cookie containing portal 'lifetime' and 'remember' settings
@@ -292,8 +294,6 @@ function printMainPage()
     } else {
         // User did not check 'Remember OK' before, so show the
         // HTML to prompt user for OK or Cancel delegation.
-
-        $log->info('Allow Or Deny Delegation page hit.');
 
         $lifetimetext = "Specify the lifetime of the certificate to be issued. Maximum value is 240 hours.";
         $remembertext ="Check this box to automatically approve certificate issuance to the site on future visits. The certificate lifetime will be remembered. You will need to clear your browser's cookies to return here.";
