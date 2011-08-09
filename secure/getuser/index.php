@@ -295,7 +295,7 @@ function outputError($errstr='') {
  ************************************************************************/
 function sendErrorEmail($remote_user,$idp,$idpname,$firstname,$lastname,
                         $emailaddr,$uid,$statuscode) {
-    $mailto   = 'tfleury@illinois.edu';
+    $mailto   = 'help@cilogon.org';
     $mailfrom = 'From: help@cilogon.org' . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
     $mailsubj = 'CILogon Service on ' . HOSTNAME .
