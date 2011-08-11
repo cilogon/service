@@ -158,7 +158,7 @@ div.footer {
 div.footer p {
   text-align: center;
   font-size: x-small;
-  margin: 0px;
+  margin: 0;
 }
 div.footer a:link {
   color: #696;
@@ -419,23 +419,6 @@ div.userchanged table tr.odd td {
   background-color: #fafffa;
 }
 /***** End userchanged div and table *****/
-
-/***** Begin allowdiv and submit buttons *****/
-div.allowdiv p {
-  text-align: center;
-}
-div.allowdiv table {
-  margin: auto;
-  border-spacing: 10px;
-  width: 100%;
-}
-div.allowdiv table td {
-  border: 1px solid #888;
-  padding: 1em;
-  background-color: #f5fff5;
-  width: 40%;
-}
-/***** End allowdiv *****/
 
 /***** Begin skincilogonlogo *****/
 div.skincilogonlogo {

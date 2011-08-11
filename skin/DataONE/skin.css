@@ -180,12 +180,6 @@ div.userchanged table tr.odd td {
 }
 /***** End userchanged div and table *****/
 
-/***** Begin allowdiv and submit buttons *****/
-div.allowdiv table td {
-  background-color: #f0f5ff;
-}
-/***** End allowdiv *****/
-
 /***** Begin skincilogonlogo *****/
 div.skincilogonlogo {
   display: inline;
