@@ -1,0 +1,138 @@
+/***** Begin basic elements *****/
+body {
+  font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+  color: #000;
+  background: #4e71b9 url("/skin/UCSD/body_gradient.gif") repeat-x top left !important;
+  font-size: 85%;
+}
+a {
+  color: blue;
+}
+a:visited {
+  color: purple; 
+}
+a:hover, a:active {
+  color: red;
+}
+/***** End basic elements *****/
+
+/***** Begin a few misc elements *****/
+div.boxed {
+  background: #fff;
+  border: 1px solid #e4c33d;
+  border-bottom: 8px solid #ffba00;
+}
+input.submit {
+  font-weight: bold;
+  font-size: 110%;
+  color: #fff;
+  border: 2px outset #17205d;
+  background: #3e4a9e url("/skin/UCSD/buttonbg.png") repeat-x top left;
+}
+br.clear {
+  display: none;
+}
+/***** End a few misc element *****/
+
+/***** Begin the "CILogon Service" header at the top of each page *****/
+div.logoheader {
+  background: none;
+  height: 100px;
+}
+div.logoheader h1 {
+  background: transparent url("/skin/UCSD/ucsd_logo_screen.gif") no-repeat top left;
+  margin-top: 35px;
+  margin-left: 33px;
+  width: 305px;
+  height: 41px;
+  float: left;
+}
+/***** End the "CILogon Service" header at the top of each page *****/
+
+/***** Begin PageHeader titlebox *****/
+div.titlebox {
+  margin: 10px 10%;
+  padding: 20px;
+  border: 3px ridge #696;
+  text-align: center;
+  font-size: x-large;
+  background-color: #f5fff5;
+}
+/***** End PageHeader titlebox *****/
+
+/***** Begin page footer *****/
+div.footer {
+  border: 1px solid #e4c33d;
+  border-top: 1px solid #dbaa27;
+  background: #fff;
+  margin-top: -1px;
+}
+div.footer a:link {
+  color: blue;
+}
+div.footer a:visited {
+  color: purple;
+}
+div.footer a:hover, a:active {
+  color: red;
+  text-decoration: underline;
+}
+/***** End page footer *****/
+
+/***** Begin actionbox containing action buttons and WAYF *****/
+div.actionbox,
+div.p12actionbox,
+div.certactionbox,
+div.tokenactionbox,
+div.logoffactionbox,
+div.logofftextbox {
+  background: #fff;
+}
+/***** End actionbox *****/
+
+/***** Begin skincilogonlogo *****/
+div.skincilogonlogo {
+  display: inline;
+}
+/***** End skincilogonlogo *****/
+
+/***** Begin summary div on testidp page *****/
+div.summary {
+  background-color: #c9d9ff;
+}
+/***** End summary div on testidp page *****/
+
+/***** Begin userchanged div and table *****/
+div.userchanged table {
+  border: 1px solid #4462ac;
+}
+div.userchanged table tr th {
+  border: 1px solid #4462ac;
+  background-color: #c9d9ff;
+}
+div.userchanged table tr.headings th {
+  border: 1px solid #4462ac;
+  background-color: #c9d9ff;
+}
+div.userchanged table tr td {
+  border: 1px solid #4462ac;
+  background-color: #c9d9ff;
+}
+div.userchanged table tr.odd th {
+  border: 1px solid #4462ac;
+  background-color: #f6f6ff;
+}
+div.userchanged table tr.odd td {
+  border: 1px solid #4462ac;
+  background-color: #f6f6ff;
+}
+/***** End userchanged div and table *****/
+
+/***** Begin Help-related stuff *****/
+table.helptable td.helpcell div {
+  background-color: #c9d9ff;
+}
+tr.inforow td.helpcell {
+  background-color: #c9d9ff;
+}
+/***** End Help-related stuff *****/
