@@ -2,11 +2,4 @@
 <!-- This is a comment -->
 <config>
   <initialidp>urn:mace:incommon:clemson.edu</initialidp>
-
-  <idpwhitelist>
-    <idp>urn:mace:incommon:clemson.edu</idp>
-    <idp>urn:mace:incommon:lbl.gov</idp>
-    <idp>urn:mace:incommon:idp.protectnetwork.org</idp>
-  </idpwhitelist>
-
 </config>
