@@ -36,30 +36,13 @@ if ($argc == 7) {
         printUsage();
     }
 
-} elseif ($argc == 3) {
-
-    $remoteuser = $argv[1];
-    $idp = $argv[2];
-
-    if ((strlen($remoteuser) > 0) &&
-        (strlen($idp) > 0)) {
-
-        $dbs = new dbservice();
-        $dbs->getUser($remoteuser, $idp);
-
-        printInfo($dbs);
-    } else {
-        printUsage();
-    }
-
 } else {
     printUsage();
 }
 
 function printUsage() {
-    echo "Usage: adduser.php REMOTEUSER IDP\n";
-    echo "  OR   adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME EMAIL\n";
-    echo "Note: The first usage is for OpenID.  The second usage is for InCommon.\n";
+    echo "Usage: adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME EMAIL\n";
+    echo "Note: All parameters must be specified for both InCommon and OpenID.\n";
 }
 
 function printInfo($dbs)
