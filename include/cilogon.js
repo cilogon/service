@@ -240,7 +240,9 @@ function countdown(which,expirelabel) {
  ***************************************************************************/
 function cacheOptions() {
   var i;
-  var lf;
+  var ls;
+  var sl;
+  var total = 0;
   idpstext = [];
   idpsvalue = [];
   idps = document.getElementById("providerId");
@@ -249,15 +251,23 @@ function cacheOptions() {
     for (i = 0; i < idps.options.length; i++) {
       idpstext[idpstext.length] = idps.options[i].text;
       idpsvalue[idpsvalue.length] = idps.options[i].value;
+      total++;
     }
-    /* Unhide the "Search" box which is hidden by default */
-    lf = document.getElementById("listsearch");
-    if (lf !== null) {
-      lf.style.display = "block";
-      lf.style.height = "2em";
-      lf.style.width = "auto";
-      lf.style.lineHeight = "normal";
-      lf.style.overflow = "visible";
+    /* If more than one IdP, unhide the initially hidden "Search" box */
+    if (total > 1) {
+      ls = document.getElementById("listsearch");
+      if (ls !== null) {
+        ls.style.display = "block";
+        ls.style.height = "2em";
+        ls.style.width = "auto";
+        ls.style.lineHeight = "normal";
+        ls.style.overflow = "visible";
+      }
+    } else { /* If 1 IdP, make sure the "searchlist" input field is hidden */
+      sl = document.getElementById("searchlist");
+      if (sl !== null) {
+        sl.style.display = "none";
+      }
     }
   }
 }
