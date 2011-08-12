@@ -548,6 +548,9 @@ function handleAllowDelegation($always=false)
         curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,1);
         curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
         $output = curl_exec($ch);
+        if (curl_errno($ch)) { // Send alert on curl errors
+            alertCurlError(curl_error($ch),$url);
+        }
         if (!empty($output)) { 
             $httpcode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
             if ($httpcode == 200) {

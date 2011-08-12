@@ -780,6 +780,9 @@ function generateActivationCode() {
         // Must close PHP session file so GridShib-CA can read it.
         session_write_close();
         $output = curl_exec($ch);
+        if (curl_errno($ch)) { // Send alert on curl errors
+            alertCurlError(curl_error($ch),$url);
+        }
         if (!empty($output)) {
             $httpcode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
             if ($httpcode == 200) {
