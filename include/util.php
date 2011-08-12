@@ -323,6 +323,39 @@ function deleteDir($dir,$shred=false) {
     }
 }
 
+/************************************************************************
+ * Function  : alertCurlError                                           *
+ * Parameters: (1) The cUrl error as returned by curl_error().          *
+ *             (2) The URL that caused the cUrl error.                  *
+ * This function is called when curl() encounters an error.  It sends   *
+ * an email message to alerts@cilogon.org with any session variables.   *
+/************************************************************************/
+function alertCurlError($error,$url)
+{
+    $idp      = getSessionVar('idp');
+    $idpname  = getSessionVar('idpname');
+    $uid      = getSessionVar('uid');
+    $dn       = getSessionVar('dn');
+    $mailto   = 'alerts@cilogon.org';
+    $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .
+                'X-Mailer: PHP/' . phpversion();
+    $mailsubj = 'CILogon Service on ' . HOSTNAME . 
+                ' - cUrl Error! ';
+    $mailmsg  = '
+CILogon Service - cUrl Error
+----------------------------
+cUrl Error    = ' . $error . '
+URL Accessed  = ' . $url . '
+Server Host   = ' . HOSTNAME . '
+Remote Address= ' . getServerVar('REMOTE_ADDR') . '
+IdP           = ' . ((strlen($idp) > 0) ? $idp : '<MISSING>') . '
+IdP Name      = ' . ((strlen($idpname) > 0) ? $idpname : '<MISSING>') . '
+Database UID  = ' . ((strlen($uid) > 0) ? $uid : '<MISSING>') . '
+Cert DN       = ' . ((strlen($dn) > 0) ? $dn : '<MISSING>') . '
+';
+    mail($mailto,$mailsubj,$mailmsg,$mailfrom);
+}
+
 
 /* Start a secure PHP session */
 startPHPSession();

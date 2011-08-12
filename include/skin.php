@@ -104,12 +104,26 @@ class skin {
             $skinvar = getSessionVar('cilogon_skin');
         }
 
-        // Verify we found $skinvar and that the named skin directory exists
-        if ((strlen($skinvar) > 0) &&
-            (is_readable($_SERVER{'DOCUMENT_ROOT'} . "/skin/$skinvar/"))) {
-            $this->skinname = $skinvar;
-            setSessionVar('cilogon_skin',$skinvar);
-        } else {
+        // If we found $skinvar, check to see if a skin directory with that
+        // name exists.  Loop through all skin directories so we can do a
+        // case-insenstive comparison.  If we find a match, set skinname.
+        $found = false;
+        if (strlen($skinvar) > 0) {
+            $basedir = $_SERVER{'DOCUMENT_ROOT'} . '/skin';
+            if ($handle = opendir($basedir)) {
+                while ((false !== ($file=readdir($handle))) && (!$found)) {
+                    if (($file != '.') && ($file != '..') && 
+                        (is_dir("$basedir/$file")) && 
+                        (strcasecmp($skinvar,$file) == 0)) {
+                        $this->skinname = $file;
+                        setSessionVar('cilogon_skin',$file);
+                        $found = true;
+                    }
+                }
+                closedir($handle);
+            }
+        }
+        if (!$found) {
             unsetSessionVar('cilogon_skin');
         }
     }
