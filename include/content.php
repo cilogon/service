@@ -876,14 +876,27 @@ function handleGotUser()
         printFooter();
     } else { // Got one of the STATUS_OK status codes
         // For the 'delegate' case (when there is a callbackuri in the 
-        // current PHP session), if the skin has "remember" set, then
-        // we should always go to the main page, skipping the New User
-        // and User Changed pages.
+        // current PHP session), if the skin has "forceremember" set, 
+        // OR if the skin has "initialremember" set and there is no 
+        // cookie for the current portal, then we should go to the main
+        // page, skipping the New User and User Changed pages.
         $callbackuri = getSessionVar('callbackuri');
-        if (strlen($callbackuri) > 0) {
-            $skinremember = $skin->getConfigOption('delegate','remember');
-            if (($skinremember !== null) && ((int)$skinremember == 1)) {
+        if ((strlen($callbackuri) > 0) &&
+            (($status == dbservice::$STATUS['STATUS_NEW_USER']) ||
+             ($status == dbservice::$STATUS['STATUS_USER_UPDATED']))) {
+            $forceremember = $skin->getConfigOption('delegate','forceremember');
+            if (($forceremember !== null) && ((int)$forceremember == 1)) {
                 $status = dbservice::$STATUS['STATUS_OK'];
+            } else {
+                $initialremember = 
+                    $skin->getConfigOption('delegate','initialremember');
+                if (($initialremember!==null) && ((int)$initialremember==1)) {
+                    $portal = new portalcookie();
+                    $portallifetime = $portal->getPortalLifetime($callbackuri);
+                    if ((strlen($portallifetime)==0) || ($portallifetime==0)) {
+                        $status = dbservice::$STATUS['STATUS_OK'];
+                    }
+                }
             }
         }
 

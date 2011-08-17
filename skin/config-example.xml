@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This is a sample configuration file for a 'skin'.  It contains examples
-     of all of the available program options.  Simply copy this file to the
+<!-- This is a sample configuration file for a 'skin'. It contains examples
+     of all of the available program options. Simply copy this file to the
      appropriate skin subdirectory, rename it to 'config.xml', and uncomment
      and configure the desired sections.
 -->
@@ -8,8 +8,8 @@
 
   <!-- <initialidp>
        When a user first visits the cilogon.org page, he is presented with a
-       list of IdPs.  By default, Google is initially highlighted.  You can
-       change this behavior by specifying a different initial IdP.  (Use the
+       list of IdPs. By default, Google is initially highlighted. You can
+       change this behavior by specifying a different initial IdP. (Use the
        entityId for InCommon, IdP endpoint URL for OpenID.) In the example
        here, ProtectNetwork is selected initially.
   -->
@@ -19,8 +19,8 @@
 
 
   <!-- <idplistsize>
-       This sets the size of the IdP <select> HTML element.  If not
-       specified, it defaults to 4 (meaning 4 IdPs are shown at a time).  
+       This sets the size of the IdP <select> HTML element. If not
+       specified, it defaults to 4 (meaning 4 IdPs are shown at a time).
        The example below will show an IdP selection list 10 items high.
   -->
   <!--
@@ -30,11 +30,11 @@
 
   <!-- <idpwhitelist>
        The cilogon.org service maintains a global list of available IdPs in
-       the file /var/www/html/include/whitelist.txt.  This full list is
-       typically shown to the user on the "Log On" page.  You can cull this
+       the file /var/www/html/include/whitelist.txt. This full list is
+       typically shown to the user on the "Log On" page. You can cull this
        list down to a subset by listing only those IdPs you want shown for
-       the skin.  Basically, the resulting list is an intersection of the
-       global whitelist and the list of IdPs below.  (Use the entityIds for
+       the skin. Basically, the resulting list is an intersection of the
+       global whitelist and the list of IdPs below. (Use the entityIds for
        InCommon, IdP endpoint URLs for OpenID.) In this example, we show
        only IdPs starting with the letter 'P'.
   -->
@@ -49,9 +49,9 @@
 
   <!-- <idpblacklist>
        The cilogon.org service maintains a global list of available IdPs in
-       the file /var/www/html/include/whitelist.txt.  This full list is
-       typically shown to the user on the "Log On" page.  You can remove
-       IdPs from the list by specifying them in the blacklist below.  (Use
+       the file /var/www/html/include/whitelist.txt. This full list is
+       typically shown to the user on the "Log On" page. You can remove
+       IdPs from the list by specifying them in the blacklist below. (Use
        the entityIds for InCommon, IdP endpoint URLs for OpenID.) In this
        example, we remove the OpenID providers from the list.
   -->
@@ -66,9 +66,9 @@
 
 
   <!-- <logonbuttontext>
-       This changes the text of the "Log On" button of the WAYF.  Use this
+       This changes the text of the "Log On" button of the WAYF. Use this
        setting with care since the program's control flow relies on the text
-       of the "Log On" button.  So you can't just change it to something
+       of the "Log On" button. So you can't just change it to something
        random without writing additional code to handle the new text.
        Currently, only "Continue" is a supported alternative to "Log On".
   -->
@@ -79,12 +79,12 @@
 
   <!-- <pkcs12>
        This block contains options specific to the "Get New Certificate" box
-       (i.e. download a PKCS12 credential).  The <initiallifetime> block
+       (i.e. download a PKCS12 credential). The <initiallifetime> block
        allows you to specify the initial value for "Certificate Lifetime".
        If set, you must specify BOTH <number> AND <multiplier>.
        <number> is the value that appears in the text input box.
        <multiplier> can be 1 (=> number is in hours), 24 (=> number is in
-       days), or 732 (=> number is in months).  The example below shows the
+       days), or 732 (=> number is in months). The example below shows the
        default of 13 months, which is also the maximum lifetime.
   -->
   <!--
@@ -101,13 +101,13 @@
        This block contains options specific to the "Download Certificate"
        box (i.e. use the GridShib-CA JWS client to download a credential).
        The <initiallifetime> block allows you to specify the initial value
-       for the "Lifetime".  Note that these values are typically set by the
+       for the "Lifetime". Note that these values are typically set by the
        gridshib-ca.conf file, but will be overridden by the values here.
        If set, you must specify BOTH <number> AND <multiplier>.
        <number> is the value that appears in the text input box.
        <multiplier> can be 3600 (=> number is in hours), 86400 (=> number is
-       in days), or 2635200 (=> number is in months).  The example below
-       shows the default of 12 hours.  Maximum is 13 months (2635200).
+       in days), or 2635200 (=> number is in months). The example below
+       shows the default of 12 hours. Maximum is 13 months (2635200).
   -->
   <!--
   <gsca>
@@ -121,35 +121,57 @@
 
   <!-- <delegate>
        This block contains options specific to the "Delegate" page (i.e.
-       when a certificate is delegated to a portal).  Note that options in
-       this section are independent of each other.
+       when a certificate is delegated to a portal).
        <initiallifetime> allows you to specify the initial value for
-       "Certificate Lifetime (in hours)". This defaults to 12.  Maximum
-       value is 240.
-       <remember> If present, set to 1. The checkbox for "Remember my OK
-       for this portal" is virtually clicked when the user first visits the
-       site.  (Actually, the program simply sets a cookie for the checkbox.)
+       "Certificate Lifetime (in hours)" for the current portal. This
+       defaults to 12. Maximum value is 240. Note that this value is
+       utilized ONLY IF there is not a remember and/or lifetime cookie set
+       for the current portal.
+       <initialremember> If present, set to 1. This checks the "Remember my
+       OK for this portal" checkbox when the user first visits the site.
        This means that the user's first visit will show _only_ the IdP
-       selection page as all subsequent pages will continue automatically.
+       selection page; all subsequent pages will continue automatically.
+       Note that this value is utilized ONLY IF there is not a remember
+       and/or lifetime cookie set for the current portal. If you set this
+       value, you should probably also set the <initiallifetime> value,
+       unless you want to use the default value of 12.
+       <forcelifetime> Allows you specify the value for "Certificate
+       Lifetime (in hours)" for ALL visits from the current portal. Maximum
+       value is 240. This setting overrides the lifetime cookie (if any),
+       and also "grays out" the lifetime input box to prevent the user from
+       specifying a lifetime of the delegated credential.
+       <forceremember> If present, set to 1. This virtually checks the
+       "Remember my OK for this portal checkbox" for ALL visits from the
+       current portal. This settings overrides the remember cookie (if
+       any), which means that the Allow/Deny delegate page will never be
+       shown to the user. If you set this value, you should probably
+       also set the <forcelifetime> value, unless you want to use the
+       default value of 12.
+       NOTE: While you can specify the <initial...> and the <force...>
+       values at the same time, it probably doesn't make a lot of sense
+       since the <force...> parameters override the cookies set by the
+       <initial...> parameters.
   -->
   <!--
   <delegate>
     <initiallifetime>12</initiallifetime>
-    <remember>1</remember>
+    <initialremember>1</initialremember>
+    <forcelifetime>12</forcelifetime>
+    <forceremember>1</forceremember>
   </delegate>
   -->
 
 
   <!-- <portallist>
        This block contains a list of regular expressions which attempt to
-       match up to a portal's "callback url" (a.k.a. Service URL).  Each
+       match up to a portal's "callback url" (a.k.a. Service URL). Each
        <portal> listed is actually a Perl-Compatible Regular Expression
        (PCRE), which is matched against the callback URI as passed by the
-       portal to the CILogon Delegate service.  The callback URI typically
+       portal to the CILogon Delegate service. The callback URI typically
        looks like "https://my.site.org/portal-service/ready". You need
        to give a regular expression, including the delimeters (slash and 
-       pound are common).  For information about PHP's PCRE syntax, see 
-       http://www.php.net/manual/en/pcre.pattern.php .  Once you have
+       pound are common). For information about PHP's PCRE syntax, see 
+       http://www.php.net/manual/en/pcre.pattern.php . Once you have
        specified a list of <portal> regular expressions, you also need to
        specify a <portallistaction> below, which tells the program what to
        do if the portal's callback URL matches a <portal> in the list.
@@ -164,13 +186,13 @@
   <!-- <portallistaction>
        This block works in conjunction with the <portallist> block. It has
        options for what should happen if a portal callback url is found in
-       the <portallist>.  This section may grow as we find new uses for the
-       <portallist>.  The options in this section are independent of each
+       the <portallist>. This section may grow as we find new uses for the
+       <portallist>. The options in this section are independent of each
        other.
-       <hideportalinfo> If present, set to 1.  This allows you to hide the
+       <hideportalinfo> If present, set to 1. This allows you to hide the
        Portal Info block (Site Name / Site URL / Service URL) for portals
        in the <portallist> (rather than hiding it for the entire skin, as is
-       currently possible via CSS).  
+       currently possible via CSS).
   -->
   <!--
   <portallistaction>

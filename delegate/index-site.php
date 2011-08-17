@@ -146,19 +146,46 @@ function printLogonPage()
 
     setSessionVar('stage','logon'); // For Show/Hide Help button clicks
 
-    /* Check the skin config to see if we should virtually click the
-     * "Remember my OK for this portal" checkbox.  We need to do this here
-     * because we want to set the portal cookie before we go to the next
-     * page (so the page can read the cookie).
+    /* Check if this is the first time the user has visited the site from
+     * the current portal.  We do this by checking the portal cookie's
+     * lifetime for a positive value.  If the portal cookie has NOT YET been
+     * set, then check the skin config to see if either initialremember or
+     * initiallifetime has been set.  We do this here because these two
+     * values set the portal cookie, which needs to be done before we go
+     * to the next page (where the cookie is actually read).
      */
-    $skinremember = $skin->getConfigOption('delegate','remember');
-    if (($skinremember !== null) && ((int)$skinremember == 1)) {
-        $lifetime = 12; // Default to 12 hours, but check config option
-        $skinlifetime = $skin->getConfigOption('delegate','initiallifetime');
-        if (($skinlifetime !== null) && ((int)$skinlifetime > 0)) {
-            $lifetime = (int)$skinlifetime;
+    $portal = new portalcookie();
+    $portallifetime = $portal->getPortalLifetime(getSessionVar('callbackuri'));
+    if ((strlen($portallifetime) == 0) || ($portallifetime == 0)) {
+        $needtosetcookie = 0;
+
+        // First, try to read the skin's initiallifetime
+        $initiallifetime = $skin->getConfigOption('delegate','initiallifetime');
+        if (($initiallifetime !== null) && ((int)$initiallifetime > 0)) {
+            $needtosetcookie = 1;
+            $initiallifetime = (int)$initiallifetime;
+            // Make sure initiallifetime is within acceptible range
+            if ($initiallifetime < 1) {
+                $initiallifetime = 1;
+            } elseif ($initiallifetime > 240) {
+                $initiallifetime = 240;
+            }
+        } else { // Set a default lifetime value in case initialremember is set
+            $initiallifetime = 12;
         }
-        setPortalCookie((int)$skinremember,$lifetime);
+
+        // Next, try to read the skin's initialremember
+        $initialremember = $skin->getConfigOption('delegate','initialremember');
+        if (($initialremember !== null) && ((int)$initialremember > 0)) {
+            $needtosetcookie = 1;
+            $initialremember = (int)$initialremember;
+        } else { // Set a default remember value in case initiallifetime is set
+            $initialremember = 0;
+        }
+
+        if ($needtosetcookie) {
+            setPortalCookie($initialremember,$initiallifetime);
+        }
     }
 
     printHeader('Welcome To The CILogon Delegation Service');
@@ -267,28 +294,48 @@ function printMainPage()
 
     setSessionVar('stage','main'); // For Show/Hide Help button clicks
 
-    // Read the cookie containing portal 'lifetime' and 'remember' settings
+    $remember = 0;   // Default value for remember checkbox is unchecked
+    $lifetime = 12;  // Default value for lifetime is 12 hours
+
+    // Check the skin for forceremember and forcelifetime
+    $forceremember = $skin->getConfigOption('delegate','forceremember');
+    if (($forceremember !== null) && ((int)$forceremember == 1)) {
+        $forceremember = 1;
+    } else {
+        $forceremember = 0;
+    }
+    $forcelifetime = $skin->getConfigOption('delegate','forcelifetime');
+    if (($forcelifetime !== null) && ((int)$forcelifetime > 0)) {
+        $forcelifetime = (int)$forcelifetime;
+    } else {
+        $forcelifetime = 0;
+    }
+
+    // Try to read the portal coookie for the remember and lifetime values.
     $portal = new portalcookie();
-    $remember = $portal->getPortalRemember(getSessionVar('callbackuri'));
-    $lifetime = $portal->getPortalLifetime(getSessionVar('callbackuri'));
-    // If no 'lifetime' cookie, default to 12 hours.  Otherwise,
-    // make sure lifetime is between 1 and 240 hours (inclusive).
-    if ((strlen($lifetime) == 0) || ($lifetime == 0)) {
-        // See if the skin specified an initial value
-        $skinlife = $skin->getConfigOption('delegate','initiallifetime');
-        if (($skinlife !== null) && ((int)$skinlife > 0)) {
-            $lifetime = (int)$skinlife;
-        } else {
-            $lifetime = 12;
-        }
-    } elseif ($lifetime < 1) {
+    $portalremember = $portal->getPortalRemember(getSessionVar('callbackuri'));
+    $portallifetime = $portal->getPortalLifetime(getSessionVar('callbackuri'));
+
+    // If skin's forceremember or portal cookie's remember is set,
+    // then we bypass the Allow/Deny delegate page.
+    if (($forceremember == 1) || ($portalremember == 1)) {
+        $remember = 1;
+    }
+
+    // If skin's forcelifetime or portal cookie's lifetime is set,
+    // set lifetime accordingly and make sure value is between 1 and 240.
+    if ($forcelifetime > 0) {
+        $lifetime = $forcelifetime;
+    } elseif ($portallifetime > 0) {
+        $lifetime = $portallifetime;
+    }
+    if ($lifetime < 1) {
         $lifetime = 1;
     } elseif ($lifetime > 240) {
         $lifetime = 240;
     }
 
-    // If 'remember' is set for the current portal, then automatically
-    // click the 'OK' button for the user.
+    // If 'remember' is set, then auto-click the 'OK' button for the user.
     if ($remember == 1) {
         handleAllowDelegation(true);
     } else {
@@ -339,8 +386,10 @@ function printMainPage()
         <label for="lifetime" title="' , $lifetimetext , '" 
         class="helpcursor">Certificate Lifetime (in hours):</label>
         <input type="text" name="lifetime" id="lifetime" title="' ,
-        $lifetimetext , '" class="helpcursor" size="3" maxlength="3" 
-        value="' , $lifetime , '" />
+        $lifetimetext , '" size="3" maxlength="3" value="' , 
+        $lifetime , '" ' , 
+        (($forcelifetime>0) ? 'disabled="disabled" ' : 'class="helpcursor" ') ,
+        '/>
         </p>
         <p>
         <label for="rememberok" title="', $remembertext , '"
@@ -501,20 +550,29 @@ function printCancelPage() {
 function handleAllowDelegation($always=false)
 {
     global $log;
+    global $skin;
 
     $log->info('Attempting to delegate a certificate to a portal...');
 
-    // Try to get the certificate lifetime from a submitted <form>
-    $lifetime = trim(getPostVar('lifetime'));
-
-    // If we couldn't get lifetime from the <form>, try the cookie
-    $portal = new portalcookie();
-    if (strlen($lifetime) == 0) {
-        $lifetime = $portal->getPortalLifetime(getSessionVar('callbackuri'));
+    $lifetime = 0;
+    // Check the skin's forcelifetime and use it if it is configured.
+    $forcelifetime = $skin->getConfigOption('delegate','forcelifetime');
+    if (($forcelifetime !== null) && ((int)$forcelifetime > 0)) {
+        $lifetime = (int)$forcelifetime;
     }
 
-    // Convert lifetime to integer.  Empty string and alpha chars --> 0
-    $lifetime = (int)$lifetime;  
+    // Next, try to get the certificate lifetime from a submitted <form>
+    if ($lifetime == 0) {
+        $lifetime = (int)(trim(getPostVar('lifetime')));
+    }
+
+    // If we couldn't get lifetime from the <form>, try the cookie
+    if ($lifetime == 0) {
+        $portal = new portalcookie();
+        $lifetime = 
+            (int)($portal->getPortalLifetime(getSessionVar('callbackuri')));
+    }
+
     // Verify that lifetime is in the range [1,240].  Default to 12 hours.
     if ($lifetime == 0) {
         $lifetime = 12;

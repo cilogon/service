@@ -6,8 +6,8 @@
   <logonbuttontext>Continue</logonbuttontext>
 
   <delegate>
-    <initiallifetime>12</initiallifetime>
-    <remember>1</remember>
+    <forcelifetime>12</forcelifetime>
+    <forceremember>1</forceremember>
   </delegate>
 
   <portallist>
