@@ -1,5 +1,7 @@
 <?php
 
+require_once('util.php');
+
 /* Define several MyProxy default variables */
 define('MYPROXY_LOGON','/usr/bin/myproxy-logon',true);
 define('MYPROXY_HOST','myproxy.cilogon.org');
@@ -30,22 +32,20 @@ define('MYPROXY_LIFETIME','12');
  *                 set a $passphrase.                                   *
  *             $env - Extra environment variables in the form of        *
  *                 space-separated "key=value" pairs.                   *
- *             $DEBUG - Set to true to show HTML formatted debug info.  *
  * Returns:    An X509 credential in a string upon success, or          *
  *                 an empty string upon failure.                        *
  ************************************************************************/
 function getMyProxyCredential(
     $username,$passphrase='',$server=MYPROXY_HOST,$port=MYPROXY_PORT,
     $lifetime=MYPROXY_LIFETIME,$usercert='',$userkey='',
-    $certreq='',$env='',$DEBUG=false) {
+    $certreq='',$env='') {
 
     $retstr = '';
 
     // Make sure the username passed in is not empty
     if (strlen($username) == 0) {
-        if ($DEBUG) {
-            echo "Error: Empty MyProxy username.<br/>\n";
-        }
+        sendErrorAlert('getMyProxyCredential Error',
+                       'MyProxy Error = Missing MyProxy username');
         return $retstr;
     }
     
@@ -94,10 +94,9 @@ function getMyProxyCredential(
     $retstr = implode("\n",$output);
 
     if ($return_val > 0) {
-        if ($DEBUG) {
-            echo "Error code = $return_val</br>\n";
-            echo "<xmp>$retstr</xmp>\n";
-        }
+        sendErrorAlert('getMyProxyCredential Error',
+                       "MyProxy Error = $return_val\n" .
+                       "MyProxy Output= $retstr");
         $retstr = '';
     }
 

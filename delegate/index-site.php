@@ -607,7 +607,9 @@ function handleAllowDelegation($always=false)
         curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
         $output = curl_exec($ch);
         if (curl_errno($ch)) { // Send alert on curl errors
-            alertCurlError(curl_error($ch),$url);
+            sendErrorAlert('cUrl Error',
+                           'cUrl Error    = ' . curl_error($ch) . "\n" . 
+                           "URL Accessed  = $url");
         }
         if (!empty($output)) { 
             $httpcode = curl_getinfo($ch,CURLINFO_HTTP_CODE);

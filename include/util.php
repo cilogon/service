@@ -324,35 +324,45 @@ function deleteDir($dir,$shred=false) {
 }
 
 /************************************************************************
- * Function  : alertCurlError                                           *
- * Parameters: (1) The cUrl error as returned by curl_error().          *
- *             (2) The URL that caused the cUrl error.                  *
- * This function is called when curl() encounters an error.  It sends   *
- * an email message to alerts@cilogon.org with any session variables.   *
+ * Function  : sendErrorAlert                                           *
+ * Parameters: (1) A brief summary of the error (in email subject)      *
+ *             (2) A detailed description of the error (in email body)  *
+ * Use this function to send an error message to alerts@cilogon.org.    *
+ * The $summary should be a short description of the error since it     *
+ * is placed in the subject of the email.  Put a more verbose           *
+ * description of the error in the $detail parameter.  Any session      *
+ * variables available are appended to the body of the message.         *
 /************************************************************************/
-function alertCurlError($error,$url)
+function sendErrorAlert($summary,$detail)
 {
-    $idp      = getSessionVar('idp');
-    $idpname  = getSessionVar('idpname');
-    $uid      = getSessionVar('uid');
-    $dn       = getSessionVar('dn');
     $mailto   = 'alerts@cilogon.org';
     $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
-    $mailsubj = 'CILogon Service on ' . HOSTNAME . 
-                ' - cUrl Error! ';
+    $mailsubj = 'CILogon Service on ' . HOSTNAME . ' - ' . $summary;
     $mailmsg  = '
-CILogon Service - cUrl Error
-----------------------------
-cUrl Error    = ' . $error . '
-URL Accessed  = ' . $url . '
+CILogon Service - ' . $summary . '
+-----------------------------------------------------------
+' . $detail . '
+
+Session Variables
+-----------------
 Server Host   = ' . HOSTNAME . '
 Remote Address= ' . getServerVar('REMOTE_ADDR') . '
-IdP           = ' . ((strlen($idp) > 0) ? $idp : '<MISSING>') . '
-IdP Name      = ' . ((strlen($idpname) > 0) ? $idpname : '<MISSING>') . '
-Database UID  = ' . ((strlen($uid) > 0) ? $uid : '<MISSING>') . '
-Cert DN       = ' . ((strlen($dn) > 0) ? $dn : '<MISSING>') . '
 ';
+
+    if (strlen($idp = getSessionVar('idp')) > 0) {
+        $mailmsg .= "IdP           = $idp\n";
+    }
+    if (strlen($idpname = getSessionVar('idpname')) > 0) {
+        $mailmsg .= "IdP Name      = $idpname\n";
+    }
+    if (strlen($uid = getSessionVar('uid')) > 0) {
+        $mailmsg .= "Database UID  = $uid\n";
+    }
+    if (strlen($dn = getSessionVar('dn')) > 0) {
+        $mailmsg .= "Cert DN       = $dn\n";
+    }
+
     mail($mailto,$mailsubj,$mailmsg,$mailfrom);
 }
 

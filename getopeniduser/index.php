@@ -160,16 +160,25 @@ function getUserAndRespond($responseurl) {
 
         // If 'status' is not STATUS_OK*, then send an error email
         if (getSessionVar('status') & 1) { // Bad status codes are odd-numbered
-            sendErrorEmail($openidid,
-                           $providerId,
-                           $providerName,
-                           $firstname,
-                           $lastname,
-                           $emailaddr,
-                           getSessionVar('uid'),
-                           array_search(getSessionVar('status'),
-                               dbservice::$STATUS)
-                          );
+            sendErrorAlert('Failure in /getopeniduser/',
+                'OpenId ID     = ' . ((strlen($openidid) > 0) ? 
+                    $openidid : '<MISSING>') . "\n" .
+                'Provider URL  = ' . ((strlen($providerId) > 0) ? 
+                    $providerId : '<MISSING>') . "\n" .
+                'Provider Name = ' . ((strlen($providerName) > 0) ? 
+                    $providerName : '<MISSING>') . "\n" .
+                'First Name    = ' . ((strlen($firstname) > 0) ? 
+                    $firstname : '<MISSING>') . "\n" .
+                'Last Name     = ' . ((strlen($lastname) > 0) ? 
+                    $lastname : '<MISSING>') . "\n" .
+                'Email Address = ' . ((strlen($emailaddr) > 0) ? 
+                    $emailaddr : '<MISSING>') . "\n" .
+                'Database UID  = ' . ((strlen($i=getSessionVar('uid')) > 0) ? 
+                    $i : '<MISSING>') . "\n" .
+                'Status Code   = ' . ((strlen($i = array_search(
+                    getSessionVar('status'),dbservice::$STATUS)) > 0) ? 
+                        $i : '<MISSING>')
+            );
         } else {
             setSessionVar('dn',$dbs->distinguished_name);
             setSessionVar('loa','openid');
@@ -188,54 +197,6 @@ function getUserAndRespond($responseurl) {
 
     /* Finally, redirect to the calling script. */
     header('Location: ' . $responseurl);
-}
-
-/************************************************************************
- * Function   : sendErrorEmail                                          *
- * Parameters : (1) The user's OpenID                                   *
- *              (2) The OpenID Provider                                 *
- *              (3) The OpenID Provider display name                    *
- *              (4) The user's first name                               *
- *              (5) The user's last name                                *
- *              (6) The user's email address                            *
- *              (7) Persistent store user identifier                    *
- *              (8) String value of the status of getUser() call        *
- * This function sends an email to help@cilogon.org when there is a     *
- * problem getting the user.  This can happen when there are missing    *
- * SAML attributes in the OpenID session, or when the persistent        *
- * store getUser() call returns a bad status code.                      *
- ************************************************************************/
-function sendErrorEmail($openidid,$providerId,$providerName,
-                        $firstname,$lastname,$emailaddr,$uid,$statuscode) 
-{
-    $mailto   = 'help@cilogon.org';
-    $mailfrom = 'From: help@cilogon.org' . "\r\n" .
-                'X-Mailer: PHP/' . phpversion();
-    $mailsubj = 'CILogon Service on ' . HOSTNAME . 
-                ' - Failure in getopeniduser script for ' . $providerName;
-    $mailmsg  = '
-CILogon Service - Failure in /getopeniduser/
---------------------------------------------
-Server Host   = ' . HOSTNAME . '
-Remote Address= ' . getServerVar('REMOTE_ADDR') . '
-OpenId ID     = ' . 
-    ((strlen($openidid) > 0) ? $openidid : '<MISSING>') . '
-Provider URL  = ' .
-    ((strlen($providerId) > 0) ? $providerId : '<MISSING>') . '
-Provider Name = ' .
-    ((strlen($providerName) > 0) ? $providerName : '<MISSING>') . '
-First Name    = ' .
-    ((strlen($firstname) > 0) ? $firstname : '<MISSING>') . '
-Last Name     = ' .
-    ((strlen($lastname) > 0) ? $lastname : '<MISSING>') . '
-Email Address = ' .
-    ((strlen($emailaddr) > 0) ? $emailaddr : '<MISSING>') . '
-Database UID  = ' .
-    ((strlen($uid) > 0) ? $uid : '<MISSING>') . '
-Status Code   = ' .
-    ((strlen($statuscode) > 0) ? $statuscode : '<MISSING>') . '
-';
-    mail($mailto,$mailsubj,$mailmsg,$mailfrom);
 }
 
 /************************************************************************

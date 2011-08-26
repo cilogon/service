@@ -98,15 +98,33 @@ function getUID() {
 
     // If 'status' is not STATUS_OK*, then send an error email
     if (getSessionVar('status') & 1) { // Bad status codes are odd-numbered
-        sendErrorEmail($shibarray['User Identifier'],
-                       $shibarray['Identity Provider'],
-                       $shibarray['Organization Name'],
-                       $firstname, 
-                       $lastname,
-                       $shibarray['Email Address'],
-                       $dbs->user_uid,
-                       array_search(getSessionVar('status'),dbservice::$STATUS)
-                      );
+        sendErrorAlert('Failure in /secure/getuser/',
+            'Remote_User   = ' . 
+                ((strlen($i = $shibarray['User Identifier']) > 0) ?
+                    $i :' <MISSING>')."\n".
+            'IdP           = ' .
+                ((strlen($i = $shibarray['Identity Provider']) > 0) ?
+                    $i : '<MISSING>')."\n".
+            'Organization  = ' .
+                ((strlen($i = $shibarray['Organization Name']) > 0) ?
+                    $i : '<MISSING>')."\n".
+            'First Name    = ' .
+                ((strlen($firstname) > 0) ?
+                    $firstname : '<MISSING>')."\n".
+            'Last Name     = ' .
+                ((strlen($lastname) > 0) ?
+                    $lastname : '<MISSING>')."\n".
+            'Email Address = ' .
+                ((strlen($i = $shibarray['Email Address']) > 0) ?
+                    $i : '<MISSING>')."\n".
+            'Database UID  = ' .
+                ((strlen($dbs->user_uid) > 0) ?
+                    $dbs->user_uid : '<MISSING>')."\n".
+            'Status Code   = ' .
+                ((strlen($i = array_search(
+                    getSessionVar('status'),dbservice::$STATUS)) > 0) ? 
+                        $i : '<MISSING>')
+        );
         unsetSessionVar('firstname');
         unsetSessionVar('lastname');
         unsetSessionVar('dn');
@@ -276,53 +294,6 @@ function outputError($errstr='') {
     if (strlen($errstr) > 0) {
         echo $errstr;
     }
-}
-
-/************************************************************************
- * Function   : sendErrorEmail                                          *
- * Parameters : (1) The REMOTE_USER                                     *
- *              (2) EntityId of the Identity Provider                   *
- *              (3) IdP Display Name                                    *
- *              (4) User's first name                                   *
- *              (5) User's last name                                    *
- *              (6) User's email address                                *
- *              (7) Persistent store user identifier                    *
- *              (8) String value of the status of getUser() call        *
- * This function sends an email to help@cilogon.org when there is a     *
- * problem getting the user.  This can happen when there are missing    *
- * SAML attributes in the Shibboleth session, or when the persistent    *
- * store getUser() call returns a bad status code.                      *
- ************************************************************************/
-function sendErrorEmail($remote_user,$idp,$idpname,$firstname,$lastname,
-                        $emailaddr,$uid,$statuscode) {
-    $mailto   = 'help@cilogon.org';
-    $mailfrom = 'From: help@cilogon.org' . "\r\n" .
-                'X-Mailer: PHP/' . phpversion();
-    $mailsubj = 'CILogon Service on ' . HOSTNAME .
-                ' - Failure in getuser script for ' . $idpname;
-    $mailmsg  = '
-CILogon Service - Failure in /secure/getuser/
----------------------------------------------
-Server Host   = ' . HOSTNAME . '
-Remote Address= ' . getServerVar('REMOTE_ADDR') . '
-Remote_User   = ' . 
-    ((strlen($remote_user) > 0) ? $remote_user : '<MISSING>') . '
-IdP           = ' .
-    ((strlen($idp) > 0) ? $idp : '<MISSING>') . '
-Organization  = ' .
-    ((strlen($idpname) > 0) ? $idpname : '<MISSING>') . '
-First Name    = ' .
-    ((strlen($firstname) > 0) ? $firstname : '<MISSING>') . '
-Last Name     = ' .
-    ((strlen($lastname) > 0) ? $lastname : '<MISSING>') . '
-Email Address = ' .
-    ((strlen($emailaddr) > 0) ? $emailaddr : '<MISSING>') . '
-Database UID  = ' .
-    ((strlen($uid) > 0) ? $uid : '<MISSING>') . '
-Status Code   = ' .
-    ((strlen($statuscode) > 0) ? $statuscode : '<MISSING>') . '
-';
-    mail($mailto,$mailsubj,$mailmsg,$mailfrom);
 }
 
 /************************************************************************
