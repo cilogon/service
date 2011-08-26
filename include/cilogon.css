@@ -441,7 +441,7 @@ input.helpbutton {
   font-weight: bold;
   font-size: x-small;
   color: #fff;
-  background-color: #000;
+  background: url('/images/blackflash.gif') repeat top left;
   padding: 1px 0px;
   margin: 2px 2px 0 1em;
   float: right;
