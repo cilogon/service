@@ -256,8 +256,15 @@ function printBadOAuthTokenPage()
       use by third parties to obtain certificates for their users.  
       End users should not normally see this page.
       </p>
-      <p>If you are seeing this page, there was a
-      problem with the delegation process.
+      <p>
+      Possible reasons for seeing this page include:
+      </p>
+      <ul>
+      <li>You navigated directly to this page.</li>
+      <li>You clicked your browser\'s "Back" button.</li>
+      <li>There was a problem with the delegation process.</li>
+      </ul>
+      <p>
       Please return to the previous site and try again.  If the error persists,
       please contact us at the email address at the bottom of the page.
       </p>
