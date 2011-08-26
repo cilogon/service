@@ -38,7 +38,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.004";
+our $VERSION = "0.005";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -387,6 +387,9 @@ if ($get eq 'c') {
             $reqcmd .= " -newkey rsa:2048 -nodes -keyout $outkey";
         }
         $csr = runCmdGetStdout($reqcmd);
+        if (length($outkey) > 0) {
+            chmod 0600, $outkey;
+        }
         if (length($csr) == 0) {
             warn "Error: Unable to create certificate signing request. " .
                  "Aborting." if (!$quiet);
