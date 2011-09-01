@@ -18,7 +18,8 @@ $log = new loggit();
 /* Check the csrf cookie against either a hidden <form> element or a *
  * PHP session variable, and get the value of the "submit" element.  *
  * Note: replace CR/LF with space for "Show/Hide Help" buttons.      */
-$submit = str_replace("\r\n"," ",csrf::verifyCookieAndGetSubmit());
+$retchars = array("\r\n","\n","\r");
+$submit = str_replace($retchars," ",csrf::verifyCookieAndGetSubmit());
 unsetSessionVar('submit');
 
 $log->info('submit="' . $submit . '"');
