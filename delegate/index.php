@@ -609,7 +609,7 @@ function handleAllowDelegation($always=false)
                    ('&cilogon_info=' . urlencode($myproxyinfo)) : '');
         curl_setopt($ch,CURLOPT_URL,$url);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-        curl_setopt($ch,CURLOPT_TIMEOUT,30);
+        curl_setopt($ch,CURLOPT_TIMEOUT,35);
         /* Following two options are needed by polo-staging */
         curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,1);
         curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
