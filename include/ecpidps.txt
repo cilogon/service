@@ -1,4 +1,3 @@
-https://boingo.ncsa.uiuc.edu/idp/profile/SAML2/SOAP/ECP CILogon Test IdP
 https://shib.lternet.edu/idp/profile/SAML2/SOAP/ECP LTER Network
 https://idp.protectnetwork.org/protectnetwork-idp/profile/SAML2/SOAP/ECP ProtectNetwork
 https://shibboleth2.uchicago.edu/idp/profile/SAML2/SOAP/ECP University of Chicago

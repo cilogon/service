@@ -38,7 +38,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.005";
+our $VERSION = "0.006";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -181,12 +181,16 @@ if ((length($idpurl) == 0) && (exists $opts{idpname})) {
 $term = Term::ReadLine->new('readline');
 if ((length($idpurl) == 0) && (length($idpname) == 0)) {
     my @idpnames = sort keys %idps;
+    # Find the array position of "ProtectNetwork" for default selection
+    my %idpidx;
+    @idpidx{@idpnames} = (0..$#idpnames);
+    my $protectnet = $idpidx{'ProtectNetwork'};
     push(@idpnames,'Specify the URL of another IdP');
     $reply = $term->get_reply(
              prompt   => 'Choose',
              print_me => 'Select an Identity Provider (IdP):',
              choices  => \@idpnames,
-             default  => $idpnames[0]
+             default  => $idpnames[$protectnet]
              );
 
     if ($reply eq 'Specify the URL of another IdP') {
