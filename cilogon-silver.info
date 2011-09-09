@@ -3,6 +3,6 @@ url = http://ca.cilogon.org/
 ca_url = https://cilogon.org/cilogon-silver.pem
 crl_url = http://crl.cilogon.org/cilogon-silver.crl;http://crl.doegrids.org/cilogon-silver.crl
 email = ca@cilogon.org
-status = experimental
+status = accredited:mics
 version = @VERSION@
 sha1fp.0 = @SHA1FP.0@
