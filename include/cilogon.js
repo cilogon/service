@@ -386,22 +386,34 @@ function doubleClickSubmit() {
 }
 
 /***************************************************************************
- * Function  : textInputFocus                                              *
- * This function looks for the "Search" text field on the WAYF page or the *
- * "Enter Password" text field on the Main Page.  If either is found, it   *
- * gives the found text field focus.                                       *
+ * Function  : doFocus                                                     *
+ * Parameter : The id of a text input element to focus on.                 *
+ * Returns:  : True if text input element got focus, false otherwise.      *
+ * This function is a helper function called by textInputFocus.  It        *
+ * attempts to find the passed-in text input element by id.  If found, it  *
+ * tries to set focus.  If successful, it returns true.  If any step       *
+ * fails, it returns false.                                                *
  ***************************************************************************/
-function textInputFocus() {
-  var search = document.getElementById("searchlist");
-  var passwd = document.getElementById("password1");
-  if (search !== null) {
-    search.focus();
-  } else if (passwd !== null) {
+function doFocus(id) {
+  var success = false;
+  var id = document.getElementById(id);
+  if (id !== null) {
     try {
-      passwd.focus();
+      id.focus();
+      success = true;
     } catch (e) {
     }
   }
+  return success;
+}
+
+/***************************************************************************
+ * Function  : textInputFocus                                              *
+ * This function looks for one of several text fields on the current page  *
+ * and attempts to give text field focuts to each field, in order.         *
+ ***************************************************************************/
+function textInputFocus() {
+  doFocus("searchlist") || doFocus("password1") || doFocus("lifetime");
 }
 
 /***************************************************************************

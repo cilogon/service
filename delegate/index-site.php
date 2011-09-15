@@ -398,6 +398,7 @@ function printMainPage()
         $lifetime , '" ' , 
         (($forcelifetime>0) ? 'disabled="disabled" ' : 'class="helpcursor" ') ,
         '/>
+<!--[if IE]><input type="text" style="display:none;" disabled="disabled" size="1"/><![endif]-->
         </p>
         <p>
         <label for="rememberok" title="', $remembertext , '"
