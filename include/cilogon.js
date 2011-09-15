@@ -14,10 +14,10 @@ var idpstext, idpsvalue, idps;
  * (withOUT parameters) as a parameter (e.g. countdown(f,ms) and           *
  * addLoadEvent(f).                                                        *
  ***************************************************************************/
-function partial(func /*, 0..n args */) {
+function partial(func) { /* func is 0..n args */
   var i;
-  var args = new Array(); 
-  for (i = 1; i < arguments.length; i++) { 
+  var args = []; 
+  for (i = 1; i < arguments.length; i = i + 1) { 
     args.push(arguments[i]); 
   } 
   return function() {
@@ -73,7 +73,7 @@ function showHideDiv(whichDiv,showhide) {
   var divs = document.getElementsByTagName('div');
   var i;
   var style2;
-  for (i = 0; i < divs.length; i++) {
+  for (var i = 0; i < divs.length; i = i + 1) {
     if (divs[i].id.match(whichDiv)) {
       if (document.getElementById) { // Current browsers, i.e. IE5, NS6
         style2 = divs[i].style;
@@ -248,10 +248,10 @@ function cacheOptions() {
   idps = document.getElementById("providerId");
   /* Populate the idpstext and idpsvalue arrays from the WAYF's <select> */
   if (idps !== null) {
-    for (i = 0; i < idps.options.length; i++) {
+    for (var i = 0; i < idps.options.length; i = i + 1) {
       idpstext[idpstext.length] = idps.options[i].text;
       idpsvalue[idpsvalue.length] = idps.options[i].value;
-      total++;
+      total = total + 1;
     }
     /* If more than one IdP, unhide the initially hidden "Search" box */
     if (total > 1) {
@@ -314,7 +314,7 @@ function searchOptions(value) {
     /* Scan thru the <options> for substrings matching the "Search" field */
     idps.options.length = 0;
     lowval = value.toLowerCase();
-    for (i = 0; i < idpstext.length; i++) {
+    for (var i = 0; i < idpstext.length; i = i + 1) {
       if (idpstext[i].toLowerCase().indexOf(lowval) !== -1) {
         addOption(idpstext[i],idpsvalue[i]);
       }
@@ -325,7 +325,7 @@ function searchOptions(value) {
       /* Find the previously highlighted option, if in new sublist, */
       /* or default to the first item in the new sublist.           */
       selindex = 0;
-      for (i = 0; i < idps.options.length; i++) {
+      for (var i = 0; i < idps.options.length; i = i + 1) {
         if (seltext === idps.options[i].text) {
           selindex = i;
           break;
@@ -396,10 +396,10 @@ function doubleClickSubmit() {
  ***************************************************************************/
 function doFocus(id) {
   var success = false;
-  var id = document.getElementById(id);
-  if (id !== null) {
+  var elem = document.getElementById(id);
+  if (elem !== null) {
     try {
-      id.focus();
+      elem.focus();
       success = true;
     } catch (e) {
     }
@@ -413,7 +413,7 @@ function doFocus(id) {
  * and attempts to give text field focuts to each field, in order.         *
  ***************************************************************************/
 function textInputFocus() {
-  doFocus("searchlist") || doFocus("password1") || doFocus("lifetime");
+  return doFocus("searchlist") || doFocus("password1") || doFocus("lifetime");
 }
 
 /***************************************************************************
