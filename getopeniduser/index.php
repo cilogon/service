@@ -138,7 +138,8 @@ function getUserAndRespond($responseurl) {
         /* In the database, keep a consistent ProviderId format:   *
          * only allow "http" (not "https") and remove any "www."   *
          * prefix (for Google).                                    */
-        $providerId = preg_replace('%^https://(www\.)?%','http://',$providerId);
+        $databaseProviderId = 
+            preg_replace('%^https://(www\.)?%','http://',$providerId);
         $validator = new EmailAddressValidator();
 
         if ((strlen($openidid) > 0) && 
@@ -149,7 +150,7 @@ function getUserAndRespond($responseurl) {
             (strlen($emailaddr) > 0) &&
             ($validator->check_email_address($emailaddr))) {
             $dbs->getUser($openidid,
-                          $providerId,
+                          $databaseProviderId,
                           $providerName,
                           $firstname,
                           $lastname,
