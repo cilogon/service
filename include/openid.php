@@ -45,10 +45,10 @@ class openid {
      * OpenID providers which do NOT require a username in the URL are  *
      * supported at this time.                                          */
     public static $providerUrls = array(
-        'http://google.com/accounts/o8/id' => 'Google' ,
-        'http://openid.paypal-ids.com'     => 'PayPal' , 
-        'http://pip.verisignlabs.com'      => 'Verisign' ,
-        // 'http://yahoo.com'                 => 'Yahoo'
+        'https://www.google.com/accounts/o8/id' => 'Google' ,
+        'https://openid.paypal-ids.com'         => 'PayPal' , 
+        'https://pip.verisignlabs.com'          => 'Verisign' ,
+        // 'https://yahoo.com'                  => 'Yahoo'
     );
 
     /* Database connection for the OpenID library.                      */

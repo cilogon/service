@@ -135,6 +135,10 @@ function getUserAndRespond($responseurl) {
         $providerId = getCookieVar('providerId');
         $providerName = openid::getProviderName($providerId);
         setSessionVar('idpname',$providerName);  // Save for later use
+        /* In the database, keep a consistent ProviderId format:   *
+         * only allow "http" (not "https") and remove any "www."   *
+         * prefix (for Google).                                    */
+        $providerId = preg_replace('%^https://(www\.)?%','http://',$providerId);
         $validator = new EmailAddressValidator();
 
         if ((strlen($openidid) > 0) && 
