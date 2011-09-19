@@ -50,12 +50,11 @@ function getUserAndRespond($responseurl) {
     $fullname = '';
     $emailaddr = '';
 
-
     unsetSessionVar('openiderror');
     $datastore = $openid->getStorage();
     if ($datastore == null) {
         setSessionVar('openiderror',
-            'Internal OpenID error. Please try logging in with Shibboleth.');
+            'Internal OpenID error. Please contact <a href="mailto:help@cilogon.org">help@cilogon.org</a> or select a different identity provider.');
     } else {
         $consumer = new Auth_OpenID_Consumer($datastore);
         $response = $consumer->complete(getScriptDir(true));

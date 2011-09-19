@@ -621,7 +621,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser')
     global $csrf;
     global $log;
 
-    $openiderrorstr = 'Internal OpenID error. Please try logging in with Shibboleth.';
+    $openiderrorstr = 'Internal OpenID error. Please contact <a href="mailto:help@cilogon.org">help@cilogon.org</a> or select a different identity provider.';
 
     // If providerId not set, try the session and cookie values
     if (strlen($providerId) == 0) {
