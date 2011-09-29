@@ -6,4 +6,5 @@
       <multiplier>3600</multiplier>
     </initiallifetime>
   </gsca>
+  <dnformat>rfc2253</dnformat>
 </config>

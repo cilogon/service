@@ -584,6 +584,12 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser')
             'target=' . urlencode(GETUSER_URL);
         if (strlen($providerId) > 0) {
             $redirect .= '&providerId=' . urlencode($providerId);
+            // For Silver IdPs, send extra parameter
+            $silveridps = new whitelist('/var/www/html/include/silveridps.txt');
+            if ($silveridps->exists($providerId)) {
+                $redirect .= '&authnContextClassRef=' . 
+                    urlencode('http://id.incommon.org/assurance/silver-test');
+            }
         }
 
         $log->info('Shibboleth Login="' . $redirect . '"');
@@ -946,7 +952,7 @@ function printNewUserPage()
     $log->info('New User page.');
 
     $dn = getSessionVar('dn');
-    $dn = preg_replace('/\s+email=.+$/','',$dn);
+    $dn = reforamtDN(preg_replace('/\s+email=.+$/','',$dn));
 
     printHeader('New User');
 
@@ -1017,7 +1023,7 @@ function printUserChangedPage()
         $last    = $dbs->last_name;
         $email   = $dbs->email;
         $dn      = $dbs->distinguished_name;
-        $dn      = preg_replace('/\s+email=.+$/','',$dn);
+        $dn      = reformatDN(preg_replace('/\s+email=.+$/','',$dn));
         $dbs->getLastArchivedUser($uid);
         if (!($dbs->status & 1)) {  // STATUS_OK codes are even
             $previdpname = $dbs->idp_display_name;
@@ -1025,7 +1031,8 @@ function printUserChangedPage()
             $prevlast    = $dbs->last_name;
             $prevemail   = $dbs->email;
             $prevdn      = $dbs->distinguished_name;
-            $prevdn      = preg_replace('/\s+email=.+$/','',$prevdn);
+            $prevdn      = reformatDN(
+                               preg_replace('/\s+email=.+$/','',$prevdn));
 
             $tablerowodd = true;
 
@@ -1355,7 +1362,32 @@ function getLogOnButtonText() {
         $retval = (string)$lobt;
     }
     return $retval;
+}
 
+/************************************************************************
+ * Function   : reformatDN                                              *
+ * Parameter  : The certificate subject DN (without the email=... part) *
+ * Returns    : The certificate subject DN transformed according to     *
+ *              the value of the <dnformat> skin config option.         *
+ * This function takes in a certificate subject DN with the email=...   * 
+ * part already removed. It checks the skin to see if <dnformat> has    *
+ * been set. If so, it reformats the DN appropriately.                  *
+ ************************************************************************/
+function reformatDN($dn) {
+    global $skin;
+
+    $newdn = $dn;
+    $dnformat = (string)$skin->getConfigOption('dnformat');
+    if (($dnformat !== null)) {
+        if ($dnformat == 'rfc2253') {
+            if (preg_match('%/DC=org/DC=cilogon/C=US/O=(.*)/CN=(.*)%',
+                           $dn,$match)) {
+                $newdn = 'CN='.$match[2].',O='.$match[1].
+                         ',C=US,DC=cilogon,DC=org';
+            }
+        }
+    }
+    return $newdn;
 }
 
 ?>

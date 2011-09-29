@@ -200,4 +200,20 @@
   </portallistaction>
   -->
 
+  <!-- <dnformat>
+       This is a simple option that dictates the format of the certificate
+       subject DN displayed to the user. It can be one of several values:
+       * oneline - This is the default which will be used if no value is
+                   specified. It displays the DN in the "oneline" format as
+                   used by openssl. It looks like this:
+                   /DC=org/DC=cilogon/C=US/O=IdP Name/CN=Full Name A123
+       * rfc2253 - This displays the DN in the "rfc2253" format as used in
+                   openssl. It looks like this:
+                   CN=Full Name A123,O=IdP Name,C=US,DC=cilogon,DC=org
+       Any other value is ignored and defaults to "oneline".
+  -->
+  <!--
+  <dnformat>rfc2253</dnformat>
+  -->
+
 </config>

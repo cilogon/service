@@ -200,7 +200,7 @@ function printMainPage() {
  ************************************************************************/
 function printCertInfo() {
     $dn = getSessionVar('dn');
-    $dn = preg_replace('/\s+email=.+$/','',$dn);
+    $dn = reformatDN(preg_replace('/\s+email=.+$/','',$dn));
 
     echo '
     <table class="certinfo">
