@@ -952,7 +952,7 @@ function printNewUserPage()
     $log->info('New User page.');
 
     $dn = getSessionVar('dn');
-    $dn = reforamtDN(preg_replace('/\s+email=.+$/','',$dn));
+    $dn = reformatDN(preg_replace('/\s+email=.+$/','',$dn));
 
     printHeader('New User');
 
