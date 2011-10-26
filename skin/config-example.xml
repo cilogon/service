@@ -79,13 +79,22 @@
 
   <!-- <pkcs12>
        This block contains options specific to the "Get New Certificate" box
-       (i.e. download a PKCS12 credential). The <initiallifetime> block
-       allows you to specify the initial value for "Certificate Lifetime".
-       If set, you must specify BOTH <number> AND <multiplier>.
+       (i.e. download a PKCS12 credential). 
+       The <initiallifetime> block allows you to specify the initial value
+       for "Certificate Lifetime".  If set, you must specify BOTH <number>
+       AND <multiplier>.
        <number> is the value that appears in the text input box.
        <multiplier> can be 1 (=> number is in hours), 24 (=> number is in
        days), or 732 (=> number is in months). The example below shows the
        default of 13 months, which is also the maximum lifetime.
+       <minlifetime> allows to you specify the minimum lifetime (in hours) a
+       user can enter for the credential. Defaults to 1. Should not be less
+       than 1.
+       <maxlifetime> allows you to specify the maximum lifetime (in hours) a
+       user can enter for the credential. Defaults to 9516 (which equals 13
+       months). Should not be greater than 9516.
+       Note: The program checks for 1 <= minlifetime <= initiallifetime <=
+       maxlifetime <= 9516. 
   -->
   <!--
   <pkcs12>
@@ -93,6 +102,8 @@
       <number>13</number>
       <multiplier>732</multiplier>
     </initiallifetime>
+    <minlifetime>1</minlifetime>
+    <maxlifetime>9516</maxlifetime>
   </pkcs12>
   -->
 
@@ -108,6 +119,15 @@
        <multiplier> can be 3600 (=> number is in hours), 86400 (=> number is
        in days), or 2635200 (=> number is in months). The example below
        shows the default of 12 hours. Maximum is 13 months (2635200).
+       <minlifetime> allows to you specify the minimum lifetime (in hours) a
+       user can enter for the credential. Defaults to 1. Should not be less
+       than 1.
+       <maxlifetime> allows you to specify the maximum lifetime (in hours) a
+       user can enter for the credential. Defaults to what is configured for
+       GridShib-CA, currently 9516 (which equals 13 months). Should not be
+       greater than 9516.
+       Note: The program checks for 1 <= minlifetime <= initiallifetime <=
+       maxlifetime <= 9516. 
   -->
   <!--
   <gsca>
@@ -115,6 +135,8 @@
       <number>12</number>
       <multiplier>3600</multiplier>
     </initiallifetime>
+    <minlifetime>1</minlifetime>
+    <maxlifetime>9516</maxlifetime>
   </gsca>
   -->
 
@@ -151,6 +173,16 @@
        values at the same time, it probably doesn't make a lot of sense
        since the <force...> parameters override the cookies set by the
        <initial...> parameters.
+       <minlifetime> allows to you specify the minimum lifetime (in hours) a
+       user can enter for the delegated certificate. Defaults to 1. Should
+       not be less than 1.
+       <maxlifetime> allows you to specify the maximum lifetime (in hours) a
+       user can enter for the delegated certificate. Defaults to 240 (which
+       equals 10 days). Should not be greater than 240.
+       Note: The program checks for 1 <= minlifetime <= initiallifetime <=
+       maxlifetime <= 240. However, it does not do the same for
+       forcelifetime, so be sure that forcelifetime is in the range
+       [1..240].
   -->
   <!--
   <delegate>
@@ -158,7 +190,38 @@
     <initialremember>1</initialremember>
     <forcelifetime>12</forcelifetime>
     <forceremember>1</forceremember>
+    <minlifetime>1</minlifetime>
+    <maxlifetime>240</maxlifetime>
   </delegate>
+  -->
+
+
+  <!-- <ecp>
+       This block is specific to fetching an X.509 certificate using
+       an ECP-enabled client (e.g. "ecp.pl -g c").  This does NOT apply to
+       fetching a PKCS12 credential using an ECP-enabled client
+       (e.g. "ecp.pl -g p") which is handled by the <pkcs12> block above.
+       <defaultlifetime> can be used to specify a default lifetime (in
+       hours) when the client does not give one. Typically, the
+       MYPROXY_LIFETIME value of 12 hours (found in include/myproxy.php) is
+       used when the lifetime is not given. You can set it to some other
+       value with this option.
+       <minlifetime> allows you to specify the minimum lifetime (in hours) a
+       user can enter for the certificate. Defaults to 1. Should not be less
+       than 1.
+       <maxlifetime> allows you to specify the maximum lifetime (in hours) a
+       user can enter for the certificate. Defaults to 277 (which equals
+       1000000 seconds). Should not be greater than 277.
+       Note: The program checks for 1 <= minlifetime <= defaultlifetime <=
+       maxlifetime <= 277, and also checks to make sure the specified
+       lifetime is within [minlifetime..maxlifetime].
+  -->
+  <!--
+  <ecp>
+    <defaultlifetime>12</defaultlifetime>
+    <minlifetime>1</minlifetime>
+    <maxlifetime>277</maxlifetime>
+  </ecp>
   -->
 
 
