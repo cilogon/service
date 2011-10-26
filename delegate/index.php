@@ -160,19 +160,23 @@ function printLogonPage()
     if ((strlen($portallifetime) == 0) || ($portallifetime == 0)) {
         $needtosetcookie = 0;
 
-        // First, try to read the skin's initiallifetime
+        // Try to read the skin's initiallifetime
         $initiallifetime = $skin->getConfigOption('delegate','initiallifetime');
         if (($initiallifetime !== null) && ((int)$initiallifetime > 0)) {
             $needtosetcookie = 1;
             $initiallifetime = (int)$initiallifetime;
-            // Make sure initiallifetime is within acceptible range
-            if ($initiallifetime < 1) {
-                $initiallifetime = 1;
-            } elseif ($initiallifetime > 240) {
-                $initiallifetime = 240;
-            }
         } else { // Set a default lifetime value in case initialremember is set
             $initiallifetime = 12;
+        }
+
+        // Make sure initiallifetime is within [minlifetime..maxlifetime] 
+        list($minlifetime,$maxlifetime) = getMinMaxLifetimes('delegate',240);
+        if ($initiallifetime < $minlifetime) {
+            $needtosetcookie = 1;
+            $initiallifetime = $minlifetime;
+        } elseif ($initiallifetime > $maxlifetime) {
+            $needtosetcookie = 1;
+            $initiallifetime = $maxlifetime;
         }
 
         // Next, try to read the skin's initialremember
@@ -331,16 +335,18 @@ function printMainPage()
     }
 
     // If skin's forcelifetime or portal cookie's lifetime is set,
-    // set lifetime accordingly and make sure value is between 1 and 240.
+    // set lifetime accordingly and make sure value is between the
+    // configured minlifetime and maxlifetime.
     if ($forcelifetime > 0) {
         $lifetime = $forcelifetime;
     } elseif ($portallifetime > 0) {
         $lifetime = $portallifetime;
     }
-    if ($lifetime < 1) {
-        $lifetime = 1;
-    } elseif ($lifetime > 240) {
-        $lifetime = 240;
+    list($minlifetime,$maxlifetime) = getMinMaxLifetimes('delegate',240);
+    if ($lifetime < $minlifetime) {
+        $lifetime = $minlifetime;
+    } elseif ($lifetime > $maxlifetime) {
+        $lifetime = $maxlifetime;
     }
 
     // If 'remember' is set, then auto-click the 'OK' button for the user.
@@ -350,7 +356,7 @@ function printMainPage()
         // User did not check 'Remember OK' before, so show the
         // HTML to prompt user for OK or Cancel delegation.
 
-        $lifetimetext = "Specify the lifetime of the certificate to be issued. Maximum value is 240 hours.";
+        $lifetimetext = "Specify the lifetime of the certificate to be issued. Acceptable range is between $minlifetime and $maxlifetime hours.";
         $remembertext ="Check this box to automatically approve certificate issuance to the site on future visits. The certificate lifetime will be remembered. You will need to clear your browser's cookies to return here.";
 
         printHeader('Confirm Allow Delegation');
@@ -422,7 +428,8 @@ function printMainPage()
             <div>
             <p>
             Please enter the lifetime of the certificate to be issued.
-            Maximum value is 240 hours. 
+            Acceptable range is between ' , $minlifetime, ' and ' ,
+            $maxlifetime , ' hours. 
             </p>
             <p>
             If you check the "Remember my OK for the site" checkbox,
@@ -582,13 +589,16 @@ function handleAllowDelegation($always=false)
             (int)($portal->getPortalLifetime(getSessionVar('callbackuri')));
     }
 
-    // Verify that lifetime is in the range [1,240].  Default to 12 hours.
+    // Default lifetime to 12 hours. And then make sure lifetime is in
+    // acceptable range.
     if ($lifetime == 0) {
         $lifetime = 12;
-    } elseif ($lifetime < 1) {
-        $lifetime = 1;
-    } elseif ($lifetime > 240) {
-        $lifetime = 240;
+    }
+    list($minlifetime,$maxlifetime) = getMinMaxLifetimes('delegate',240);
+    if ($lifetime < $minlifetime) {
+        $lifetime = $minlifetime;
+    } elseif ($lifetime > $maxlifetime) {
+        $lifetime = $maxlifetime;
     }
 
     setPortalCookie((int)$always,$lifetime);

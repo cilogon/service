@@ -248,7 +248,6 @@ function printGetCertificate() {
 
     $downloadcerttext = "Clicking this button will generate a link to a new certificate, which you can download to your local computer. The certificate is valid for up to 13 months."; 
     $p12linktext = "Left-click this link to import the certificate into your broswer / operating system. (Firefox users see the FAQ.) Right-click this link and select 'Save As...' to save the certificate to your desktop.";
-    $lifetimetext = "Specify the certificate lifetime. Maximum value is 13 months.";
     $passwordtext1 = 'Enter a password of at least 12 characters to protect your certificate.';
     $passwordtext2 = 'Re-enter your password to verify.';
 
@@ -283,7 +282,8 @@ function printGetCertificate() {
     if ((strlen($p12multiplier) == 0) || ($p12multiplier == 0)) {
         $p12multiplier = getCookieVar('p12multiplier');
     }
-    $maxlifetime = 9516; // In hours = 13 months
+
+    // Try to read the skin's intiallifetime if not yet set
     if ((strlen($p12lifetime) == 0) || ($p12lifetime <= 0)) {
         // See if the skin specified an initial value
         $skinlife = $skin->getConfigOption('pkcs12','initiallifetime','number');
@@ -303,10 +303,23 @@ function printGetCertificate() {
             $p12lifetime = 13;
         }
     }
-    if (($p12lifetime * $p12multiplier) > $maxlifetime) {
-        $p12lifetime = 13;      // Default to 13 months
-        $p12multiplier = 732;
+    
+    // Make sure lifetime is within [minlifetime,maxlifetime]
+    list($minlifetime,$maxlifetime) = getMinMaxLifetimes('pkcs12',9516);
+    if (($p12lifetime * $p12multiplier) < $minlifetime) {
+        $p12lifetime = $minlifetime;
+        $p12multiplier = 1; // In hours
+    } elseif (($p12lifetime * $p12multiplier) > $maxlifetime) {
+        $p12lifetime = $maxlifetime;
+        $p12multiplier = 1; // In hours
     }
+
+    $lifetimetext = "Specify the certificate lifetime. Acceptable range " .
+                    "is between $minlifetime and $maxlifetime hours" .
+                    (($maxlifetime > 732) ? 
+                        " ( = " . round(($maxlifetime/732),2) . " months)." : 
+                        "."
+                    );
 
     echo '
     <div class="p12actionbox"';
@@ -452,12 +465,11 @@ function printDownloadCertificate() {
     printFormHead(preg_replace('/^\s*=\s*/','',
         $gridshibconf['root']['GridShibCAURL']).'shibCILaunchGSCA.jnlp',true);
         
-    $maxlifetime = preg_replace('/^\s*=\s*/','',
-        $gridshibconf['root']['CA']['MaximumCredLifetime']);
     $certlifetime   = getCookieVar('certlifetime');
     $certmultiplier = getCookieVar('certmultiplier');
+
+    // Try to read the skin's initiallifetime if not yet set
     if ((strlen($certlifetime) == 0) || ($certlifetime <= 0)) {
-        // See if the skin specified an initial value
         $skinlife = $skin->getConfigOption('gsca','initiallifetime','number');
         $skinmult = $skin->getConfigOption('gsca','initiallifetime','multiplier');
         if (($skinlife !== null) && ($skinmult !== null) &&
@@ -471,18 +483,35 @@ function printDownloadCertificate() {
         }
     }
     if ((strlen($certmultiplier) == 0) || ($certmultiplier <= 0)) {
-        $certmultiplier = 3600;
+        $certmultiplier = 3600;   // Default to hours
     }
 
-    $lifetimetext = "Specify the certificate lifetime. Maximum value is " . 
-        round(($maxlifetime/2635200),2) . " months.";
-
+    // Make sure lifetime is within [minlifetime,maxlifetime]
+    $defaultmaxlifetime = preg_replace('/^\s*=\s*/','',
+        $gridshibconf['root']['CA']['MaximumCredLifetime']) / 3600;
+    list($minlifetime,$maxlifetime) =
+        getMinMaxLifetimes('gsca',$defaultmaxlifetime);
+    if (($certlifetime * $certmultiplier / 3600) < $minlifetime) {
+        $certlifetime = $minlifetime;
+        $certmultiplier = 3600; // In hours
+    } elseif (($certlifetime * $certmultiplier / 3600) > $maxlifetime) {
+        $certlifetime = $maxlifetime;
+        $certmultiplier = 3600; // In hours
+    }
+    
+    $lifetimetext = "Specify the certificate lifetime. Acceptable range " .
+                    "is between $minlifetime and $maxlifetime hours" .
+                    (($maxlifetime > 732) ? 
+                        " ( = " . round(($maxlifetime/732),2) . " months)." : 
+                        "."
+                    );
+    
     $maxcleartextlifetime = preg_replace('/^\s*=\s*/','',
-        $gridshibconf['root']['LaunchClient']['MaxCleartextLifetime']);
+        $gridshibconf['root']['LaunchClient']['MaxCleartextLifetime']) / 3600;
     if (($maxcleartextlifetime > 0) && 
         ($maxlifetime >= $maxcleartextlifetime)) {
         $lifetimetext .= " Lifetimes greater than " . 
-            round(($maxcleartextlifetime/86400),2) . 
+            round(($maxcleartextlifetime/24),2) . 
             " days will require you to specify a passphrase.";
     }
 
@@ -508,8 +537,10 @@ function printDownloadCertificate() {
           (($certmultiplier==2635200) ? ' selected="selected"' : '') ,
           '>months</option>
       </select>
+      <input type="hidden" name="minlifetime" id="minlifetime" value="' ,
+      $minlifetime*3600 , '" />
       <input type="hidden" name="maxlifetime" id="maxlifetime" value="' ,
-      $maxlifetime , '" />
+      $maxlifetime*3600 , '" />
       <input type="hidden" name="RequestedLifetime" id="RequestedLifetime" 
       value="' , ($certlifetime * $certmultiplier) , '" />
       </p>
