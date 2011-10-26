@@ -13,7 +13,7 @@ require_once('util.php');
  *              files.  It also sets a PHP session variable so that     *
  *              the skin name is remembered across page loads.          *
  *                                                                      *
- *              Note that this calss uses the SimpleXML class to parse  *
+ *              Note that this class uses the SimpleXML class to parse  *
  *              the config.xml file.  This stores the XML in a special  *
  *              SimpleXMLElement object, which is NOT an array.  But    *
  *              you can iterate over elements in the structure.  See    *
@@ -142,16 +142,19 @@ class skin {
     /********************************************************************
      * Function  : readConfigFile                                       *
      * This function looks for a file 'config.xml' in the skin          *
-     * directory and reads it in, parsing it into the class variable    *
-     * $configxml.  It uses SimpleXML to read in the file which strips  *
-     * off the top-level <config> from the XML file.                    *
+     * directory. If there is no skin specified, then it looks for the  *
+     * "default" config.xml file located at the top of the skin         *
+     * directory. If either file is found, it reads it in and parses it *
+     * into the class variable $configxml. It uses SimpleXML to read in *
+     * the file which strips off the top-level <config> from the XML.   *
      ********************************************************************/
     function readConfigFile() {
         $this->configxml = null;
 
-        if ((strlen($this->skinname) > 0) &&
-            (is_readable($_SERVER{'DOCUMENT_ROOT'} . '/skin/' . 
-                         $this->skinname . '/config.xml'))) {
+        /* Note that if $this->skinname is blank, then we are simply    *
+         * reading the config.xml file at the top-level skin directory. */
+        if (is_readable($_SERVER{'DOCUMENT_ROOT'} . '/skin/' . 
+                     $this->skinname . '/config.xml')) {
             $xml = @simplexml_load_file($_SERVER{'DOCUMENT_ROOT'} . 
                    '/skin/' . $this->skinname . '/config.xml');
             if ($xml !== false) {
