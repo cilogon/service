@@ -173,6 +173,7 @@ function getUserAndRespond($responseurl) {
  ************************************************************************/
 function getPKCS12() {
     getUID(); // Get the user's database user ID, put info in PHP session
+    checkForceSkin(getSessionVar('idp')); // Do we force a skin to be used?
 
     // If 'status' is not STATUS_OK*, then return error message
     if (getSessionVar('status') & 1) { // Bad status codes are odd-numbered
@@ -220,6 +221,8 @@ function getPKCS12() {
  * error code.                                                          *
  ************************************************************************/
 function getCert() {
+    global $skin;
+
     /* Verify that a non-empty certreq <form> variable was posted */
     $certreq = getPostVar('certreq');
     if (strlen($certreq) == 0) {
@@ -228,6 +231,7 @@ function getCert() {
     }
 
     getUID(); // Get the user's database user ID, put info in PHP session
+    checkForceSkin(getSessionVar('idp')); // Do we force a skin to be used?
 
     // If 'status' is not STATUS_OK*, then return error message
     if (getSessionVar('status') & 1) { // Bad status codes are odd-numbered
@@ -244,13 +248,23 @@ function getCert() {
         $port = 7516;
     }
 
-    /* Get the certificate lifetime. Make sure it is valid (1-277) hours */
+    /* Get the certificate lifetime. Set to a default value if not set. */
     $certlifetime = (int)(getPostVar('certlifetime'));
     if ($certlifetime == 0) {  // If not specified, set to default value
-        $certlifetime = MYPROXY_LIFETIME;
+        $defaultlifetime = $skin->getConfigOption('ecp','defaultlifetime');
+        if (($defaultlifetime !== null) && ((int)$defaultlifetime > 0)) {
+            $certlifetime = (int)$defaultlifetime;
+        } else {
+            $certlifetime = MYPROXY_LIFETIME;
+        }
     }
-    if ($certlifetime > 277) { // Maximum of 1000000 seconds
-        $certlifetime = 277;  
+
+    // Make sure lifetime is within acceptable range. 277 hrs = 1000000 secs.
+    list($minlifetime,$maxlifetime) = getMinMaxLifetimes('ecp',277);
+    if ($certlifetime < $minlifetime) {
+        $certlifetime = $minlifetime;
+    } elseif ($certlifetime > $maxlifetime) { 
+        $certlifetime = $maxlifetime;  
     }
 
     /* Hack to use the newest version of myproxy-logon */
