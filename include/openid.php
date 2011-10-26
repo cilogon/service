@@ -2,6 +2,7 @@
 
 if (include_once('DB.php')) {
     include_once('Auth/OpenID/PostgreSQLStore.php');
+    include_once('Auth/OpenID/MySQLStore.php');
 }
 require_once('Auth/OpenID/FileStore.php');
 
@@ -154,6 +155,39 @@ class openid {
      * returned for use by an Auth_OpenID_Consumer.                     *
      ********************************************************************/
     function getPostgreSQLStorage() {
+        return $this->getDBStorage('pgsql');
+    }
+
+    /********************************************************************
+     * Function  : getMySQLStorage                                      *
+     * Returns   : A new Auth_OpenID_MySQLStore object for use by       *
+     *             an Auth_OpenID_Consumer.                             *
+     * This method connects to a MySQL database in order to store the   *
+     * temporary OpenID tokens used by an Auth_OpenID_Consumer.  It     *
+     * reads database parameters from a local database.properties file  *
+     * and tries to open a connection to the MySQL database.  If        *
+     * successful, it creates a new Auth_OpenID_MySQLStore to be        *
+     * returned for use by an Auth_OpenID_Consumer.                     *
+     ********************************************************************/
+    function getMySQLStorage() {
+        return $this->getDBStorage('mysql');
+    }
+
+    /********************************************************************
+     * Function  : getDBStorage                                         *
+     * Parameter : Database type. One of 'pgsql' or 'mysql'.            *
+     * Returns   : A new Auth_OpenID_PostgreSQL or                      *
+     *             Auth_OpenID_MySQLStore object for use by an          *
+     *             Auth_OpenID_Consumer.                                *
+     * This method connects to a database in order to store the         *
+     * temporary OpenID tokens used by an Auth_OpenID_Consumer.  It     *
+     * reads database parameters from a local database.properties file  *
+     * and tries to open a connection to the specified database, either *
+     * PostgreSQL (pgsql) or MySQL (mysql).  If successful, it creates  *
+     * a new Auth_OpenID_PostgreSQL or Auth_OpenID_MySQLStore to be     *
+     * returned for use by an Auth_OpenID_Consumer.                     *
+     ********************************************************************/
+    function getDBStorage($dbtype) {
         $retval = null;
         
         $this->disconnect();  // Close any previous database connection
@@ -161,7 +195,7 @@ class openid {
         $props = parse_ini_file(self::databasePropertiesFile);
         if ($props !== false) {
             $dsn = array(
-                'phptype'  => 'pgsql',
+                'phptype'  => $dbtype,
                 'username' => $props['org.cilogon.database.userName'],
                 'password' => $props['org.cilogon.database.password'],
                 'hostspec' => $props['org.cilogon.database.host'],
@@ -177,7 +211,11 @@ class openid {
         }
 
         if ($this->db != null) {
-            $retval =& new Auth_OpenID_PostgreSQLStore($this->db);
+            if ($dbtype == 'pgsql') {
+                $retval =& new Auth_OpenID_PostgreSQLStore($this->db);
+            } elseif ($dbtype == 'mysql') {
+                $retval =& new Auth_OpenID_MySQLStore($this->db);
+            }
             $retval->createTables();
         }
 
