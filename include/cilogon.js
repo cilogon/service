@@ -114,6 +114,7 @@ function handleLifetime()
 {
   /* Get the various lifetime interface objects */
   var certlifetimefield      = document.getElementById('certlifetime');
+  var minlifetimefield       = document.getElementById('minlifetime');
   var maxlifetimefield       = document.getElementById('maxlifetime');
   var requestedlifetimefield = document.getElementById('RequestedLifetime'); 
   var certmultiplierselect   = document.getElementById('certmultiplier');
@@ -140,7 +141,10 @@ function handleLifetime()
     }
   }
 
-  /* Get the hidden maxlifetime field value */
+  /* Get the hidden minlifetime and maxlifetime field values */
+  if (minlifetimefield !== null) {
+    minlifetimefieldvalue = parseInt(minlifetimefield.value,10);
+  }
   if (maxlifetimefield !== null) {
     maxlifetimefieldvalue = parseInt(maxlifetimefield.value,10);
   }
@@ -152,6 +156,10 @@ function handleLifetime()
   /* Make sure the certlifetime is within bounds, reset text input if needed */
   if (requestedcertlifetime < 0) {
     requestedcertlifetime = 0;
+    needtoreset = true;
+  }
+  if (requestedcertlifetime < minlifetimefieldvalue) {
+    requestedcertlifetime = minlifetimefieldvalue;
     needtoreset = true;
   }
   if (requestedcertlifetime > maxlifetimefieldvalue) {
