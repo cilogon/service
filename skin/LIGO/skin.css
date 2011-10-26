@@ -1,0 +1,76 @@
+/***** Begin basic elements *****/
+body {
+  font-family: arial, tahoma, verdana, helvetica, sans-serif; font-size: .9em;
+  color: #000;
+  background-color: #fff;
+}
+a {
+  color: #369;
+}
+div.footer a,
+div.actionbox a,
+div.p12actionbox a,
+div.certactionbox a,
+div.tokenactionbox a {
+  color: #369;
+  border-bottom: 1px dotted #369;
+  text-decoration: none;
+}
+div.footer a:hover,
+div.actionbox a:hover,
+div.p12actionbox a:hover,
+div.certactionbox a:hover,
+div.tokenactionbox a:hover {
+  color: #369;
+  border-bottom: 1px solid #369;
+  text-decoration: none;
+}
+/***** End basic elements *****/
+
+/***** Begin a few misc elements *****/
+input.submit {
+  color: #fff;
+  background-color: #369;
+}
+/***** End a few misc element *****/
+
+/***** Begin page footer *****/
+div.footer a:link {
+  color: #369;
+}
+div.footer a:visited {
+  color: #369;
+}
+/***** End page footer *****/
+
+/***** Begin the "CILogon Service" header at the top of each page *****/
+div.logoheader {
+  background: none;
+  height: 64px;
+  margin-bottom: 8px;
+}
+div.logoheader h1 {
+  background: transparent url("/skin/LIGO/logo.png") no-repeat top left;
+  margin-top: 0px;
+  margin-left: 0px;
+  width: 86;
+  height: 64;
+  float: left;
+}
+/***** End the "CILogon Service" header at the top of each page *****/
+
+/***** Begin skincilogonlogo *****/
+div.skincilogonlogo {
+  display: inline;
+}
+/***** End skincilogonlogo *****/
+
+/***** Begin Help-related stuff *****/
+table.helptable td.helpcell div {
+  background-color: #e6eaed;
+  margin-right: 1em;
+}
+tr.inforow td.helpcell {
+  background-color: #e6eaed;
+}
+/***** End Help-related stuff *****/
