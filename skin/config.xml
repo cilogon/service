@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This is the "default" configuration file for the CILogon site. Ideally,
+     this file should be blank since the default behavior is coded into the
+     site itself. However, if there is ever a need to customize the default
+     site, this file can be used. For example, if we ever want to show 10
+     IdPs to all users (that don't otherwise use the "?skin=..." parameter),
+     we could set the <idplistsize> option in this file rather than tweak
+     the PHP code.
+
+     Note that there is not a corresponding skin.css file here. That is
+     because all CSS for the "default" CILogon site should be placed in the
+     ../include/cilogon.css file.
+-->
+<config>
+
+</config>
