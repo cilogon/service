@@ -275,15 +275,7 @@ function printWAYF()
       <form action="' , getScriptDir() , '" method="post">
       <fieldset>
 
-      <p>
-      Select An Identity Provider:<a target="_blank" 
-          style="text-decoration:none"
-          href="http://www.cilogon.org/selectidp">';
-
-      printIcon('info','Help Me Choose','helpchoose');
-
-      echo '</a>
-      </p>
+      <p>Select An Identity Provider:</p>
       ';
 
       // See if the skin has set a size for the IdP <select> list
@@ -564,6 +556,9 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser')
             $providerId = getCookieVar('providerId');
         }
     }
+    
+    // Check if this IdP requires the use of a particular 'skin'
+    checkForceSkin($providerId);
 
     // If the user has a valid 'uid' in the PHP session, and the
     // providerId matches the 'idp' in the PHP session, then 
@@ -616,11 +611,11 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser')
  * a valid session.  If so, we don't need to redirect and instead       *
  * simply show the Get Certificate page.  Otherwise, we start an OpenID *
  * logon by using the PHP / OpenID library.  First, connect to the      *
- * PostgreSQL database to store temporary tokens used by OpenID upon    *
- * successful authentication.  Next, create a new OpenID consumer and   *
- * attempt to redirect to the appropriate OpenID provider.  Upon any    *
- * error, set the 'openiderror' PHP session variable and redisplay the  *
- * main logon screen.                                                   *
+ * database to store temporary tokens used by OpenID upon successful    *
+ * authentication.  Next, create a new OpenID consumer and attempt to   *
+ * redirect to the appropriate OpenID provider.  Upon any error, set    *
+ * the 'openiderror' PHP session variable and redisplay the main logon  *
+ * screen.                                                              *
  ************************************************************************/
 function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') 
 {
@@ -1197,7 +1192,7 @@ function generateP12() {
     global $log;
 
     /* Get the entered p12lifetime and p12multiplier and set the cookies. */
-    $maxlifetime = 9516; // In hours = 13 months
+    list($minlifetime,$maxlifetime) = getMinMaxLifetimes('pkcs12',9516);
     $p12lifetime   = getPostVar('p12lifetime');
     $p12multiplier = getPostVar('p12multiplier');
     if (strlen($p12multiplier) == 0) {
@@ -1206,18 +1201,16 @@ function generateP12() {
     $lifetime = $p12lifetime * $p12multiplier;
     if ($lifetime <= 0) { // In case user entered negative number
         $lifetime = $maxlifetime;
-        $p12lifetime = 13;
-        $p12multiplier = 732;
-    } elseif ($lifetime > $maxlifetime) { // Set max value based on multiplier
+        $p12lifetime = $maxlifetime;
+        $p12multiplier = 1;  // maxlifetime is in hours
+    } elseif ($lifetime < $minlifetime) {
+        $lifetime = $minlifetime;
+        $p12lifetime = $minlifetime;
+        $p12multiplier = 1;  // minlifetime is in hours
+    } elseif ($lifetime > $maxlifetime) {
         $lifetime = $maxlifetime;
-        if ($p12multiplier == 1) {
-            $p12lifetime = 9516;  // 13 months in hours
-        } elseif ($p12multiplier == 24) {
-            $p12lifetime = 396.5; // 13 months in days
-        } else { 
-            $p12lifetime = 13;    // 13 months (in months)
-            $p12multiplier = 732;
-        }
+        $p12lifetime = $maxlifetime;
+        $p12multiplier = 1;  // maxlifetime is in hours
     }
     setcookie('p12lifetime',$p12lifetime,time()+60*60*24*365,'/','',true);
     setcookie('p12multiplier',$p12multiplier,time()+60*60*24*365,'/','',true);
@@ -1388,6 +1381,64 @@ function reformatDN($dn) {
         }
     }
     return $newdn;
+}
+
+/************************************************************************
+ * Function   : checkForceSkin                                          *
+ * Parameter  : The entityId of the user-selected IdP.                  *
+ * Side Effect: Sets the "cilogon_skin" session variable if needed.     *
+ * This function checks the forceskin.txt file to see if the passed-in  *
+ * entityId requires the use of a particular skin. This file has lines  *
+ * consisting of "entityId skinname" pairs. An entry in this file means *
+ * that when a user selects that IdP, he is forced to use the           *
+ * specified skin. This is accomplished by setting the cilogon_skin     *
+ * session variable.                                                    *
+ ************************************************************************/
+function checkForceSkin($entityId) {
+    global $skin;
+
+    $forceskinfile = '/var/www/html/include/forceskin.txt';
+    $idps = readArrayFromFile($forceskinfile);
+    if (array_key_exists($entityId,$idps)) {
+        setSessionVar('cilogon_skin',$idps[$entityId]);
+        $skin->__construct(); // Need to reinitialize the skinname
+    }
+}
+
+/************************************************************************
+ * Function   : getMinMaxLifetimes                                      *
+ * Parameters : (1) The XML section block from which to read the        *
+ *                  minlifetime and maxlifetime values. Can be one of   *
+ *                  the following: 'pkcs12', 'gsca', or 'delegate'.     *
+ *              (2) Default maxlifetime (in hours) for the credential.  *
+ * Returns    : An array consisting of two entries: the minimum and     *
+ *              maximum lifetimes (in hours) for a credential.          *
+ * This function checks the skin's configuration to see if either or    *
+ * both of minlifetime and maxlifetime in the specified config.xml      *
+ * block have been set. If not, default to minlifetime of 1 (hour) and  *
+ * the specified defaultmaxlifetime.                                    *
+ ************************************************************************/
+function getMinMaxLifetimes($section,$defaultmaxlifetime) {
+    global $skin;
+
+    $minlifetime = 1;    // Default minimum lifetime is 1 hour
+    $maxlifetime = $defaultmaxlifetime;
+    $skinminlifetime = $skin->getConfigOption($section,'minlifetime');
+    // Read the skin's minlifetime value from the specified section
+    if (($skinminlifetime !== null) && ((int)$skinminlifetime > 0)) {
+        $minlifetime = max($minlifetime,(int)$skinminlifetime);
+        // Make sure $minlifetime is less than $maxlifetime;
+        $minlifetime = min($minlifetime,$maxlifetime);
+    }
+    // Read the skin's maxlifetime value from the specified section
+    $skinmaxlifetime = $skin->getConfigOption($section,'maxlifetime');
+    if (($skinmaxlifetime !== null) && ((int)$skinmaxlifetime) > 0) {
+        $maxlifetime = min($maxlifetime,(int)$skinmaxlifetime);
+        // Make sure $maxlifetime is greater than $minlifetime
+        $maxlifetime = max($minlifetime,$maxlifetime);
+    }
+
+    return array($minlifetime,$maxlifetime);
 }
 
 ?>
