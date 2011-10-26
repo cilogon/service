@@ -434,9 +434,6 @@ div.skincilogonlogo {
 .helpcursor {
   cursor: help;
 }
-.helpchoose {
-  display: none;
-}
 input.helpbutton {
   font-weight: bold;
   font-size: x-small;
