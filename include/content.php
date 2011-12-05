@@ -245,15 +245,21 @@ function printWAYF()
         }
     }
 
-    /* Check if the user had previously selected an IdP from the list */
+    /* Check if the user had previously selected an IdP from the list. */
     $keepidp     = getCookieVar('keepidp');
     $providerId  = getCookieVar('providerId');
-    if (strlen($providerId) == 0) { // No previous providerId? 
-        // Check if skin config.xml has an initial IdP
+
+    /* Make sure previously selected IdP is in list of available IdPs. */
+    if ((strlen($providerId) > 0) && (!isset($idps[$providerId]))) {
+        $providerId = '';
+    }
+
+    /* If no previous providerId, get from skin, or default to Google. */
+    if (strlen($providerId) == 0) {
         $initialidp = (string)$skin->getConfigOption('initialidp');
         if (($initialidp !== null) && (isset($idps[$initialidp]))) {
             $providerId = $initialidp;
-        } else { // Otherwise, default to Google
+        } else {
             $providerId = openid::getProviderUrl('Google');
         }
     }
@@ -1244,6 +1250,10 @@ function generateP12() {
         $port = 7514;
     } elseif ($loa == 'openid') {
         $port = 7516;
+    }
+    /* Special hack for OSG - use SHA-1 version of MyProxy servers */
+    if (strcasecmp(getSessionVar('cilogon_skin'),'OSG') == 0) {
+        $port--;
     }
 
     $dn = getSessionVar('dn');
