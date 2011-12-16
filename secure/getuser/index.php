@@ -25,7 +25,7 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
     if (strlen($responseurl) > 0) {
         $location = $responseurl;
     }
-    header('Location: ' . $responseurl);
+    header('Location: ' . $location);
 }
 
 /************************************************************************
