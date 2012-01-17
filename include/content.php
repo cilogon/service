@@ -12,7 +12,7 @@ $log = new loggit();
 /* notification box at the top of each page.                            */
 /*
 define('BANNER_TEXT','The CILogon Service may be unavailable for short periods
-    on Sunday November 21 between 5am and 8am Central Time
+    on Thursday December 22 between 5am and 8am Central Time
     due to University of Illinois network maintenance.');
 */
 

@@ -1,17 +1,24 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<?php
 
-  <head>
-  <title>CILogon Service Undergoing Maintenance</title> 
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  </head>
+require_once('include/util.php');
+require_once('include/autoloader.php');
+require_once('include/content.php');
 
-  <body>
-  <h1>The CILogon Service is currently undergoing maintenance.</h1>
-  <h1>Please try again in 15 minutes.</h1>
-  <h1>Visit <a href="http://www.cilogon.org/">www.cilogon.org</a> for more
-      information.</h1>
-  </body>
+printHeader('Site Maintenance');
 
-</html>
+echo '
+<div class="boxed">
+<br class="clear"/>
+  <p class="centered">
+  The CILogon Service is currently undergoing maintenance.
+  Please try again in a minute.
+  <br class="clear"/>
+  Visit <a
+  href="http://www.cilogon.org/service/outages">www.cilogon.org/service/outages</a> for more
+  information.
+  </p>
+</div> <!-- boxed -->
+';
+printFooter();
+
+?>
