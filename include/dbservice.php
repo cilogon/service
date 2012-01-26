@@ -54,13 +54,13 @@ require_once("util.php");
  *         echo "$value\n";                                             *
  *     }                                                                *
  *                                                                      *
- *     $idparray = array('urn:mace:incommon:ucsd.edu',                  *
- *                       'urn:mace:incommon:uiuc.edu');                 *
- *     $dbservice->setIdpsFromValues($idparray);                        *
+ *     $idps = array('urn:mace:incommon:ucsd.edu',                      *
+ *                   'urn:mace:incommon:uiuc.edu');                     *
+ *     $dbservice->setIdpsFromValues($idps);                            *
  *     //   --- OR ---                                                  *
- *     $idparray = array('urn:mace:incommon:ucsd.edu' => 1,             *
- *                       'urn:mace:incommon:uiuc.edu' => 1);            *
- *     $dbservice->setIdpsFromKeys($idparray);                          *
+ *     $idps = array('urn:mace:incommon:ucsd.edu' => 1,                 *
+ *                   'urn:mace:incommon:uiuc.edu' => 1);                *
+ *     $dbservice->setIdpsFromKeys($idps);                              *
  ************************************************************************/
 
 class dbservice {

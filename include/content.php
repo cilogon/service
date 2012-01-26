@@ -12,7 +12,7 @@ $log = new loggit();
 /* notification box at the top of each page.                            */
 /*
 define('BANNER_TEXT','The CILogon Service may be unavailable for short periods
-    on Thursday December 22 between 5am and 8am Central Time
+    on Sunday November 21 between 5am and 8am Central Time
     due to University of Illinois network maintenance.');
 */
 
@@ -207,16 +207,9 @@ function printWAYF()
     $helptext = "Check this box to bypass the welcome page on subsequent visits and proceed directly to the selected identity provider. You will need to clear your browser's cookies to return here."; 
     $searchtext = "Enter characters to search for in the list above.";
 
-    /* Try to read in a file containing a list of IdPs mapped to their */
-    /* display names.  If the file is empty, read in the list of       */
-    /* whitelisted IdPs (from file) and write out the mapping file.    */
-    $idps = readArrayFromFile($whiteidpsfile);
-    if (count($idps) == 0) {
-        $incommon    = new incommon();
-        $whitelist   = new whitelist();
-        $idps        = $incommon->getOnlyWhitelist($whitelist);
-        writeArrayToFile($whiteidpsfile,$idps);
-    }
+    /* Get an array of whitelisted IdPs */
+    $idplist = new idplist();
+    $idps    = $idplist->getWhitelistedIdPs();
 
     /* Add the list of OpenID providers into the $idps array so as to  */
     /* have a single selection list.  Keys are the IdP identifiers,    */
@@ -326,6 +319,17 @@ function printWAYF()
     </p>
 
     <p>';
+
+    // Added for Silver IdPs
+    $requestsilver = $skin->getConfigOption('requestsilver');
+    if (($requestsilver !== null) && ((int)$requestsilver == 1)) {
+        echo '
+        <label for="silveridp">Request Silver:</label>
+        <input type="checkbox" name="silveridp" id="silveridp"/>
+        </p>
+        
+        <p>';
+    }
 
     echo $csrf->hiddenFormElement();
 
@@ -586,8 +590,7 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser')
         if (strlen($providerId) > 0) {
             $redirect .= '&providerId=' . urlencode($providerId);
             // For Silver IdPs, send extra parameter
-            $silveridps = new whitelist('/var/www/html/include/silveridps.txt');
-            if ($silveridps->exists($providerId)) {
+            if (strlen(getPostVar('silveridp')) > 0) {
                 $redirect .= '&authnContextClassRef=' . 
                     urlencode('http://id.incommon.org/assurance/silver-test');
             }

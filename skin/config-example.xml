@@ -279,4 +279,14 @@
   <dnformat>rfc2253</dnformat>
   -->
 
+  <!-- <requestsilver>
+       If set to 1, a "Request Silver" checkbox will be shown on the 
+       IdP selector page. When the checkbox is checked, a silver assertion
+       will be requested from the selected IdP. This option should be set
+       only on test.cilogon.org. 
+  -->
+  <!--
+  <requestsilver>1</requestsilver>
+  -->
+
 </config>

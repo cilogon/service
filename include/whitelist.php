@@ -70,7 +70,7 @@ class whitelist {
      * called.                                                          *
      ********************************************************************/
     function read() {
-        return $this->readFromFile();
+        return $this->readFromStore();
     }
 
     /********************************************************************
@@ -141,8 +141,11 @@ class whitelist {
     function writeToFile() {
          $retval = false; // Assume write failed
          if ($fh = fopen($this->getFilename(),'w')) {
-             foreach ($this->whitearray as $key => $value) {
-                 fwrite($fh,"$key\n");
+             if (flock($fh,LOCK_EX)) {
+                 foreach ($this->whitearray as $key => $value) {
+                     fwrite($fh,"$key\n");
+                 }
+                 flock($fh,LOCK_UN);
              }
              fclose($fh);
              $retval = true;

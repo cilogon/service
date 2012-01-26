@@ -135,6 +135,23 @@ function setSessionVar($key,$value='')
 }
 
 /************************************************************************
+ * Function   : removeShibCookies                                       *
+ * This function removes all "_shib*" cookies currently in the user's   *
+ * browser session. In effect, this logs the user out of any IdP.       *
+ * Note that you must call this before you output any HTML. Strictly    *
+ * speaking, the cookies are not removed, rather they are set to empty  *
+ * values with expired times.                                           *
+ ************************************************************************/
+function removeShibCookies() 
+{
+    while (list ($key,$val) = each ($_COOKIE)) {
+        if (strncmp($key,"_shib", strlen("_shib")) == 0) {
+            setcookie($key,'',time()-3600,'/','',true);
+        }
+    }
+}
+
+/************************************************************************
  * Function  : startPHPSession                                          *
  * This function starts a secure PHP session and should be called at    *
  * at the beginning of each script before any HTML is output.  It does  *
@@ -230,8 +247,11 @@ function readArrayFromFile($filename) {
 function writeArrayToFile($filename,$thearray) {
     $retval = false;  // Assume write failed
     if ($fh = fopen($filename,'w')) {
-        foreach ($thearray as $key => $value) {
-            fwrite($fh,"$key $value\n");
+        if (flock($fh,LOCK_EX)) {
+            foreach ($thearray as $key => $value) {
+                fwrite($fh,"$key $value\n");
+            }
+            flock($fh,LOCK_UN);
         }
         fclose($fh);
         $retval = true;

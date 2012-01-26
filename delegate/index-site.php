@@ -3,14 +3,13 @@
 require_once('../include/util.php');
 require_once('../include/autoloader.php');
 require_once('../include/content.php');
-require_once('../include/shib.php');
 require_once('Auth/OpenID/Consumer.php');
 
 /* The full URL of the 'delegation/authorized' OAuth script. */
 define('AUTHORIZED_URL','http://localhost:8080/delegation/authorized');
 
 /* Read in the whitelist of currently available IdPs. */
-$white = new whitelist();
+$idplist = new idplist();
 
 /* Loggit object for logging info to syslog. */
 $log = new loggit();
@@ -46,7 +45,7 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
                 setcookie('providerId',$providerIdPost,
                           time()+60*60*24*365,'/','',true);
                 redirectToGetOpenIDUser($providerIdPost);
-            } elseif ($white->exists($providerIdPost)) { // Use InCommon authn
+            } elseif ($idplist->exists($providerIdPost)) { // Use InCommon authn
                 setcookie('providerId',$providerIdPost,
                           time()+60*60*24*365,'/','',true);
                 redirectToGetUser($providerIdPost);
@@ -116,7 +115,7 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
                 (strlen(getCookieVar('keepidp')) > 0)) {
                 if (openid::urlExists($providerIdCookie)) { // Use OpenID authn
                     redirectToGetOpenIDUser($providerIdCookie);
-                } elseif ($white->exists($providerIdCookie)) { // Use InCommon
+                } elseif ($idplist->exists($providerIdCookie)) { // Use InCommon
                     redirectToGetUser($providerIdCookie);
                 } else { // $providerIdCookie not in whitelist
                     setcookie('providerId','',time()-3600,'/','',true);

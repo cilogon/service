@@ -69,9 +69,8 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
 
     $goterror = false;  /* Did we find any errors in the form? */
 
-    $incommon = new incommon();
-    $whitelist = new whitelist();
-    $idps = $incommon->getNoWhitelist($whitelist);
+    $idplist = new idplist();
+    $idps = $idplist->getNonWhitelistedIdPs();
 
     printHeader('Request Home Organization');
     printPageHeader('Request A New Organization');

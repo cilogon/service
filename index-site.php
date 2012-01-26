@@ -3,10 +3,11 @@
 require_once('include/util.php');
 require_once('include/autoloader.php');
 require_once('include/content.php');
-require_once('include/shib.php');
+
+// $timeit->printTime("MAIN Program START...");
 
 /* Read in the whitelist of currently available IdPs. */
-$white = new whitelist();
+$idplist = new idplist();
 
 /* Loggit object for logging info to syslog. */
 $log = new loggit();
@@ -37,7 +38,7 @@ switch ($submit) {
             setcookie('providerId',$providerIdPost,
                       time()+60*60*24*365,'/','',true);
             redirectToGetOpenIDUser($providerIdPost);
-        } elseif ($white->exists($providerIdPost)) { // Use InCommon authn
+        } elseif ($idplist->exists($providerIdPost)) { // Use InCommon authn
             setcookie('providerId',$providerIdPost,
                       time()+60*60*24*365,'/','',true);
             redirectToGetUser($providerIdPost);
@@ -119,7 +120,7 @@ switch ($submit) {
             (strlen(getCookieVar('keepidp')) > 0)) {
             if (openid::urlExists($providerIdCookie)) { // Use OpenID authn
                 redirectToGetOpenIDUser($providerIdCookie);
-            } elseif ($white->exists($providerIdCookie)) { // Use InCommon authn
+            } elseif ($idplist->exists($providerIdCookie)) { // Use InCommon
                 redirectToGetUser($providerIdCookie);
             } else { // $providerIdCookie not in whitelist
                 setcookie('providerId','',time()-3600,'/','',true);
@@ -890,5 +891,7 @@ function validateActivationCode() {
         unsetSessionVar('activation');
     }
 }
+
+// $timeit->printTime("MAIN Program END...  ");
 
 ?>

@@ -3,7 +3,6 @@
 require_once('../../include/util.php');
 require_once('../../include/autoloader.php');
 require_once('../../include/content.php');
-require_once('../../include/shib.php');
 require_once('../../include/myproxy.php');
 
 /* Check the csrf cookie against either a hidden <form> element or a *
@@ -37,13 +36,14 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
  * database (via the dbservice) to get the userid assoicated with       *
  * those attributes.  It sets several PHP session variables such as the *
  * status code returned by the dbservice, the uid (if found), the       *
- * username to be passed to MyProxy ('dn'), etc.  If there is some sort *
+ * username to be passed to MyProxy ('dn'), etc.  If there is some kind *
  * of error with the database call, an email is sent showing which      *
  * SAML attributes were missing.                                        *
  ************************************************************************/
 function getUID() {
     $dbs = new dbservice();
-    $shibarray = getShibInfo();
+    $idplist = new idplist();
+    $shibarray = $idplist->getShibInfo();
 
     /* If either firstname or lastname is empty but displayName *
      * is okay, extract first/last name from the displayName.   */
@@ -304,7 +304,7 @@ function getCert() {
  *              return body.                                            *
  * This function sets the HTTP return type to 'text/plain' and also     *
  * sets the HTTP return code to 400, meaning there was an error of      *
- * some sort.  If there is also a passed in errstr, that is output as   *
+ * some kind.  If there is also a passed in errstr, that is output as   *
  * the body of the HTTP return.                                         *
  ************************************************************************/
 function outputError($errstr='') {

@@ -3,7 +3,6 @@
 require_once('../../include/util.php');
 require_once('../../include/autoloader.php');
 require_once('../../include/content.php');
-require_once('../../include/shib.php');
 
 define('ADD_SUBMIT_TEXT','Add Your IdP to the CILogon Service');
 
@@ -13,25 +12,22 @@ $submit = csrf::verifyCookieAndGetSubmit();
 
 /* Get the full list of InCommon IdPs and the whitelist of *
  * IdPs available to the CILogon Service.                  */
-$incommon = new incommon();
-$whitelist = new whitelist();
+$idplist = new idplist();
 
 /* Get the Shibboleth information for the current session. */
-$shibarray = getShibInfo();
+$shibarray = $idplist->getShibInfo();
 
 /* If the CSRF cookie was good and the user clicked a "Submit" *
  * button then do the appropriate action before displaying     *
  * the main Shibboleth Attributes Test Page.                   */
 if ($submit == ADD_SUBMIT_TEXT) {
     /* Add the current IdP entityID to the WAYF whitelist and reload */
+    $whitelist = new whitelist();
     $entityID = $shibarray['Identity Provider'];
-    if (($incommon->exists($entityID)) &&
-        ($whitelist->add($entityID))) {
+    if (($idplist->exists($entityID)) && ($whitelist->add($entityID))) {
         $whitelist->write();  // Save new entityID to database
-        // Also write whitelist out to file, and update whiteidps.txt file
-        $whitelist->writeToFile();
-        $idps = $incommon->getOnlyWhitelist($whitelist);
-        writeArrayToFile('/var/www/html/include/whiteidps.txt',$idps);
+        $idplist->create();   // Update the list of IdPs
+        $idplist->write();    // Save new IdP list to file
         sendNotificationEmail();
     }
 }
@@ -49,8 +45,7 @@ printTestPage();
  ************************************************************************/
 function printTestPage()
 {
-    global $incommon;
-    global $whitelist;
+    global $idplist;
     global $shibarray;
     global $csrf;
 
@@ -105,8 +100,8 @@ function printTestPage()
         see the sections below.
         </p>
         ';
-        if ((!$whitelist->exists($shibarray['Identity Provider'])) &&
-            ($incommon->exists($shibarray['Identity Provider']))) {
+        if ((!$idplist->exists($shibarray['Identity Provider'])) &&
+            ($idplist->exists($shibarray['Identity Provider']))) {
             echo '
             <p class="addsubmit">
             <form action="' , getScriptDir() , '" method="post">
@@ -357,7 +352,6 @@ function printTestPage()
  ************************************************************************/
 function sendNotificationEmail() 
 {
-    global $incommon;
     global $shibarray;
 
     $entityID = $shibarray['Identity Provider'];
