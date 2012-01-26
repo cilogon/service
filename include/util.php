@@ -353,9 +353,8 @@ function deleteDir($dir,$shred=false) {
  * description of the error in the $detail parameter.  Any session      *
  * variables available are appended to the body of the message.         *
 /************************************************************************/
-function sendErrorAlert($summary,$detail)
+function sendErrorAlert($summary,$detail,$mailto='alerts@cilogon.org')
 {
-    $mailto   = 'alerts@cilogon.org';
     $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
     $mailsubj = 'CILogon Service on ' . HOSTNAME . ' - ' . $summary;
