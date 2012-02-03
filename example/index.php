@@ -124,7 +124,7 @@ background-color:#aca; cursor:help;" /&gt;
   </tr>
 </table>
 
-<hr style="width:70%";
+<hr style="width:70%"/>
 
 <h2>Image Button</h2>
 
@@ -162,7 +162,7 @@ style="cursor:help;" /&gt;
   </tr>
 </table>
 
-<hr style="width:70%";
+<hr style="width:70%"/>
 
 <h2>Basic Hyperlink</h2>
 
@@ -198,7 +198,7 @@ alt=""&gt;Get Certificate&lt;/a&gt;</textarea>
   </tr>
 </table>
 
-<hr style="width:70%";
+<hr style="width:70%"/>
 
 <h2>Hyperlink In A &lt;div&gt;</h2>
 
