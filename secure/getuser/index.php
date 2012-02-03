@@ -101,7 +101,7 @@ function getUID() {
         sendErrorAlert('Failure in /secure/getuser/',
             'Remote_User   = ' . 
                 ((strlen($i = $shibarray['User Identifier']) > 0) ?
-                    $i :' <MISSING>')."\n".
+                    $i :'<MISSING>')."\n".
             'IdP           = ' .
                 ((strlen($i = $shibarray['Identity Provider']) > 0) ?
                     $i : '<MISSING>')."\n".
