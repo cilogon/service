@@ -523,7 +523,7 @@ if ($response->is_success) {
         print "Succeeded!\n";
         print "##### BEGIN SP RESPONSE #####\n";
         print "$xmlstr \n";
-        print "##### END SP RESPONSE #####\n\n";
+        print "##### END SP RESPONSE #####\n";
     }
 } else {
     if ($verbose) {
@@ -566,7 +566,7 @@ if (!($xmlstr =~ s#<S:Header>.*</S:Header>##i)) {
 $headers = HTTP::Headers->new();
 $headers->authorization_basic($idpuser,$idppass);
 $ua->default_headers($headers);
-print "Logging in to IdP '$idpurl'... " if ($verbose);
+print "Logging in to IdP '$idpurl' with \n$xmlstr\n... " if ($verbose);
 $response = $ua->post($idpurl,Content=>$xmlstr);
 if ($response->is_success) {
     $idpresp = $response->decoded_content;
@@ -618,7 +618,7 @@ if (!($idpresp =~ s#(<soap11:Header>).*(</soap11:Header>)#$1$relaystate$2#i)) {
     exit 1;
 }
 
-print "Contacting '$assertionConsumerServiceURL'..." if ($verbose);
+print "Contacting '$assertionConsumerServiceURL' with \n$idpresp\n..." if ($verbose);
 $response = $ua->post($assertionConsumerServiceURL,
     Content_Type => 'application/vnd.paos+xml',
     Content => $idpresp
