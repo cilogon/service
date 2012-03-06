@@ -66,7 +66,7 @@ require_once("util.php");
 class dbservice {
 
     /* Define the URL for the dbService */
-    const DBSERVICE_URL = 'http://localhost:8080/delegation/dbService';
+    const defaultDBServiceURL = 'http://localhost:8080/delegation/dbService';
 
     /* The various STATUS_* constants, originally from Store.pm. The    *
      * The keys of the array are strings corresponding to the contant   *
@@ -116,14 +116,38 @@ class dbservice {
     public $cilogon_portal_name;
     public $idp_uids;  /* IdPs stored in the "values" of the array */
 
+    private $dbserviceurl;
+
     /********************************************************************
      * Function  : __construct - default constructor                    *
+     * Parameter : (Optional) The URL of the database service servlet.  *
      * Returns   : A new dbservice object.                              *
      * Default constructor.  All of the various class members are       *
      * initialized to 'null' or empty arrays.                           *
      ********************************************************************/
-    function __construct() {
+    function __construct($serviceurl=self::defaultDBServiceURL) {
         $this->clear();
+        $this->setDBServiceURL($serviceurl);
+    }
+
+    /********************************************************************
+     * Function  : getDBServiceURL                                      *
+     * Returns   : The URL of the database service servlet.             *
+     * Returns the full URL of the database servlet used by the call()  *
+     * function.                                                        *
+     ********************************************************************/
+    function getDBServiceURL() {
+        return $this->dbserviceurl;
+    }
+
+    /********************************************************************
+     * Function  : setDBServiceURL                                      *
+     * Parameter : The URL of the database service servlet.             *
+     * Set the private variable $dbserviceurl to the full URL of the    *
+     * database servlet, which is used by the call() function.          *
+     ********************************************************************/
+    function setDBServiceURL($serviceurl) {
+        $this->dbserviceurl = $serviceurl;
     }
 
     /********************************************************************
@@ -355,7 +379,7 @@ class dbservice {
 
         $ch = curl_init();
         if ($ch !== false) {
-            $url = self::DBSERVICE_URL . '?' . $params;
+            $url = $this->getDBServiceURL() . '?' . $params;
             curl_setopt($ch,CURLOPT_URL,$url);
             curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
             curl_setopt($ch,CURLOPT_TIMEOUT,30);
