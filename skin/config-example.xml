@@ -57,10 +57,10 @@
   -->
   <!--
   <idpblacklist>
-    <idp>http://google.com/accounts/o8/id</idp>
-    <idp>http://openid.paypal-ids.com</idp>
-    <idp>http://pip.verisignlabs.com</idp>
-    <idp>http://yahoo.com</idp>
+    <idp>https://www.google.com/accounts/o8/id</idp>
+    <idp>https://openid.paypal-ids.com</idp>
+    <idp>https://pip.verisignlabs.com</idp>
+    <idp>https://yahoo.com</idp>
   </idpblacklist>
   -->
 
