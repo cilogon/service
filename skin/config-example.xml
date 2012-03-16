@@ -77,6 +77,18 @@
   -->
 
 
+  <!-- <poweredbyimg>
+       This is the web-relative path to the "Powered By CILogon" image which
+       appears in the upper-right corner when configured to appear by the
+       skin's CSS (i.e., div.skincilogonlogo{display:inline;}). If not
+       specified, the default value is "/images/poweredbycilogon.png"
+       (without the quotes).
+  -->
+  <!--
+  <poweredbyimg>/images/poweredbycilogon.png</poweredbyimg>
+  -->
+
+
   <!-- <pkcs12>
        This block contains options specific to the "Get New Certificate" box
        (i.e. download a PKCS12 credential). 

@@ -52,7 +52,7 @@ input.submit:active, input.submit:hover {
 /***** Begin the "CILogon Service" header at the top of each page *****/
 div.logoheader {
   background: #3270AF;
-  height: 66px;
+  height: 34px;
 }
 div.logoheader h1 {
   background: transparent url("/skin/globusonline/globusonline.png") no-repeat top left;
@@ -162,8 +162,8 @@ div.userchanged table tr.odd td {
 
 /***** Begin skincilogonlogo *****/
 div.skincilogonlogo {
-  margin: 1px;
   display: inline;
+  margin: 1px;
 }
 /***** End skincilogonlogo *****/
 

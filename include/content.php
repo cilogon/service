@@ -41,9 +41,19 @@ function printHeader($title='',$extra='')
 {
     global $csrf;       // Initialized above
     global $skin;
+
     $csrf->setTheCookie();
     // Set the CSRF cookie used by GridShib-CA
     setcookie('CSRFProtection',$csrf->getTokenValue(),0,'/','',true);
+
+    // Find the "Powered By CILogon" image if specified by the skin
+    $poweredbyimg = "/images/poweredbycilogon.png";
+    $skinpoweredbyimg = (string)$skin->getConfigOption('poweredbyimg');
+    if (($skinpoweredbyimg !== null) && 
+        (strlen($skinpoweredbyimg) > 0) &&
+        (is_readable($_SERVER{'DOCUMENT_ROOT'} . $skinpoweredbyimg))) {
+        $poweredbyimg = $skinpoweredbyimg;
+    }
 
     echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -79,7 +89,7 @@ function printHeader($title='',$extra='')
 
     <div class="skincilogonlogo">
     <a target="_blank" href="http://www.cilogon.org/faq/"><img
-    src="/images/poweredbycilogon.png" alt="CILogon" 
+    src="' , $poweredbyimg , '" alt="CILogon" 
     title="CILogon Service" /></a>
     </div>
 
@@ -323,6 +333,7 @@ function printWAYF()
     // Added for Silver IdPs
     $requestsilver = $skin->getConfigOption('requestsilver');
     if (($requestsilver !== null) && ((int)$requestsilver == 1)) {
+        setSessionVar('requestsilver','1');
         echo '
         <label for="silveridp">Request Silver:</label>
         <input type="checkbox" name="silveridp" id="silveridp"/>
@@ -554,7 +565,8 @@ function verifyCurrentSession($providerId='')
  * including the 'responsesubmit' variable which is set as the return   *
  * 'submit' variable in the 'getuser' script.                           *
  ************************************************************************/
-function redirectToGetUser($providerId='',$responsesubmit='gotuser')
+function redirectToGetUser($providerId='',$responsesubmit='gotuser',
+                           $responseurl=null)
 {
     global $csrf;
     global $log;
@@ -577,7 +589,8 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser')
         printMainPage();
     } else { // Otherwise, redirect to the getuser script
         // Set PHP session varilables needed by the getuser script
-        setSessionVar('responseurl',getScriptDir(true));
+        setSessionVar('responseurl',
+            (is_null($responseurl)?getScriptDir(true):$responseurl));
         setSessionVar('submit','getuser');
         setSessionVar('responsesubmit',$responsesubmit);
         $csrf->setTheCookie();
