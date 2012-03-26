@@ -356,6 +356,14 @@ class skin {
             $infostr .= (strlen($infostr) > 0 ? ',' : '') .  
                         "remote_addr=$remoteaddr";
         }
+
+        // Add ePPN, ePTID, and openidID if available
+        foreach (array('ePPN','ePTID','openidID') as $id) {
+            $sessvar = getSessionVar($id);
+            if (strlen($sessvar) > 0) {
+                $infostr .= (strlen($infostr) > 0 ? ',' : '') . "$id=$sessvar";
+            }
+        }
          
         // Finally, set the "myproxyinfo" PHP session variable
         if (strlen($infostr) > 0) {
