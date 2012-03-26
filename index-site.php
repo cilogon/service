@@ -6,6 +6,9 @@ require_once('include/content.php');
 
 // $timeit->printTime("MAIN Program START...");
 
+// Check for a Shibboleth error and handle it
+$shiberror = new shiberror();
+
 /* Read in the whitelist of currently available IdPs. */
 $idplist = new idplist();
 
