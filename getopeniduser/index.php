@@ -133,7 +133,6 @@ function getUserAndRespond($responseurl) {
          * database user id and status code of the database query. */
         $providerId = getCookieVar('providerId');
         $providerName = openid::getProviderName($providerId);
-        setSessionVar('idpname',$providerName);  // Save for later use
         /* In the database, keep a consistent ProviderId format:   *
          * only allow "http" (not "https") and remove any "www."   *
          * prefix (for Google).                                    */
@@ -155,9 +154,11 @@ function getUserAndRespond($responseurl) {
                           $lastname,
                           $emailaddr);
             setSessionVar('uid',$dbs->user_uid);
+            setSessionVar('dn',$dbs->distinguished_name);
             setSessionVar('status',$dbs->status);
-        } else {
-            setSessionVar('uid');
+        } else { // Missing one or more required attributes
+            unsetSessionVar('uid');
+            unsetSessionVar('dn');
             setSessionVar('status',
                 dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']);
         }
@@ -183,10 +184,19 @@ function getUserAndRespond($responseurl) {
                     getSessionVar('status'),dbservice::$STATUS)) > 0) ? 
                         $i : '<MISSING>')
             );
+            unsetSessionVar('firstname');
+            unsetSessionVar('lastname');
+            unsetSessionVar('loa');
+            unsetSessionVar('idp');
+            unsetSessionVar('idpname');
+            unsetSessionVar('openidID');
         } else {
-            setSessionVar('dn',$dbs->distinguished_name);
+            setSessionVar('firstname',$firstname);
+            setSessionVar('lastname',$lastname);
             setSessionVar('loa','openid');
             setSessionVar('idp',$providerId);
+            setSessionVar('idpname',$providerName);
+            setSessionVar('openidID',$openidid);
         }
 
         setSessionVar('submit',getSessionVar('responsesubmit'));
@@ -198,6 +208,8 @@ function getUserAndRespond($responseurl) {
     }
 
     unsetSessionVar('responsesubmit');
+    unsetSessionVar('ePPN');
+    unsetSessionVar('ePTID');
 
     /* Finally, redirect to the calling script. */
     header('Location: ' . $responseurl);

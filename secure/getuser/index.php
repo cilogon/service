@@ -59,9 +59,6 @@ function getUID() {
             $lastname = $matches[1];
         }
     }
-    /* Save firstname and lastname for later use by other functions. */
-    setSessionVar('firstname',$firstname);
-    setSessionVar('lastname',$lastname);
 
     $validator = new EmailAddressValidator();
 
@@ -127,16 +124,30 @@ function getUID() {
         );
         unsetSessionVar('firstname');
         unsetSessionVar('lastname');
-        unsetSessionVar('dn');
         unsetSessionVar('loa');
         unsetSessionVar('idp');
         unsetSessionVar('idpname');
+        unsetSessionVar('ePPN');
+        unsetSessionVar('ePTID');
+unsetSessionVar('authncontext');
     } else {
         // Set additional session variables needed by the calling script
+        if (preg_match('%http://id.incommon.org/assurance/silver%',
+                       getServerVar('Shib-AuthnContext-Class'))) {
+            $shibarray['Level of Assurance'] = 
+                'http://incommonfederation.org/assurance/silver';
+        }
+        setSessionVar('firstname',$firstname);
+        setSessionVar('lastname',$lastname);
         setSessionVar('loa',$shibarray['Level of Assurance']);
         setSessionVar('idp',$shibarray['Identity Provider']);
         setSessionVar('idpname',$shibarray['Organization Name']);
+        setSessionVar('ePPN',$shibarray['ePPN']);
+        setSessionVar('ePTID',$shibarray['ePTID']);
+setSessionVar('authncontext',getServerVar('Shib-AuthnContext-Class'));
     }
+    unsetSessionVar('requestsilver');
+    unsetSessionVar('openidID');
 }
 
 /************************************************************************
