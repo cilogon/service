@@ -567,6 +567,10 @@ function handleAllowDelegation($always=false)
     global $log;
     global $skin;
 
+    // The 'authorized' servlet may return a response URL to be used
+    // instead of the success / failure URLs.
+    $responseurl = '';
+
     $log->info('Attempting to delegate a certificate to a portal...');
 
     $lifetime = 0;
@@ -610,8 +614,15 @@ function handleAllowDelegation($always=false)
     // the delegation the credential to the portal.
     $ch = curl_init();
     if ($ch !== false) {
-        $url = AUTHORIZED_URL . '?' .
-               'oauth_token=' . urlencode(getSessionVar('tempcred')) . '&' .
+        $authurl = AUTHORIZED_URL;
+        $tempcred = getSessionVar('tempcred');
+        // Change 'delegation' to 'oauth' if present in tempcred
+        if (preg_match('/delegation2/',$tempcred)) {
+            $authurl = 
+                preg_replace('%/delegation[^/]*/%','/oauth/',$authurl);
+        }
+        $url = $authurl . '?' .
+               'oauth_token=' . urlencode($tempcred) . '&' .
                'cilogon_lifetime=' . $lifetime . '&' .
                'cilogon_loa=' . urlencode(getSessionVar('loa')) . '&' .
                'cilogon_uid=' . urlencode(getSessionVar('uid')) . 
@@ -654,6 +665,12 @@ function handleAllowDelegation($always=false)
                         }
                     }
                 }
+                // Check for an alternate response URL to be used 
+                // in place of success / failure URLs.
+                if (preg_match('/cilogon_response_url=([^\s]+)/',
+                               $output,$matches)) {
+                    $responseurl = $matches[1];
+                }
             }
         }
         curl_close($ch);
@@ -664,13 +681,13 @@ function handleAllowDelegation($always=false)
 
     // Depending on the result (success or failure), output appropriate
     // HTML to allow the user to return to the portal, or if $always
-    // was set, then automatically return the user to the successuri
-    // or failureuri.
+    // was set, then automatically return the user to the successuri, 
+    // failureuri, or cilogon_reponse_url if supplied by authorized servlet.
     if ($always) {
         $log->info("Automatically returning to portal's " .
                    ($success ? 'success' : 'failure') . ' url.');
-        $location = 'Location: ' .
-            getSessionVar($success ? 'successuri' : 'failureuri');
+        $location = 'Location: ' . ((strlen($responseurl) > 0) ? $responseurl :
+            (getSessionVar($success ? 'successuri' : 'failureuri')));
         unsetGetUserSessionVars();
         unsetPortalSessionVars();
         header($location);
@@ -745,7 +762,8 @@ function handleAllowDelegation($always=false)
         echo '
         <div class="returnlink">
           <a href="' , 
-          getSessionVar($success ? 'successuri' : 'failureuri') , 
+          ((strlen($responseurl) > 0) ? $responseurl :
+           (getSessionVar($success ? 'successuri' : 'failureuri'))) , 
           '">Return to ' ,
           htmlspecialchars(getSessionVar('portalname')) , '</a>
         </div>
