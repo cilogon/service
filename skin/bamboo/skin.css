@@ -186,7 +186,6 @@ div.userchanged table tr.odd td {
 /***** Begin skincilogonlogo *****/
 div.skincilogonlogo {
   display: inline;
-  margin: 5px;
   margin-top: 46px;
 }
 div.skincilogonlogo a {
@@ -197,7 +196,6 @@ div.skincilogonlogo a {
 /***** Begin Help-related stuff *****/
 table.helptable td.helpcell div {
   background-color: #fffaeb;
-  margin-right: 1em;
 }
 tr.inforow td.helpcell {
   background-color: #fffaeb;
