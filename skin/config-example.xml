@@ -30,11 +30,12 @@
 
   <!-- <idpwhitelist>
        The cilogon.org service maintains a global list of available IdPs in
-       the file /var/www/html/include/whitelist.txt. This full list is
-       typically shown to the user on the "Log On" page. You can cull this
-       list down to a subset by listing only those IdPs you want shown for
-       the skin. Basically, the resulting list is an intersection of the
-       global whitelist and the list of IdPs below. (Use the entityIds for
+       the file /var/www/html/include/idplist.xml. The whitelisted IdPs
+       (indicated by the <whitelisted> tag in the XML file) are typically
+       shown to the user on the "Log On" page. You can cull this list down
+       to a subset by listing only those IdPs you want shown for the skin.
+       Basically, the resulting list is an intersection of the global
+       whitelist and the list of IdPs below. (Use the entityIds for
        InCommon, IdP endpoint URLs for OpenID.) In this example, we show
        only IdPs starting with the letter 'P'.
   -->
