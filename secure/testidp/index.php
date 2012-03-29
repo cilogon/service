@@ -100,7 +100,7 @@ function printTestPage()
         see the sections below.
         </p>
         ';
-        if ((!$idplist->exists($shibarray['Identity Provider'])) &&
+        if ((!$idplist->isWhitelisted($shibarray['Identity Provider'])) &&
             ($idplist->exists($shibarray['Identity Provider']))) {
             echo '
             <p class="addsubmit">
