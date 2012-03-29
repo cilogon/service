@@ -12,4 +12,18 @@
     <idp>https://pip.verisignlabs.com</idp>
     <idp>urn:mace:incommon:uiuc.edu</idp>
   </idpwhitelist>
+
+  <!--
+  <logonbuttontext>Continue</logonbuttontext>
+  <delegate>
+    <forcelifetime>1</forcelifetime>
+    <forceremember>1</forceremember>
+  </delegate>
+  <portallist>
+    <portal>portal\.cvrgrid\.org/</portal>
+  </portallist>
+  <portallistaction>
+    <hideportalinfo>1</hideportalinfo>
+  </portallistaction>
+  -->
 </config>
