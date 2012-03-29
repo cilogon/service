@@ -329,11 +329,11 @@ EOT;
 
     /********************************************************************
      * Function  : entityIDExists                                       *
-     * Parameter : The enityID to search for in the idpdom.             *
+     * Parameter : The entityID to search for in the idpdom.            *
      * Returns   : True if the given entityID is in the idpdom.         *
      *             False otherwise.                                     *
-     * This is simply a convenience function for array_key_exists to    *
-     * search for a given entityID in the class idpdom.                 *
+     * This function runs an xpath query in the idpdom to search for    *
+     * the given idp entityID.                                          *
      ********************************************************************/
     function entityIDExists($entityID) {
         $xpath = new DOMXpath($this->idpdom);
