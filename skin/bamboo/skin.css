@@ -187,6 +187,7 @@ div.userchanged table tr.odd td {
 div.skincilogonlogo {
   display: inline;
   margin: 5px;
+  margin-top: 46px;
 }
 div.skincilogonlogo a {
   border-bottom: 0px;
