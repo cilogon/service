@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This is a sample configuration file for a 'skin'. It contains examples
+     of all of the available program options. Simply copy this file to the
+     appropriate skin subdirectory, rename it to 'config.xml', and uncomment
+     and configure the desired sections.
+-->
+<config>
+  <idpwhitelist>
+    <idp>https://www.google.com/accounts/o8/id</idp>
+    <idp>urn:mace:incommon:johnshopkins.edu</idp>
+    <idp>urn:mace:incommon:idp.protectnetwork.org</idp>
+    <idp>https://pip.verisignlabs.com</idp>
+    <idp>urn:mace:incommon:uiuc.edu</idp>
+  </idpwhitelist>
+</config>
