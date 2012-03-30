@@ -1,24 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-  <idpwhitelist>
-    <idp>https://www.google.com/accounts/o8/id</idp>
-    <idp>urn:mace:incommon:johnshopkins.edu</idp>
-    <idp>urn:mace:incommon:idp.protectnetwork.org</idp>
-    <idp>https://pip.verisignlabs.com</idp>
-    <idp>urn:mace:incommon:uiuc.edu</idp>
-  </idpwhitelist>
 
-  <!--
+  <initialidp>urn:mace:incommon:johnshopkins.edu</initialidp>
+
+  <idpblacklist>
+    <!-- InCommon Lab/Research IdPs -->
+    <idp>https://identityprovider.anl.gov/idp/shibboleth</idp>
+    <idp>urn:mace:incommon:lbl.gov</idp>
+    <idp>https://shib.lternet.edu/idp/shibboleth</idp>
+    <idp>urn:mace:incommon:mlml.calstate.edu</idp>
+    <idp>urn:mace:incommon:mcnc.org</idp>
+    <!-- ProtectNetwork -->
+    <idp>urn:mace:incommon:idp.protectnetwork.org</idp>
+    <!-- OpenID IdPs -->
+    <idp>https://www.google.com/accounts/o8/id</idp>
+    <idp>https://openid.paypal-ids.com</idp>
+    <idp>https://pip.verisignlabs.com</idp>
+    <!-- Test IdPs -->
+    <idp>https://boingo.ncsa.uiuc.edu/idp/shibboleth</idp>
+    <idp>https://comanage.psu.edu/idp/shibboleth</idp>
+    <idp>https://login.ligo.org/idp/shibboleth</idp>
+    <idp>https://logintest.wisc.edu/idp/shibboleth</idp>
+    <idp>https://shib-dev.middleware.vt.edu</idp>
+  </idpblacklist>
+
   <logonbuttontext>Continue</logonbuttontext>
+
   <delegate>
-    <forcelifetime>1</forcelifetime>
+    <forcelifetime>3</forcelifetime>
     <forceremember>1</forceremember>
   </delegate>
+
   <portallist>
-    <portal>portal\.cvrgrid\.org/</portal>
+    <portal>/portal\.cvrgrid\.org/</portal>
   </portallist>
   <portallistaction>
     <hideportalinfo>1</hideportalinfo>
   </portallistaction>
-  -->
+
 </config>
