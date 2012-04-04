@@ -358,7 +358,8 @@ function sendNotificationEmail()
     $mailto   = 'alerts@cilogon.org';
     $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
-    $mailsubj = 'CILogon Service - New IdP Added To Whitelist';
+    $mailsubj = 'CILogon Service on ' . HOSTNAME . ' - ' .
+                'New IdP Added To Whitelist';
     $mailmsg  = "
 CILogon Service - New Identity Provider Added
 ---------------------------------------------

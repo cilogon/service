@@ -226,7 +226,7 @@ function printRequestSubmitted($yourName,$emailAddr,
     $mailto   = 'help@cilogon.org';
     $mailfrom = 'From: help@cilogon.org' . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
-    $mailsubj = 'CILogon Service - Request New IdP';
+    $mailsubj = 'CILogon Service on ' . HOSTNAME . ' - Request New IdP';
     $mailmsg  = "
 CILogon Service - New Identity Provider Request
 -----------------------------------------------
