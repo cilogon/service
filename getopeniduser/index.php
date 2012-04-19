@@ -83,7 +83,7 @@ function getUserAndRespond($responseurl) {
 
             // Get attributes from Google and Yahoo
             $ax = new Auth_OpenID_AX_FetchResponse();
-            $data = $ax->fromSuccessResponse($response)->data;
+            $data = @$ax->fromSuccessResponse($response)->data;
 
             // Look for email attribute
             if (@$sreg['email']) {

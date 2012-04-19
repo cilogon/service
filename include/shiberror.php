@@ -96,7 +96,11 @@ class shiberror {
      * by the Shibboleth SP software when there is an error.            *
      ********************************************************************/
     function isError() {
-        return ((strlen($this->errorarray['requestURL']) > 0) &&
+        return ((isset($this->errorarray['requestURL'])) &&
+                (isset($this->errorarray['errorType'])) &&
+                (isset($this->errorarray['errorText'])) &&
+                (isset($this->errorarray['now'])) &&
+                (strlen($this->errorarray['requestURL']) > 0) &&
                 (strlen($this->errorarray['errorType']) > 0) &&
                 (strlen($this->errorarray['errorText']) > 0) &&
                 (strlen($this->errorarray['now']) > 0));
