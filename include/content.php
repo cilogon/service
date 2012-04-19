@@ -12,16 +12,9 @@ $log = new loggit();
 /* notification box at the top of each page.                            */
 /*
 define('BANNER_TEXT',
-       'The CILogon Service may be unavailable for short periods
-        on Sunday November 21 between 5am and 8am Central Time
-        due to University of Illinois network maintenance.'
+       'The CILogon Service may be unavailable on Thursday April 19
+        10:00am - 10:30am Central Time due to service software upgrades.'
 );
-*/
-
-/*
-define('BANNER_TEXT','March 16-18: An ocsp.incommon.org DNS
-    problem may cause cilogon.org to load slowly
-    or display OCSP errors.');
 */
 
 /* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
