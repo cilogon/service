@@ -50,13 +50,20 @@ function getUID() {
     $firstname   = $shibarray['First Name'];
     $lastname    = $shibarray['Last Name'];
     $displayname = $shibarray['Display Name'];
-    if (((strlen($firstname) == 0) || (strlen($lastname) == 0)) &&
-         (strlen($displayname) > 0)) {
-        if (preg_match('/^([^\s]+)\s+/',$displayname,$matches)) {
-            $firstname = $matches[1];
-        }
-        if (preg_match('/\s+([^\s]+)$/',$displayname,$matches)) {
-            $lastname = $matches[1];
+    if (strlen($displayname) > 0) {
+        if ((strlen($firstname) == 0) && (strlen($lastname) == 0)) {
+            if (preg_match('/^([^\s]+)\s*(.*)$/',$displayname,$matches)) {
+                $firstname = $matches[1];
+                $lastname = $matches[2];
+            }
+        } elseif (strlen($firstname) == 0) {
+            if (preg_match('/^([^\s]+)\s+/',$displayname,$matches)) {
+                $firstname = $matches[1];
+            }
+        } elseif (strlen($lastname) == 0) {
+            if (preg_match('/\s+([^\s]+)$/',$displayname,$matches)) {
+                $lastname = $matches[1];
+            }
         }
     }
 
