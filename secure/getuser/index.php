@@ -55,6 +55,10 @@ function getUID() {
             if (preg_match('/^([^\s]+)\s*(.*)$/',$displayname,$matches)) {
                 $firstname = $matches[1];
                 $lastname = $matches[2];
+                // If only a single name, duplicate first and last name
+                if (strlen($lastname) == 0) { 
+                    $lastname = $firstname;
+                }
             }
         } elseif (strlen($firstname) == 0) {
             if (preg_match('/^([^\s]+)\s+/',$displayname,$matches)) {
