@@ -929,6 +929,17 @@ function handleGotUser()
         if ((strlen($callbackuri) > 0) &&
             (($status == dbservice::$STATUS['STATUS_NEW_USER']) ||
              ($status == dbservice::$STATUS['STATUS_USER_UPDATED']))) {
+            // Extra check for new users: see if any HTML entities
+            // are in the user name. If so, send an email alert.
+            $dn = getSessionVar('dn');
+            $dn = reformatDN(preg_replace('/\s+email=.+$/','',$dn));
+            $htmldn = htmlentities($dn);
+            if (strcmp($dn,$htmldn) != 0) {
+                sendErrorAlert('New user DN contains HTML entities',
+                    "htmlentites(DN) = $htmldn\n");
+            }
+
+            // Check forcerememeber skin option to skip new user page
             $forceremember = $skin->getConfigOption('delegate','forceremember');
             if (($forceremember !== null) && ((int)$forceremember == 1)) {
                 $status = dbservice::$STATUS['STATUS_OK'];
@@ -1089,8 +1100,8 @@ function printUserChangedPage()
                 echo '
                 <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
                   <th>First Name:</th>
-                  <td>'.$prevfirst.'</td>
-                  <td>'.$first.'</td>
+                  <td>'.htmlentities($prevfirst).'</td>
+                  <td>'.htmlentities($first).'</td>
                 </tr>
                 ';
                 $tablerowodd = !$tablerowodd;
@@ -1100,8 +1111,8 @@ function printUserChangedPage()
                 echo '
                 <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
                   <th>Last Name:</th>
-                  <td>'.$prevlast.'</td>
-                  <td>'.$last.'</td>
+                  <td>'.htmlentities($prevlast).'</td>
+                  <td>'.htmlentities($last).'</td>
                 </tr>
                 ';
                 $tablerowodd = !$tablerowodd;
