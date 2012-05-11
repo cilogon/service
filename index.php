@@ -210,7 +210,7 @@ function printCertInfo() {
     <table class="certinfo">
       <tr>
         <th>Certificate&nbsp;Subject:</th>
-        <td>' , $dn , '</td>
+        <td>' , htmlentities($dn) , '</td>
       </tr>
       <tr>
         <th>Identity&nbsp;Provider:</th>

@@ -981,7 +981,7 @@ function printNewUserPage()
     Welcome! Your new certificate subject is as follows. 
     </p>
     <p>
-    <blockquote><tt>' , $dn , '</tt></blockquote>
+    <blockquote><tt>' , htmlentities($dn) , '</tt></blockquote>
     </p>
     <p>
     You may need to register this certificate subject with relying parties.
@@ -1138,11 +1138,11 @@ function printUserChangedPage()
                 <table cellspacing="0">
                   <tr>
                     <td>Previous Subject DN:</td>
-                    <td>' , $prevdn , '</td>
+                    <td>' , htmlentities($prevdn) , '</td>
                   </tr>
                   <tr>
                     <td>Current Subject DN:</td>
-                    <td>' , $dn , '</td>
+                    <td>' , htmlentities($dn) , '</td>
                   </tr>
                 </table>
                 </blockquote>
