@@ -188,17 +188,16 @@ function getUserAndRespond($responseurl) {
             unsetSessionVar('lastname');
             unsetSessionVar('loa');
             unsetSessionVar('idp');
-            unsetSessionVar('idpname');
             unsetSessionVar('openidID');
         } else {
             setSessionVar('firstname',$firstname);
             setSessionVar('lastname',$lastname);
             setSessionVar('loa','openid');
             setSessionVar('idp',$providerId);
-            setSessionVar('idpname',$providerName);
             setSessionVar('openidID',$openidid);
         }
 
+        setSessionVar('idpname',$providerName); // So we can check for 'Google'
         setSessionVar('submit',getSessionVar('responsesubmit'));
 
         $csrf->setTheCookie();
