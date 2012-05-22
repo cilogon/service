@@ -431,6 +431,12 @@ EOT;
         $shibarray['Display Name'] = getServerVar('HTTP_DISPLAYNAME');
         $shibarray['Email Address'] = getServerVar('HTTP_MAIL');
         $shibarray['Level of Assurance'] = getServerVar('HTTP_ASSURANCE');
+        
+        /* Make sure to use only the first of multiple email addresses. */
+        if (($pos = strpos($shibarray['Email Address'],';')) !== false) {
+            $shibarray['Email Address'] = 
+              substr($shibarray['Email Address'],0,$pos);
+        }
 
         /* Next, read the attributes for the given IdP. This includes   *
          * values such as the display name for the IdP, the home page   *
