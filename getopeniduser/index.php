@@ -93,7 +93,6 @@ function getUserAndRespond($responseurl) {
                     @$data['http://axschema.org/contact/email'][0]);
             }
 
-
             // Look for fullname attribute, or firstname+lastname
             if (@$sreg['fullname']) {
                 $fullname = htmlentities(@$sreg['fullname']);
@@ -113,10 +112,14 @@ function getUserAndRespond($responseurl) {
                 $names = preg_split('/ /',$fullname,2);
                 $firstname = @$names[0];
                 $lastname =  @$names[1];
-                // If only a single name, duplicate first and last name
-                if (strlen($lastname) == 0) { 
-                    $lastname = $firstname;
-                }
+            }
+
+            // If only a single name, copy first name <=> last name
+            if (strlen($lastname) == 0) { 
+                $lastname = $firstname;
+            }
+            if (strlen($firstname) == 0) {
+                $firstname = $lastname;
             }
 
         } else {

@@ -71,6 +71,14 @@ function getUID() {
         }
     }
 
+    // If only a single name, copy first name <=> last name
+    if (strlen($lastname) == 0) { 
+        $lastname = $firstname;
+    }
+    if (strlen($firstname) == 0) {
+        $firstname = $lastname;
+    }
+
     $validator = new EmailAddressValidator();
 
     /* Temporary hack for IdP at boingo.ncsa.uiuc.edu */
