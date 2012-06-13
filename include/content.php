@@ -571,6 +571,7 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
 {
     global $csrf;
     global $log;
+    global $skin;
 
     // If providerId not set, try the session and cookie values
     if (strlen($providerId) == 0) {
@@ -603,6 +604,13 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
             'target=' . urlencode(GETUSER_URL);
         if (strlen($providerId) > 0) {
             $redirect .= '&providerId=' . urlencode($providerId);
+
+            // To bypass SSO at IdP, check for skin's 'forceauthn'
+            $forceauthn = $skin->getConfigOption('forceauthn');
+            if (($forceauthn !== null) && ((int)$forceauthn == 1)) {
+                $redirect .= '&forceAuthn=true';
+            }
+
             // For Silver IdPs, send extra parameter
             if (strlen(getPostVar('silveridp')) > 0) {
                 $redirect .= '&authnContextClassRef=' . 

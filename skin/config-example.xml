@@ -302,4 +302,15 @@
   <requestsilver>1</requestsilver>
   -->
 
+  <!-- <forceauthn>
+       If set to 1, make the user reauthenticate at the Shibboleth IdP every
+       time the user logs off from CILogon. This bypasses the SSO behavior
+       of the InCommon IdPs by setting "forceAuthn=true" for the
+       AuthnRequest when initiating the session. Note that this has no
+       effect on OpenID IdPs.
+  -->
+  <!--
+  <forceauthn>1</forceauthn>
+  -->
+
 </config>
