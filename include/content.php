@@ -652,6 +652,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser')
 {
     global $csrf;
     global $log;
+    global $skin;
 
     $openiderrorstr = 'Internal OpenID error. Please contact <a href="mailto:help@cilogon.org">help@cilogon.org</a> or select a different identity provider.';
 
@@ -686,6 +687,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser')
         } else {
             require_once("Auth/OpenID/Consumer.php");
             require_once("Auth/OpenID/SReg.php");
+            require_once("Auth/OpenID/PAPE.php");
             require_once("Auth/OpenID/AX.php");
 
             $consumer = new Auth_OpenID_Consumer($datastore);
@@ -717,6 +719,20 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser')
                     $ax->add($attr);
                 }
                 $auth_request->addExtension($ax);
+
+                // Add a PAPE extension for OpenID Trust Level 1 and also
+                // possibly force user authentication every time.
+                $max_auth_age = null;
+                // To bypass SSO at IdP, check for skin's 'forceauthn'
+                $forceauthn = $skin->getConfigOption('forceauthn');
+                if (($forceauthn !== null) && ((int)$forceauthn == 1)) {
+                    $max_auth_age = '0';
+                }
+                $pape_request = new Auth_OpenID_PAPE_Request(
+                    array('http://www.idmanagement.gov/schema/2009/05/icam/openid-trust-level1.pdf'),$max_auth_age);
+                if ($pape_request) {
+                    $auth_request->addExtension($pape_request);
+                }
 
                 // Start the OpenID authentication request
                 if ($auth_request->shouldSendRedirect()) {
