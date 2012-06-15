@@ -399,7 +399,7 @@ function printGetCertificate() {
       <input type="submit" name="submit" class="submit helpcursor" 
       title="' , $downloadcerttext , '" value="Get New Certificate"
       onclick="showHourglass(\'p12\')"/>
-      <img src="/images/hourglass.gif" width="32" height="32 alt="" 
+      <img src="/images/hourglass.gif" width="32" height="32" alt="" 
       class="hourglass" id="p12hourglass"/>
       </p>
 
@@ -652,7 +652,7 @@ function printGetActivationCode() {
       <input type="submit" name="submit" class="submit helpcursor" 
       title="' , $generatecodetext , '" value="Get New Activation Code" 
       onclick="showHourglass(\'token\')"/>
-      <img src="/images/hourglass.gif" width="32" height="32 alt="" 
+      <img src="/images/hourglass.gif" width="32" height="32" alt="" 
       class="hourglass" id="tokenhourglass"/>
       </p>
       <p id="tokenvalue" class="helpcursor" title="' , 

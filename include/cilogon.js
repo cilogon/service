@@ -104,7 +104,7 @@ function showHideDiv(whichDiv,showhide) {
  * the "Get And Use Your CILogon Certificate" page.  It handles the issue  *
  * with the "Lifetime" of the certificate.  The GridShib-CA code expects   *
  * a RequestedLifetime field in seconds, but the cilogon.org site prompts  *
- * the user for hours/days/months. So this fUnction transforms the visible *
+ * the user for hours/days/months. So this function transforms the visible *
  * certlifetime field to the hidden RequestedLifetime field (in seconds).  *
  * It also sets a cookie for the certlifetime field and the hour/day/      *
  * month selector so that they can be populated correctly upon the user's  *
