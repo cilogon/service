@@ -73,7 +73,7 @@ function showHideDiv(whichDiv,showhide) {
   var divs = document.getElementsByTagName('div');
   var i;
   var style2;
-  for (var i = 0; i < divs.length; i = i + 1) {
+  for (i = 0; i < divs.length; i = i + 1) {
     if (divs[i].id.match(whichDiv)) {
       if (document.getElementById) { // Current browsers, i.e. IE5, NS6
         style2 = divs[i].style;
@@ -121,6 +121,7 @@ function handleLifetime()
 
   var certlifetimefieldvalue = 12;      /* Default lifetime is 12 hours */
   var certmultiplierselectvalue = 3600; /* Default unit is hours */
+  var minlifetimefieldvalue = 3600;     /* Default min lifetime is 1 hour */
   var maxlifetimefieldvalue = 34257600; /* Default max lifetime is 13 months */
   var needtoreset = false;
 
@@ -181,10 +182,12 @@ function handleLifetime()
   var today  = new Date();
   var expire = new Date();
   expire.setTime(today.getTime() + 365*24*3600000);
-  var cookiestr = "certlifetime=" + escape(certlifetimefieldvalue) +
+  var cookiestr = "certlifetime=" + 
+    encodeURIComponent(certlifetimefieldvalue) +
     ";expires=" + expire.toGMTString() + ";path=/;secure";
   document.cookie = cookiestr;
-  cookiestr = "certmultiplier=" + escape(certmultiplierselectvalue) +
+  cookiestr = "certmultiplier=" + 
+    encodeURIComponent(certmultiplierselectvalue) +
     ";expires=" + expire.toGMTString() + ";path=/;secure";
   document.cookie = cookiestr;
 
@@ -256,7 +259,7 @@ function cacheOptions() {
   idps = document.getElementById("providerId");
   /* Populate the idpstext and idpsvalue arrays from the WAYF's <select> */
   if (idps !== null) {
-    for (var i = 0; i < idps.options.length; i = i + 1) {
+    for (i = 0; i < idps.options.length; i = i + 1) {
       idpstext[idpstext.length] = idps.options[i].text;
       idpsvalue[idpsvalue.length] = idps.options[i].value;
       total = total + 1;
@@ -322,7 +325,7 @@ function searchOptions(value) {
     /* Scan thru the <options> for substrings matching the "Search" field */
     idps.options.length = 0;
     lowval = value.toLowerCase();
-    for (var i = 0; i < idpstext.length; i = i + 1) {
+    for (i = 0; i < idpstext.length; i = i + 1) {
       if (idpstext[i].toLowerCase().indexOf(lowval) !== -1) {
         addOption(idpstext[i],idpsvalue[i]);
       }
@@ -333,7 +336,7 @@ function searchOptions(value) {
       /* Find the previously highlighted option, if in new sublist, */
       /* or default to the first item in the new sublist.           */
       selindex = 0;
-      for (var i = 0; i < idps.options.length; i = i + 1) {
+      for (i = 0; i < idps.options.length; i = i + 1) {
         if (seltext === idps.options[i].text) {
           selindex = i;
           break;
