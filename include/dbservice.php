@@ -66,7 +66,7 @@ require_once("util.php");
 class dbservice {
 
     /* Define the URL for the dbService */
-    const defaultDBServiceURL = 'http://localhost:8080/delegation/dbService';
+    const defaultDBServiceURL = 'http://localhost:8080/oauth/dbService';
 
     /* The various STATUS_* constants, originally from Store.pm. The    *
      * The keys of the array are strings corresponding to the contant   *
