@@ -23,10 +23,11 @@ require_once('Auth/OpenID/FileStore.php');
  *              There are constants in the class that you should set    *
  *              for your particular set up:                             *
  *                                                                      *
- *              databasePropertiesFile - this is the full path and name *
- *                  of the database.properties file utilized to connect *
- *                  to the PostgreSQL database.  It is used by the      *
- *                  OpenID consumer to store temporary tokens.          *
+ *              databaseConfigFile - this is the full path and name     *
+ *                  of the cilogon.xml file containing the database     *
+ *                  parameters (such as username and password). The     *
+ *                  designated database is used by the OpenID consumer  *
+ *                  to store temporary tokens.                          *
  *              fileStoreDirectory - the full path to the apache-owned  *
  *                  directory for storing OpenID information to be used *
  *                  by the "FileStore" module. Note that this directory *
@@ -36,8 +37,8 @@ require_once('Auth/OpenID/FileStore.php');
 class openid {
 
     /* Set the constants to correspond to your particular set up.       */
-    const databasePropertiesFile = '/var/www/config/database.properties';
-    const fileStoreDirectory     = '/var/run/openid';
+    const databaseConfigFile = '/var/www/config/cilogon.xml';
+    const fileStoreDirectory = '/var/run/openid';
 
     /* The $providerUrls array is a list of all supported OpenID IdP    *
      * URLs (as the keys) and their associated display names (as the    *
@@ -189,20 +190,31 @@ class openid {
      ********************************************************************/
     function getDBStorage($dbtype) {
         $retval = null;
-        
+
         $this->disconnect();  // Close any previous database connection
 
-        $props = parse_ini_file(self::databasePropertiesFile);
-        if ($props !== false) {
+        /* The cilogon.xml file uses postgres/postgresq instead of pgsql */
+        $dbstr1 = $dbtype;
+        $dbstr2 = $dbtype;
+        if ($dbtype == 'pgsql') {
+            $dbstr1 = 'postgres';
+            $dbstr2 = 'postgresql';
+        }
+
+        $xml = @simplexml_load_file(self::databaseConfigFile);
+        if ($xml !== false) {
+            $query = $xml->xpath("/config/service[@name='$dbstr1']/$dbstr2");
             $dsn = array(
                 'phptype'  => $dbtype,
-                'username' => $props['org.cilogon.database.userName'],
-                'password' => $props['org.cilogon.database.password'],
-                'hostspec' => $props['org.cilogon.database.host'],
-                'database' => $props['org.cilogon.database.databaseName']
+                'username' => (string)@$query[0]->attributes()->username,
+                'password' => (string)@$query[0]->attributes()->password,
+                'database' => (string)@$query[0]->attributes()->database,
+                'hostspec' => 'localhost'
             );
+
             $opts = array(
-                'persistent' => true
+                'persistent'  => true,
+                'portability' => DB_PORTABILITY_ALL
             );
             $this->db =& DB::connect($dsn,$opts);
             if (PEAR::isError($this->db)) {
@@ -250,7 +262,8 @@ class openid {
      * Auth_OpenID_Consumer. 
      ********************************************************************/
     function getStorage() {
-        return $this->getPostgreSQLStorage();
+        // return $this->getPostgreSQLStorage();
+        return $this->getMySQLStorage();
     }
 }
 
