@@ -355,6 +355,20 @@ function deleteDir($dir,$shred=false) {
 /************************************************************************/
 function sendErrorAlert($summary,$detail,$mailto='alerts@cilogon.org')
 {
+    $sessionvars = array(
+        'idp'          => 'IdP',
+        'idpname'      => 'IdP Name',
+        'uid'          => 'Database UID',
+        'dn'           => 'Cert DN',
+        'firstname'    => 'First Name',
+        'lastname'     => 'Last Name',
+        'ePPN'         => 'ePPN',
+        'ePTID'        => 'ePTID',
+        'openID'       => 'OpenID',
+        'loa'          => 'LOA',
+        'cilogon_skin' => 'Skin Name'
+    );
+
     $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
     $mailsubj = 'CILogon Service on ' . HOSTNAME . ' - ' . $summary;
@@ -369,17 +383,10 @@ Server Host   = ' . HOSTNAME . '
 Remote Address= ' . getServerVar('REMOTE_ADDR') . '
 ';
 
-    if (strlen($idp = getSessionVar('idp')) > 0) {
-        $mailmsg .= "IdP           = $idp\n";
-    }
-    if (strlen($idpname = getSessionVar('idpname')) > 0) {
-        $mailmsg .= "IdP Name      = $idpname\n";
-    }
-    if (strlen($uid = getSessionVar('uid')) > 0) {
-        $mailmsg .= "Database UID  = $uid\n";
-    }
-    if (strlen($dn = getSessionVar('dn')) > 0) {
-        $mailmsg .= "Cert DN       = $dn\n";
+    foreach ($sessionvars as $svar => $sname) {
+        if (strlen($val = getSessionVar($svar)) > 0) {
+            $mailmsg .= sprintf("%-14s= %s\n",$sname,$val);
+        }
     }
 
     mail($mailto,$mailsubj,$mailmsg,$mailfrom);
