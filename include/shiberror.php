@@ -160,7 +160,7 @@ class shiberror {
         ';
         printFooter();
 
-        sendErrorAlert('Shibboleth Error',$errorstr2,'tfleury@illinois.edu');
+        sendErrorAlert('Shibboleth Error',$errorstr2);
     }
 
 }
