@@ -5,6 +5,7 @@ if (include_once('DB.php')) {
     include_once('Auth/OpenID/MySQLStore.php');
 }
 require_once('Auth/OpenID/FileStore.php');
+require_once('dbprops.php');
 
 
 /************************************************************************
@@ -20,14 +21,9 @@ require_once('Auth/OpenID/FileStore.php');
  *                  file-based or database-based storage is needed by   *
  *                  the Janrain OpenID library for OpenID connections.  *
  *                                                                      *
- *              There are constants in the class that you should set    *
+ *              There is a constant in the class that you should set    *
  *              for your particular set up:                             *
  *                                                                      *
- *              databaseConfigFile - this is the full path and name     *
- *                  of the cilogon.xml file containing the database     *
- *                  parameters (such as username and password). The     *
- *                  designated database is used by the OpenID consumer  *
- *                  to store temporary tokens.                          *
  *              fileStoreDirectory - the full path to the apache-owned  *
  *                  directory for storing OpenID information to be used *
  *                  by the "FileStore" module. Note that this directory *
@@ -37,7 +33,6 @@ require_once('Auth/OpenID/FileStore.php');
 class openid {
 
     /* Set the constants to correspond to your particular set up.       */
-    const databaseConfigFile = '/var/www/config/cilogon.xml';
     const fileStoreDirectory = '/var/run/openid';
 
     /* The $providerUrls array is a list of all supported OpenID IdP    *
@@ -193,33 +188,22 @@ class openid {
 
         $this->disconnect();  // Close any previous database connection
 
-        /* The cilogon.xml file uses postgres/postgresq instead of pgsql */
-        $dbstr1 = $dbtype;
-        $dbstr2 = $dbtype;
-        if ($dbtype == 'pgsql') {
-            $dbstr1 = 'postgres';
-            $dbstr2 = 'postgresql';
-        }
+        $dbprops = new dbprops($dbtype);
+        $dsn = array(
+            'phptype'  => $dbtype,
+            'username' => $dbprops->getUsername(),
+            'password' => $dbprops->getPassword(),
+            'database' => $dbprops->getDatabase(),
+            'hostspec' => 'localhost'
+        );
 
-        $xml = @simplexml_load_file(self::databaseConfigFile);
-        if ($xml !== false) {
-            $query = $xml->xpath("/config/service[@name='$dbstr1']/$dbstr2");
-            $dsn = array(
-                'phptype'  => $dbtype,
-                'username' => (string)@$query[0]->attributes()->username,
-                'password' => (string)@$query[0]->attributes()->password,
-                'database' => (string)@$query[0]->attributes()->database,
-                'hostspec' => 'localhost'
-            );
-
-            $opts = array(
-                'persistent'  => true,
-                'portability' => DB_PORTABILITY_ALL
-            );
-            $this->db =& DB::connect($dsn,$opts);
-            if (PEAR::isError($this->db)) {
-                $this->db = null;
-            }
+        $opts = array(
+            'persistent'  => true,
+            'portability' => DB_PORTABILITY_ALL
+        );
+        $this->db =& DB::connect($dsn,$opts);
+        if (PEAR::isError($this->db)) {
+            $this->db = null;
         }
 
         if ($this->db != null) {
@@ -228,7 +212,8 @@ class openid {
             } elseif ($dbtype == 'mysql') {
                 $retval =& new Auth_OpenID_MySQLStore($this->db);
             }
-            $retval->createTables();
+            // Create tables only needed for new installations
+            // $retval->createTables();
         }
 
         return $retval;
@@ -254,16 +239,28 @@ class openid {
 
     /********************************************************************
      * Function  : getStorage                                           *
-     * Returns   : A new Auth_OpenID_FileStore or                       *
-     *             Auth_OpenID_PostgreSQLStore object for use by an     *
+     * Parameter : Storage type, one of 'mysql', 'pgsql', or 'file'.    *
+     *             Defaults to 'mysql'.                                 *
+     * Returns   : A new Auth_OpenID_FileStore,                         *
+     *             Auth_OpenID_PostgreSQLStore, or                      *
+                   Auth_OpenID_MySQLStore object for use by an          *
      *             Auth_OpenID_Consumer.                                *
-     * This method points to either getPostgreSQLStorage() or           *
-     * getFileStoreage() and returns a store suitable for use by a      *
-     * Auth_OpenID_Consumer. 
+     * This method calls one of getMySQLStorage(),                      *
+     * getPostgreSQLStorage() or  getFileStoreage() and returns a       *
+     * store suitable for use by an Auth_OpenID_Consumer.               *
      ********************************************************************/
-    function getStorage() {
-        // return $this->getPostgreSQLStorage();
-        return $this->getMySQLStorage();
+    function getStorage($dbtype='mysql') {
+        $storage = null;
+
+        if ($dbtype == 'mysql') {
+            $storage = $this->getMySQLStorage();
+        } elseif ($dbtype == 'pgsql') {
+            $storage = $this->getPostgreSQLStorage();
+        } else {
+            $storage = $this->getFileStorage();
+        }
+
+        return $storage;
     }
 }
 
