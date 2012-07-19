@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+  <idpblacklist>
+    <idp>https://www.google.com/accounts/o8/id</idp>
+    <idp>https://openid.paypal-ids.com</idp>
+    <idp>https://pip.verisignlabs.com</idp>
+    <idp>https://yahoo.com</idp>
+  </idpblacklist>
+
+  <delegate>
+    <forcelifetime>240</forcelifetime>
+    <forceremember>1</forceremember>
+  </delegate>
+
+  <poweredbyimg>/images/poweredby32.png</poweredbyimg>
+
+  <forceauthn>1</forceauthn>
+
+</config>
