@@ -4,12 +4,14 @@
 ini_set('session.cookie_secure',true);
 if (session_id() == "") session_start();
 */
-include_once('../include/util.php');
+include_once('include/util.php');
 
+/*
 if (isset($_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'])) {
     $providerId = $_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'];
     setcookie('providerId',$providerId,time()+60*60*24*365,'/','',true);
 }
+*/
 ?>
 
 <html>
@@ -181,6 +183,10 @@ echo '</table>'
 <br/>
 <hr/>
 <br/>
+
+<?php
+// phpinfo();
+?>
 
 </body>
 </html>
