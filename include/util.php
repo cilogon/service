@@ -153,13 +153,19 @@ function removeShibCookies()
 
 /************************************************************************
  * Function  : startPHPSession                                          *
+ * Parameter : True to store PHP session data to MySQL, false to save   *
+ *             PHP session data to file.                                *
  * This function starts a secure PHP session and should be called at    *
  * at the beginning of each script before any HTML is output.  It does  *
  * a trick of setting a 'lastaccess' time so that the $_SESSION         *
  * variable does not expire without warning.                            *
  ************************************************************************/
-function startPHPSession()
+function startPHPSession($usemysql=false)
 {
+    if ($usemysql) {
+        require_once('sessionmgr.php');
+        $sessionmgr = new sessionmgr();
+    }
     ini_set('session.cookie_secure',true);
     @session_start();
     if ((!isset($_SESSION['lastaccess']) || 
