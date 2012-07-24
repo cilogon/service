@@ -1,12 +1,16 @@
 <?php
 
+require_once('DB.php');
+
 /************************************************************************
  * Class name : dbprops                                                 *
  * Description: This class reads the database config file (as specified *
  *              by the class constant databaseConfigFile) for the       *
  *              username, password, and database name used for storage. *
  *              You specify which database type to use when calling     *
- *              the constructor, either 'mysql' or 'pgsql'.             *
+ *              the constructor, either 'mysql' or 'pgsql'. There is    *
+ *              also a method getDBConnect to open a PEAR DB database   *
+ *              connection using the parameters in the config file.     *
  *                                                                      *
  *              There is a constant in the class that you should set    *
  *              for your particular set up:                             *
@@ -101,6 +105,41 @@ class dbprops {
     function getDatabase() {
         return $this->queryAttribute('database');
     }
+
+    /********************************************************************
+     * Function  : getDBConnect                                         *
+     * Returns   : A PEAR DB object connected to a database, or null    *
+     *             on error connecting to database.                     *
+     * This function uses the PEAR DB module to connect to database     *
+     * using the parameters found in the databaseConfigFile. Upon       *
+     * success, it returns a DB connection returned by "DB::connect"    *
+     * suitable for future DB calls. If there is a problem connecting,  *
+     * it returns null.                                                 *
+     ********************************************************************/
+    function getDBConnect() {
+        $retval = null;
+
+        $dsn = array(
+            'phptype'  => $this->dbtype,
+            'username' => $this->getUsername(),
+            'password' => $this->getPassword(),
+            'database' => $this->getDatabase(),
+            'hostspec' => 'localhost'
+        );
+
+        $opts = array(
+            'persistent'  => true,
+            'portability' => DB_PORTABILITY_ALL
+        );
+
+        $retval =& DB::connect($dsn,$opts);
+        if (PEAR::isError($retval)) {
+            $retval = null;
+        }
+
+        return $retval;
+    }
+
 }
 
 ?>

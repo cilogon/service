@@ -133,7 +133,7 @@ class openid {
      * associated usage of that storage.                                *
      ********************************************************************/
     function disconnect() {
-        if ($this->db != null) {
+        if (!is_null($this->db)) {
             $this->db->disconnect();
             $this->db = null;
         }
@@ -189,24 +189,9 @@ class openid {
         $this->disconnect();  // Close any previous database connection
 
         $dbprops = new dbprops($dbtype);
-        $dsn = array(
-            'phptype'  => $dbtype,
-            'username' => $dbprops->getUsername(),
-            'password' => $dbprops->getPassword(),
-            'database' => $dbprops->getDatabase(),
-            'hostspec' => 'localhost'
-        );
+        $this->db = $dbprops->getDBConnect();
 
-        $opts = array(
-            'persistent'  => true,
-            'portability' => DB_PORTABILITY_ALL
-        );
-        $this->db =& DB::connect($dsn,$opts);
-        if (PEAR::isError($this->db)) {
-            $this->db = null;
-        }
-
-        if ($this->db != null) {
+        if (!is_null($this->db)) {
             if ($dbtype == 'pgsql') {
                 $retval =& new Auth_OpenID_PostgreSQLStore($this->db);
             } elseif ($dbtype == 'mysql') {

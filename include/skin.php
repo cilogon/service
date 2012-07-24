@@ -37,7 +37,7 @@ require_once('util.php');
  *   // Get the value of a configuration option                         *
  *   $idpwhitelist = $skin->getConfigOption('idpwhitelist');            *
  *   // Now, process entries in the $idpwhitelist                       *
- *   if (($idpwhitelist !== null) && (!empty($idpwhitelist->idp))) {    *
+ *   if ((!is_null($idpwhitelist)) && (!empty($idpwhitelist->idp))) {   *
  *       foreach ($idpwhitelist->idp as $entityID) {                    *
  *           echo "<p>" , (string)$entityID , "<\p>\n";                 *
  *       }                                                              *
@@ -45,7 +45,7 @@ require_once('util.php');
  *   // Check to see if <hideportalinfo> is set                         *
  *   $hideportalinfo = false;                                           *
  *   $hpi=$skin->getConfigOption('portallistaction','hideportalinfo');  *
- *   if (($hpi !== null) && ((int)$hpi > 0)) {                          *
+ *   if ((!is_null($hpi)) && ((int)$hpi > 0)) {                         *
  *       $hideportalinfo = true;                                        *
  *   }                                                                  *
  ************************************************************************/
@@ -235,7 +235,7 @@ class skin {
     function hasIdpWhitelist() {
         $retval = false;  // Assume no <idpwhitelist> configured
         $idpwhitelist = $this->getConfigOption('idpwhitelist');
-        if (($idpwhitelist !== null) && (!empty($idpwhitelist->idp))) {
+        if ((!is_null($idpwhitelist)) && (!empty($idpwhitelist->idp))) {
             $retval = true;
         }
         return $retval;
@@ -251,7 +251,7 @@ class skin {
     function hasIdpBlacklist() {
         $retval = false;  // Assume no <idpblacklist> configured
         $idpblacklist = $this->getConfigOption('idpblacklist');
-        if (($idpblacklist !== null) && (!empty($idpblacklist->idp))) {
+        if ((!is_null($idpblacklist)) && (!empty($idpblacklist->idp))) {
             $retval = true;
         }
         return $retval;
@@ -383,7 +383,7 @@ class skin {
     function hasPortalList() {
         $retval = false;  // Assume no <portallist> configured
         $portallist = $this->getConfigOption('portallist');
-        if (($portallist !== null) && (!empty($portallist->portal))) {
+        if ((!is_null($portallist)) && (!empty($portallist->portal))) {
             $retval = true;
         }
         return $retval;

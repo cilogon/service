@@ -111,7 +111,7 @@ class timeit {
      * This function closes the timing file if it is open.              *
      ********************************************************************/
     function closeFile() {
-        if ($this->fh != null) {
+        if (!is_null($this->fh)) {
             fclose($this->fh);
             $this->fh = null;
         }

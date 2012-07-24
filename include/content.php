@@ -50,7 +50,7 @@ function printHeader($title='',$extra='')
     // Find the "Powered By CILogon" image if specified by the skin
     $poweredbyimg = "/images/poweredbycilogon.png";
     $skinpoweredbyimg = (string)$skin->getConfigOption('poweredbyimg');
-    if (($skinpoweredbyimg !== null) && 
+    if ((!is_null($skinpoweredbyimg)) && 
         (strlen($skinpoweredbyimg) > 0) &&
         (is_readable($_SERVER{'DOCUMENT_ROOT'} . $skinpoweredbyimg))) {
         $poweredbyimg = $skinpoweredbyimg;
@@ -261,7 +261,7 @@ function printWAYF()
     /* If no previous providerId, get from skin, or default to Google. */
     if (strlen($providerId) == 0) {
         $initialidp = (string)$skin->getConfigOption('initialidp');
-        if (($initialidp !== null) && (isset($idps[$initialidp]))) {
+        if ((!is_null($initialidp)) && (isset($idps[$initialidp]))) {
             $providerId = $initialidp;
         } else {
             $providerId = openid::getProviderUrl('Google');
@@ -291,7 +291,7 @@ function printWAYF()
       // See if the skin has set a size for the IdP <select> list
       $selectsize = 4;
       $ils = $skin->getConfigOption('idplistsize');
-      if (($ils !== null) && ((int)$ils > 0)) {
+      if ((!is_null($ils)) && ((int)$ils > 0)) {
           $selectsize = (int)$ils;
       }
 
@@ -333,7 +333,7 @@ function printWAYF()
 
     // Added for Silver IdPs
     $requestsilver = $skin->getConfigOption('requestsilver');
-    if (($requestsilver !== null) && ((int)$requestsilver == 1)) {
+    if ((!is_null($requestsilver)) && ((int)$requestsilver == 1)) {
         setSessionVar('requestsilver','1');
         echo '
         <label for="silveridp">Request Silver:</label>
@@ -607,7 +607,7 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
 
             // To bypass SSO at IdP, check for skin's 'forceauthn'
             $forceauthn = $skin->getConfigOption('forceauthn');
-            if (($forceauthn !== null) && ((int)$forceauthn == 1)) {
+            if ((!is_null($forceauthn)) && ((int)$forceauthn == 1)) {
                 $redirect .= '&forceAuthn=true';
             }
 
@@ -682,7 +682,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser')
         $openid = new openid();
         $datastore = $openid->getStorage();
 
-        if ($datastore == null) {
+        if (is_null($datastore)) {
             setSessionVar('openiderror',$openiderrorstr);
         } else {
             require_once("Auth/OpenID/Consumer.php");
@@ -725,7 +725,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser')
                 $max_auth_age = null;
                 // To bypass SSO at IdP, check for skin's 'forceauthn'
                 $forceauthn = $skin->getConfigOption('forceauthn');
-                if (($forceauthn !== null) && ((int)$forceauthn == 1)) {
+                if ((!is_null($forceauthn)) && ((int)$forceauthn == 1)) {
                     $max_auth_age = '0';
                 }
                 $pape_request = new Auth_OpenID_PAPE_Request(
@@ -965,12 +965,12 @@ function handleGotUser()
 
             // Check forcerememeber skin option to skip new user page
             $forceremember = $skin->getConfigOption('delegate','forceremember');
-            if (($forceremember !== null) && ((int)$forceremember == 1)) {
+            if ((!is_null($forceremember)) && ((int)$forceremember == 1)) {
                 $status = dbservice::$STATUS['STATUS_OK'];
             } else {
                 $initialremember = 
                     $skin->getConfigOption('delegate','initialremember');
-                if (($initialremember!==null) && ((int)$initialremember==1)) {
+                if ((!is_null($initialremember)) && ((int)$initialremember==1)){
                     $portal = new portalcookie();
                     $portallifetime = $portal->getPortalLifetime($callbackuri);
                     if ((strlen($portallifetime)==0) || ($portallifetime==0)) {
@@ -1413,7 +1413,7 @@ function getLogOnButtonText() {
 
     $retval = 'Log On';
     $lobt = $skin->getConfigOption('logonbuttontext');
-    if ($lobt !== null)  {
+    if (!is_null($lobt))  {
         $retval = (string)$lobt;
     }
     return $retval;
@@ -1433,7 +1433,7 @@ function reformatDN($dn) {
 
     $newdn = $dn;
     $dnformat = (string)$skin->getConfigOption('dnformat');
-    if (($dnformat !== null)) {
+    if (!is_null($dnformat)) {
         if ($dnformat == 'rfc2253') {
             if (preg_match('%/DC=org/DC=cilogon/C=US/O=(.*)/CN=(.*)%',
                            $dn,$match)) {
@@ -1487,14 +1487,14 @@ function getMinMaxLifetimes($section,$defaultmaxlifetime) {
     $maxlifetime = $defaultmaxlifetime;
     $skinminlifetime = $skin->getConfigOption($section,'minlifetime');
     // Read the skin's minlifetime value from the specified section
-    if (($skinminlifetime !== null) && ((int)$skinminlifetime > 0)) {
+    if ((!is_null($skinminlifetime)) && ((int)$skinminlifetime > 0)) {
         $minlifetime = max($minlifetime,(int)$skinminlifetime);
         // Make sure $minlifetime is less than $maxlifetime;
         $minlifetime = min($minlifetime,$maxlifetime);
     }
     // Read the skin's maxlifetime value from the specified section
     $skinmaxlifetime = $skin->getConfigOption($section,'maxlifetime');
-    if (($skinmaxlifetime !== null) && ((int)$skinmaxlifetime) > 0) {
+    if ((!is_null($skinmaxlifetime)) && ((int)$skinmaxlifetime) > 0) {
         $maxlifetime = min($maxlifetime,(int)$skinmaxlifetime);
         // Make sure $maxlifetime is greater than $minlifetime
         $maxlifetime = max($minlifetime,$maxlifetime);

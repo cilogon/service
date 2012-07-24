@@ -286,7 +286,7 @@ function getCert() {
     $certlifetime = (int)(getPostVar('certlifetime'));
     if ($certlifetime == 0) {  // If not specified, set to default value
         $defaultlifetime = $skin->getConfigOption('ecp','defaultlifetime');
-        if (($defaultlifetime !== null) && ((int)$defaultlifetime > 0)) {
+        if ((!is_null($defaultlifetime)) && ((int)$defaultlifetime > 0)) {
             $certlifetime = (int)$defaultlifetime;
         } else {
             $certlifetime = MYPROXY_LIFETIME;

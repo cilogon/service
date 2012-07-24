@@ -459,52 +459,52 @@ class dbservice {
      * non-null / non-empty member variables to stdout.                 *
      ********************************************************************/
     function dump() {
-        if ($this->status !== null) {
+        if (!is_null($this->status)) {
             echo "status=$this->status\n";
         }
-        if ($this->user_uid !== null) {
+        if (!is_null($this->user_uid)) {
             echo "user_uid=$this->user_uid\n";
         }
-        if ($this->remote_user !== null) {
+        if (!is_null($this->remote_user)) {
             echo "remote_user=$this->remote_user\n";
         }
-        if ($this->idp !== null) {
+        if (!is_null($this->idp)) {
             echo "idp=$this->idp\n";
         }
-        if ($this->idp_display_name !== null) {
+        if (!is_null($this->idp_display_name)) {
             echo "idp_display_name=$this->idp_display_name\n";
         }
-        if ($this->first_name !== null) {
+        if (!is_null($this->first_name)) {
             echo "first_name=$this->first_name\n";
         }
-        if ($this->last_name !== null) {
+        if (!is_null($this->last_name)) {
             echo "last_name=$this->last_name\n";
         }
-        if ($this->email !== null) {
+        if (!is_null($this->email)) {
             echo "email=$this->email\n";
         }
-        if ($this->distinguished_name !== null) {
+        if (!is_null($this->distinguished_name)) {
             echo "distinguished_name=$this->distinguished_name\n";
         }
-        if ($this->serial_string !== null) {
+        if (!is_null($this->serial_string)) {
             echo "serial_string=$this->serial_string\n";
         }
-        if ($this->create_time !== null) {
+        if (!is_null($this->create_time)) {
             echo "create_time=$this->create_time\n";
         }
-        if ($this->oauth_token !== null) {
+        if (!is_null($this->oauth_token)) {
             echo "oauth_token=$this->oauth_token\n";
         }
-        if ($this->cilogon_callback !== null) {
+        if (!is_null($this->cilogon_callback)) {
             echo "cilogon_callback=$this->cilogon_callback\n";
         }
-        if ($this->cilogon_success !== null) {
+        if (!is_null($this->cilogon_success)) {
             echo "cilogon_success=$this->cilogon_success\n";
         }
-        if ($this->cilogon_failure !== null) {
+        if (!is_null($this->cilogon_failure)) {
             echo "cilogon_failure=$this->cilogon_failure\n";
         }
-        if ($this->cilogon_portal_name !== null) {
+        if (!is_null($this->cilogon_portal_name)) {
             echo "cilogon_portal_name=$this->cilogon_portal_name\n";
         }
         if (count($this->idp_uids) > 0) {

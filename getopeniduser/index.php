@@ -52,7 +52,7 @@ function getUserAndRespond($responseurl) {
 
     unsetSessionVar('openiderror');
     $datastore = $openid->getStorage();
-    if ($datastore == null) {
+    if (is_null($datastore)) {
         setSessionVar('openiderror',
             'Internal OpenID error. Please contact <a href="mailto:help@cilogon.org">help@cilogon.org</a> or select a different identity provider.');
     } else {

@@ -292,7 +292,7 @@ function printGetCertificate() {
         // See if the skin specified an initial value
         $skinlife = $skin->getConfigOption('pkcs12','initiallifetime','number');
         $skinmult = $skin->getConfigOption('pkcs12','initiallifetime','multiplier');
-        if (($skinlife !== null) && ($skinmult !== null) &&
+        if ((!is_null($skinlife)) && (!is_null($skinmult)) &&
             ((int)$skinlife > 0) && ((int)$skinmult > 0)) {
             $p12lifetime = (int)$skinlife;
             $p12multiplier = (int)$skinmult;
@@ -476,7 +476,7 @@ function printDownloadCertificate() {
     if ((strlen($certlifetime) == 0) || ($certlifetime <= 0)) {
         $skinlife = $skin->getConfigOption('gsca','initiallifetime','number');
         $skinmult = $skin->getConfigOption('gsca','initiallifetime','multiplier');
-        if (($skinlife !== null) && ($skinmult !== null) &&
+        if ((!is_null($skinlife)) && (!is_null($skinmult)) &&
             ((int)$skinlife > 0) && ((int)$skinmult > 0)) {
             $certlifetime = (int)$skinlife;
             $certmultiplier = (int)$skinmult;

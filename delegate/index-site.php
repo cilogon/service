@@ -161,7 +161,7 @@ function printLogonPage()
 
         // Try to read the skin's initiallifetime
         $initiallifetime = $skin->getConfigOption('delegate','initiallifetime');
-        if (($initiallifetime !== null) && ((int)$initiallifetime > 0)) {
+        if ((!is_null($initiallifetime)) && ((int)$initiallifetime > 0)) {
             $needtosetcookie = 1;
             $initiallifetime = (int)$initiallifetime;
         } else { // Set a default lifetime value in case initialremember is set
@@ -180,7 +180,7 @@ function printLogonPage()
 
         // Next, try to read the skin's initialremember
         $initialremember = $skin->getConfigOption('delegate','initialremember');
-        if (($initialremember !== null) && ((int)$initialremember > 0)) {
+        if ((!is_null($initialremember)) && ((int)$initialremember > 0)) {
             $needtosetcookie = 1;
             $initialremember = (int)$initialremember;
         } else { // Set a default remember value in case initiallifetime is set
@@ -210,7 +210,7 @@ function printLogonPage()
     $showportalinfo = true;
     if ($skin->hasPortalList()) {
         $hpi = $skin->getConfigOption('portallistaction','hideportalinfo');
-        if (($hpi !== null) && ((int)$hpi == 1) &&
+        if ((!is_null($hpi)) && ((int)$hpi == 1) &&
             ($skin->portalListed(getSessionVar('callbackuri')))) {
             $showportalinfo = false; 
         }
@@ -310,13 +310,13 @@ function printMainPage()
 
     // Check the skin for forceremember and forcelifetime
     $forceremember = $skin->getConfigOption('delegate','forceremember');
-    if (($forceremember !== null) && ((int)$forceremember == 1)) {
+    if ((!is_null($forceremember)) && ((int)$forceremember == 1)) {
         $forceremember = 1;
     } else {
         $forceremember = 0;
     }
     $forcelifetime = $skin->getConfigOption('delegate','forcelifetime');
-    if (($forcelifetime !== null) && ((int)$forcelifetime > 0)) {
+    if ((!is_null($forcelifetime)) && ((int)$forcelifetime > 0)) {
         $forcelifetime = (int)$forcelifetime;
     } else {
         $forcelifetime = 0;
@@ -576,7 +576,7 @@ function handleAllowDelegation($always=false)
     $lifetime = 0;
     // Check the skin's forcelifetime and use it if it is configured.
     $forcelifetime = $skin->getConfigOption('delegate','forcelifetime');
-    if (($forcelifetime !== null) && ((int)$forcelifetime > 0)) {
+    if ((!is_null($forcelifetime)) && ((int)$forcelifetime > 0)) {
         $lifetime = (int)$forcelifetime;
     }
 
