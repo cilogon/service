@@ -28,12 +28,15 @@ require_once('dbprops.php');
  *                  directory for storing OpenID information to be used *
  *                  by the "FileStore" module. Note that this directory *
  *                  must exist and be owner (or group) 'apache'.        *
+ *              cilogon_ini_file - the full path to the php.ini-style   *
+ *                  configuration file for the CILogon Service.         *
  ************************************************************************/
 
 class openid {
 
     /* Set the constants to correspond to your particular set up.       */
     const fileStoreDirectory = '/var/run/openid';
+    const cilogon_ini_file   = '/var/www/config/cilogon.ini';
 
     /* The $providerUrls array is a list of all supported OpenID IdP    *
      * URLs (as the keys) and their associated display names (as the    *
@@ -49,16 +52,22 @@ class openid {
     );
 
     /* Database connection for the OpenID library.                      */
-    protected $db;
+    protected $db = null;
+    /* Type of storage to use for OpenID state. null => filesystem      */
+    protected $storage = null;
 
     /********************************************************************
      * Function  : __construct - default constructor                    *
      * Returns   : A new openid object.                                 *
-     * Default constructor.  This method initializes the storage needed *
-     * by the OpenID consumer library.                                  *
+     * Default constructor.  This method reads in the value of          *
+     * storage.openid from the cilogon.ini configuration file.          *
      ********************************************************************/
     function __construct() {
-        $this->db = null;
+        $ini_array = @parse_ini_file(self::cilogon_ini_file);
+        if ((is_array($ini_array)) &&
+            (array_key_exists('storage.openid',$ini_array))) {
+            $this->storage = $ini_array['storage.openid'];
+        }
     }
 
     /********************************************************************
@@ -224,22 +233,32 @@ class openid {
 
     /********************************************************************
      * Function  : getStorage                                           *
-     * Parameter : Storage type, one of 'mysql', 'pgsql', or 'file'.    *
-     *             Defaults to 'mysql'.                                 *
+     * Parameter : Storage type, one of 'pgsql', 'mysql', or 'file'.    *
+     *             Defaults to null, which means use the value of       *
+     *             storage.openid from the cilogon.ini config file,     *
+     *             or 'file' if no such parameter configured.           *
      * Returns   : A new Auth_OpenID_FileStore,                         *
      *             Auth_OpenID_PostgreSQLStore, or                      *
                    Auth_OpenID_MySQLStore object for use by an          *
      *             Auth_OpenID_Consumer.                                *
      * This method calls one of getMySQLStorage(),                      *
      * getPostgreSQLStorage() or  getFileStoreage() and returns a       *
-     * store suitable for use by an Auth_OpenID_Consumer.               *
+     * store suitable for use by an Auth_OpenID_Consumer.  If you       *
+     * don't pass in a parameter, the value of storage.openid from      *
+     * from the cilogon_ini_file will be used. If that value is also    *
+     * null, then default to 'file'.                                    *
      ********************************************************************/
-    function getStorage($dbtype='mysql') {
+    function getStorage($storetype=null) {
         $storage = null;
 
-        if ($dbtype == 'mysql') {
+        // No parameter given? Use the value read in from cilogon_ini_file.
+        if (is_null($storetype)) {
+            $storetype = $this->storage;
+        }
+
+        if ($storetype == 'pgsql') {
             $storage = $this->getMySQLStorage();
-        } elseif ($dbtype == 'pgsql') {
+        } elseif ($storetype == 'mysql') {
             $storage = $this->getPostgreSQLStorage();
         } else {
             $storage = $this->getFileStorage();

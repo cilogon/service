@@ -1,10 +1,18 @@
 <?php
 
-/* NOTE: Look at the bottom of this file to see that it calls           *
- * startPHPSession().  Thus you simply need to require_once('util.php') *
- * at the top of your PHP code to start a PHP session.  Also there is   *
- * a "define()" for HOSTNAME at the bottom of this file which allows    *
- * you to manually change the hostname used in various URLs.            */
+/* Full path to the php.ini-style config file for the CILogon Service  */
+define('CILOGON_INI_FILE','/var/www/config/cilogon.ini');
+
+/* If HTTP_HOST is set, use that as the hostname. Else, set manually.  */
+$thehostname = getServerVar('HTTP_HOST');
+define('HOSTNAME',((strlen($thehostname) > 0) ? $thehostname : 'cilogon.org'));
+
+/* Start a secure PHP session simply with "require_once('util.php');"   */
+startPHPSession();
+
+// require_once('timeit.php');
+// $timeit = new timeit(timeit::defaultFilename,true);
+
 
 /************************************************************************
  * Function  : getServerVar                                             *
@@ -30,8 +38,7 @@ function getServerVar($serv) {
  * This function queries a given $_GET parameter (which is set in the   *
  * URL via a "?parameter=value" parameter) and returns the value.       *
  ************************************************************************/
-function getGetVar($get) 
-{ 
+function getGetVar($get) { 
     $retval = '';
     if (isset($_GET[$get])) {
         $retval = $_GET[$get];
@@ -47,8 +54,7 @@ function getGetVar($get)
  * This function queries a given $_POST variable (which is set when     *
  * the user submits a form, for example) and returns the value.         *
  ************************************************************************/
-function getPostVar($post) 
-{ 
+function getPostVar($post) { 
     $retval = '';
     if (isset($_POST[$post])) {
         $retval = $_POST[$post];
@@ -63,8 +69,7 @@ function getPostVar($post)
  *             that variable is not set.                                *
  * This function returns the value of a given cookie.                   *
  ************************************************************************/
-function getCookieVar($cookie) 
-{ 
+function getCookieVar($cookie) { 
     $retval = '';
     if (isset($_COOKIE[$cookie])) {
         $retval = $_COOKIE[$cookie];
@@ -79,8 +84,7 @@ function getCookieVar($cookie)
  *             that variable is not set.                                *
  * This function returns the value of a given PHP Session variable.     *
  ************************************************************************/
-function getSessionVar($sess) 
-{ 
+function getSessionVar($sess) { 
     $retval = '';
     if (isset($_SESSION[$sess])) {
         $retval = $_SESSION[$sess];
@@ -94,8 +98,7 @@ function getSessionVar($sess)
  * This function clears the given PHP session variable by first setting *
  * it to null and then unsetting it entirely.                           *
  ************************************************************************/
-function unsetSessionVar($sess) 
-{
+function unsetSessionVar($sess) {
     if (isset($_SESSION[$sess])) {
         $_SESSION[$sess] = null;
         unset($_SESSION[$sess]);
@@ -120,8 +123,7 @@ function unsetSessionVar($sess)
  * set to a non-empty value, false otherwise.  Normally, the return     *
  * value can be ignored.                                                *
  ************************************************************************/
-function setSessionVar($key,$value='') 
-{
+function setSessionVar($key,$value='') {
     $retval = false;  // Assume we want to unset the session variable
     if (strlen($key) > 0) {  // Make sure session variable name was passed in
         if (strlen($value) > 0) {
@@ -142,8 +144,7 @@ function setSessionVar($key,$value='')
  * speaking, the cookies are not removed, rather they are set to empty  *
  * values with expired times.                                           *
  ************************************************************************/
-function removeShibCookies() 
-{
+function removeShibCookies() {
     while (list ($key,$val) = each ($_COOKIE)) {
         if (strncmp($key,"_shib", strlen("_shib")) == 0) {
             setcookie($key,'',time()-3600,'/','',true);
@@ -153,19 +154,31 @@ function removeShibCookies()
 
 /************************************************************************
  * Function  : startPHPSession                                          *
- * Parameter : True to store PHP session data to MySQL, false to save   *
- *             PHP session data to file.                                *
+ * Parameter : Storage location of the PHP session data, one of         *
+ *             'file' or 'mysql'. Defaults to null, which means use     *
+ *             the value of storage.phpsessions from the cilogon.ini    *
+ *             config file, or 'file' if no such parameter configured.  *
  * This function starts a secure PHP session and should be called at    *
  * at the beginning of each script before any HTML is output.  It does  *
  * a trick of setting a 'lastaccess' time so that the $_SESSION         *
  * variable does not expire without warning.                            *
  ************************************************************************/
-function startPHPSession($usemysql=false)
-{
-    if ($usemysql) {
-        require_once('sessionmgr.php');
-        $sessionmgr = new sessionmgr();
+function startPHPSession($storetype=null) {
+    // No parameter given? Use the value read in from cilogon.ini file.
+    // If storage.phpsessions == 'mysql', create a sessionmgr().
+    if (is_null($storetype)) {
+        static $ini_array = null; // Read the ini file just once
+        if (is_null($ini_array)) {
+            $ini_array = @parse_ini_file(CILOGON_INI_FILE);
+        }
+        if ((is_array($ini_array)) &&
+            (array_key_exists('storage.phpsessions',$ini_array)) && 
+            ($ini_array['storage.phpsessions'] == 'mysql')) {
+            require_once('sessionmgr.php');
+            $sessionmgr = new sessionmgr();
+        }
     }
+    
     ini_set('session.cookie_secure',true);
     @session_start();
     if ((!isset($_SESSION['lastaccess']) || 
@@ -359,8 +372,7 @@ function deleteDir($dir,$shred=false) {
  * description of the error in the $detail parameter.  Any session      *
  * variables available are appended to the body of the message.         *
 /************************************************************************/
-function sendErrorAlert($summary,$detail,$mailto='alerts@cilogon.org')
-{
+function sendErrorAlert($summary,$detail,$mailto='alerts@cilogon.org') {
     $sessionvars = array(
         'idp'          => 'IdP',
         'idpname'      => 'IdP Name',
@@ -398,15 +410,4 @@ Remote Address= ' . getServerVar('REMOTE_ADDR') . '
     mail($mailto,$mailsubj,$mailmsg,$mailfrom);
 }
 
-
-/* Start a secure PHP session */
-startPHPSession();
-
-/* If HTTP_HOST is set, use that as the hostname.  Otherwise, set manually. */
-$thehostname = getServerVar('HTTP_HOST');
-define('HOSTNAME',((strlen($thehostname) > 0) ? 
-    $thehostname : 'cilogon.org'));
-
-// require_once('timeit.php');
-// $timeit = new timeit(timeit::defaultFilename,true);
 ?>
