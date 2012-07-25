@@ -115,6 +115,7 @@ class shiberror {
      ********************************************************************/
     function printError() {
         global $log;
+        global $skin;
 
         $errorstr1 = '';  // For logging - one line
         $errorstr2 = '';  // For HTML and email - multi-line
@@ -131,7 +132,7 @@ class shiberror {
         <div class="boxed">
         ';
 
-        printErrorBox('
+        $erroroutput = '
         <p>
         The CILogon Service has encountered a Shibboleth error. 
         </p>
@@ -142,7 +143,21 @@ class shiberror {
         notified. This may be a temporary error. Please try again later, or
         contact us at the email address at the bottom of the page.
         </p>
-        ');
+        ';
+
+        $forceauthn = $skin->getConfigOption('forceauthn');
+        if ((!is_null($forceauthn)) && ((int)$forceauthn == 1)) {
+            $erroroutput .= '
+            <p>
+            Note that this error may be due to your selected Identity
+            Provider (IdP) not fully supporting &quot;forced 
+            reauthentication&quot;. This setting forces users to log in at
+            the IdP every time, thus bypassing Single Sign-On (SSO).
+            </p>
+            ';
+        }
+
+        printErrorBox($erroroutput);
 
         echo '
         <div>
