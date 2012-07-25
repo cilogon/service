@@ -45,8 +45,7 @@ function printUsage() {
     echo "Note: All parameters must be specified for both InCommon and OpenID.\n";
 }
 
-function printInfo($dbs)
-{
+function printInfo($dbs) {
     echo "uid = $dbs->user_uid\n";
     $status = $dbs->status;
     echo "status = $status = " . array_search($status,dbservice::$STATUS)."\n";

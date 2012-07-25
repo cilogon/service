@@ -43,8 +43,7 @@ printTestPage();
  * was not already in the list).  If any attribute is missing, an       *
  * error message is printed out.                                        *
  ************************************************************************/
-function printTestPage()
-{
+function printTestPage() {
     global $idplist;
     global $shibarray;
     global $csrf;
@@ -350,8 +349,7 @@ function printTestPage()
  * This function sends a notification email to the 'alerts@cilogon.org' *
  * mailing list when a new IdP has been added to the whitelist.         *
  ************************************************************************/
-function sendNotificationEmail() 
-{
+function sendNotificationEmail() {
     global $shibarray;
 
     $entityID = $shibarray['Identity Provider'];

@@ -38,8 +38,7 @@ $skin = new skin();
  * block for each web page.  This gives a consistent look to the site.  *
  * Any style changes should go in the cilogon.css file.                 *
  ************************************************************************/
-function printHeader($title='',$extra='')
-{
+function printHeader($title='',$extra='') {
     global $csrf;       // Initialized above
     global $skin;
 
@@ -114,8 +113,7 @@ function printHeader($title='',$extra='')
  * This function should be called to print out the closing HTML block   *
  * for each web page.                                                   *
  ************************************************************************/
-function printFooter($footer='') 
-{
+function printFooter($footer='') {
     if (strlen($footer) > 0) {
         echo $footer;
     }
@@ -209,8 +207,7 @@ function printFormHead($action='',$gsca=false) {
  * cookie for the 'providerId' had been set previously, so that the     *
  * last used IdP is selected in the list.                               *
  ************************************************************************/
-function printWAYF() 
-{
+function printWAYF() {
     global $csrf;
     global $skin;
 
@@ -474,8 +471,7 @@ function printWAYF()
  * appear inline with other information.  This is accomplished via the  *
  * use of wrapping the image in a <span> tag.                           *
  ************************************************************************/
-function printIcon($icon,$popuptext='',$class='')
-{
+function printIcon($icon,$popuptext='',$class='') {
     echo '<span';
     if (strlen($popuptext) > 0) {
         echo ' class="helpcursor ' , $class , '" title="' , $popuptext , '"';
@@ -520,8 +516,7 @@ function printHelpButton() {
  * (3) If $providerId is passed-in, it must match 'idp'.                *
  * If all checks are good, then this function returns true.             *
  ************************************************************************/
-function verifyCurrentSession($providerId='') 
-{
+function verifyCurrentSession($providerId='') {
     $retval = false;
 
     $uid     = getSessionVar('uid');
@@ -567,8 +562,7 @@ function verifyCurrentSession($providerId='')
  * 'submit' variable in the 'getuser' script.                           *
  ************************************************************************/
 function redirectToGetUser($providerId='',$responsesubmit='gotuser',
-                           $responseurl=null)
-{
+                           $responseurl=null) {
     global $csrf;
     global $log;
     global $skin;
@@ -648,8 +642,7 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
  * the 'openiderror' PHP session variable and redisplay the main logon  *
  * screen.                                                              *
  ************************************************************************/
-function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') 
-{
+function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
     global $csrf;
     global $log;
     global $skin;
@@ -776,8 +769,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser')
  * passed-in error HTML text.  The error icon and text are output to    *
  * a <table> so as to keep the icon to the left of the error text.      *
  ************************************************************************/
-function printErrorBox($errortext) 
-{
+function printErrorBox($errortext) {
     echo '
     <div class="errorbox">
     <table cellpadding="5">
@@ -802,8 +794,7 @@ function printErrorBox($errortext)
  * with their IdP and call the 'getuser' script to repopulate the PHP   *
  * session.                                                             *
  ************************************************************************/
-function unsetGetUserSessionVars()
-{
+function unsetGetUserSessionVars() {
     unsetSessionVar('submit');
     unsetSessionVar('uid');
     unsetSessionVar('status');
@@ -824,8 +815,7 @@ function unsetGetUserSessionVars()
  * This function removes all of the PHP session variables related to    *
  * portal delegation.                                                   *
  ************************************************************************/
-function unsetPortalSessionVars()
-{
+function unsetPortalSessionVars() {
     unsetSessionVar('portalstatus');
     unsetSessionVar('callbackuri');
     unsetSessionVar('successuri');
@@ -844,8 +834,7 @@ function unsetPortalSessionVars()
  * new or changed user and prints that page as appropriate.  Otherwise  *
  * it continues to the MainPage.                                        *
  ************************************************************************/
-function handleGotUser()
-{
+function handleGotUser() {
     global $log;
     global $skin;
 
@@ -998,8 +987,7 @@ function handleGotUser()
  * that this is the first time they have logged in with a particular    *
  * identity provider.                                                   *
  ************************************************************************/
-function printNewUserPage()
-{
+function printNewUserPage() {
     global $log;
 
     $log->info('New User page.');
@@ -1061,8 +1049,7 @@ function printNewUserPage()
  * attributes are different (displaying both old and new values) and    *
  * what portions of the certificate are affected.                       *
  ************************************************************************/
-function printUserChangedPage()
-{
+function printUserChangedPage() {
     global $log;
 
     $log->info('User IdP attributes changed.');

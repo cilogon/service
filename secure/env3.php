@@ -95,8 +95,7 @@ if (isset($_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'])) {
 <b>-all SHIB headers-</b> (<code>HTTP_SHIB_ATTRIBUTES</code> is not shown in this list)
 <?php
 echo '<table>';
-foreach ($_SERVER as $key => $value)
-{
+foreach ($_SERVER as $key => $value) {
 	$fkey='_'.$key;
 	if ( strpos($fkey,'SHIB')>1 && $key!="HTTP_SHIB_ATTRIBUTES")
 #	if ( strpos($fkey,'SHIB')>1 )
@@ -132,8 +131,7 @@ The raw attribute response (<code>HTTP_SHIB_ATTRIBUTES</code>) is NOT filtered b
 <b>$_REQUEST</b>
 <?php
 echo '<table>';
-foreach ($_REQUEST as $key => $value)
-{
+foreach ($_REQUEST as $key => $value) {
 	echo '<tr>';
 	echo '<td>'.$key.'</td><td>'.$value.'</td>';
 	echo '</tr>';
@@ -151,8 +149,7 @@ echo '</table>'
 <b>$_SERVER</b>
 <?php
 echo '<table>';
-foreach ($_SERVER as $key => $value)
-{
+foreach ($_SERVER as $key => $value) {
 	echo '<tr>';
 	echo '<td>'.$key.'</td><td>'.$value.'</td>';
 	echo '</tr>';
@@ -168,8 +165,7 @@ echo '</table>'
 <b>$_SESSION</b>
 <?php
 echo '<table>';
-foreach ($_SESSION as $key => $value)
-{
+foreach ($_SESSION as $key => $value) {
 	echo '<tr>';
 	echo '<td>'.$key.'</td><td>'.$value.'</td>';
 	echo '</tr>';

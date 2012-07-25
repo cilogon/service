@@ -110,8 +110,7 @@ function showHideDiv(whichDiv,showhide) {
  * month selector so that they can be populated correctly upon the user's  *
  * next visit.                                                             *
  ***************************************************************************/
-function handleLifetime()
-{
+function handleLifetime() {
   /* Get the various lifetime interface objects */
   var certlifetimefield      = document.getElementById('certlifetime');
   var minlifetimefield       = document.getElementById('minlifetime');

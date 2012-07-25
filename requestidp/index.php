@@ -62,8 +62,7 @@ if ($submit == 'Submit') {
  * to fix the errors before submitting again.                           *
  ************************************************************************/
 function printRequestForm($verify=false,$yourName='',$emailAddr='',
-                          $providerId='',$otherIdP='',$comments='') 
-{
+                          $providerId='',$otherIdP='',$comments='') {
     global $validator;
     global $csrf;  // Initialized in content.php
 
@@ -221,8 +220,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
  * page to the user.                                                    *
  ************************************************************************/
 function printRequestSubmitted($yourName,$emailAddr,
-                               $providerId,$otherIdP,$comments)
-{
+                               $providerId,$otherIdP,$comments) {
     $mailto   = 'help@cilogon.org';
     $mailfrom = 'From: help@cilogon.org' . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();

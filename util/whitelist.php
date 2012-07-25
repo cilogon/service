@@ -52,8 +52,7 @@ if (($argc == 2) || ($argc == 3)) {
     printUsage();
 }
 
-function printUsage()
-{
+function printUsage() {
     echo "Usage: whitelist.php COMMAND {FILE}\n";
     echo "     where COMMAND is one of the following:\n";
     echo "         showfile - show the contents of the whilelist file\n";

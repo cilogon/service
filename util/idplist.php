@@ -18,8 +18,7 @@ if ($argc == 2) {
     printUsage();
 }
 
-function printUsage()
-{
+function printUsage() {
     echo "Usage: idplist.php IDPFILE\n";
     echo "     IDPFILE is the full path name of the idplist.xml file\n";
     echo "This function reads the InCommon metadata and writes out the\n";

@@ -137,8 +137,7 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
  * Explanatory text is shown as well as a button to log in to an IdP    *
  * and get rerouted to the Shibboleth protected getuser script.         *
  ************************************************************************/
-function printLogonPage()
-{
+function printLogonPage() {
     global $log;
     global $skin;
 
@@ -244,8 +243,7 @@ function printLogonPage()
  * (tempcred) or associated OAuth information is missing, bad, or       *
  * expired.                                                             *
  ************************************************************************/
-function printBadOAuthTokenPage()
-{
+function printBadOAuthTokenPage() {
     global $log;
 
     $log->warn('Missing or invalid oauth_token.');
@@ -296,8 +294,7 @@ function printBadOAuthTokenPage()
  * so, then we automatically always approve delegation.  Otherwise,     *
  * we print out the HTML for the <form> buttons.                        *
  ************************************************************************/
-function printMainPage()
-{
+function printMainPage() {
     global $log;
     global $skin;
 
@@ -562,8 +559,7 @@ function printCancelPage() {
  * user is presented with a page showing the result of the attempted    *
  * certificate delegation as well as a link to "return to your portal". *
  ************************************************************************/
-function handleAllowDelegation($always=false)
-{
+function handleAllowDelegation($always=false) {
     global $log;
     global $skin;
 
@@ -807,8 +803,7 @@ function setPortalCookie($remember,$lifetime) {
  * in, it first attempts to call CILogon::getPortalParameters() and     *
  * populates the PHP session with the associated values.                *
  ************************************************************************/
-function verifyOAuthToken($token='')
-{
+function verifyOAuthToken($token='') {
     $retval = false; // Assume OAuth session info is not valid
 
     // If passing in the OAuth $token, try to get the associated info
