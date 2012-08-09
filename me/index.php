@@ -437,7 +437,7 @@ function getTitleText($cookie) {
         "failureuri" => "A URL used by portals in case the CILogon Service is unable to issue a certificate on your behalf. " ,
         "firstname" => "Your given name set by your Identity Provider." ,
         "idpname" => "The display name of your chosen Identity Provider." ,
-        "idp" => "The authentication URL of your chosen Identity Provider." ,
+        "idp" => "The authentication URI of your chosen Identity Provider." ,
         "keepidp" => "Remember if you checked the 'Remember this selection' checkbox when you selected and Identity Provider." ,
         "lastname" => "Your surname set by your Identity Provider." ,
         "loa" => "Level of Assurance set by your Identity Provider." ,
