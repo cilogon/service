@@ -148,7 +148,6 @@ function getUID() {
         unsetSessionVar('idpname');
         unsetSessionVar('ePPN');
         unsetSessionVar('ePTID');
-unsetSessionVar('authncontext');
     } else {
         // Set additional session variables needed by the calling script
         if (preg_match('%http://id.incommon.org/assurance/silver%',
@@ -163,7 +162,6 @@ unsetSessionVar('authncontext');
         setSessionVar('idpname',$shibarray['Organization Name']);
         setSessionVar('ePPN',$shibarray['ePPN']);
         setSessionVar('ePTID',$shibarray['ePTID']);
-setSessionVar('authncontext',getServerVar('Shib-AuthnContext-Class'));
     }
     unsetSessionVar('requestsilver');
     unsetSessionVar('openidID');
