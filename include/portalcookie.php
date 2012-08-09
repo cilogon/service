@@ -1,5 +1,7 @@
 <?php
 
+require_once('util.php');
+
 /************************************************************************
  * Class name : portalcookie                                            *
  * Description: This class is used by the "CILogon Delegate Service"    *
@@ -73,9 +75,8 @@ class portalcookie {
      ********************************************************************/
     function write() {
         if (!empty($this->portalarray)) {
-            setcookie(self::cookiename,
-                base64_encode(serialize($this->portalarray)),
-                    time()+60*60*24*365,'/','',true);
+            setCookieVar(self::cookiename,
+                         base64_encode(serialize($this->portalarray)));
         }
     }
 
@@ -85,7 +86,7 @@ class portalcookie {
      * This should be called before any HTML is output.                 *
      ********************************************************************/
     public static function removeTheCookie() {
-        setcookie(self::cookiename,'',time()-3600,'/','',true);
+        unsetCookieVar(self::cookiename);
     }
 
     /********************************************************************
@@ -166,6 +167,29 @@ class portalcookie {
      ********************************************************************/
     function setPortalRemember($name,$remem) {
         $this->setPortalParam($name,'remember',$remem);
+    }
+
+    /********************************************************************
+     * Function  : toString                                             *
+     * Return    : A 'pretty print' representation of the class         *
+     *             portalarray.                                         *
+     * This function returns a string representation of the object.     *
+     * The format is "portal=...,lifetime=...,remember=...". Multiple   *
+     * portals are separated by a newline character.                    *
+     ********************************************************************/
+    function toString() {
+        $retval = '';
+        $first = true; 
+        foreach ($this->portalarray as $key => $value) {
+            if (!$first) {
+                $retval .= "\n";
+            }
+            $first = false;
+            $retval .= 'portal=' . $key . 
+                       ',lifetime=' . $this->getPortalLifetime($key) .
+                       ',remember='.  $this->getPortalRemember($key);
+        }
+        return $retval;
     }
 
 }
