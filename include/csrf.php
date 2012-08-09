@@ -102,7 +102,7 @@ class csrf {
      * You must call this method before you output any HTML.            *
      ********************************************************************/
     function setTheCookie() {
-        setcookie($this->getTokenName(),$this->getTokenValue(),0,'/','',true);
+        setCookieVar($this->getTokenName(),$this->getTokenValue(),0);
     }
 
     /********************************************************************
@@ -123,7 +123,7 @@ class csrf {
      * rather it is set to an empty value with an expired time.         *
      ********************************************************************/
     public static function removeTheCookie() {
-        setcookie(self::tokenname,'',time()-3600,'/','',true);
+        unsetCookieVar(self::tokenname);
     }
 
     /********************************************************************

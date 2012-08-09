@@ -7,6 +7,14 @@ define('CILOGON_INI_FILE','/var/www/config/cilogon.ini');
 $thehostname = getServerVar('HTTP_HOST');
 define('HOSTNAME',((strlen($thehostname) > 0) ? $thehostname : 'cilogon.org'));
 
+/* For domainname, use the last two segments of the hostname.          */
+$thedomainname = HOSTNAME;
+if (preg_match('/[^\.]+\.[^\.]+$/',$thedomainname,$matches)) {
+    $thedomainname = $matches[0];
+}
+define('DOMAINNAME',$thedomainname);
+
+
 /* Start a secure PHP session simply with "require_once('util.php');"   */
 startPHPSession();
 
@@ -78,6 +86,34 @@ function getCookieVar($cookie) {
 }
 
 /************************************************************************
+ * Function  : setCookieVar                                             *
+ * Parameters: (1) The name of the cookie to set.                       *
+ *             (2) The value to set for the cookie.                     *
+ *             (3) The future expiration time (in seconds) of the       *
+ *                 cookie. Defaults to 1 year from now. If set to 0,    *
+ *                 the cookie expires at the end of the session.        *
+ * This function sets a cookie.                                         *
+ ************************************************************************/
+function setCookieVar($cookie,$value='',$exp=31536000) {
+    if ($exp > 0) {
+        $exp += time();
+    }
+    setcookie($cookie,$value,$exp,'/','.'.DOMAINNAME,true);
+}
+
+/************************************************************************
+ * Function  : unsetCookieVar                                           *
+ * Parameter : The name of the cookie to unset (delete).                *
+ * This function unsets a cookie. Strictly speaking, the cookie is not  *
+ * removed, rather it is set to an empty value with an expired time.    *
+ ************************************************************************/
+function unsetCookieVar($cookie) {
+    setcookie($cookie,'',time()-3600,'/','',true);
+    setcookie($cookie,'',time()-3600,'/','.'.DOMAINNAME,true);
+    unset($_COOKIE[$cookie]);
+}
+
+/************************************************************************
  * Function  : getSessionVar                                            *
  * Parameter : The $_SESSION variable to query.                         *
  * Returns   : The value of the $_SESSION variable or empty string if   *
@@ -90,19 +126,6 @@ function getSessionVar($sess) {
         $retval = $_SESSION[$sess];
     }
     return $retval;
-}
-
-/************************************************************************
- * Function  : unsetSessionVar                                          *
- * Parameter : The $_SESSION variable to erase.                         *
- * This function clears the given PHP session variable by first setting *
- * it to null and then unsetting it entirely.                           *
- ************************************************************************/
-function unsetSessionVar($sess) {
-    if (isset($_SESSION[$sess])) {
-        $_SESSION[$sess] = null;
-        unset($_SESSION[$sess]);
-    }
 }
 
 /************************************************************************
@@ -137,6 +160,19 @@ function setSessionVar($key,$value='') {
 }
 
 /************************************************************************
+ * Function  : unsetSessionVar                                          *
+ * Parameter : The $_SESSION variable to erase.                         *
+ * This function clears the given PHP session variable by first setting *
+ * it to null and then unsetting it entirely.                           *
+ ************************************************************************/
+function unsetSessionVar($sess) {
+    if (isset($_SESSION[$sess])) {
+        $_SESSION[$sess] = null;
+        unset($_SESSION[$sess]);
+    }
+}
+
+/************************************************************************
  * Function   : removeShibCookies                                       *
  * This function removes all "_shib*" cookies currently in the user's   *
  * browser session. In effect, this logs the user out of any IdP.       *
@@ -147,7 +183,7 @@ function setSessionVar($key,$value='') {
 function removeShibCookies() {
     while (list ($key,$val) = each ($_COOKIE)) {
         if (strncmp($key,"_shib", strlen("_shib")) == 0) {
-            setcookie($key,'',time()-3600,'/','',true);
+            unsetCookieVar($key);
         }
     }
 }
@@ -180,6 +216,7 @@ function startPHPSession($storetype=null) {
     }
     
     ini_set('session.cookie_secure',true);
+    ini_set('session.cookie_domain','.'.DOMAINNAME);
     @session_start();
     if ((!isset($_SESSION['lastaccess']) || 
         (time() - $_SESSION['lastaccess']) > 60)) {

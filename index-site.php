@@ -32,21 +32,19 @@ switch ($submit) {
     case 'Continue': // For OOI
         // Set the cookie for keepidp if the checkbox was checked
         if (strlen(getPostVar('keepidp')) > 0) {
-            setcookie('keepidp','checked',time()+60*60*24*365,'/','',true);
+            setCookieVar('keepidp','checked');
         } else {
-            setcookie('keepidp','',time()-3600,'/','',true);
+            unsetCookieVar('keepidp');
         }
         $providerIdPost = getPostVar('providerId');
         if (openid::urlExists($providerIdPost)) { // Use OpenID authn
-            setcookie('providerId',$providerIdPost,
-                      time()+60*60*24*365,'/','',true);
+            setCookieVar('providerId',$providerIdPost);
             redirectToGetOpenIDUser($providerIdPost);
         } elseif ($idplist->exists($providerIdPost)) { // Use InCommon authn
-            setcookie('providerId',$providerIdPost,
-                      time()+60*60*24*365,'/','',true);
+            setCookieVar('providerId',$providerIdPost);
             redirectToGetUser($providerIdPost);
         } else { // Either providerId not set or not in whitelist
-            setcookie('providerId','',time()-3600,'/','',true);
+            unsetCookieVar('providerId');
             printLogonPage();
         }
     break; // End case 'Log On'
@@ -126,7 +124,7 @@ switch ($submit) {
             } elseif ($idplist->exists($providerIdCookie)) { // Use InCommon
                 redirectToGetUser($providerIdCookie);
             } else { // $providerIdCookie not in whitelist
-                setcookie('providerId','',time()-3600,'/','',true);
+                unsetCookieVar('providerId');
                 printLogonPage();
             }
         } else { // One of the cookies for providerId or keepidp was not set.
@@ -621,7 +619,7 @@ function printGetActivationCode() {
     <td class="actioncell">
     ';
     
-    printFormHead(getScriptDir());
+    printFormHead();
 
     validateActivationCode();
     $tokenvalue = '';

@@ -38,13 +38,15 @@ $skin = new skin();
  * block for each web page.  This gives a consistent look to the site.  *
  * Any style changes should go in the cilogon.css file.                 *
  ************************************************************************/
-function printHeader($title='',$extra='') {
+function printHeader($title='',$extra='',$csrfcookie=true) {
     global $csrf;       // Initialized above
     global $skin;
 
-    $csrf->setTheCookie();
-    // Set the CSRF cookie used by GridShib-CA
-    setcookie('CSRFProtection',$csrf->getTokenValue(),0,'/','',true);
+    if ($csrfcookie) {
+        $csrf->setTheCookie();
+        // Set the CSRF cookie used by GridShib-CA
+        setCookieVar('CSRFProtection',$csrf->getTokenValue(),0);
+    }
 
     // Find the "Powered By CILogon" image if specified by the skin
     $poweredbyimg = "/images/poweredbycilogon.png";
@@ -593,6 +595,13 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
         $csrf->setTheSession();
 
         // Set up the "header" string for redirection thru InCommon WAYF
+        /*
+        $hostname = getMachineHostname();
+        $getuser_url = "https://" . $hostname . "/secure/getuser/";
+        $redirect = 
+            "Location: https://" . $hostname . "/Shibboleth.sso/Login?" .
+            'target=' . urlencode($getuser_url);
+        */
         $redirect = 
             'Location: https://' . HOSTNAME . '/Shibboleth.sso/Login?' .
             'target=' . urlencode(GETUSER_URL);
@@ -1257,8 +1266,8 @@ function generateP12() {
         $p12lifetime = $maxlifetime;
         $p12multiplier = 1;  // maxlifetime is in hours
     }
-    setcookie('p12lifetime',$p12lifetime,time()+60*60*24*365,'/','',true);
-    setcookie('p12multiplier',$p12multiplier,time()+60*60*24*365,'/','',true);
+    setCookieVar('p12lifetime',$p12lifetime);
+    setCookieVar('p12multiplier',$p12multiplier);
     setSessionVar('p12lifetime',$p12lifetime);
     setSessionVar('p12multiplier',$p12multiplier);
 
