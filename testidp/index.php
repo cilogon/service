@@ -61,7 +61,7 @@ switch ($submit) {
  * and get rerouted to the Shibboleth protected testidp script.         *
  ************************************************************************/
 function printLogonPage() {
-    printHeader('Welcome To The CILogon Service',
+    printHeader('Test Your Identity Provider With CILogon',
                 '<style type="text/css">' .
                 'div.logoheader h1 {background: transparent ' .
                 'url("/images/cilogon-header.png") no-repeat top left;' . 
@@ -73,6 +73,15 @@ function printLogonPage() {
     ';
 
     printHelpButton();
+
+    echo '
+      <br />
+      <p>
+      To test that your identity provider works with CILogon, please select
+      it from the list below and Log On.
+      </p>
+    ';
+    
     printWAYF(false,true);
 
     echo '

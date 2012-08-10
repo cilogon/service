@@ -398,25 +398,38 @@ function printWAYF($showremember=true,$incommonidps=false) {
       echo '
       <td class="helpcell">
       <div>
-      <p>
-      CILogon facilitates secure access to CyberInfrastructure (<acronym
-      title="CyberInfrastructure">CI</acronym>).
-      In order to use the CILogon Service, you must first select an identity
-      provider. An identity provider (IdP) is an organization where you have
-      an account and can log on to gain access to online services. 
-      </p>
-      <p>
-      If you are a faculty, staff, or student member of a university or
-      college, please select it for your identity
-      provider.  If your school is not listed,
-      please fill out the <a target="_blank"
-      href="https://cilogon.org/requestidp/">"request a new organization"
-      form</a>, and we will try to add your school in the future.
-      </p>
       ';
 
-      /* If not InCommon only, print help text for OpenID providers and ProtectNetwork. */
-      if (!$incommonidps) {
+      if ($incommonidps) { /* InCommon IdPs only means running from /testidp/ */
+          echo '
+          <p>
+          CILogon facilitates secure access to CyberInfrastructure (<acronym
+          title="CyberInfrastructure">CI</acronym>). In order to test your identity
+          provider with the CILogon Service, you must first Log On. If your preferred
+          identity provider is not listed, please fill out the <a target="_blank"
+          href="https://cilogon.org/requestidp/">"request a new organization"
+          form</a>, and we will try to add your identity provider in the future.
+          </p>
+          ';
+      } else { /* If not InCommon only, print help text for OpenID providers. */
+          echo '
+          <p>
+          CILogon facilitates secure access to CyberInfrastructure (<acronym
+          title="CyberInfrastructure">CI</acronym>).
+          In order to use the CILogon Service, you must first select an identity
+          provider. An identity provider (IdP) is an organization where you have
+          an account and can log on to gain access to online services. 
+          </p>
+          <p>
+          If you are a faculty, staff, or student member of a university or
+          college, please select it for your identity
+          provider.  If your school is not listed,
+          please fill out the <a target="_blank"
+          href="https://cilogon.org/requestidp/">"request a new organization"
+          form</a>, and we will try to add your school in the future.
+          </p>
+          ';
+
           $googleavail   = $skin->idpAvailable('http://google.com/accounts/o8/id');
           $paypalavail   = $skin->idpAvailable('http://openid.paypal-ids.com');
           $verisignavail = $skin->idpAvailable('http://pip.verisignlabs.com');
