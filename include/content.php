@@ -34,6 +34,8 @@ $skin = new skin();
  * Function   : printHeader                                             *
  * Parameter  : (1) The text in the window's titlebar                   *
  *              (2) Optional extra text to go in the <head> block       *
+ *              (3) Set the CSRF and CSRFProtetion cookies. Defaults    *
+ *                  to true.                                            *
  * This function should be called to print out the main HTML header     *
  * block for each web page.  This gives a consistent look to the site.  *
  * Any style changes should go in the cilogon.css file.                 *
@@ -203,13 +205,18 @@ function printFormHead($action='',$gsca=false) {
 
 /************************************************************************
  * Function   : printWAYF                                               *
- * This function prints the whitelisted IdPs in a <select> form element *
+ * Parameters : (1) Show the "Remember this selection" checkbox?        *
+ *                  True or false. Defaults to true.                    *
+ *              (2) Show all InCommon IdPs in selection list?           *
+ *                  True or false. Defaults to false, which means show  *
+ *                  only whitelisted IdPs.                              *
+ * This function prints the list of IdPs in a <select> form element     *
  * which can be printed on the main login page to allow the user to     *
  * select "Where Are You From?".  This function checks to see if a      *
  * cookie for the 'providerId' had been set previously, so that the     *
  * last used IdP is selected in the list.                               *
  ************************************************************************/
-function printWAYF() {
+function printWAYF($showremember=true,$incommonidps=false) {
     global $csrf;
     global $skin;
 
@@ -217,53 +224,58 @@ function printWAYF() {
     $helptext = "Check this box to bypass the welcome page on subsequent visits and proceed directly to the selected identity provider. You will need to clear your browser's cookies to return here."; 
     $searchtext = "Enter characters to search for in the list above.";
 
-    /* Get an array of whitelisted IdPs */
+    /* Get an array of IdPs */
     $idplist = new idplist();
-    $idps    = $idplist->getWhitelistedIdPs();
-
-    /* Add the list of OpenID providers into the $idps array so as to  */
-    /* have a single selection list.  Keys are the IdP identifiers,    */
-    /* values are the provider display names, sorted by names.         */
-    foreach (openid::$providerUrls as $url => $name) {
-        $idps[$url] = $name;
-    }
-    natcasesort($idps);
-
-    /* Check to see if the skin's config.xml has a whitelist of IDPs.  */
-    /* If so, go thru master IdP list and keep only those IdPs in the  */
-    /* config.xml's whitelist.                                         */
-    if ($skin->hasIdpWhitelist()) {
-        foreach ($idps as $entityId => $displayName) {
-            if (!$skin->idpWhitelisted($entityId)) {
-                unset($idps[$entityId]);
-            }
-        }
-    }
-    /* Next, check to see if the skin's config.xml has a blacklist of  */
-    /* IdPs. If so, cull down the master IdP list removing 'bad' IdPs. */
-    if ($skin->hasIdpBlacklist()) {
-        $idpblacklist = $skin->getConfigOption('idpblacklist');
-        foreach ($idpblacklist->idp as $blackidp) {
-            unset($idps[(string)$blackidp]);
-        }
-    }
 
     /* Check if the user had previously selected an IdP from the list. */
     $keepidp     = getCookieVar('keepidp');
     $providerId  = getCookieVar('providerId');
 
-    /* Make sure previously selected IdP is in list of available IdPs. */
-    if ((strlen($providerId) > 0) && (!isset($idps[$providerId]))) {
-        $providerId = '';
-    }
+    if ($incommonidps) { /* Get all InCommon IdPs only */
+        $idps = $idplist->getInCommonIdPs();
+    } else { /* Get the whitelisted InCommon IdPs, plus maybe OpenId IdPs  */
+        $idps = $idplist->getWhitelistedIdPs();
 
-    /* If no previous providerId, get from skin, or default to Google. */
-    if (strlen($providerId) == 0) {
-        $initialidp = (string)$skin->getConfigOption('initialidp');
-        if ((!is_null($initialidp)) && (isset($idps[$initialidp]))) {
-            $providerId = $initialidp;
-        } else {
-            $providerId = openid::getProviderUrl('Google');
+        /* Add the list of OpenID providers into the $idps array so as to  */
+        /* have a single selection list.  Keys are the IdP identifiers,    */
+        /* values are the provider display names, sorted by names.         */
+        foreach (openid::$providerUrls as $url => $name) {
+            $idps[$url] = $name;
+        }
+        natcasesort($idps);
+
+        /* Check to see if the skin's config.xml has a whitelist of IDPs.  */
+        /* If so, go thru master IdP list and keep only those IdPs in the  */
+        /* config.xml's whitelist.                                         */
+        if ($skin->hasIdpWhitelist()) {
+            foreach ($idps as $entityId => $displayName) {
+                if (!$skin->idpWhitelisted($entityId)) {
+                    unset($idps[$entityId]);
+                }
+            }
+        }
+        /* Next, check to see if the skin's config.xml has a blacklist of  */
+        /* IdPs. If so, cull down the master IdP list removing 'bad' IdPs. */
+        if ($skin->hasIdpBlacklist()) {
+            $idpblacklist = $skin->getConfigOption('idpblacklist');
+            foreach ($idpblacklist->idp as $blackidp) {
+                unset($idps[(string)$blackidp]);
+            }
+        }
+
+        /* Make sure previously selected IdP is in list of available IdPs. */
+        if ((strlen($providerId) > 0) && (!isset($idps[$providerId]))) {
+            $providerId = '';
+        }
+
+        /* If no previous providerId, get from skin, or default to Google. */
+        if (strlen($providerId) == 0) {
+            $initialidp = (string)$skin->getConfigOption('initialidp');
+            if ((!is_null($initialidp)) && (isset($idps[$initialidp]))) {
+                $providerId = $initialidp;
+            } else {
+                $providerId = openid::getProviderUrl('Google');
+            }
         }
     }
 
@@ -319,15 +331,21 @@ function printWAYF() {
     title="' , $searchtext , '" />
 <!--[if IE]><input type="text" style="display:none;" disabled="disabled" size="1"/><![endif]-->
     </p>
+    ';
 
-    <p>
-    <label for="keepidp" title="' , $helptext , 
-    '" class="helpcursor">Remember this selection:</label>
-    <input type="checkbox" name="keepidp" id="keepidp" ' , 
-    (($keepidp == 'checked') ? 'checked="checked" ' : '') ,
-    'title="' , $helptext , '" class="helpcursor" />
-    </p>
+    if ($showremember) { 
+        echo '
+        <p>
+        <label for="keepidp" title="' , $helptext , 
+        '" class="helpcursor">Remember this selection:</label>
+        <input type="checkbox" name="keepidp" id="keepidp" ' , 
+        (($keepidp == 'checked') ? 'checked="checked" ' : '') ,
+        'title="' , $helptext , '" class="helpcursor" />
+        </p>
+        ';
+    }
 
+    echo '
     <p>';
 
     // Added for Silver IdPs
@@ -397,56 +415,59 @@ function printWAYF() {
       </p>
       ';
 
-      $googleavail   = $skin->idpAvailable('http://google.com/accounts/o8/id');
-      $paypalavail   = $skin->idpAvailable('http://openid.paypal-ids.com');
-      $verisignavail = $skin->idpAvailable('http://pip.verisignlabs.com');
-      $numavail      = $googleavail + $paypalavail + $verisignavail;
+      /* If not InCommon only, print help text for OpenID providers and ProtectNetwork. */
+      if (!$incommonidps) {
+          $googleavail   = $skin->idpAvailable('http://google.com/accounts/o8/id');
+          $paypalavail   = $skin->idpAvailable('http://openid.paypal-ids.com');
+          $verisignavail = $skin->idpAvailable('http://pip.verisignlabs.com');
+          $numavail      = $googleavail + $paypalavail + $verisignavail;
 
-      if ($numavail > 0) {
-          echo '
-          <p>
-          If you have a ';
-          
-          if ($googleavail) {
-              echo '<a target="_blank"
-              href="http://google.com/profiles/me">Google</a>';
-              if ($numavail > 2) {
-                  echo ', ';
-              } elseif ($numavail == 2) {
-                  echo ' or ';
+          if ($numavail > 0) {
+              echo '
+              <p>
+              If you have a ';
+              
+              if ($googleavail) {
+                  echo '<a target="_blank"
+                  href="http://google.com/profiles/me">Google</a>';
+                  if ($numavail > 2) {
+                      echo ', ';
+                  } elseif ($numavail == 2) {
+                      echo ' or ';
+                  }
               }
-          }
-          
-          
-          if ($paypalavail) {
-              echo '<a target="_blank"
-              href="https://openid.paypal-ids.com/">PayPal</a> ';
-              if ($numavail > 1) {
-                  echo 'or ';
+              
+              
+              if ($paypalavail) {
+                  echo '<a target="_blank"
+                  href="https://openid.paypal-ids.com/">PayPal</a> ';
+                  if ($numavail > 1) {
+                      echo 'or ';
+                  }
               }
-          }
-          
-          if ($verisignavail) {
-              echo ' <a target="_blank"
-              href="https://pip.verisignlabs.com/">VeriSign</a> ';
+              
+              if ($verisignavail) {
+                  echo ' <a target="_blank"
+                  href="https://pip.verisignlabs.com/">VeriSign</a> ';
+              }
+
+              echo ' account, you can select one of these providers for
+              authenticating to the CILogon Service.
+              </p>
+              ';
           }
 
-          echo ' account, you can select one of these providers for
-          authenticating to the CILogon Service.
-          </p>
-          ';
-      }
-
-      if ($skin->idpAvailable('urn:mace:incommon:idp.protectnetwork.org')) {
-          echo '
-          <p>
-          Alternatively, you can <a
-          target="_blank"
-          href="https://www.protectnetwork.org/pnidm/registration.html">register
-          for a ProtectNetwork UserID</a> and use that for authenticating to
-          the CILogon Service.
-          </p>
-          ';
+          if ($skin->idpAvailable('urn:mace:incommon:idp.protectnetwork.org')) {
+              echo '
+              <p>
+              Alternatively, you can <a
+              target="_blank"
+              href="https://www.protectnetwork.org/pnidm/registration.html">register
+              for a ProtectNetwork UserID</a> and use that for authenticating to
+              the CILogon Service.
+              </p>
+              ';
+          }
       }
 
       echo '
@@ -548,6 +569,9 @@ function verifyCurrentSession($providerId='') {
  *                  variable to be set upon return from the 'getuser'   *
  *                  script.  This is utilized to control the flow of    *
  *                  this script after "getuser". Defaults to 'gotuser'. *
+ *              (3) A response url for redirection after successful     *
+ *                  processing at /secure/getuser/. Defaults to         *
+ *                  the current script directory.                       *
  * If the first parameter (a whitelisted entityId) is not specified,    *
  * we check to see if either the providerId PHP session variable or the *
  * providerId cookie is set (in that order) and use one if available.   *
@@ -556,9 +580,9 @@ function verifyCurrentSession($providerId='') {
  * we don't need to redirect to "/secure/getuser/" and instead we       *
  * we display the main page.  However, if the PHP session is not valid, *
  * then this function redirects to the "/secure/getuser/" script so as  *
- * to do a Shibboleth authentication via the InCommon WAYF.  When the   *
- * providerId is non-empty, the WAYF will automatically go to that IdP  *
- * (i.e. without stopping at the WAYF).  This function also sets        *
+ * to do a Shibboleth authentication via mod_shib. When the providerId  *
+ * is non-empty, the SessionInitiator will automatically go to that IdP *
+ * (i.e. without stopping at a WAYF).  This function also sets          *
  * several PHP session variables that are needed by the getuser script, *
  * including the 'responsesubmit' variable which is set as the return   *
  * 'submit' variable in the 'getuser' script.                           *
@@ -594,7 +618,7 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
         $csrf->setTheCookie();
         $csrf->setTheSession();
 
-        // Set up the "header" string for redirection thru InCommon WAYF
+        // Set up the "header" string for redirection thru mod_shib 
         /*
         $hostname = getMachineHostname();
         $getuser_url = "https://" . $hostname . "/secure/getuser/";
