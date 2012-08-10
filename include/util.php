@@ -98,6 +98,8 @@ function setCookieVar($cookie,$value='',$exp=31536000) {
     if ($exp > 0) {
         $exp += time();
     }
+    // For transition to domain-specific cookies, unset host-specific cookie
+    setcookie($cookie,'',time()-3600,'/','',true);
     setcookie($cookie,$value,$exp,'/','.'.DOMAINNAME,true);
 }
 
