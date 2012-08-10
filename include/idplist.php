@@ -366,6 +366,38 @@ EOT;
     }
 
     /********************************************************************
+     * Function  : getInCommonIdPs                                      *
+     * Parameter : null => all InCommonIdPs                             *
+     *             0    => non-whitelisted InCommon IdPs                *
+     *             1    => whitelisted InCommon IdPs                    *
+     * Returns   : An array of InCommon IdPs, possibly filtered by      *
+     *             whitelisted / non-whitelisted.                       *
+     * This method returns an array of InCommon IdPs where the keys     *
+     * of the array are the entityIDs and the values are the pretty     *
+     * print Organization Names. If a non-null parameter is passed in   *
+     * it returns a subset of the InCommon IdPs. 0 means list only      *
+     * non-whitelisted IdPs, 1 means list only whitelisted IdPs.        *
+     ********************************************************************/
+    function getInCommonIdPs($whitelisted=null) {
+        $retarray = array();
+        $idpsearch = 'idp';
+        if (!is_null($whitelisted)) {
+            if ($whitelisted === 0) {
+                $idpsearch = 'idp[not(Whitelisted=1)]';
+            } elseif ($whitelisted === 1) {
+                $idpsearch = 'idp[Whitelisted=1]';
+            }
+        }
+        $xpath = new DOMXpath($this->idpdom);
+        $nl = $xpath->query("$idpsearch/attribute::entityID | " . 
+                            "$idpsearch/Organization_Name");
+        for ($i = 0; $i < $nl->length; $i += 2) {
+            $retarray[$nl->item($i)->nodeValue] = $nl->item($i+1)->nodeValue;
+        }
+        return $retarray;
+    }
+
+    /********************************************************************
      * Function  : getWhitelistedIdPs                                   *
      * Returns   : An array of whitelisted IdPs.                        *
      * This method returns an array of whitelisted IdPs where the keys  *
@@ -373,14 +405,7 @@ EOT;
      * pretty print Organization Names.                                 *
      ********************************************************************/
     function getWhitelistedIdPs() {
-        $retarray = array();
-        $xpath = new DOMXpath($this->idpdom);
-        $nl = $xpath->query("idp[Whitelisted=1]/attribute::entityID | " . 
-                            "idp[Whitelisted=1]/Organization_Name");
-        for ($i = 0; $i < $nl->length; $i += 2) {
-            $retarray[$nl->item($i)->nodeValue] = $nl->item($i+1)->nodeValue;
-        }
-        return $retarray;
+        return $this->getInCommonIdPs(1);
     }
 
     /********************************************************************
@@ -391,14 +416,7 @@ EOT;
      * pretty print Organization Names.                                 *
      ********************************************************************/
     function getNonWhitelistedIdPs() {
-        $retarray = array();
-        $xpath = new DOMXpath($this->idpdom);
-        $nl = $xpath->query("idp[not(Whitelisted=1)]/attribute::entityID | " . 
-                            "idp[not(Whitelisted=1)]/Organization_Name");
-        for ($i = 0; $i < $nl->length; $i += 2) {
-            $retarray[$nl->item($i)->nodeValue] = $nl->item($i+1)->nodeValue;
-        }
-        return $retarray;
+        return $this->getInCommonIdPs(0);
     }
 
     /********************************************************************
