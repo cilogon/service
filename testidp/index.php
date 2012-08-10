@@ -61,12 +61,7 @@ switch ($submit) {
  * and get rerouted to the Shibboleth protected testidp script.         *
  ************************************************************************/
 function printLogonPage() {
-    printHeader('Test Your Identity Provider With CILogon',
-                '<style type="text/css">' .
-                'div.logoheader h1 {background: transparent ' .
-                'url("/images/cilogon-header.png") no-repeat top left;' . 
-                'width:273px;height:64px;}' .
-                '</style>');
+    printHeader('Test Your Identity Provider With CILogon');
 
     echo '
     <div class="boxed">
