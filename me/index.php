@@ -430,6 +430,8 @@ function getTitleText($cookie) {
     $explain = array(
         "activation" => "The expiration time and activation code for use by CILogon-enabled applications." ,
         "callbackuri" => "The URL of the callback servlet used by portals connecting to the CILogon Delegate service." ,
+        "certlifetime" => "This multiplied by the certmultipler gives the lifetime of the GridShib-CA certificate in seconds." ,
+        "certmultiplier" => "This multiplied by the certlifetime gives the lifetime of the GridShib-CA certificate in seconds." ,
         "cilogon_skin" => "The skin affects the look-and-feel and functionality of the CILogon Service. It is typically specified by a portal." ,
         "dn" => "A quasi distinguished name for the certificate issued by a MyProxy server to the CILogon Service." ,
         "ePPN" => "'eduPerson Principal Name' - a SAML attribute set by your Identity Provider." ,
