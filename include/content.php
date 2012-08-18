@@ -768,7 +768,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
                     $max_auth_age = '0';
                 }
                 $pape_request = new Auth_OpenID_PAPE_Request(
-                    array(/*'http://www.idmanagement.gov/schema/2009/05/icam/openid-trust-level1.pdf'*/),$max_auth_age);
+                    array('http://www.idmanagement.gov/schema/2009/05/icam/openid-trust-level1.pdf'),$max_auth_age);
                 if ($pape_request) {
                     $auth_request->addExtension($pape_request);
                 }
