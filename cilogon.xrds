@@ -14,13 +14,21 @@
         </Service>  
         <Service priority="30">  
             <Type>http://specs.openid.net/auth/2.0/return_to</Type>  
-            <URI>https://polo1.cites.illinois.edu/getopeniduser/</URI>  
+            <URI>https://polo1.cilogon.org/getopeniduser/</URI>  
         </Service>  
         <Service priority="40">  
             <Type>http://specs.openid.net/auth/2.0/return_to</Type>  
-            <URI>https://polo2.cites.illinois.edu/getopeniduser/</URI>  
+            <URI>https://polo2.cilogon.org/getopeniduser/</URI>  
         </Service>  
         <Service priority="50">  
+            <Type>http://specs.openid.net/auth/2.0/return_to</Type>  
+            <URI>https://polo1.cites.illinois.edu/getopeniduser/</URI>  
+        </Service>  
+        <Service priority="60">  
+            <Type>http://specs.openid.net/auth/2.0/return_to</Type>  
+            <URI>https://polo2.cites.illinois.edu/getopeniduser/</URI>  
+        </Service>  
+        <Service priority="70">  
             <Type>http://specs.openid.net/auth/2.0/return_to</Type>  
             <URI>https://polo-staging.cites.illinois.edu/getopeniduser/</URI>  
         </Service>  
