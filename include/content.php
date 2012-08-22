@@ -632,16 +632,20 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
         $csrf->setTheSession();
 
         // Set up the "header" string for redirection thru mod_shib 
-        /*
-        $hostname = getMachineHostname();
-        $getuser_url = "https://" . $hostname . "/secure/getuser/";
-        $redirect = 
-            "Location: https://" . $hostname . "/Shibboleth.sso/Login?" .
-            'target=' . urlencode($getuser_url);
-        */
         $redirect = 
             'Location: https://' . HOSTNAME . '/Shibboleth.sso/Login?' .
             'target=' . urlencode(GETUSER_URL);
+        /*
+         * Special handling for cilogon.org - redirect to polo1.cilogon.org
+         * or polo2.cilogon.org when initiating Shibboleth session, and
+         * also when coming back (target=...) after authenticating at IdP.
+         */
+        /*
+        if (HOSTNAME == 'cilogon.org') {
+            $redirect = preg_replace('/cilogon.org/',getMachineHostname(),
+                                     $redirect);
+        }
+        */
         if (strlen($providerId) > 0) {
             $redirect .= '&providerId=' . urlencode($providerId);
 
