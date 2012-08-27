@@ -81,7 +81,7 @@ function getUID() {
 
     $validator = new EmailAddressValidator();
 
-    /* Temporary hack for IdP at boingo.ncsa.uiuc.edu */
+    /* Hack for test IdP at boingo.ncsa.uiuc.edu */
     if (strlen($shibarray['Organization Name']) == 0) {
         $shibarray['Organization Name'] = 'Unspecified';
     }
@@ -298,10 +298,6 @@ function getCert() {
     } elseif ($certlifetime > $maxlifetime) { 
         $certlifetime = $maxlifetime;  
     }
-
-    /* Hack to use the newest version of myproxy-logon */
-    define('MYPROXY_LOGON','/usr/local/myproxy-20110516/bin/myproxy-logon');
-    $env = "DYLD_LIBRARY_PATH=/usr/local/myproxy-20110516/lib GLOBUS_LOCATION=/usr/local/myproxy-20110516 GLOBUS_PATH=/usr/local/myproxy-20110516 LD_LIBRARY_PATH=/usr/local/myproxy-20110516/lib LIBPATH=/usr/local/myproxy-20110516/lib:/usr/lib:/lib PERL5LIB=/usr/local/myproxy-20110516/lib/perl SHLIB_PATH=/usr/local/myproxy-20110516/lib";
 
     /* Make sure that the user's MyProxy username is available. */
     $dn = getSessionVar('dn');
