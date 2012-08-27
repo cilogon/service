@@ -640,12 +640,12 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
          * or polo2.cilogon.org when initiating Shibboleth session, and
          * also when coming back (target=...) after authenticating at IdP.
          */
-        /*
-        if (HOSTNAME == 'cilogon.org') {
+        $remoteips = array('141.142.220.108');
+        if ((in_array(getServerVar('REMOTE_ADDR'),$remoteips)) &&
+            (HOSTNAME == 'cilogon.org')) {
             $redirect = preg_replace('/cilogon.org/',getMachineHostname(),
                                      $redirect);
         }
-        */
         if (strlen($providerId) > 0) {
             $redirect .= '&providerId=' . urlencode($providerId);
 
