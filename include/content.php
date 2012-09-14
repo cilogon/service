@@ -346,19 +346,13 @@ function printWAYF($showremember=true,$incommonidps=false) {
     }
 
     echo '
-    <p>';
+    <p class="silvercheckbox">
+    <label for="silveridp">Request Silver:</label>
+    <input type="checkbox" name="silveridp" id="silveridp"/>
+    </p>
 
-    // Added for Silver IdPs
-    $requestsilver = $skin->getConfigOption('requestsilver');
-    if ((!is_null($requestsilver)) && ((int)$requestsilver == 1)) {
-        setSessionVar('requestsilver','1');
-        echo '
-        <label for="silveridp">Request Silver:</label>
-        <input type="checkbox" name="silveridp" id="silveridp"/>
-        </p>
-        
-        <p>';
-    }
+    <p>
+    ';
 
     echo $csrf->hiddenFormElement();
 
@@ -585,6 +579,10 @@ function verifyCurrentSession($providerId='') {
  *              (3) A response url for redirection after successful     *
  *                  processing at /secure/getuser/. Defaults to         *
  *                  the current script directory.                       *
+ *              (4) Is it okay to request silver assurance in the       *
+ *                  authnContextClassRef? If not, then ignore the       *
+ *                  "Request Silver" checkbox and silver certification  *
+ *                  in metadata. Defaults to true.                      *
  * If the first parameter (a whitelisted entityId) is not specified,    *
  * we check to see if either the providerId PHP session variable or the *
  * providerId cookie is set (in that order) and use one if available.   *
@@ -601,7 +599,7 @@ function verifyCurrentSession($providerId='') {
  * 'submit' variable in the 'getuser' script.                           *
  ************************************************************************/
 function redirectToGetUser($providerId='',$responsesubmit='gotuser',
-                           $responseurl=null) {
+                           $responseurl=null,$allowsilver=true) {
     global $csrf;
     global $log;
     global $skin;
@@ -655,10 +653,15 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
                 $redirect .= '&forceAuthn=true';
             }
 
-            // For Silver IdPs, send extra parameter
-            if (strlen(getPostVar('silveridp')) > 0) {
-                $redirect .= '&authnContextClassRef=' . 
-                    urlencode('http://id.incommon.org/assurance/silver-test');
+            // If Silver IdP or "Request Silver" checked, send extra parameter
+            if ($allowsilver) {
+                $idplist = new idplist();
+                if (/*($idplist->isSilver($providerId)) ||*/
+                    (strlen(getPostVar('silveridp')) > 0)) {
+                    setSessionVar('requestsilver','1');
+                    $redirect .= '&authnContextClassRef=' . 
+                        urlencode('http://id.incommon.org/assurance/silver');
+                }
             }
         }
 

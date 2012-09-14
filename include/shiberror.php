@@ -78,7 +78,7 @@ class shiberror {
                     $responseurl = getSessionVar('responseurl');
                 }
                 redirectToGetUser(getCookieVar('providerId'),
-                                  'gotuser',$responseurl);
+                                  'gotuser',$responseurl,false);
             } else {
                 $this->printError();
             }
