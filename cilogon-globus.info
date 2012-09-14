@@ -1,0 +1,8 @@
+alias = cilogon-globus
+url = http://ca.cilogon.org/
+ca_url = https://cilogon.org/cilogon-globus.pem
+crl_url = http://crl.cilogon.org/cilogon-globus.crl
+email = ca@cilogon.org
+status = experimental
+version = @VERSION@
+sha1fp.0 = @SHA1FP.0@
