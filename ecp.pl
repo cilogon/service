@@ -29,7 +29,7 @@ use constant {
     OPENSSL_BIN  =>'/usr/bin/openssl' ,  ### CHANGE THIS IF NECESSARY
     DEFAULT_IDP  =>'ProtectNetwork' ,
     ECP_IDPS_URL =>'https://cilogon.org/include/ecpidps.txt' ,
-    GET_CERT_URL =>'https://cilogon.org/secure/getuser/' ,
+    GET_CERT_URL =>'https://cilogon.org/secure/getcert/' ,
     HEADER_ACCEPT=>'text/html; application/vnd.paos+xml' ,
     HEADER_PAOS  =>'ver="urn:liberty:paos:2003-08";"urn:oasis:names:tc:SAML:2.0:profiles:SSO:ecp"' ,
 };
@@ -38,7 +38,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.008";
+our $VERSION = "0.009";
 $VERSION = eval $VERSION;
 
 use strict;
