@@ -259,6 +259,24 @@ EOT;
                             'Administrative_Address',(string)$xp[0]);
                     }
 
+                    // Check for assurance-certification = silver.
+                    // Need to set namespace prefixes for xpath query to work.
+                    $sxe = $idx[0];
+                    $sxe->registerXPathNamespace('mdattr',
+                        'urn:oasis:names:tc:SAML:metadata:attribute');
+                    $sxe->registerXPathNamespace('saml',
+                        'urn:oasis:names:tc:SAML:2.0:assertion');
+                    $xp = $sxe->xpath(
+                        "Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:oasis:names:tc:SAML:attribute:assurance-certification']/saml:AttributeValue");
+                    if (($xp !== false) && (count($xp)>0)) {
+                        foreach ($xp as $value) {
+                            if ($value == 'http://id.incommon.org/assurance/silver') {
+                                $this->addNode($dom,$idp,'Silver','1');
+                                break;
+                            }
+                        }
+                    }
+
                     // Add a <Whitelisted> block if necessary 
                     if ((strlen($entityID) > 0) && 
                         ($whitelist->exists($entityID))) {
@@ -363,6 +381,20 @@ EOT;
         $xpath = new DOMXpath($this->idpdom);
         return ($xpath->query(
             "idp[@entityID='$entityID'][Whitelisted=1]")->length > 0);
+    }
+
+    /********************************************************************
+     * Function  : isSilver                                             *
+     * Parameter : The enityID to search for in the idpdom.             *
+     * Returns   : True if the given entityID is certified 'Silver'.    *
+     *             False otherwise.                                     *
+     * This method searches for the given entityID and checks if the    *
+     *'Silver' entry has been set to '1'.                               *
+     ********************************************************************/
+    function isSilver($entityID) {
+        $xpath = new DOMXpath($this->idpdom);
+        return ($xpath->query(
+            "idp[@entityID='$entityID'][Silver=1]")->length > 0);
     }
 
     /********************************************************************
