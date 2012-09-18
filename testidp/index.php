@@ -122,12 +122,6 @@ function redirectToTestIdP($providerId='') {
         'target=' . urlencode($testidp_url);
     if (strlen($providerId) > 0) {
         $redirect .= '&providerId=' . urlencode($providerId);
-
-        // For Silver IdPs, send extra parameter
-        if (strlen(getPostVar('silveridp')) > 0) {
-            $redirect .= '&authnContextClassRef=' . 
-                urlencode('http://id.incommon.org/assurance/silver-test');
-        }
     }
 
     header($redirect);
