@@ -38,7 +38,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.009";
+our $VERSION = "0.010";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -703,6 +703,8 @@ sub fetchIdps
     my $response = $ua->get(ECP_IDPS_URL);
     if ($response->is_success) {
         $content = $response->decoded_content;
+    } else {
+        warn $response->status_line;
     }
     if (defined($content)) {
         foreach my $line (split("\n",$content)) {
