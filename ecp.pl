@@ -5,7 +5,7 @@
 # Authors     : Terry Fleury <tfleury@illinois.edu>                     #
 #               Scott Koranda <skoranda@gmail.com>                      #
 # Create Date : July 06, 2011                                           #
-# Last Update : July 28, 2011                                           #
+# Last Update : September 27, 2012                                      #
 #                                                                       #
 # This PERL script allows a user to get an end-user X.509 certificate   #
 # or PKCS12 credential from the CILogon Service. It can also get the    #
@@ -29,7 +29,7 @@ use constant {
     OPENSSL_BIN  =>'/usr/bin/openssl' ,  ### CHANGE THIS IF NECESSARY
     DEFAULT_IDP  =>'ProtectNetwork' ,
     ECP_IDPS_URL =>'https://cilogon.org/include/ecpidps.txt' ,
-    GET_CERT_URL =>'https://cilogon.org/secure/getcert/' ,
+    GET_CERT_URL =>'https://ecp.cilogon.org/secure/getcert/' ,
     HEADER_ACCEPT=>'text/html; application/vnd.paos+xml' ,
     HEADER_PAOS  =>'ver="urn:liberty:paos:2003-08";"urn:oasis:names:tc:SAML:2.0:profiles:SSO:ecp"' ,
 };
@@ -38,7 +38,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.010";
+our $VERSION = "0.011";
 $VERSION = eval $VERSION;
 
 use strict;
