@@ -656,7 +656,7 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
             // If Silver IdP or "Request Silver" checked, send extra parameter
             if ($allowsilver) {
                 $idplist = new idplist();
-                if (/*($idplist->isSilver($providerId)) ||*/
+                if (($idplist->isSilver($providerId)) ||
                     (strlen(getPostVar('silveridp')) > 0)) {
                     setSessionVar('requestsilver','1');
                     $redirect .= '&authnContextClassRef=' . 
