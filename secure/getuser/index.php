@@ -309,7 +309,7 @@ function getCert() {
         }
         /* Attempt to fetch a credential from the MyProxy server */
         $cert = getMyProxyCredential($dn,'','myproxy.cilogon.org',$port,
-            $certlifetime,'/var/www/config/hostcred.pem','',$certreq,$env);
+            $certlifetime,'/var/www/config/hostcred.pem','',$certreq);
 
         if (strlen($cert) > 0) { // Successfully got a certificate!
             header('Content-type: text/plain');
