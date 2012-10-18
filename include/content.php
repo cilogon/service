@@ -134,13 +134,9 @@ function printFooter($footer='') {
     <p>Know <a target="_blank"
     href="http://ca.cilogon.org/responsibilities">your responsibilities</a>
     for using the CILogon Service.</p>
-    <p>This material is based upon work supported by
-    the <a target="_blank" href="http://www.nsf.gov/">National Science
-    Foundation</a> under grant number <a target="_blank"
-    href="http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0943633">0943633</a>.</p>
-    <p>Any opinions, findings and conclusions or recommendations expressed
-    in this material are those of the author(s) and do not necessarily
-    reflect the views of the National Science Foundation.</p>
+    <p>See <a target="_blank"
+    href="http://ca.cilogon.org/acknowledgements">acknowledgements</a> of
+    support for this site.</p>
     </div> <!-- Close "footer" div -->
     </div> <!-- Close "pagecontent" div -->
     </body>
