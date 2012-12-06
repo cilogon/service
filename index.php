@@ -20,7 +20,7 @@ $log = new loggit();
  * Note: replace CR/LF with space for "Show/Hide Help" buttons.      */
 $retchars = array("\r\n","\n","\r");
 $submit = str_replace($retchars," ",csrf::verifyCookieAndGetSubmit());
-unsetSessionVar('submit');
+util::unsetSessionVar('submit');
 
 $log->info('submit="' . $submit . '"');
 
@@ -31,28 +31,26 @@ switch ($submit) {
     case 'Log On': // Check for OpenID or InCommon usage.
     case 'Continue': // For OOI
         // Set the cookie for keepidp if the checkbox was checked
-        if (strlen(getPostVar('keepidp')) > 0) {
-            setCookieVar('keepidp','checked');
+        if (strlen(util::getPostVar('keepidp')) > 0) {
+            util::setCookieVar('keepidp','checked');
         } else {
-            unsetCookieVar('keepidp');
+            util::unsetCookieVar('keepidp');
         }
-        $providerIdPost = getPostVar('providerId');
+        $providerIdPost = util::getPostVar('providerId');
         if (openid::urlExists($providerIdPost)) { // Use OpenID authn
-            setCookieVar('providerId',$providerIdPost);
+            util::setCookieVar('providerId',$providerIdPost);
             redirectToGetOpenIDUser($providerIdPost);
         } elseif ($idplist->exists($providerIdPost)) { // Use InCommon authn
-            setCookieVar('providerId',$providerIdPost);
+            util::setCookieVar('providerId',$providerIdPost);
             redirectToGetUser($providerIdPost);
         } else { // Either providerId not set or not in whitelist
-            unsetCookieVar('providerId');
+            util::unsetCookieVar('providerId');
             printLogonPage();
         }
     break; // End case 'Log On'
 
     case 'Log Off':   // Click the 'Log Off' button
-        removeShibCookies();
-        unsetGetUserSessionVars();
-        printLogonPage();
+        printLogonPage(true);
     break; // End case 'Log Off'
 
     case 'gotuser': // Return from the getuser script
@@ -61,13 +59,8 @@ switch ($submit) {
 
     case 'Go Back': // Return to the Main page
     case 'Proceed': // Proceed after 'User Changed' or Error page
-        if (verifyCurrentSession()) { // Verify PHP session contains valid info
-            printMainPage();
-        } else { // Otherwise, redirect to the 'Welcome' page
-            removeShibCookies();
-            unsetGetUserSessionVars();
-            printLogonPage();
-        }
+    case 'Done with Two-Factor': 
+        verifySessionAndCall('printMainPage');
     break; // End case 'Go Back' / 'Proceed'
 
     case 'Cancel': // Cancel button on WAYF page - go to Google
@@ -75,39 +68,60 @@ switch ($submit) {
     break;
 
     case 'Get New Certificate':
-        if (verifyCurrentSession()) { // Verify PHP session contains valid info
-            generateP12();
+        if (verifySessionAndCall('generateP12')) {
             printMainPage();
-        } else { // Otherwise, redirect to the 'Welcome' page
-            unsetGetUserSessionVars();
-            printLogonPage();
-        }
+        } 
     break; // End case 'Get New Certificate'
 
     case 'Get New Activation Code':
-        // Verify the PHP session contains valid info
-        if (verifyCurrentSession()) {
-            generateActivationCode();
+        if (verifySessionAndCall('generateActivationCode')) {
             printMainPage();
-        } else { // Otherwise, redirect to the 'Welcome' page
-            unsetGetUserSessionVars();
-            printLogonPage();
-        }
+        } 
     break; // End case 'Get New Activation Code'
 
-    case "Show Help": // Toggle showing of help text on and off
-    case "Hide Help":
-        if (getSessionVar('showhelp') == 'on') {
-            unsetSessionVar('showhelp');
+    case 'Manage Two-Factor':
+        verifySessionAndCall('printTwoFactorPage');
+    break; // End case 'Manage Two-Factor'
+
+    case 'Enable':   // Enable / Disable two-factor authentication
+    case 'Disable':
+    case 'Verify':   // Log in with Google Authenticator
+    case 'Disable Two-Factor':
+        $enable = !preg_match('/^Disable/',$submit);
+        verifySessionAndCall('handleEnableDisableTwoFactor',array($enable));
+    break; // End case 'Enable' / 'Disable'
+
+    case 'I Lost My Phone': 
+        verifySessionAndCall('handleILostMyPhone');
+    break; // End case 'I Lost My Phone'
+
+    case 'Enter': // Verify Google Authenticator one time password
+        verifySessionAndCall('handleGoogleAuthenticatorLogin');
+    break; // End case 'Enter'
+
+    case 'EnterDuo': // Verify Duo Security login
+        verifySessionAndCall('handleDuoSecurityLogin');
+    break; // End case 'EnterDuo'
+
+    case 'Show Help': // Toggle showing of help text on and off
+    case 'Hide Help':
+        if (util::getSessionVar('showhelp') == 'on') {
+            util::unsetSessionVar('showhelp');
         } else {
-            setSessionVar('showhelp','on');
+            util::setSessionVar('showhelp','on');
         }
 
-        $stage = getSessionVar('stage');
-        if (($stage == 'main') && (verifyCurrentSession())) {
-            printMainPage();
+        $stage = util::getSessionVar('stage');
+        if (verifyCurrentSession()) {
+            if ($stage == 'main') {
+                printMainPage();
+            } elseif ($stage == 'managetwofactor') {
+                printTwoFactorPage();
+            } else {
+                printLogonPage();
+            }
         } else {
-            printLogonPage();
+            printLogonPage(true);
         }
     break; // End case 'Show Help' / 'Hide Help'
 
@@ -116,15 +130,15 @@ switch ($submit) {
          * (and the providerId is a whitelisted IdP or valid OpenID    *
          * provider) then skip the Logon page and proceed to the       *
          * appropriate getuser script.                                 */
-        $providerIdCookie = getCookieVar('providerId');
+        $providerIdCookie = util::getCookieVar('providerId');
         if ((strlen($providerIdCookie) > 0) && 
-            (strlen(getCookieVar('keepidp')) > 0)) {
+            (strlen(util::getCookieVar('keepidp')) > 0)) {
             if (openid::urlExists($providerIdCookie)) { // Use OpenID authn
                 redirectToGetOpenIDUser($providerIdCookie);
             } elseif ($idplist->exists($providerIdCookie)) { // Use InCommon
                 redirectToGetUser($providerIdCookie);
             } else { // $providerIdCookie not in whitelist
-                unsetCookieVar('providerId');
+                util::unsetCookieVar('providerId');
                 printLogonPage();
             }
         } else { // One of the cookies for providerId or keepidp was not set.
@@ -137,17 +151,25 @@ switch ($submit) {
 
 /************************************************************************
  * Function   : printLogonPage                                          *
+ * Parameter  : True if the Shibboleth cookies and session variables    *
+ *              should be cleared out before displaying the page.       *
+ *              Defaults to false.                                      *
  * This function prints out the HTML for the main cilogon.org page.     *
  * Explanatory text is shown as well as a button to log in to an IdP    *
  * and get rerouted to the Shibboleth protected service script, or the  *
  * OpenID script.                                                       *
  ************************************************************************/
-function printLogonPage() {
+function printLogonPage($clearcookies=false) {
     global $log;
 
     $log->info('Welcome page hit.');
 
-    setSessionVar('stage','logon'); // For Show/Hide Help button clicks
+    if ($clearcookies) {
+        util::removeShibCookies();
+        unsetGetUserSessionVars();
+    }
+
+    util::setSessionVar('stage','logon'); // For Show/Hide Help button clicks
 
     printHeader('Welcome To The CILogon Service');
 
@@ -174,7 +196,7 @@ function printMainPage() {
 
     $log->info('Get And Use Certificate page hit.');
 
-    setSessionVar('stage','main'); // For Show/Hide Help button clicks
+    util::setSessionVar('stage','main'); // For Show/Hide Help button clicks
 
     printHeader('Get Your Certificate');
 
@@ -187,6 +209,7 @@ function printMainPage() {
     printGetCertificate();
     printDownloadCertificate();
     printGetActivationCode();
+    printTwoFactorBox();
     printLogOff();
 
     echo '
@@ -201,7 +224,7 @@ function printMainPage() {
  * of the main page.                                                    *
  ************************************************************************/
 function printCertInfo() {
-    $dn = getSessionVar('dn');
+    $dn = util::getSessionVar('dn');
     $dn = reformatDN(preg_replace('/\s+email=.+$/','',$dn));
 
     echo '
@@ -212,7 +235,7 @@ function printCertInfo() {
       </tr>
       <tr>
         <th>Identity&nbsp;Provider:</th>
-        <td>' , getSessionVar('idpname') , '</td>
+        <td>' , util::getSessionVar('idpname') , '</td>
       </tr>
       <tr>
         <th><a target="_blank" 
@@ -220,7 +243,7 @@ function printCertInfo() {
         <td>
     ';
 
-    $loa = getSessionVar('loa');
+    $loa = util::getSessionVar('loa');
     if ($loa == 'openid') {
         echo '<a href="http://ca.cilogon.org/policy/openid"
               target="_blank">OpenID</a>';
@@ -256,7 +279,7 @@ function printGetCertificate() {
     validateP12();
     $p12expire = '';
     $p12link = '';
-    $p12 = getSessionVar('p12');
+    $p12 = util::getSessionVar('p12');
     if (preg_match('/([^\s]*)\s(.*)/',$p12,$match)) {
         $p12expire = $match[1];
         $p12link = $match[2];
@@ -276,13 +299,13 @@ function printGetCertificate() {
         $p12expire = '';
     }
 
-    $p12lifetime = getSessionVar('p12lifetime');
+    $p12lifetime = util::getSessionVar('p12lifetime');
     if ((strlen($p12lifetime) == 0) || ($p12lifetime == 0)) {
-        $p12lifetime = getCookieVar('p12lifetime');
+        $p12lifetime = util::getCookieVar('p12lifetime');
     }
-    $p12multiplier = getSessionVar('p12multiplier');
+    $p12multiplier = util::getSessionVar('p12multiplier');
     if ((strlen($p12multiplier) == 0) || ($p12multiplier == 0)) {
-        $p12multiplier = getCookieVar('p12multiplier');
+        $p12multiplier = util::getCookieVar('p12multiplier');
     }
 
     // Try to read the skin's intiallifetime if not yet set
@@ -326,7 +349,7 @@ function printGetCertificate() {
     echo '
     <div class="p12actionbox"';
 
-    if (getSessionVar('showhelp') == 'on') {
+    if (util::getSessionVar('showhelp') == 'on') {
       echo ' style="width:92%;"';
     }
     
@@ -342,10 +365,10 @@ function printGetCertificate() {
       <fieldset>
       ';
 
-      $p12error = getSessionVar('p12error');
+      $p12error = util::getSessionVar('p12error');
       if (strlen($p12error) > 0) {
           echo "<p class=\"openiderror\">$p12error</p>";
-          unsetSessionVar('p12error');
+          util::unsetSessionVar('p12error');
       }
 
       echo '
@@ -410,7 +433,7 @@ function printGetCertificate() {
     </td>
     ';
 
-    if (getSessionVar('showhelp') == 'on') {
+    if (util::getSessionVar('showhelp') == 'on') {
         echo '
         <td class="helpcell">
         <div>
@@ -446,15 +469,15 @@ function printGetCertificate() {
 function printDownloadCertificate() {
     global $skin;
 
-    $gridshibconf = parseGridShibConf();
-    $idpname = getSessionVar('idpname');
+    $gridshibconf = util::parseGridShibConf();
+    $idpname = util::getSessionVar('idpname');
 
     $downloadcerttext = "Download a certificate to your local computer. Clicking this button should launch a Java Web Start (JWS) application, which requires Java to be installed on your computer and enabled in your web browser.";
 
     echo '
     <div class="certactionbox"';
 
-    if (getSessionVar('showhelp') == 'on') {
+    if (util::getSessionVar('showhelp') == 'on') {
         echo ' style="width:92%;"';
     }
     
@@ -467,8 +490,8 @@ function printDownloadCertificate() {
     printFormHead(preg_replace('/^\s*=\s*/','',
         $gridshibconf['root']['GridShibCAURL']).'shibCILaunchGSCA.jnlp',true);
         
-    $certlifetime   = getCookieVar('certlifetime');
-    $certmultiplier = getCookieVar('certmultiplier');
+    $certlifetime   = util::getCookieVar('certlifetime');
+    $certmultiplier = util::getCookieVar('certmultiplier');
 
     // Try to read the skin's initiallifetime if not yet set
     if ((strlen($certlifetime) == 0) || ($certlifetime <= 0)) {
@@ -567,7 +590,7 @@ function printDownloadCertificate() {
     </td>
     ';
 
-    if (getSessionVar('showhelp') == 'on') {
+    if (util::getSessionVar('showhelp') == 'on') {
         echo '
         <td class="helpcell">
         <div>
@@ -609,7 +632,7 @@ function printGetActivationCode() {
     echo '
     <div class="tokenactionbox"';
 
-    if (getSessionVar('showhelp') == 'on') {
+    if (util::getSessionVar('showhelp') == 'on') {
         echo ' style="width:92%;"';
     }
     
@@ -624,7 +647,7 @@ function printGetActivationCode() {
     validateActivationCode();
     $tokenvalue = '';
     $tokenexpire = '';
-    $activation = getSessionVar('activation');
+    $activation = util::getSessionVar('activation');
     if (preg_match('/([^\s]*)\s(.*)/',$activation,$match)) {
         $tokenexpire = $match[1];
         $tokenvalue = $match[2];
@@ -661,7 +684,7 @@ function printGetActivationCode() {
     </td>
     ';
 
-    if (getSessionVar('showhelp') == 'on') {
+    if (util::getSessionVar('showhelp') == 'on') {
         echo '
         <td class="helpcell">
         <div>
@@ -694,9 +717,9 @@ function printGetActivationCode() {
 function printLogOff() {
     $logofftext = 'End your CILogon session and return to the welcome page. ' .
                   'Note that this will not log you out at ' .
-                  getSessionVar('idpname') . '.';
+                  util::getSessionVar('idpname') . '.';
 
-    $showhelp = getSessionVar('showhelp');
+    $showhelp = util::getSessionVar('showhelp');
 
     echo '
     <div class="logoffactionbox"';
@@ -791,7 +814,7 @@ function generateActivationCode() {
     global $log;
 
     $tokenvalue = '';
-    $gridshibconf = parseGridShibConf();
+    $gridshibconf = util::parseGridShibConf();
 
     $ch = curl_init();
     if ($ch !== false) {
@@ -808,16 +831,16 @@ function generateActivationCode() {
         curl_setopt($ch,CURLOPT_POSTFIELDS,"CSRFProtection=" .
             $csrf->getTokenValue());
         curl_setopt($ch,CURLOPT_COOKIE,'PHPSESSID=' .
-            getCookieVar('PHPSESSID') . '; CSRFProtection=' .
+            util::getCookieVar('PHPSESSID') . '; CSRFProtection=' .
             $csrf->getTokenValue() . ';');
 
         // Must close PHP session file so GridShib-CA can read it.
         session_write_close();
         $output = curl_exec($ch);
         if (curl_errno($ch)) { // Send alert on curl errors
-            sendErrorAlert('cUrl Error',
-                           'cUrl Error    = ' . curl_error($ch) . "\n" . 
-                           "URL Accessed  = $url");
+            util::sendErrorAlert('cUrl Error',
+                'cUrl Error    = ' . curl_error($ch) . "\n" . 
+                "URL Accessed  = $url");
         }
         if (!empty($output)) {
             $httpcode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
@@ -831,7 +854,7 @@ function generateActivationCode() {
         curl_close($ch);
 
         /* If we got a valid AuthenticationToken, store it in the session */
-        startPHPSession();
+        util::startPHPSession();
         if (strlen($tokenvalue) > 0) {
             $tokenlifetime = preg_replace('/^\s*=\s*/','',
                 $gridshibconf['root']['Session']['CredentialRetrieverClientLifetime']);
@@ -839,7 +862,7 @@ function generateActivationCode() {
                 $tokenlifetime = 300;
             }
             $activation = (time()+$tokenlifetime) . " " . $tokenvalue;
-            setSessionVar('activation',$activation);
+            util::setSessionVar('activation',$activation);
             $log->info('Generated New Activation Code="'.$tokenvalue.'"');
         }
     }
@@ -855,7 +878,7 @@ function generateActivationCode() {
 function validateP12() {
     $p12link = '';
     $p12expire = '';
-    $p12 = getSessionVar('p12');
+    $p12 = util::getSessionVar('p12');
     if (preg_match('/([^\s]*)\s(.*)/',$p12,$match)) {
         $p12expire = $match[1];
         $p12link = $match[2];
@@ -866,7 +889,7 @@ function validateP12() {
         ($p12expire == 0) ||
         (time() > $p12expire) ||
         (strlen($p12link) == 0)) {
-        unsetSessionVar('p12');
+        util::unsetSessionVar('p12');
     }
 }
 
@@ -879,7 +902,7 @@ function validateP12() {
 function validateActivationCode() {
     $tokenvalue = '';
     $tokenexpire = '';
-    $activation = getSessionVar('activation');
+    $activation = util::getSessionVar('activation');
     if (preg_match('/([^\s]*)\s(.*)/',$activation,$match)) {
         $tokenexpire = $match[1];
         $tokenvalue = $match[2];
@@ -889,10 +912,10 @@ function validateActivationCode() {
     if ((strlen($tokenexpire) == 0) ||
         ($tokenexpire == 0) ||
         (time() > $tokenexpire)) {
-        unsetSessionVar('activation');
+        util::unsetSessionVar('activation');
     }
 }
 
-// $timeit->printTime("MAIN Program END...  ");
+// util::$timeit->printTime("MAIN Program END...  ");
 
 ?>

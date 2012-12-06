@@ -1,7 +1,5 @@
 <?php
 
-require_once('util.php');
-
 /************************************************************************
  * Class name : skin                                                    *
  * Description: This class reads in CSS and configuration options       *
@@ -86,22 +84,22 @@ class skin {
         $this->skinname = '';
 
         // First, look for "?skin=..."
-        $skinvar = getGetVar('skin');
+        $skinvar = util::getGetVar('skin');
         if (strlen($skinvar) == 0) {
             // Next, look for "?cilogon_skin=..."
-            $skinvar = getGetVar('cilogon_skin');
+            $skinvar = util::getGetVar('cilogon_skin');
         }
         if (strlen($skinvar) == 0) {
             // Next, look for "?vo=..."
-            $skinvar = getGetVar('vo');
+            $skinvar = util::getGetVar('vo');
         }
         if (strlen($skinvar) == 0) {
             // Next, check "cilogon_vo" form input variable
-            $skinvar = getPostVar('cilogon_vo');
+            $skinvar = util::getPostVar('cilogon_vo');
         }
         if (strlen($skinvar) == 0) {
             // Finally, check "cilogon_skin" PHP session variable
-            $skinvar = getSessionVar('cilogon_skin');
+            $skinvar = util::getSessionVar('cilogon_skin');
         }
 
         // If we found $skinvar, check to see if a skin directory with that
@@ -116,7 +114,7 @@ class skin {
                         (is_dir("$basedir/$file")) && 
                         (strcasecmp($skinvar,$file) == 0)) {
                         $this->skinname = $file;
-                        setSessionVar('cilogon_skin',$file);
+                        util::setSessionVar('cilogon_skin',$file);
                         $found = true;
                     }
                 }
@@ -124,7 +122,7 @@ class skin {
             }
         }
         if (!$found) {
-            unsetSessionVar('cilogon_skin');
+            util::unsetSessionVar('cilogon_skin');
         }
     }
 
@@ -351,7 +349,7 @@ class skin {
         }
 
         // Add the REMOTE_ADDR
-        $remoteaddr = getServerVar('REMOTE_ADDR');
+        $remoteaddr = util::getServerVar('REMOTE_ADDR');
         if (strlen($remoteaddr) > 0) {
             $infostr .= (strlen($infostr) > 0 ? ',' : '') .  
                         "remote_addr=$remoteaddr";
@@ -359,7 +357,7 @@ class skin {
 
         // Add ePPN, ePTID, and openidID if available
         foreach (array('ePPN','ePTID','openidID') as $id) {
-            $sessvar = getSessionVar($id);
+            $sessvar = util::getSessionVar($id);
             if (strlen($sessvar) > 0) {
                 $infostr .= (strlen($infostr) > 0 ? ',' : '') . "$id=$sessvar";
             }
@@ -367,9 +365,9 @@ class skin {
          
         // Finally, set the "myproxyinfo" PHP session variable
         if (strlen($infostr) > 0) {
-            setSessionVar('myproxyinfo',"info:$infostr");
+            util::setSessionVar('myproxyinfo',"info:$infostr");
         } else {
-            unsetSessionVar('myproxyinfo');
+            util::unsetSessionVar('myproxyinfo');
         }
     }
 

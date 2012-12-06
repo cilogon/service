@@ -38,11 +38,9 @@ div.footer a:visited {
 
 /***** Begin actionbox containing action buttons and WAYF *****/
 div.p12actionbox {
-  border: none;
   display: none;
 }
 div.certactionbox {
-  border: 1px solid #888;
   display: block;
 }
 /***** End actionbox *****/

@@ -103,7 +103,7 @@ function printTestPage() {
             ($idplist->exists($shibarray['Identity Provider']))) {
             echo '
             <p class="addsubmit">
-            <form action="' , getScriptDir() , '" method="post">
+            <form action="' , util::getScriptDir() , '" method="post">
               <input class="submit" type="submit" name="submit"
                      value="' , ADD_SUBMIT_TEXT , '" />' ,
             $csrf->hiddenFormElement() , '

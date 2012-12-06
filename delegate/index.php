@@ -19,7 +19,7 @@ $log = new loggit();
  * Note: replace CR/LF with space for "Show/Hide Help" buttons.      */
 $retchars = array("\r\n","\n","\r");
 $submit = str_replace($retchars," ",csrf::verifyCookieAndGetSubmit());
-unsetSessionVar('submit');
+util::unsetSessionVar('submit');
 
 $log->info('submit="' . $submit . '"');
 
@@ -27,7 +27,7 @@ $log->info('submit="' . $submit . '"');
  * from the Community Portal exists in the current PHP session.  If    *
  * so, then continue processing based on 'submit' value.  Otherwise,   *
  * print out error message about bad or missing oauth_token info.      */
-if (verifyOAuthToken(getGetVar('oauth_token'))) {
+if (verifyOAuthToken(util::getGetVar('oauth_token'))) {
     /* Depending on the value of the clicked "submit" button or the    *
      * equivalent PHP session variable, take action or print out HTML. */
     switch ($submit) {
@@ -35,20 +35,20 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
         case 'Log On': // Check for OpenID or InCommon usage.
         case 'Continue': // For OOI
             // Set the cookie for keepidp if the checkbox was checked
-            if (strlen(getPostVar('keepidp')) > 0) {
-                setCookieVar('keepidp','checked');
+            if (strlen(util::getPostVar('keepidp')) > 0) {
+                util::setCookieVar('keepidp','checked');
             } else {
-                unsetCookieVar('keepidp');
+                util::unsetCookieVar('keepidp');
             }
-            $providerIdPost = getPostVar('providerId');
+            $providerIdPost = util::getPostVar('providerId');
             if (openid::urlExists($providerIdPost)) { // Use OpenID authn
-                setCookieVar('providerId',$providerIdPost);
+                util::setCookieVar('providerId',$providerIdPost);
                 redirectToGetOpenIDUser($providerIdPost);
             } elseif ($idplist->exists($providerIdPost)) { // Use InCommon authn
-                setCookieVar('providerId',$providerIdPost);
+                util::setCookieVar('providerId',$providerIdPost);
                 redirectToGetUser($providerIdPost);
             } else { // Either providerId not set or not in whitelist
-                unsetCookieVar('providerId');
+                util::unsetCookieVar('providerId');
                 printLogonPage();
             }
         break; // End case 'Log On'
@@ -58,25 +58,19 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
         break; // End case 'gotuser'
 
         case 'Proceed': // Proceed after 'User Changed' or Error page
-            // Verify the PHP session contains valid info
-            if (verifyCurrentSession()) {
-                printMainPage();
-            } else { // Otherwise, redirect to the 'Welcome' page
-                removeShibCookies();
-                unsetGetUserSessionVars();
-                printLogonPage();
-            }
+        case 'Done with Two-Factor':
+            verifySessionAndCall('printMainPage');
         break; // End case 'Proceed'
 
         case 'OK':  // User allows delegation of certificate
-            handleAllowDelegation(strlen(getPostVar('rememberok')) > 0);
+            handleAllowDelegation(strlen(util::getPostVar('rememberok')) > 0);
         break; // End case 'OK'
 
         case 'Cancel': // User denies delegation of certificate
             // If user clicked 'Cancel' on the WAYF page, return to the
             // portal's failure URL (or Google if failure URL not set).
-            if (getPostVar('previouspage') == 'WAYF') {
-                $failureuri = getSessionVar('failureuri');
+            if (util::getPostVar('previouspage') == 'WAYF') {
+                $failureuri = util::getSessionVar('failureuri');
                 $location = 'http://www.google.com/';
                 if (strlen($failureuri) > 0) {
                     $location = $failureuri . "?reason=cancel";
@@ -87,19 +81,45 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
             }
         break; // End case 'Cancel'
 
-        case "Show Help": // Toggle showing of help text on and off
-        case "Hide Help":
-            if (getSessionVar('showhelp') == 'on') {
-                unsetSessionVar('showhelp');
+        case 'Manage Two-Factor':
+            verifySessionAndCall('printTwoFactorPage');
+        break; // End case 'Manage Two-Factor'
+
+        case 'Enable':   // Enable / Disable two-factor authentication
+        case 'Disable':
+        case 'Verify':   // Log in with Google Authenticator
+        case 'Disable Two-Factor':
+            $enable = !preg_match('/^Disable/',$submit);
+            verifySessionAndCall('handleEnableDisableTwoFactor',array($enable));
+        break; // End case 'Enable' / 'Disable'
+
+        case 'I Lost My Phone': 
+            verifySessionAndCall('handleILostMyPhone');
+        break; // End case 'I Lost My Phone'
+
+        case 'Enter': // Verify Google Authenticator one time password
+            verifySessionAndCall('handleGoogleAuthenticatorLogin');
+        break; // End case 'Enter'
+
+        case 'Show Help': // Toggle showing of help text on and off
+        case 'Hide Help':
+            if (util::getSessionVar('showhelp') == 'on') {
+                util::unsetSessionVar('showhelp');
             } else {
-                setSessionVar('showhelp','on');
+                util::setSessionVar('showhelp','on');
             }
 
-            $stage = getSessionVar('stage');
-            if (($stage == 'main') && (verifyCurrentSession())) {
-                printMainPage();
+            $stage = util::getSessionVar('stage');
+            if (verifyCurrentSession()) {
+                if ($stage == 'main') {
+                    printMainPage();
+                } elseif ($stage == 'managetwofactor') {
+                    printTwoFactorPage();
+                } else {
+                    printLogonPage();
+                }
             } else {
-                printLogonPage();
+                printLogonPage(true);
             }
         break; // End case 'Show Help' / 'Hide Help'
 
@@ -108,15 +128,15 @@ if (verifyOAuthToken(getGetVar('oauth_token'))) {
              * (and the providerId is a whitelisted IdP or valid OpenID    *
              * provider) then skip the Logon page and proceed to the       *
              * appropriate getuser script.                                 */
-            $providerIdCookie = getCookieVar('providerId');
+            $providerIdCookie = util::getCookieVar('providerId');
             if ((strlen($providerIdCookie) > 0) && 
-                (strlen(getCookieVar('keepidp')) > 0)) {
+                (strlen(util::getCookieVar('keepidp')) > 0)) {
                 if (openid::urlExists($providerIdCookie)) { // Use OpenID authn
                     redirectToGetOpenIDUser($providerIdCookie);
                 } elseif ($idplist->exists($providerIdCookie)) { // Use InCommon
                     redirectToGetUser($providerIdCookie);
                 } else { // $providerIdCookie not in whitelist
-                    unsetCookieVar('providerId');
+                    util::unsetCookieVar('providerId');
                     printLogonPage();
                 }
             } else { // One of the cookies for providerId or keepidp was not set
@@ -141,7 +161,7 @@ function printLogonPage() {
 
     $log->info('Welcome page hit.');
 
-    setSessionVar('stage','logon'); // For Show/Hide Help button clicks
+    util::setSessionVar('stage','logon'); // For Show/Hide Help button clicks
 
     /* Check if this is the first time the user has visited the site from
      * the current portal.  We do this by checking the portal cookie's
@@ -152,7 +172,8 @@ function printLogonPage() {
      * to the next page (where the cookie is actually read).
      */
     $portal = new portalcookie();
-    $portallifetime = $portal->getPortalLifetime(getSessionVar('callbackuri'));
+    $portallifetime = 
+        $portal->getPortalLifetime(util::getSessionVar('callbackuri'));
     if ((strlen($portallifetime) == 0) || ($portallifetime == 0)) {
         $needtosetcookie = 0;
 
@@ -208,7 +229,7 @@ function printLogonPage() {
     if ($skin->hasPortalList()) {
         $hpi = $skin->getConfigOption('portallistaction','hideportalinfo');
         if ((!is_null($hpi)) && ((int)$hpi == 1) &&
-            ($skin->portalListed(getSessionVar('callbackuri')))) {
+            ($skin->portalListed(util::getSessionVar('callbackuri')))) {
             $showportalinfo = false; 
         }
     }
@@ -216,7 +237,7 @@ function printLogonPage() {
     if ($showportalinfo) {
         echo '
           <p>"' , 
-          htmlspecialchars(getSessionVar('portalname')) , 
+          htmlspecialchars(util::getSessionVar('portalname')) , 
           '" requests that you select an Identity Provider and click "' ,
           getLogOnButtonText() ,
           '". If you do not approve this request, do not proceed.
@@ -298,7 +319,7 @@ function printMainPage() {
 
     $log->info('Allow Or Deny Delegation page hit.');
 
-    setSessionVar('stage','main'); // For Show/Hide Help button clicks
+    util::setSessionVar('stage','main'); // For Show/Hide Help button clicks
 
     $remember = 0;   // Default value for remember checkbox is unchecked
     $lifetime = 12;  // Default value for lifetime is 12 hours
@@ -319,8 +340,10 @@ function printMainPage() {
 
     // Try to read the portal coookie for the remember and lifetime values.
     $portal = new portalcookie();
-    $portalremember = $portal->getPortalRemember(getSessionVar('callbackuri'));
-    $portallifetime = $portal->getPortalLifetime(getSessionVar('callbackuri'));
+    $portalremember = 
+        $portal->getPortalRemember(util::getSessionVar('callbackuri'));
+    $portallifetime = 
+        $portal->getPortalLifetime(util::getSessionVar('callbackuri'));
 
     // If skin's forceremember or portal cookie's remember is set,
     // then we bypass the Allow/Deny delegate page.
@@ -364,7 +387,7 @@ function printMainPage() {
         echo '
         <br />
         <p>"' , 
-        htmlspecialchars(getSessionVar('portalname')) , 
+        htmlspecialchars(util::getSessionVar('portalname')) , 
         '" is requesting a certificate for you. 
         If you approve, then "OK" the request.
         Otherwise, "Cancel" the request or navigate away from this page.
@@ -376,7 +399,7 @@ function printMainPage() {
         echo '
         <div class="actionbox"';
 
-        if (getSessionVar('showhelp') == 'on') {
+        if (util::getSessionVar('showhelp') == 'on') {
             echo ' style="width:92%;"';
         }
 
@@ -416,7 +439,7 @@ function printMainPage() {
         </td>
         ';
 
-        if (getSessionVar('showhelp') == 'on') {
+        if (util::getSessionVar('showhelp') == 'on') {
             echo '
             <td class="helpcell">
             <div>
@@ -442,7 +465,12 @@ function printMainPage() {
         </tr>
         </table>
         </div> <!-- actionbox -->
-        </div>
+        ';
+
+        printTwoFactorBox();
+
+        echo '
+        </div> <!-- boxed -->
         ';
         printFooter();
     }
@@ -458,7 +486,7 @@ function printMainPage() {
  * log in page from the one on the main page.                           *
  ************************************************************************/
 function printPortalInfo($suffix='') {
-    $showhelp = getSessionVar('showhelp');
+    $showhelp = util::getSessionVar('showhelp');
     $helptext = "The Site Name is provided by the site to CILogon and has not been vetted.";
 
     echo '
@@ -466,7 +494,7 @@ function printPortalInfo($suffix='') {
     <tr class="inforow">
       <th title="' , $helptext ,'">Site&nbsp;Name:</th>
       <td title="' , $helptext ,'">' ,
-      htmlspecialchars(getSessionVar('portalname')) , '</td>
+      htmlspecialchars(util::getSessionVar('portalname')) , '</td>
     ';
 
     if ($showhelp == 'on') {
@@ -479,7 +507,8 @@ function printPortalInfo($suffix='') {
     </tr>
     <tr class="inforow">
       <th title="' , $helptext , '">Site&nbsp;URL:</th> 
-      <td title="' , $helptext , '">' , htmlspecialchars(getSessionVar('successuri')) , '</td>
+      <td title="' , $helptext , '">' , 
+          htmlspecialchars(util::getSessionVar('successuri')) , '</td>
     ';
 
     if ($showhelp == 'on') {
@@ -492,7 +521,8 @@ function printPortalInfo($suffix='') {
     </tr>
     <tr class="inforow">
       <th title="' , $helptext , '">Service&nbsp;URL:</th>
-      <td title="' , $helptext , '">' , htmlspecialchars(getSessionVar('callbackuri')) , '</td>
+      <td title="' , $helptext , '">' , 
+          htmlspecialchars(util::getSessionVar('callbackuri')) , '</td>
       ';
 
     if ($showhelp == 'on') {
@@ -512,7 +542,7 @@ function printPortalInfo($suffix='') {
  * link back to the portal via the "failure URL".                       *
  ************************************************************************/
 function printCancelPage() {
-    $portalname = getSessionVar('portalname');
+    $portalname = util::getSessionVar('portalname');
 
     printHeader('Delegation Denied');
 
@@ -534,7 +564,7 @@ function printCancelPage() {
     </p>
 
     <div class="returnlink">
-      <a href="' , getSessionVar('failureuri') , '">Return to ' ,
+      <a href="' , util::getSessionVar('failureuri') , '">Return to ' ,
       htmlspecialchars($portalname) , '</a>
     </div>
     </div>
@@ -576,14 +606,14 @@ function handleAllowDelegation($always=false) {
 
     // Next, try to get the certificate lifetime from a submitted <form>
     if ($lifetime == 0) {
-        $lifetime = (int)(trim(getPostVar('lifetime')));
+        $lifetime = (int)(trim(util::getPostVar('lifetime')));
     }
 
     // If we couldn't get lifetime from the <form>, try the cookie
     if ($lifetime == 0) {
         $portal = new portalcookie();
-        $lifetime = 
-            (int)($portal->getPortalLifetime(getSessionVar('callbackuri')));
+        $lifetime = (int)($portal->getPortalLifetime(
+            util::getSessionVar('callbackuri')));
     }
 
     // Default lifetime to 12 hours. And then make sure lifetime is in
@@ -602,14 +632,14 @@ function handleAllowDelegation($always=false) {
 
     $success = false;  // Assume delegation of certificate failed
     $certtext = '';    // Output of 'openssl x509 -noout -text -in cert.pem'
-    $myproxyinfo = getSessionVar('myproxyinfo');
+    $myproxyinfo = util::getSessionVar('myproxyinfo');
 
     // Now call out to the "delegation/authorized" servlet to execute
     // the delegation the credential to the portal.
     $ch = curl_init();
     if ($ch !== false) {
         $authurl = AUTHORIZED_URL;
-        $tempcred = getSessionVar('tempcred');
+        $tempcred = util::getSessionVar('tempcred');
         // Change 'delegation' to 'oauth' if present in tempcred
         if (preg_match('/delegation2/',$tempcred)) {
             $authurl = 
@@ -618,8 +648,8 @@ function handleAllowDelegation($always=false) {
         $url = $authurl . '?' .
                'oauth_token=' . urlencode($tempcred) . '&' .
                'cilogon_lifetime=' . $lifetime . '&' .
-               'cilogon_loa=' . urlencode(getSessionVar('loa')) . '&' .
-               'cilogon_uid=' . urlencode(getSessionVar('uid')) . 
+               'cilogon_loa=' . urlencode(util::getSessionVar('loa')) . '&' .
+               'cilogon_uid=' . urlencode(util::getSessionVar('uid')) . 
                ((strlen($myproxyinfo) > 0) ? 
                    ('&cilogon_info=' . urlencode($myproxyinfo)) : '');
         curl_setopt($ch,CURLOPT_URL,$url);
@@ -630,9 +660,9 @@ function handleAllowDelegation($always=false) {
         curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
         $output = curl_exec($ch);
         if (curl_errno($ch)) { // Send alert on curl errors
-            sendErrorAlert('cUrl Error',
-                           'cUrl Error    = ' . curl_error($ch) . "\n" . 
-                           "URL Accessed  = $url");
+            util::sendErrorAlert('cUrl Error',
+                'cUrl Error    = ' . curl_error($ch) . "\n" . 
+                "URL Accessed  = $url");
         }
         if (!empty($output)) { 
             $httpcode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
@@ -681,7 +711,7 @@ function handleAllowDelegation($always=false) {
         $log->info("Automatically returning to portal's " .
                    ($success ? 'success' : 'failure') . ' url.');
         $location = 'Location: ' . ((strlen($responseurl) > 0) ? $responseurl :
-            (getSessionVar($success ? 'successuri' : 'failureuri')));
+            (util::getSessionVar($success ? 'successuri' : 'failureuri')));
         unsetGetUserSessionVars();
         unsetPortalSessionVars();
         header($location);
@@ -703,7 +733,7 @@ function handleAllowDelegation($always=false) {
             echo '
             <p>
             The CILogon Service has issued a certificate to "' ,
-            htmlspecialchars(getSessionVar('portalname')) , '".  
+            htmlspecialchars(util::getSessionVar('portalname')) , '".  
             Below is a link to return to
             the site to use the issued certificate.
             </p>
@@ -748,7 +778,7 @@ function handleAllowDelegation($always=false) {
             echo '
             <p>
             We were unable to issue a certificate to "' ,
-            htmlspecialchars(getSessionVar('portalname')) , '".  
+            htmlspecialchars(util::getSessionVar('portalname')) , '".  
             Below is a link to return to the site.  
             </p>
             ';
@@ -757,9 +787,9 @@ function handleAllowDelegation($always=false) {
         <div class="returnlink">
           <a href="' , 
           ((strlen($responseurl) > 0) ? $responseurl :
-           (getSessionVar($success ? 'successuri' : 'failureuri'))) , 
+           (util::getSessionVar($success ? 'successuri' : 'failureuri'))) , 
           '">Return to ' ,
-          htmlspecialchars(getSessionVar('portalname')) , '</a>
+          htmlspecialchars(util::getSessionVar('portalname')) , '</a>
         </div>
         </div>
         ';
@@ -782,8 +812,9 @@ function handleAllowDelegation($always=false) {
  ************************************************************************/
 function setPortalCookie($remember,$lifetime) {
     $portal = new portalcookie();
-    $portal->setPortalRemember(getSessionVar('callbackuri'),(int)$remember);
-    $portal->setPortalLifetime(getSessionVar('callbackuri'),$lifetime);
+    $portal->setPortalRemember(util::getSessionVar('callbackuri'),
+                               (int)$remember);
+    $portal->setPortalLifetime(util::getSessionVar('callbackuri'),$lifetime);
     $portal->write();  // Save the cookie with the updated values
 }
 
@@ -810,23 +841,23 @@ function verifyOAuthToken($token='') {
         $dbs = new dbservice();
         $dbs->getPortalParameters($token);
         $status = $dbs->status;
-        setSessionVar('portalstatus',$status);
+        util::setSessionVar('portalstatus',$status);
         if (!($status & 1)) {  // STATUS_OK* codes are even-numbered
-            setSessionVar('callbackuri',$dbs->cilogon_callback);
-            setSessionVar('failureuri',$dbs->cilogon_failure);
-            setSessionVar('successuri',$dbs->cilogon_success);
-            setSessionVar('portalname',$dbs->cilogon_portal_name);
-            setSessionVar('tempcred',$dbs->oauth_token);
+            util::setSessionVar('callbackuri',$dbs->cilogon_callback);
+            util::setSessionVar('failureuri',$dbs->cilogon_failure);
+            util::setSessionVar('successuri',$dbs->cilogon_success);
+            util::setSessionVar('portalname',$dbs->cilogon_portal_name);
+            util::setSessionVar('tempcred',$dbs->oauth_token);
         }
     }
 
     // Now check to verify all session variables have data
-    if ((strlen(getSessionVar('callbackuri')) > 0) &&
-        (strlen(getSessionVar('failureuri')) > 0) &&
-        (strlen(getSessionVar('successuri')) > 0) &&
-        (strlen(getSessionVar('portalname')) > 0) &&
-        (strlen(getSessionVar('tempcred')) > 0) &&
-        (!(getSessionVar('portalstatus') & 1))) { // STATUS_OK* are even
+    if ((strlen(util::getSessionVar('callbackuri')) > 0) &&
+        (strlen(util::getSessionVar('failureuri')) > 0) &&
+        (strlen(util::getSessionVar('successuri')) > 0) &&
+        (strlen(util::getSessionVar('portalname')) > 0) &&
+        (strlen(util::getSessionVar('tempcred')) > 0) &&
+        (!(util::getSessionVar('portalstatus') & 1))) { // STATUS_OK* are even
         $retval = true;
     }
 

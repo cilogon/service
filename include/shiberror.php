@@ -72,17 +72,17 @@ class shiberror {
         if ($this->isError()) {
             // Check if we tried to get silver before. If so, don't print
             // an error. Instead, try again without asking for silver.
-            if (getSessionVar('requestsilver') == '1') {
+            if (util::getSessionVar('requestsilver') == '1') {
                 $responseurl = null;
-                if (strlen(getSessionVar('responseurl')) > 0) {
-                    $responseurl = getSessionVar('responseurl');
+                if (strlen(util::getSessionVar('responseurl')) > 0) {
+                    $responseurl = util::getSessionVar('responseurl');
                 }
-                redirectToGetUser(getCookieVar('providerId'),
+                redirectToGetUser(util::getCookieVar('providerId'),
                                   'gotuser',$responseurl,false);
             } else {
                 $this->printError();
             }
-            unsetSessionVar('requestsilver');
+            util::unsetSessionVar('requestsilver');
             exit; // No further processing!!!
         }
     }
@@ -175,7 +175,7 @@ class shiberror {
         ';
         printFooter();
 
-        sendErrorAlert('Shibboleth Error',$errorstr2);
+        util::sendErrorAlert('Shibboleth Error',$errorstr2);
     }
 
 }

@@ -8,10 +8,10 @@ require_once('../../include/myproxy.php');
 /* Check the csrf cookie against either a hidden <form> element or a *
  * PHP session variable, and get the value of the "submit" element.  */
 $submit = csrf::verifyCookieAndGetSubmit();
-unsetSessionVar('submit');
+util::unsetSessionVar('submit');
 
 /* Get the URL to reply to after database query. */
-$responseurl = getSessionVar('responseurl');
+$responseurl = util::getSessionVar('responseurl');
 
 if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
     getUserAndRespond($responseurl);
@@ -102,19 +102,21 @@ function getUID() {
                       $lastname,
                       $shibarray['Email Address']
                      );
-        setSessionVar('uid',$dbs->user_uid);
-        setSessionVar('dn',$dbs->distinguished_name);
-        setSessionVar('status',$dbs->status);
+        util::setSessionVar('uid',$dbs->user_uid);
+        util::setSessionVar('dn',$dbs->distinguished_name);
+        util::setSessionVar('twofactor',$dbs->two_factor);
+        util::setSessionVar('status',$dbs->status);
     } else {  // Missing one or more SAML attributes
-        unsetSessionVar('uid');
-        unsetSessionVar('dn');
-        setSessionVar('status',
+        util::unsetSessionVar('uid');
+        util::unsetSessionVar('dn');
+        util::unsetSessionVar('twofactor');
+        util::setSessionVar('status',
             dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']);
     }
 
     // If 'status' is not STATUS_OK*, then send an error email
-    if (getSessionVar('status') & 1) { // Bad status codes are odd-numbered
-        sendErrorAlert('Failure in /secure/getuser/',
+    if (util::getSessionVar('status') & 1) { // Bad status codes are odd
+        util::sendErrorAlert('Failure in /secure/getuser/',
             'Remote_User   = ' . 
                 ((strlen($i = $shibarray['User Identifier']) > 0) ?
                     $i :'<MISSING>')."\n".
@@ -138,33 +140,33 @@ function getUID() {
                     $dbs->user_uid : '<MISSING>')."\n".
             'Status Code   = ' .
                 ((strlen($i = array_search(
-                    getSessionVar('status'),dbservice::$STATUS)) > 0) ? 
+                    util::getSessionVar('status'),dbservice::$STATUS)) > 0) ? 
                         $i : '<MISSING>')
         );
-        unsetSessionVar('firstname');
-        unsetSessionVar('lastname');
-        unsetSessionVar('loa');
-        unsetSessionVar('idp');
-        unsetSessionVar('idpname');
-        unsetSessionVar('ePPN');
-        unsetSessionVar('ePTID');
+        util::unsetSessionVar('firstname');
+        util::unsetSessionVar('lastname');
+        util::unsetSessionVar('loa');
+        util::unsetSessionVar('idp');
+        util::unsetSessionVar('idpname');
+        util::unsetSessionVar('ePPN');
+        util::unsetSessionVar('ePTID');
     } else {
         // Set additional session variables needed by the calling script
         if (preg_match('%http://id.incommon.org/assurance/silver%',
-                       getServerVar('Shib-AuthnContext-Class'))) {
+                       util::getServerVar('Shib-AuthnContext-Class'))) {
             $shibarray['Level of Assurance'] = 
                 'http://incommonfederation.org/assurance/silver';
         }
-        setSessionVar('firstname',$firstname);
-        setSessionVar('lastname',$lastname);
-        setSessionVar('loa',$shibarray['Level of Assurance']);
-        setSessionVar('idp',$shibarray['Identity Provider']);
-        setSessionVar('idpname',$shibarray['Organization Name']);
-        setSessionVar('ePPN',$shibarray['ePPN']);
-        setSessionVar('ePTID',$shibarray['ePTID']);
+        util::setSessionVar('firstname',$firstname);
+        util::setSessionVar('lastname',$lastname);
+        util::setSessionVar('loa',$shibarray['Level of Assurance']);
+        util::setSessionVar('idp',$shibarray['Identity Provider']);
+        util::setSessionVar('idpname',$shibarray['Organization Name']);
+        util::setSessionVar('ePPN',$shibarray['ePPN']);
+        util::setSessionVar('ePTID',$shibarray['ePTID']);
     }
-    unsetSessionVar('requestsilver');
-    unsetSessionVar('openidID');
+    util::unsetSessionVar('requestsilver');
+    util::unsetSessionVar('openidID');
 }
 
 /************************************************************************
@@ -180,8 +182,8 @@ function getUserAndRespond($responseurl) {
 
     getUID(); // Get the user's database user ID, put info in PHP session
 
-    setSessionVar('submit',getSessionVar('responsesubmit'));
-    unsetSessionVar('responsesubmit');
+    util::setSessionVar('submit',util::getSessionVar('responsesubmit'));
+    util::unsetSessionVar('responsesubmit');
 
     $csrf->setTheCookie();
     $csrf->setTheSession();
@@ -201,22 +203,23 @@ function getUserAndRespond($responseurl) {
  ************************************************************************/
 function getPKCS12() {
     getUID(); // Get the user's database user ID, put info in PHP session
-    checkForceSkin(getSessionVar('idp')); // Do we force a skin to be used?
+    checkForceSkin(util::getSessionVar('idp')); // Force a skin to be used?
 
     // If 'status' is not STATUS_OK*, then return error message
-    if (getSessionVar('status') & 1) { // Bad status codes are odd-numbered
-        outputError(array_search(getSessionVar('status'),dbservice::$STATUS));
+    if (util::getSessionVar('status') & 1) { // Bad status codes are odd
+        outputError(array_search(util::getSessionVar('status'),
+                                 dbservice::$STATUS));
         return; // ERROR means no further processing is necessary
     }
 
     generateP12();  // Try to create the PKCS12 credential file on disk
 
     /* Look for the p12error PHP session variable. If set, return it. */
-    $p12error = getSessionVar('p12error');
+    $p12error = util::getSessionVar('p12error');
     if (strlen($p12error) > 0) {
         outputError($p12error);
     } else { // Try to read the .p12 file from disk and return it
-        $p12 = getSessionVar('p12');
+        $p12 = util::getSessionVar('p12');
         $p12expire = '';
         $p12link = '';
         $p12file = '';
@@ -252,36 +255,37 @@ function getCert() {
     global $skin;
 
     /* Verify that a non-empty certreq <form> variable was posted */
-    $certreq = getPostVar('certreq');
+    $certreq = util::getPostVar('certreq');
     if (strlen($certreq) == 0) {
         outputError('Missing certificate request.');
         return; // ERROR means no further processing is necessary
     }
 
     getUID(); // Get the user's database user ID, put info in PHP session
-    checkForceSkin(getSessionVar('idp')); // Do we force a skin to be used?
+    checkForceSkin(util::getSessionVar('idp')); // Force a skin to be used?
 
     // If 'status' is not STATUS_OK*, then return error message
-    if (getSessionVar('status') & 1) { // Bad status codes are odd-numbered
-        outputError(array_search(getSessionVar('status'),dbservice::$STATUS));
+    if (util::getSessionVar('status') & 1) { // Bad status codes are odd
+        outputError(array_search(util::getSessionVar('status'),
+                                 dbservice::$STATUS));
         return; // ERROR means no further processing is necessary
     }
 
     /* Set the port based on the Level of Assurance */
     $port = 7512;
-    $loa = getSessionVar('loa');
+    $loa = util::getSessionVar('loa');
     if ($loa == 'http://incommonfederation.org/assurance/silver') {
         $port = 7514;
     } elseif ($loa == 'openid') {
         $port = 7516;
     }
     /* Special hack for OSG - use SHA-1 version of MyProxy servers */
-    if (strcasecmp(getSessionVar('cilogon_skin'),'OSG') == 0) {
+    if (strcasecmp(util::getSessionVar('cilogon_skin'),'OSG') == 0) {
         $port--;
     }
 
     /* Get the certificate lifetime. Set to a default value if not set. */
-    $certlifetime = (int)(getPostVar('certlifetime'));
+    $certlifetime = (int)(util::getPostVar('certlifetime'));
     if ($certlifetime == 0) {  // If not specified, set to default value
         $defaultlifetime = $skin->getConfigOption('ecp','defaultlifetime');
         if ((!is_null($defaultlifetime)) && ((int)$defaultlifetime > 0)) {
@@ -300,10 +304,10 @@ function getCert() {
     }
 
     /* Make sure that the user's MyProxy username is available. */
-    $dn = getSessionVar('dn');
+    $dn = util::getSessionVar('dn');
     if (strlen($dn) > 0) {
         /* Append extra info, such as 'skin', to be processed by MyProxy. */
-        $myproxyinfo = getSessionVar('myproxyinfo');
+        $myproxyinfo = util::getSessionVar('myproxyinfo');
         if (strlen($myproxyinfo) > 0) {
             $dn .= " $myproxyinfo";
         }

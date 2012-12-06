@@ -17,8 +17,8 @@ $hide = array(
 );
 
 /* Get the value of the "submit" input element. */
-$submit = getPostVar('submit');
-unsetSessionVar('submit');
+$submit = util::getPostVar('submit');
+util::unsetSessionVar('submit');
 
 /* Depending on the value of the clicked "submit" button, *
  * take action and print out HTML.                        */
@@ -358,17 +358,17 @@ function countSessionVariables() {
  * corresponding cookie or session variable.                            *
  ************************************************************************/
 function deleteChecked() {
-    $del_browser = getPostVar('del_browser');
+    $del_browser = util::getPostVar('del_browser');
     if (is_array($del_browser)) {
         foreach ($del_browser as $value) {
-            unsetCookieVar($value);
+            util::unsetCookieVar($value);
         }
     }
 
-    $del_session = getPostVar('del_session');
+    $del_session = util::getPostVar('del_session');
     if (is_array($del_session)) {
         foreach ($del_session as $value) {
-            unsetSessionVar($value);
+            util::unsetSessionVar($value);
         }
     }
 }
@@ -384,7 +384,7 @@ function deleteBrowserCookies() {
 
     foreach ($_COOKIE as $key => $value) {
         if (!in_array($key,$hide)) {
-            unsetCookieVar($key);
+            util::unsetCookieVar($key);
         }
     }
 }
@@ -400,7 +400,7 @@ function deleteSessionVariables() {
 
     foreach ($_SESSION as $key => $value) {
         if (!in_array($key,$hide)) {
-            unsetSessionVar($key);
+            util::unsetSessionVar($key);
         }
     }
 }

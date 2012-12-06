@@ -68,18 +68,25 @@ class idplist {
 
     /********************************************************************
      * Function  : __construct - default constructor                    *
+     * Parameters: (1) The name of the IdP (XML) file to read/write.    *
+     *                 Defaults to defaultIdPFilename.                  *
+     *             (2) The name of the InCommon metadata file to read.  *
+     *                 Defaults to defaultInCommonFilename.             *
+     *             (3) Boolean to create IdP list file if it doesn't    *
+     *                 exist. Defaults to true.                         *
      * Returns   : A new idplist object.                                *
      * Default constructor. This method first attempts to read in an    *
      * existing idplist from an XML file and store it in the idpdom.    *
-     * If a valid idplist file cannot be read, a new one is created     *
-     * and written to file.                                             *
+     * If a valid idplist file cannot be read and $createfile is true,  *
+     * a new idpdom is created and written to file.                     *
      ********************************************************************/
     function __construct($idpfilename=self::defaultIdPFilename,
-                         $incommonfilename=self::defaultInCommonFilename) {
+                         $incommonfilename=self::defaultInCommonFilename,
+                         $createfile=true) {
         $this->setFilename($idpfilename);
         $this->setInCommonFilename($incommonfilename);
         $result = $this->read();
-        if ($result === false) {
+        if (($result === false) && ($createfile)) {
             $this->create();
             $this->write();
         }
@@ -109,13 +116,13 @@ class idplist {
      * This method writes the class $idpdom to an XML file.             *
      ********************************************************************/
     function write() {
-         $retval = false; // Assume write failed
-         $this->idpdom->preserveWhiteSpace = false;
-         $this->idpdom->formatOutput = true;
-         if ($this->idpdom->save($this->getFilename()) > 0) {
-             $retval = true;
-         }
-         return $retval;
+        $retval = false; // Assume write failed
+        $this->idpdom->preserveWhiteSpace = false;
+        $this->idpdom->formatOutput = true;
+        if ($this->idpdom->save($this->getFilename()) > 0) {
+            $retval = true;
+        }
+        return $retval;
     }
 
     /********************************************************************
@@ -277,6 +284,18 @@ EOT;
                         }
                     }
 
+                    // Check for research-and-scholarship
+                    $xp = $sxe->xpath(
+                        "Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='http://macedir.org/entity-category-support']/saml:AttributeValue");
+                    if (($xp !== false) && (count($xp)>0)) {
+                        foreach ($xp as $value) {
+                            if ($value == 'http://id.incommon.org/category/research-and-scholarship') {
+                                $this->addNode($dom,$idp,'RandS','1');
+                                break;
+                            }
+                        }
+                    }
+
                     // Add a <Whitelisted> block if necessary 
                     if ((strlen($entityID) > 0) && 
                         ($whitelist->exists($entityID))) {
@@ -346,6 +365,28 @@ EOT;
     }
 
     /********************************************************************
+     * Function  : queryAttribute                                       *
+     * Parameters: (1) The entityID to search for in the idpdom.        *
+     *             (2) (Optional) The attribute to query for the given  *
+     *                 entityID. Defaults to empty string.              *
+     * Returns   : True if the given attrribute query exists for the    *
+     *             given entityID is in the idpdom. False otherwise.    *
+     * This function runs an xpath query in the idpdom to search for    *
+     * the given idp entityID. If the second parameter is empty, then   *
+     * we are simply looking to see if the entityID exists. Otherwise,  *
+     * we are looking for a given attribute query for the entityID.     *
+     * In either case, we return true if the xpath query returns a      *
+     * non-zero length result.                                          *
+     ********************************************************************/
+    private function queryAttribute($entityID,$attrq='') {
+        $xpath = new DOMXpath($this->idpdom);
+        $query = "idp[@entityID='$entityID']" . 
+            ((strlen($attrq) > 0) ? "[$attrq]" : '');
+        return ($xpath->query($query)->length > 0);
+
+    }
+
+    /********************************************************************
      * Function  : entityIDExists                                       *
      * Parameter : The entityID to search for in the idpdom.            *
      * Returns   : True if the given entityID is in the idpdom.         *
@@ -354,8 +395,7 @@ EOT;
      * the given idp entityID.                                          *
      ********************************************************************/
     function entityIDExists($entityID) {
-        $xpath = new DOMXpath($this->idpdom);
-        return ($xpath->query("idp[@entityID='$entityID']")->length > 0);
+        return $this->queryAttribute($entityID);
     }
 
     /********************************************************************
@@ -378,9 +418,7 @@ EOT;
      *'Whitelisted' entry has been set to '1'.                          *
      ********************************************************************/
     function isWhitelisted($entityID) {
-        $xpath = new DOMXpath($this->idpdom);
-        return ($xpath->query(
-            "idp[@entityID='$entityID'][Whitelisted=1]")->length > 0);
+        return $this->queryAttribute($entityID,'Whitelisted=1');
     }
 
     /********************************************************************
@@ -392,9 +430,19 @@ EOT;
      *'Silver' entry has been set to '1'.                               *
      ********************************************************************/
     function isSilver($entityID) {
-        $xpath = new DOMXpath($this->idpdom);
-        return ($xpath->query(
-            "idp[@entityID='$entityID'][Silver=1]")->length > 0);
+        return $this->queryAttribute($entityID,'Silver=1');
+    }
+
+    /********************************************************************
+     * Function  : isRandS                                              *
+     * Parameter : The enityID to search for in the idpdom.             *
+     * Returns   : True if the given entityID is listed as 'RandS'      *
+     *             (research-and-scholarship). False otherwise.         *
+     * This method searches for the given entityID and checks if the    *
+     *'RandS' entry has been set to '1'.                                *
+     ********************************************************************/
+    function isRandS($entityID) {
+        return $this->queryAttribute($entityID,'RandS=1');
     }
 
     /********************************************************************
@@ -471,16 +519,16 @@ EOT;
 
         /* Set the blob set of info, namely those shib attributes which *
          * were given by the IdP when the user authenticated.           */
-        $entityID = getServerVar('HTTP_SHIB_IDENTITY_PROVIDER');
+        $entityID = util::getServerVar('HTTP_SHIB_IDENTITY_PROVIDER');
         $shibarray['Identity Provider'] = $entityID;
-        $shibarray['User Identifier'] = getServerVar('HTTP_REMOTE_USER');
-        $shibarray['ePPN'] = getServerVar('HTTP_EPPN');
-        $shibarray['ePTID'] = getServerVar('HTTP_PERSISTENT_ID');
-        $shibarray['First Name'] = getServerVar('HTTP_GIVENNAME');
-        $shibarray['Last Name'] = getServerVar('HTTP_SN');
-        $shibarray['Display Name'] = getServerVar('HTTP_DISPLAYNAME');
-        $shibarray['Email Address'] = getServerVar('HTTP_MAIL');
-        $shibarray['Level of Assurance'] = getServerVar('HTTP_ASSURANCE');
+        $shibarray['User Identifier'] = util::getServerVar('HTTP_REMOTE_USER');
+        $shibarray['ePPN'] = util::getServerVar('HTTP_EPPN');
+        $shibarray['ePTID'] = util::getServerVar('HTTP_PERSISTENT_ID');
+        $shibarray['First Name'] = util::getServerVar('HTTP_GIVENNAME');
+        $shibarray['Last Name'] = util::getServerVar('HTTP_SN');
+        $shibarray['Display Name'] = util::getServerVar('HTTP_DISPLAYNAME');
+        $shibarray['Email Address'] = util::getServerVar('HTTP_MAIL');
+        $shibarray['Level of Assurance'] = util::getServerVar('HTTP_ASSURANCE');
         
         /* Make sure to use only the first of multiple email addresses. */
         if (($pos = strpos($shibarray['Email Address'],';')) !== false) {

@@ -1,7 +1,5 @@
 <?php
 
-require_once('util.php');
-
 /************************************************************************
  * Class name : csrf                                                    *
  * Description: This class creates and manages CSRF (cross-site request *
@@ -102,7 +100,7 @@ class csrf {
      * You must call this method before you output any HTML.            *
      ********************************************************************/
     function setTheCookie() {
-        setCookieVar($this->getTokenName(),$this->getTokenValue(),0);
+        util::setCookieVar($this->getTokenName(),$this->getTokenValue(),0);
     }
 
     /********************************************************************
@@ -113,7 +111,7 @@ class csrf {
      * returns an empty string otherwise.                               *
      ********************************************************************/
     public static function getTheCookie() {
-        return getCookieVar(self::tokenname);
+        return util::getCookieVar(self::tokenname);
     }
 
     /********************************************************************
@@ -123,7 +121,7 @@ class csrf {
      * rather it is set to an empty value with an expired time.         *
      ********************************************************************/
     public static function removeTheCookie() {
-        unsetCookieVar(self::tokenname);
+        util::unsetCookieVar(self::tokenname);
     }
 
     /********************************************************************
@@ -141,7 +139,7 @@ class csrf {
         $retval = false;  // Assume csrf values don't match
 
         $csrfcookievalue = self::getTheCookie();
-        $csrfformvalue = getPostVar(self::tokenname);
+        $csrfformvalue = util::getPostVar(self::tokenname);
         if ((strlen($csrfcookievalue) > 0) &&
             (strlen($csrfformvalue) > 0) &&
             (strcmp($csrfcookievalue,$csrfformvalue) == 0)) {
@@ -158,7 +156,7 @@ class csrf {
      * session_start()) before you call this method.                    *
      ********************************************************************/
     function setTheSession() {
-        setSessionVar($this->getTokenName(),$this->getTokenValue());
+        util::setSessionVar($this->getTokenName(),$this->getTokenValue());
     }
 
     /********************************************************************
@@ -169,7 +167,7 @@ class csrf {
      * or returns an empty string otherwise.                            *
      ********************************************************************/
     public static function getTheSession() {
-        return getSessionVar(self::tokenname);
+        return util::getSessionVar(self::tokenname);
     }
 
     /********************************************************************
@@ -177,7 +175,7 @@ class csrf {
      * Removes the csrf value from the PHP session.                     *
      ********************************************************************/
     public static function removeTheSession() {
-        unsetSessionVar(self::tokenname);
+        util::unsetSessionVar(self::tokenname);
     }
 
     /********************************************************************
@@ -237,11 +235,15 @@ class csrf {
         $retval = '';
         // First, check <form> hidden csrf element
         if (self::isCookieEqualToForm()) {
-            $retval = getPostVar($submit);
+            $retval = util::getPostVar($submit);
+            // Hack for Duo Security - look for all uppercase e.g., 'SUBMIT'
+            if (strlen($retval) == 0) {
+                $retval = util::getPostVar(strtoupper($submit));
+            }
         }
         // If <form> element missing or bad, check PHP session csrf variable
         if ((strlen($retval) == 0) && (self::isCookieEqualToSession())) {
-            $retval = getSessionVar($submit);
+            $retval = util::getSessionVar($submit);
             self::removeTheSession();  // No need to use it again
         }
         // If csrf failed or no "submit" element in <form> or session, 

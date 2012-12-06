@@ -4,9 +4,6 @@ require_once('util.php');
 require_once('autoloader.php');
 require_once('myproxy.php');
 
-/* Loggit object for logging info to syslog. */
-$log = new loggit();
-
 /* If needed, set the "Notification" banner text to a non-empty value   */
 /* and uncomment the "define" statement in order to display a           */
 /* notification box at the top of each page.                            */
@@ -20,6 +17,9 @@ define('BANNER_TEXT',
 /* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
 define('GETUSER_URL','https://' . HOSTNAME . '/secure/getuser/');
 define('GETOPENIDUSER_URL','https://' . HOSTNAME . '/getopeniduser/');
+
+/* Loggit object for logging info to syslog. */
+$log = new loggit();
 
 /* The csrf token object to set the CSRF cookie and print the hidden */
 /* CSRF form element.  Be sure to do "global $csrf" to use it.       */
@@ -47,7 +47,7 @@ function printHeader($title='',$extra='',$csrfcookie=true) {
     if ($csrfcookie) {
         $csrf->setTheCookie();
         // Set the CSRF cookie used by GridShib-CA
-        setCookieVar('CSRFProtection',$csrf->getTokenValue(),0);
+        util::setCookieVar('CSRFProtection',$csrf->getTokenValue(),0);
     }
 
     // Find the "Powered By CILogon" image if specified by the skin
@@ -181,7 +181,7 @@ function printFormHead($action='',$gsca=false) {
     static $formnum = 0;
 
     if (strlen($action) == 0) {
-        $action = getScriptDir();
+        $action = util::getScriptDir();
     }
 
     echo '
@@ -224,8 +224,8 @@ function printWAYF($showremember=true,$incommonidps=false) {
     $idplist = new idplist();
 
     /* Check if the user had previously selected an IdP from the list. */
-    $keepidp     = getCookieVar('keepidp');
-    $providerId  = getCookieVar('providerId');
+    $keepidp     = util::getCookieVar('keepidp');
+    $providerId  = util::getCookieVar('providerId');
 
     if ($incommonidps) { /* Get all InCommon IdPs only */
         $idps = $idplist->getInCommonIdPs();
@@ -275,12 +275,11 @@ function printWAYF($showremember=true,$incommonidps=false) {
         }
     }
 
-
     echo '
     <br />
     <div class="actionbox"';
 
-    if (getSessionVar('showhelp') == 'on') {
+    if (util::getSessionVar('showhelp') == 'on') {
         echo ' style="width:92%;"';
     }
 
@@ -289,7 +288,7 @@ function printWAYF($showremember=true,$incommonidps=false) {
     <tr>
     <td class="actioncell">
 
-      <form action="' , getScriptDir() , '" method="post">
+      <form action="' , util::getScriptDir() , '" method="post">
       <fieldset>
 
       <p>Select An Identity Provider:</p>
@@ -365,10 +364,10 @@ function printWAYF($showremember=true,$incommonidps=false) {
     </p>
     ';
 
-    $openiderror = getSessionVar('openiderror');
+    $openiderror = util::getSessionVar('openiderror');
     if (strlen($openiderror) > 0) {
         echo "<p class=\"openiderror\">$openiderror</p>";
-        unsetSessionVar('openiderror');
+        util::unsetSessionVar('openiderror');
     }
 
     echo '
@@ -384,7 +383,7 @@ function printWAYF($showremember=true,$incommonidps=false) {
   </td>
   ';
 
-  if (getSessionVar('showhelp') == 'on') {
+  if (util::getSessionVar('showhelp') == 'on') {
       echo '
       <td class="helpcell">
       <div>
@@ -486,6 +485,433 @@ function printWAYF($showremember=true,$incommonidps=false) {
 }
 
 /************************************************************************
+ * Function   : printTwoFactorBox                                       *
+ * This function prints the "Manage Two-Factor" box on the main page.   *
+ ************************************************************************/
+function printTwoFactorBox() {
+    $managetwofactortext = 'Enable or disable two-factor authentication for your account';
+
+    echo '
+    <div class="twofactoractionbox"';
+
+    $style = ''; // Might add extra CSS to the twofactoractionbox
+    if (util::getSessionVar('showhelp') == 'on') {
+        $style .= "width:92%;";
+    }
+    if (twofactor::getEnabled() != 'none') {
+        $style .= "display:block;"; // Force display if two-factor enabled
+    }
+    if (strlen($style) > 0) {
+        echo ' style="' , $style , '"';
+    }
+    
+    echo '>
+    <table class="helptable">
+    <tr>
+    <td class="actioncell">
+    ';
+    
+    printFormHead();
+
+    $twofactorname = twofactor::getEnabledName();
+    if ($twofactorname == 'Disabled') {
+        $twofactorname = 'Two-Factor Authentication Disabled';
+    } else {
+        $twofactorname .= ' Enabled';
+    }
+    echo '
+      <p>' , $twofactorname , '</p>
+
+      <p>
+      <input type="submit" name="submit" class="submit helpcursor" 
+      title="' , $managetwofactortext , '" value="Manage Two-Factor" />
+      </p>
+      </form>
+    </td>
+    ';
+
+    if (util::getSessionVar('showhelp') == 'on') {
+        echo '
+        <td class="helpcell">
+        <div>
+        <p>
+        Two-factor authentication provides extra security on your account by
+        using a physical device (e.g., your mobile phone) to generate a one
+        time password which you enter after you log in to your selected
+        Identity Provider. Click the "Manage Two-Factor" button to enable or
+        disable two-factor authentication.
+        </p>
+        </div>
+        </td>
+        ';
+    }
+    
+    echo '
+    </tr>
+    </table>
+    </div> <!-- twofactoractionbox -->
+    ';
+}
+
+/************************************************************************
+ * Function  : printTwoFactorPage                                       *
+ * This function prints out the Manage Two-Factor Authentication page.  *
+ * Display of which two-factor types are available to the user is       *
+ * controlled by CSS. From this page, the user can Enable or Disable    *
+ * various two-factor authentication methods.                           *
+ ************************************************************************/
+function printTwoFactorPage() {
+    util::setSessionVar('stage','managetwofactor'); // For Show/Hide Help button
+
+    printHeader('Manage Two-Factor Authentication');
+
+    $twofactorname = twofactor::getEnabledName();
+
+    echo '
+    <div class="boxed">
+    ';
+    printHelpButton();
+    echo'
+    <h2>Two-Factor Authentication</h2>
+    <div class="actionbox">
+    <p><b>Two-Factor Authentication:</b></p>
+    <p>' , $twofactorname , '</p>
+    </div> <!-- actionbox -->
+    ';
+
+    if (util::getSessionVar('showhelp') == 'on') {
+        echo '
+        <div>
+        <p>
+        Multi-factor authentication requires a user to present two or more
+        distinct authentication factors from the following categories:
+        </p>
+        <ul>
+        <li>Something you <b>know</b> (e.g., username and password)</li>
+        <li>Something you <b>have</b> (e.g., mobile phone or hardware 
+            token)</li>
+        <li>Something you <b>are</b> (e.g., fingerprint)</li>
+        </ul>
+        <p>
+        Below you can configure a second factor using something you <b>have</b>,
+        i.e., your mobile phone. You will first be prompted to register the
+        second-factor device, typically by installing specific apps on your
+        phone and completing a registration process. Then you will need to log
+        in with the second factor to verify the registration process.
+        </p>
+        <p>
+        Once you have successfully enabled two-factor authentication, you will
+        be prompted on future CILogon Service logons for your second-factor
+        authentication.  You can select the second-factor authentication to use
+        (or not) by clicking the "Enable" (or "Disable") button.
+        </p>
+        </div>
+        ';
+    }
+
+    echo '
+    <table class="twofactortypes">
+    <tr class="twofactorgooglerow"' , 
+    (twofactor::isEnabled('ga') ? ' style="display:table-row;"' : '') , 
+    '>
+    <th>Google Authenticator</th>
+    <td>
+    ';
+    printFormHead();
+    echo '
+    <input type="hidden" name="twofactortype" value="ga" />
+    <input type="submit" name="submit" class="submit" value="' ,
+    (twofactor::isEnabled('ga') ? 'Disable' : 'Enable') ,
+    '" />
+    </form>
+    </td>
+    </tr>
+    ';
+
+    if (util::getSessionVar('showhelp') == 'on') {
+        echo '
+        <tr>
+        <td colspan="4">
+        Google Authenticator is an app available for Android OS, Apple
+        iOS, and BlackBerry OS. The app generates one-time password tokens.
+        After you have logged on to the CILogon Service with your chosen
+        Identity Provider, you would be prompted to use the Google
+        Authenticator app to generate a second passcode and enter it. 
+        </td>
+        </tr>
+        ';
+    }
+
+    echo '
+    <tr class="twofactorduorow"' , 
+    (twofactor::isEnabled('duo') ? '
+        style="display:table-row;border-top-width:1px"' : '') , 
+    '>
+    <th>Duo Security</th>
+    <td>
+    ';
+    printFormHead(); 
+    echo '
+    <input type="hidden" name="twofactortype" value="duo" />
+    <input type="submit" name="submit" class="submit" value="' ,
+    (twofactor::isEnabled('duo') ? 'Disable' : 'Enable') ,
+    '" />
+    </form>
+    </td>
+    </tr>
+    ';
+
+    if (util::getSessionVar('showhelp') == 'on') {
+        echo '
+        <tr>
+        <td colspan="4">
+        Duo Security is an app available for most smartphones, including
+        Android OS, Apple iOS, Blackberry OS, Palm, Symbian, and Windows
+        Mobile. The app can respond to "push" notifications, and can also
+        generate one-time password tokens. After you have logged on to the
+        CILogon Service with your chosen Identity Provider, you would be
+        prompted to select a Duo log in method and then authenticate with
+        your mobile phone.
+        </td>
+        </tr>
+        ';
+    }
+
+    echo '
+    </table>
+
+    <noscript>
+    <div class="nojs smaller">
+    Javascript is disabled. In order to activate the link
+    below, please enable Javascript in your browser.
+    </div>
+    </noscript>
+
+    <p>
+    <a href="javascript:showHideDiv(\'lostdevice\',-1)">Lost your phone?</a>
+    </p>
+    <div id="lostdevice" style="display:none">
+    <p>
+    If you have lost your phone, you can click on the
+    "I Lost My Phone" button below to remove all two-factor methods
+    from your account.  This will send an email message to the system
+    adminisrator and to the email address provided by your Identity
+    Provider.  You can then use the CILogon Service without
+    two-factor authentication enabled. You will need to re-register your
+    device with you want to use it for two-factor authentication again.
+    <br/>
+    ';
+    printFormHead();
+    echo '
+    <input type="submit" name="submit" class="submit" 
+    value="I Lost My Phone" />
+    </p>
+    </div>
+
+    <p>
+    <input type="submit" name="submit" class="submit" 
+    value="Done with Two-Factor" />
+    </p>
+    </form>
+
+    </div> <!-- boxed -->
+    ';
+    printFooter();
+}
+
+/************************************************************************
+ * Function  : handleEnableDisableTwoFactor                             *
+ * Parameter : True for 'enable', false for 'disable'. Default is       *
+ *             false (for 'disable').                                   *
+ * This function is called when the user clicks either an 'Enable' or   *
+ * 'Disable' button from the Manage Two-Factor page, or when the user   *
+ * clicks 'Verify' on the Google Authenticator Registration page.       *
+ * The passed-in parameter tells which type of button was pressed.      *
+ * If 'Disable', then simply set 'enabled=none' in the datastore and    *
+ * display the Manage Two-Factor page again. If 'Enable' or 'Verify',   *
+ * check the 'twofactortype' hidden form variable for which two-factor  *
+ * authentication method is to be enabled. Then print out that          *
+ * two-factor page. Note that twofactor::printPage() does the work of   *
+ * figuring out if the user has registered the phone yet or not, and    *
+ * displays the appropriate page.                                       *
+ ************************************************************************/
+function handleEnableDisableTwoFactor($enable=false) {
+    if ($enable) {
+        $twofactortype = util::getPostVar('twofactortype');
+        if (strlen($twofactortype) > 0) {
+            twofactor::printPage($twofactortype);
+        } else {
+            printLogonPage();
+        }
+    } else { // 'Disable' clicked
+        // Check if the user clicked 'Disable Two-Factor' and send email
+        if (util::getPostVar('missingphone') == '1') {
+            // Make sure two-factor was enabled
+            $twofactorname = twofactor::getEnabledName();
+            if ($twofactorname != 'Disabled') {
+                $email = getEmailFromDN(util::getSessionVar('dn'));
+                if (strlen($email) > 0) { // Make sure email address exists
+                    twofactor::sendPhoneAlert(
+                        'Forgot Phone for Two-Factor Authentication',
+'While using the CILogon Service, you (or someone using your account)
+indicated that you forgot your phone by clicking the "Disable Two-Factor"
+button. This disabled two-factor authentication by "' . $twofactorname . '"
+using "' . util::getSessionVar('idpname') . '" as your Identity Provider.
+
+If you did not disable two-factor authentication, please send email to
+"help@cilogon.org" to report this incident.',
+                        $email
+                    );
+                } else { // No email address is bad - send error alert
+                    util::sendErrorAlert('Missing Email Address',
+'When attempting to send an email notification to a user who clicked the
+"Disable Two-Factor" button because of a forgotten phone, the CILogon
+Service was unable to find an email address. This should never occur and
+is probably due to a badly formatted "dn" string.');
+                }
+            }
+        }
+
+        // Finally, disable two-factor authentication
+        twofactor::setDisabled();
+        twofactor::write();
+        printTwoFactorPage();
+    }
+}
+
+/************************************************************************
+ * Function  : handleILostMyPhone                                       *
+ * This function is called when the user clicks the 'I Lost My Phone'   *
+ * button.  It sends email to the user AND to alerts because Duo        *
+ * Security requires that a sysadmin unregister the phone for the user. *
+ * It then unsets the 'twofactor' session variable, and writes it to    *
+ * the datastore, effectively wiping out all two-factor information for *
+ * the user.                                                            *
+ ************************************************************************/
+function handleILostMyPhone() {
+    // First, send email to user
+    $email = getEmailFromDN(util::getSessionVar('dn'));
+    if (strlen($email) > 0) { // Make sure email address exists
+        twofactor::sendPhoneAlert(
+            'Lost Phone for Two-Factor Authentication',
+'While using the CILogon Service, you (or someone using your account)
+indicated that you lost your phone by clicking the "I Lost My Phone"
+button. This removed two-factor authentication for your account when
+using "' . util::getSessionVar('idpname') . '" as your Identity Provider.
+
+System administrators have been notified of this incident. If you require
+further assistance, please send email to "help@cilogon.org".',
+            $email
+        );
+    } else { // No email address is bad - send error alert
+        util::sendErrorAlert('Missing Email Address',
+'When attempting to send an email notification to a user who clicked the
+"I Lost My Phone" button, the CILogon Service was unable to find an 
+email address. This should never occur and is probably due to a badly
+formatted "dn" string.');
+    }
+
+    // Next, send email to sysadmin
+    $errortext = 'A user clicked the "I Lost My Phone" button. ';
+    if (twofactor::isRegistered('duo')) {
+        $duoconfig = new duoconfig();
+        $errortext .= '
+
+The user had registered "Duo Security" as one of the two-factor methods.
+Since there is no way for the CILogon Service to UNregister this method
+at the Duo Security servers, a system administrator will need to delete 
+this user\'s registration at https://' . $duoconfig->param['host'] .
+' .';
+    }
+    util::sendErrorAlert('Two-Factor Authentication Disabled',$errortext);
+
+    // Finally, disable and unregister two-factor authentication
+    util::unsetSessionVar('twofactor');
+    twofactor::write();
+    printTwoFactorPage();
+}
+
+/************************************************************************
+ * Function  : handleGoogleAuthenticatorLogin                           *
+ * This function is called when the user enters a one time password as  *
+ * generated by the Google Authenticator app. This can occur (1) when   *
+ * the user is first configuring GA two-factor and (2) when the user    *
+ * logs in to the CILogon Service and GA is enabled. If the OTP is      *
+ * correctly validated, the datastore is updated (if necessary) to      *
+ * reflect that GA has been verified and enabled. Finally, the          *
+ * gotUserSuccess() function is called to show output to the user.      *
+ ************************************************************************/
+function handleGoogleAuthenticatorLogin() {
+    $valid = false;
+    $gacode = util::getPostVar('gacode');
+    $secret = twofactor::getRegister('ga');
+    if ((strlen($gacode) > 0) && (strlen($secret) > 0)) {
+        $valid = Google2FA::verify_key($secret,$gacode,1);
+    }
+
+    if ($valid) {
+        $needtowrite = false;
+        if (!twofactor::isVerified('ga')) {
+            twofactor::setVerified('ga');
+            $needtowrite = true;
+        }
+        if (!twofactor::isEnabled('ga')) {
+            twofactor::setEnabled('ga');
+            $needtowrite = true;
+        }
+        if ($needtowrite) {
+            twofactor::write();
+        }
+        gotUserSuccess();
+    } else {
+        twofactor::printPage('ga');
+    }
+}
+
+/************************************************************************
+ * Function  : handleDuoSecurityLogin                                   *
+ * This function is called when the user authenticates with Duo         *
+ * Security. If the Duo authentication is valid, then the datastore     *
+ * is updated (if necessary) to reflect that Duo has been verified      *
+ * and enabled. The gotUserSuccess() function is then called to show    *
+ * output to the user.                                                  *
+ ************************************************************************/
+function handleDuoSecurityLogin() {
+    $valid = false;
+    $sig_response = util::getPostVar('sig_response');
+    if (strlen($sig_response) > 0) {
+        $duoconfig = new duoconfig();
+        $resp = Duo::verifyResponse(
+            $duoconfig->param['ikey'],
+            $duoconfig->param['skey'],
+            $duoconfig->param['akey'],
+            $sig_response
+        );
+        if ($resp !== null) {
+            $valid = true;
+        }
+    }
+
+    if ($valid) {
+        $needtowrite = false;
+        if (!twofactor::isVerified('duo')) {
+            twofactor::setVerified('duo');
+            $needtowrite = true;
+        }
+        if (!twofactor::isEnabled('duo')) {
+            twofactor::setEnabled('duo');
+            $needtowrite = true;
+        }
+        if ($needtowrite) {
+            twofactor::write();
+        }
+        gotUserSuccess();
+    } else {
+        twofactor::printPage('duo');
+    }
+}
+
+/************************************************************************
  * Function  : printIcon                                                *
  * Parameters: (1) The prefix of the "...Icon.png" image to be shown.   *
  *                 E.g. to show "errorIcon.png", pass in "error".       *
@@ -521,11 +947,10 @@ function printHelpButton() {
 
     echo '
       <input type="submit" name="submit" class="helpbutton" value="' , 
-      (getSessionVar('showhelp')=='on' ? 'Hide' : 'Show') , '&#10;Help" />
+      (util::getSessionVar('showhelp')=='on' ? 'Hide' : 'Show') , '&#10;Help" />
       </form>
     </div>
     ';
-
 }
 
 /************************************************************************
@@ -545,11 +970,11 @@ function printHelpButton() {
 function verifyCurrentSession($providerId='') {
     $retval = false;
 
-    $uid     = getSessionVar('uid');
-    $idp     = getSessionVar('idp');
-    $idpname = getSessionVar('idpname');
-    $status  = getSessionVar('status');
-    $dn      = getSessionVar('dn');
+    $uid     = util::getSessionVar('uid');
+    $idp     = util::getSessionVar('idp');
+    $idpname = util::getSessionVar('idpname');
+    $status  = util::getSessionVar('status');
+    $dn      = util::getSessionVar('dn');
     if ((strlen($uid) > 0) && (strlen($idp) > 0) && 
         (strlen($idpname) > 0) && (strlen($status) > 0) &&
         (strlen($dn) > 0) &&
@@ -559,6 +984,34 @@ function verifyCurrentSession($providerId='') {
         }
     }
 
+    return $retval;
+}
+
+/************************************************************************
+ * Function  : verifySessionAndCall                                     *
+ * Parameters: (1) The function to call if the current session is       *
+ *                 successfully verified.                               *
+ *             (2) An array of parameters to pass to the function.      *
+ *                 Defaults to empty array, meaning zero parameters.    *
+ * This function is a convenience method called by several cases in the *
+ * main 'switch' call at the top of the index.php file. I noticed       *
+ * a pattern where verifyCurrentSession() was called to verify the      *
+ * current user session. Upon success, one or two functions were called *
+ * to continue program, flow. Upon failure, cookies and session         *
+ * variables were cleared, and the main Logon page was printed. This    *
+ * function encapsulates that pattern. If the user's session is valid,  *
+ * the passed-in $func is called, possibly with parameters passed in as *
+ * an array. The function returns true if the session is verified, so   *
+ * that other functions may be called upon return.                      *
+ ************************************************************************/
+function verifySessionAndCall($func,$params=array()) {
+    $retval = false;
+    if (verifyCurrentSession()) { // Verify PHP session contains valid info
+        $retval = true;
+        call_user_func_array($func,$params);
+    } else {
+        printLogonPage(true); // Clear cookies and session vars too
+    }
     return $retval;
 }
 
@@ -602,9 +1055,9 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
 
     // If providerId not set, try the session and cookie values
     if (strlen($providerId) == 0) {
-        $providerId = getSessionVar('providerId');
+        $providerId = util::getSessionVar('providerId');
         if (strlen($providerId) == 0) {
-            $providerId = getCookieVar('providerId');
+            $providerId = util::getCookieVar('providerId');
         }
     }
     
@@ -618,10 +1071,10 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
         printMainPage();
     } else { // Otherwise, redirect to the getuser script
         // Set PHP session varilables needed by the getuser script
-        setSessionVar('responseurl',
-            (is_null($responseurl)?getScriptDir(true):$responseurl));
-        setSessionVar('submit','getuser');
-        setSessionVar('responsesubmit',$responsesubmit);
+        util::setSessionVar('responseurl',
+            (is_null($responseurl) ? util::getScriptDir(true) : $responseurl));
+        util::setSessionVar('submit','getuser');
+        util::setSessionVar('responsesubmit',$responsesubmit);
         $csrf->setTheCookie();
         $csrf->setTheSession();
 
@@ -634,9 +1087,7 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
          * or polo2.cilogon.org when initiating Shibboleth session, and
          * also when coming back (target=...) after authenticating at IdP.
          */
-        $remoteips = array('141.142.220.108','141.142.220.180');
-        if ((in_array(getServerVar('REMOTE_ADDR'),$remoteips)) &&
-            (HOSTNAME == 'cilogon.org')) {
+        if (HOSTNAME == 'cilogon.org') {
             $redirect = preg_replace('/cilogon.org/',getMachineHostname(),
                                      $redirect);
         }
@@ -653,8 +1104,8 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
             if ($allowsilver) {
                 $idplist = new idplist();
                 if (($idplist->isSilver($providerId)) ||
-                    (strlen(getPostVar('silveridp')) > 0)) {
-                    setSessionVar('requestsilver','1');
+                    (strlen(util::getPostVar('silveridp')) > 0)) {
+                    util::setSessionVar('requestsilver','1');
                     $redirect .= '&authnContextClassRef=' . 
                         urlencode('http://id.incommon.org/assurance/silver');
                 }
@@ -700,9 +1151,9 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
 
     // If providerId not set, try the session and cookie values
     if (strlen($providerId) == 0) {
-        $providerId = getSessionVar('providerId');
+        $providerId = util::getSessionVar('providerId');
         if (strlen($providerId) == 0) {
-            $providerId = getCookieVar('providerId');
+            $providerId = util::getCookieVar('providerId');
         }
     }
 
@@ -713,10 +1164,10 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
         printMainPage();
     } else { // Otherwise, redirect to the getopeniduser script
         // Set PHP session varilables needed by the getopeniduser script
-        unsetSessionVar('openiderror');
-        setSessionVar('responseurl',getScriptDir(true));
-        setSessionVar('submit','getuser');
-        setSessionVar('responsesubmit',$responsesubmit);
+        util::unsetSessionVar('openiderror');
+        util::setSessionVar('responseurl',util::getScriptDir(true));
+        util::setSessionVar('submit','getuser');
+        util::setSessionVar('responsesubmit',$responsesubmit);
         $csrf->setTheCookie();
         $csrf->setTheSession();
 
@@ -725,7 +1176,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
         $datastore = $openid->getStorage();
 
         if (is_null($datastore)) {
-            setSessionVar('openiderror',$openiderrorstr);
+            util::setSessionVar('openiderror',$openiderrorstr);
         } else {
             require_once("Auth/OpenID/Consumer.php");
             require_once("Auth/OpenID/SReg.php");
@@ -736,7 +1187,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
             $auth_request = $consumer->begin($providerId);
 
             if (!$auth_request) {
-                setSessionVar('openiderror',$openiderrorstr);
+                util::setSessionVar('openiderror',$openiderrorstr);
             } else {
                 // Get attributes from Verisign
                 $sreg_request = Auth_OpenID_SRegRequest::build(
@@ -782,7 +1233,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
                         'https://' . HOSTNAME . '/',
                         GETOPENIDUSER_URL);
                     if (Auth_OpenID::isFailure($redirect_url)) {
-                        setSessionVar('openiderror',$openiderrorstr);
+                        util::setSessionVar('openiderror',$openiderrorstr);
                     } else {
                         $log->info('OpenID Login="' . $providerId . '"');
                         header("Location: " . $redirect_url);
@@ -794,7 +1245,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
                         GETOPENIDUSER_URL,
                         false, array('id' => $form_id));
                     if (Auth_OpenID::isFailure($form_html)) {
-                        setSessionVar('openiderror',$openiderrorstr);
+                        util::setSessionVar('openiderror',$openiderrorstr);
                     } else {
                         $log->info('OpenID Login="' . $providerId . '"');
                         print $form_html;
@@ -805,7 +1256,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
             }
         }
 
-        if (strlen(getSessionVar('openiderror')) > 0) {
+        if (strlen(util::getSessionVar('openiderror')) > 0) {
             printLogonPage();
         }
     }
@@ -844,19 +1295,20 @@ function printErrorBox($errortext) {
  * session.                                                             *
  ************************************************************************/
 function unsetGetUserSessionVars() {
-    unsetSessionVar('submit');
-    unsetSessionVar('uid');
-    unsetSessionVar('status');
-    unsetSessionVar('loa');
-    unsetSessionVar('idp');
-    unsetSessionVar('idpname');
-    unsetSessionVar('firstname');
-    unsetSessionVar('lastname');
-    unsetSessionVar('dn');
-    unsetSessionVar('activation');
-    unsetSessionVar('p12');
-    unsetSessionVar('p12lifetime');
-    unsetSessionVar('p12multiplier');
+    util::unsetSessionVar('submit');
+    util::unsetSessionVar('uid');
+    util::unsetSessionVar('status');
+    util::unsetSessionVar('loa');
+    util::unsetSessionVar('idp');
+    util::unsetSessionVar('idpname');
+    util::unsetSessionVar('firstname');
+    util::unsetSessionVar('lastname');
+    util::unsetSessionVar('dn');
+    util::unsetSessionVar('twofactor');
+    util::unsetSessionVar('activation');
+    util::unsetSessionVar('p12');
+    util::unsetSessionVar('p12lifetime');
+    util::unsetSessionVar('p12multiplier');
 }
 
 /************************************************************************
@@ -865,13 +1317,13 @@ function unsetGetUserSessionVars() {
  * portal delegation.                                                   *
  ************************************************************************/
 function unsetPortalSessionVars() {
-    unsetSessionVar('portalstatus');
-    unsetSessionVar('callbackuri');
-    unsetSessionVar('successuri');
-    unsetSessionVar('failureuri');
-    unsetSessionVar('portalname');
-    unsetSessionVar('tempcred');
-    unsetSessionVar('dn');
+    util::unsetSessionVar('portalstatus');
+    util::unsetSessionVar('callbackuri');
+    util::unsetSessionVar('successuri');
+    util::unsetSessionVar('failureuri');
+    util::unsetSessionVar('portalname');
+    util::unsetSessionVar('tempcred');
+    util::unsetSessionVar('dn');
 }
 
 /************************************************************************
@@ -879,21 +1331,18 @@ function unsetPortalSessionVars() {
  * This function is called upon return from one of the getuser scripts  *
  * which should have set the 'uid' and 'status' PHP session variables.  *
  * It verifies that the status return is one of STATUS_OK (even         *
- * values).  If the return is STATUS_OK then it checks if we have a     *
- * new or changed user and prints that page as appropriate.  Otherwise  *
- * it continues to the MainPage.                                        *
+ * values).  If not, we print an error message to the user.             *
  ************************************************************************/
 function handleGotUser() {
     global $log;
-    global $skin;
 
-    $uid = getSessionVar('uid');
-    $status = getSessionVar('status');
+    $uid = util::getSessionVar('uid');
+    $status = util::getSessionVar('status');
     // If empty 'uid' or 'status' or odd-numbered status code, error!
     if ((strlen($uid) == 0) || (strlen($status) == 0) || ($status & 1)) {
         $log->error('Failed to getuser.');
 
-        $idpname = getSessionVar('idpname');
+        $idpname = util::getSessionVar('idpname');
         unsetGetUserSessionVars();
         printHeader('Error Logging On');
 
@@ -982,51 +1431,74 @@ function handleGotUser() {
         ';
         printFooter();
     } else { // Got one of the STATUS_OK status codes
-        // For the 'delegate' case (when there is a callbackuri in the 
-        // current PHP session), if the skin has "forceremember" set, 
-        // OR if the skin has "initialremember" set and there is no 
-        // cookie for the current portal, then we should go to the main
-        // page, skipping the New User and User Changed pages.
-        $callbackuri = getSessionVar('callbackuri');
-        if ((strlen($callbackuri) > 0) &&
-            (($status == dbservice::$STATUS['STATUS_NEW_USER']) ||
-             ($status == dbservice::$STATUS['STATUS_USER_UPDATED']))) {
-            // Extra check for new users: see if any HTML entities
-            // are in the user name. If so, send an email alert.
-            $dn = getSessionVar('dn');
-            $dn = reformatDN(preg_replace('/\s+email=.+$/','',$dn));
-            $htmldn = htmlentities($dn);
-            if (strcmp($dn,$htmldn) != 0) {
-                sendErrorAlert('New user DN contains HTML entities',
-                    "htmlentites(DN) = $htmldn\n");
-            }
+        // Check if two-factor authn is enabled and proceed accordingly
+        if (twofactor::getEnabled() == 'none') {
+            gotUserSuccess();
+        } else {
+            twofactor::printPage();
+        }
+    }
+}
 
-            // Check forcerememeber skin option to skip new user page
-            $forceremember = $skin->getConfigOption('delegate','forceremember');
-            if ((!is_null($forceremember)) && ((int)$forceremember == 1)) {
-                $status = dbservice::$STATUS['STATUS_OK'];
-            } else {
-                $initialremember = 
-                    $skin->getConfigOption('delegate','initialremember');
-                if ((!is_null($initialremember)) && ((int)$initialremember==1)){
-                    $portal = new portalcookie();
-                    $portallifetime = $portal->getPortalLifetime($callbackuri);
-                    if ((strlen($portallifetime)==0) || ($portallifetime==0)) {
-                        $status = dbservice::$STATUS['STATUS_OK'];
-                    }
+/************************************************************************
+ * Function  : gotUserSuccess                                           *
+ * This function is called after the user has been successfully         *
+ * authenticated. In the case of two-factor authentication, the user    *
+ * is first authenticated by the IdP, and then by the configured        *
+ * two-factor authentication method.                                    *
+ * If the 'status' session variable is STATUS_OK then it checks if we   *
+ * have a new or changed user and prints that page as appropriate.      *
+ * Otherwise it continues to the MainPage.                              *
+ ************************************************************************/
+function gotUserSuccess() {
+    global $skin;
+
+    $status = util::getSessionVar('status');
+
+    // For the 'delegate' case (when there is a callbackuri in the 
+    // current PHP session), if the skin has "forceremember" set, 
+    // OR if the skin has "initialremember" set and there is no 
+    // cookie for the current portal, then we should go to the main
+    // page, skipping the New User and User Changed pages.
+    $callbackuri = util::getSessionVar('callbackuri');
+    if ((strlen($callbackuri) > 0) &&
+        (($status == dbservice::$STATUS['STATUS_NEW_USER']) ||
+         ($status == dbservice::$STATUS['STATUS_USER_UPDATED']))) {
+        // Extra check for new users: see if any HTML entities
+        // are in the user name. If so, send an email alert.
+        $dn = util::getSessionVar('dn');
+        $dn = reformatDN(preg_replace('/\s+email=.+$/','',$dn));
+        $htmldn = htmlentities($dn);
+        if (strcmp($dn,$htmldn) != 0) {
+            util::sendErrorAlert('New user DN contains HTML entities',
+                "htmlentites(DN) = $htmldn\n");
+        }
+
+        // Check forcerememeber skin option to skip new user page
+        $forceremember = $skin->getConfigOption('delegate','forceremember');
+        if ((!is_null($forceremember)) && ((int)$forceremember == 1)) {
+            $status = dbservice::$STATUS['STATUS_OK'];
+        } else {
+            $initialremember = 
+                $skin->getConfigOption('delegate','initialremember');
+            if ((!is_null($initialremember)) && ((int)$initialremember==1)){
+                $portal = new portalcookie();
+                $portallifetime = $portal->getPortalLifetime($callbackuri);
+                if ((strlen($portallifetime)==0) || ($portallifetime==0)) {
+                    $status = dbservice::$STATUS['STATUS_OK'];
                 }
             }
         }
+    }
 
-        // If the user got a new DN due to changed SAML attributes,
-        // print out a notification page.
-        if ($status == dbservice::$STATUS['STATUS_NEW_USER']) {
-            printNewUserPage();
-        } elseif ($status == dbservice::$STATUS['STATUS_USER_UPDATED']) {
-            printUserChangedPage();
-        } else { // STATUS_OK
-            printMainPage();
-        }
+    // If the user got a new DN due to changed SAML attributes,
+    // print out a notification page.
+    if ($status == dbservice::$STATUS['STATUS_NEW_USER']) {
+        printNewUserPage();
+    } elseif ($status == dbservice::$STATUS['STATUS_USER_UPDATED']) {
+        printUserChangedPage();
+    } else { // STATUS_OK
+        printMainPage();
     }
 }
 
@@ -1041,7 +1513,7 @@ function printNewUserPage() {
 
     $log->info('New User page.');
 
-    $dn = getSessionVar('dn');
+    $dn = util::getSessionVar('dn');
     $dn = reformatDN(preg_replace('/\s+email=.+$/','',$dn));
 
     printHeader('New User');
@@ -1064,9 +1536,9 @@ function printNewUserPage() {
     </p>
     <ul>
     <li>You log on to the CILogon Service using an identity provider other
-    than ' , getSessionVar('idpname') , '.
+    than ' , util::getSessionVar('idpname') , '.
     </li>
-    <li>You log on using a different ' , getSessionVar('idpname') , '
+    <li>You log on using a different ' , util::getSessionVar('idpname') , '
     identity.
     </li>
     <li>The CILogon Service has experienced an internal error.
@@ -1103,7 +1575,7 @@ function printUserChangedPage() {
 
     $log->info('User IdP attributes changed.');
 
-    $uid = getSessionVar('uid');
+    $uid = util::getSessionVar('uid');
     $dbs = new dbservice();
     $dbs->getUser($uid);
     if (!($dbs->status & 1)) {  // STATUS_OK codes are even
@@ -1287,8 +1759,8 @@ function generateP12() {
 
     /* Get the entered p12lifetime and p12multiplier and set the cookies. */
     list($minlifetime,$maxlifetime) = getMinMaxLifetimes('pkcs12',9516);
-    $p12lifetime   = getPostVar('p12lifetime');
-    $p12multiplier = getPostVar('p12multiplier');
+    $p12lifetime   = util::getPostVar('p12lifetime');
+    $p12multiplier = util::getPostVar('p12multiplier');
     if (strlen($p12multiplier) == 0) {
         $p12multiplier = 1;  // For ECP, p12lifetime is in hours
     }
@@ -1306,48 +1778,48 @@ function generateP12() {
         $p12lifetime = $maxlifetime;
         $p12multiplier = 1;  // maxlifetime is in hours
     }
-    setCookieVar('p12lifetime',$p12lifetime);
-    setCookieVar('p12multiplier',$p12multiplier);
-    setSessionVar('p12lifetime',$p12lifetime);
-    setSessionVar('p12multiplier',$p12multiplier);
+    util::setCookieVar('p12lifetime',$p12lifetime);
+    util::setCookieVar('p12multiplier',$p12multiplier);
+    util::setSessionVar('p12lifetime',$p12lifetime);
+    util::setSessionVar('p12multiplier',$p12multiplier);
 
     /* Verify that the password is at least 12 characters long. */
-    $password1 = getPostVar('password1');
-    $password2 = getPostVar('password2');
-    $p12password = getPostVar('p12password');  // For ECP clients
+    $password1 = util::getPostVar('password1');
+    $password2 = util::getPostVar('password2');
+    $p12password = util::getPostVar('p12password');  // For ECP clients
     if (strlen($p12password) > 0) {
         $password1 = $p12password;
         $password2 = $p12password;
     }
     if (strlen($password1) < 12) {   
-        setSessionVar('p12error',
+        util::setSessionVar('p12error',
             'Password must have at least 12 characters.');
         return; // SHORT PASSWORD - NO FURTHER PROCESSING NEEDED!
     }
 
     /* Verify that the two password entry fields matched. */
     if ($password1 != $password2) {
-        setSessionVar('p12error','Passwords did not match.');
+        util::setSessionVar('p12error','Passwords did not match.');
         return; // MISMATCHED PASSWORDS - NO FURTHER PROCESSING NEEDED!
     }
 
     /* Set the port based on the Level of Assurance */
     $port = 7512;
-    $loa = getSessionVar('loa');
+    $loa = util::getSessionVar('loa');
     if ($loa == 'http://incommonfederation.org/assurance/silver') {
         $port = 7514;
     } elseif ($loa == 'openid') {
         $port = 7516;
     }
     /* Special hack for OSG - use SHA-1 version of MyProxy servers */
-    if (strcasecmp(getSessionVar('cilogon_skin'),'OSG') == 0) {
+    if (strcasecmp(util::getSessionVar('cilogon_skin'),'OSG') == 0) {
         $port--;
     }
 
-    $dn = getSessionVar('dn');
+    $dn = util::getSessionVar('dn');
     if (strlen($dn) > 0) {
         /* Append extra info, such as 'skin', to be processed by MyProxy. */
-        $myproxyinfo = getSessionVar('myproxyinfo');
+        $myproxyinfo = util::getSessionVar('myproxyinfo');
         if (strlen($myproxyinfo) > 0) {
             $dn .= " $myproxyinfo";
         }
@@ -1371,12 +1843,12 @@ function generateP12() {
 
         if (strlen($cert2) > 0) { // Successfully got a certificate!
             /* Create a temporary directory in /var/www/html/pkcs12/ */
-            $tdirparent = getServerVar('DOCUMENT_ROOT') . '/pkcs12/';
+            $tdirparent = util::getServerVar('DOCUMENT_ROOT') . '/pkcs12/';
             $polonum = '3';   // Prepend the polo? number to directory
             if (preg_match('/(\d+)\./',php_uname('n'),$polomatch)) {
                 $polonum = $polomatch[1];
             }
-            $tdir = tempDir($tdirparent,$polonum);
+            $tdir = util::tempDir($tdirparent,$polonum);
             $p12dir = str_replace($tdirparent,'',$tdir);
             $p12file = $tdir . '/usercred.p12';
 
@@ -1395,21 +1867,21 @@ function generateP12() {
                 $p12link = 'https://' . getMachineHostname() . '/pkcs12/' .
                            $p12dir . '/usercred.p12';
                 $p12 = (time()+300) . " " . $p12link;
-                setSessionVar('p12',$p12);
+                util::setSessionVar('p12',$p12);
                 $log->info('Generated New User Certificate="'.$p12link.'"');
             } else { // Empty or missing usercred.p12 file - shouldn't happen!
-                setSessionVar('p12error',
+                util::setSessionVar('p12error',
                     'Error creating certificate. Please try again.');
-                deleteDir($tdir); // Remove the temporary directory
+                util::deleteDir($tdir); // Remove the temporary directory
                 $log->info("Error creating certificate - missing usercred.p12");
             }
         } else { // The myproxy-logon command failed - shouldn't happen!
-            setSessionVar('p12error',
+            util::setSessionVar('p12error',
                 'Error! MyProxy unable to create certificate.');
             $log->info("Error creating certificate - myproxy-logon failed");
         }
     } else { // Couldn't find the 'dn' PHP session value - shouldn't happen!
-        setSessionVar('p12error',
+        util::setSessionVar('p12error',
             'Missing username. Please enable cookies.');
         $log->info("Error creating certificate - missing dn session variable");
     }
@@ -1456,6 +1928,51 @@ function getLogOnButtonText() {
 }
 
 /************************************************************************
+ * Function   : getSerialStringFromDN                                   *
+ * Parameter  : The certificate subject DN (typically found in the      *
+ *              session 'dn' variable)                                  *
+ * Returns    : The serial string extracted from the subject DN, or     *
+ *              empty string if DN is empty or wrong format.            *
+ * This function takes in a CILogon subject DN and returns just the     *
+ * serial string part (e.g., A325). This function is needed since the   *
+ * serial_string is not stored in the PHP session as a separate         *
+ * variable since it is always available in the 'dn' session variable.  *
+ ************************************************************************/
+function getSerialStringFromDN($dn) { 
+    $serial = ''; // Return empty string upon error
+
+    // Strip off the email address, if present
+    $dn = preg_replace('/\s+email=.+$/','',$dn);
+    // Find the "CN=" entry
+    if (preg_match('%/DC=org/DC=cilogon/C=US/O=.*/CN=(.*)%',$dn,$match)) {
+        $cn = $match[1];
+        if (preg_match('/\s+([^\s]+)$/',$cn,$match)) {
+            $serial = $match[1];
+        }
+    }
+    return $serial;
+}
+
+/************************************************************************
+ * Function   : getEmailFromDN                                          *
+ * Parameter  : The certificate subject DN (typically found in the      *
+ *              session 'dn' variable)                                  *
+ * Returns    : The email address extracted from the subject DN, or     *
+ *              empty string if DN is empty or wrong format.            *
+ * This function takes in a CILogon subject DN and returns just the     *
+ * email address part. This function is needed since the email address  *
+ * is not stored in the PHP session as a separate variable since it is  *
+ * always available in the 'dn' session variable.                       *
+ ************************************************************************/
+function getEmailFromDN($dn) {
+    $email = ''; // Return empty string upon error
+    if (preg_match('/\s+email=(.+)$/',$dn,$match)) {
+        $email = $match[1];
+    }
+    return $email;
+}
+
+/************************************************************************
  * Function   : reformatDN                                              *
  * Parameter  : The certificate subject DN (without the email=... part) *
  * Returns    : The certificate subject DN transformed according to     *
@@ -1496,9 +2013,9 @@ function checkForceSkin($entityId) {
     global $skin;
 
     $forceskinfile = '/var/www/html/include/forceskin.txt';
-    $idps = readArrayFromFile($forceskinfile);
+    $idps = util::readArrayFromFile($forceskinfile);
     if (array_key_exists($entityId,$idps)) {
-        setSessionVar('cilogon_skin',$idps[$entityId]);
+        util::setSessionVar('cilogon_skin',$idps[$entityId]);
         $skin->__construct(); // Need to reinitialize the skinname
     }
 }

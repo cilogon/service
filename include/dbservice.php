@@ -114,6 +114,7 @@ class dbservice {
     public $cilogon_success;
     public $cilogon_failure;
     public $cilogon_portal_name;
+    public $two_factor;
     public $idp_uids;  /* IdPs stored in the "values" of the array */
 
     private $dbserviceurl;
@@ -177,6 +178,7 @@ class dbservice {
         $this->distinguished_name = null;
         $this->serial_string = null;
         $this->create_time = null;
+        $this->two_factor = null;
     }
 
     /********************************************************************
@@ -268,6 +270,40 @@ class dbservice {
         $this->clearUser();
         return $this->call('action=removeUser&user_uid=' .
             urlencode($uid));
+    }
+
+    /********************************************************************
+     * Function  : getTwoFactorInfo                                     *
+     * Parameter : $uid - the database user identifier                  *
+     * Returns   : True if the servlet returned correctly. Else false.  *
+     * This method calls the 'getTwoFactorInfo' action of the servlet   *
+     * and sets the class member variables associated with the user's   *
+     * two-factor info appropriately. If the servlet returns correctly  *
+     * (i.e. an HTTP status code of 200), this method returns true.     *
+     * Note that this method isn't strictly necessary since the         *
+     * two_factor info data is returned when getUser is called.         *
+     ********************************************************************/
+    function getTwoFactorInfo($uid) {
+        $this->two_factor = null;
+        return $this->call('action=getTwoFactorInfo&user_uid=' .
+            urlencode($uid));
+    }
+
+    /********************************************************************
+     * Function  : setTwoFactorInfo                                     *
+     * Parameters: (1) $uid - the database user identifier              *
+     *                 $two_factor - the two-factor info string.        *
+     *                 Defaults to empty string.                        *
+     * Returns   : True if the servlet returned correctly. Else false.  *
+     * This method calls the 'setTwoFactorInfo' action of the servlet   *
+     * and sets the class member variable associated with the user's    *
+     * two-factor info appropriately. If the servlet returns correctly  *
+     * (i.e. an HTTP status code of 200), this method returns true.     *
+     ********************************************************************/
+    function setTwoFactorInfo($uid,$two_factor='') {
+        $this->two_factor = $two_factor;
+        return $this->call('action=setTwoFactorInfo&user_uid=' .
+            urlencode($uid) . '&two_factor=' . urlencode($two_factor));
     }
 
     /********************************************************************
@@ -385,9 +421,9 @@ class dbservice {
             curl_setopt($ch,CURLOPT_TIMEOUT,30);
             $output = curl_exec($ch);
             if (curl_errno($ch)) { // Send alert on curl errors
-                sendErrorAlert('cUrl Error',
-                           'cUrl Error    = ' . curl_error($ch) . "\n" . 
-                           "URL Accessed  = $url");
+                util::sendErrorAlert('cUrl Error',
+                    'cUrl Error    = ' . curl_error($ch) . "\n" . 
+                    "URL Accessed  = $url");
             }
             if (!empty($output)) {
                 $httpcode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
@@ -440,6 +476,9 @@ class dbservice {
                     }
                     if (preg_match('/cilogon_portal_name=([^\r\n]+)/',$output,$match)) {
                         $this->cilogon_portal_name = urldecode($match[1]);
+                    }
+                    if (preg_match('/two_factor=([^\r\n]+)/',$output,$match)) {
+                        $this->two_factor = urldecode($match[1]);
                     }
                     if (preg_match_all('/idp_uid=([^\r\n]+)/',$output,$match)) {
                         foreach ($match[1] as $value) {
@@ -506,6 +545,9 @@ class dbservice {
         }
         if (!is_null($this->cilogon_portal_name)) {
             echo "cilogon_portal_name=$this->cilogon_portal_name\n";
+        }
+        if (!is_null($this->two_factor)) {
+            echo "two_factor=$this->two_factor\n";
         }
         if (count($this->idp_uids) > 0) {
             natcasesort($this->idp_uids);

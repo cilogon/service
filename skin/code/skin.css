@@ -1,9 +1,7 @@
 div.p12actionbox {
-  border: none;
   display: none;
 }
 div.tokenactionbox {
-  border: 1px solid #888;
   display: block;
 }
 

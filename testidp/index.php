@@ -15,7 +15,7 @@ $idplist = new idplist();
  * Note: replace CR/LF with space for "Show/Hide Help" buttons.      */
 $retchars = array("\r\n","\n","\r");
 $submit = str_replace($retchars," ",csrf::verifyCookieAndGetSubmit());
-unsetSessionVar('submit');
+util::unsetSessionVar('submit');
 
 /* Depending on the value of the clicked "submit" button or the    *
  * equivalent PHP session variable, take action or print out HTML. */
@@ -23,12 +23,12 @@ switch ($submit) {
 
     case 'Log On': // Check for OpenID or InCommon usage.
     case 'Continue': // For OOI
-        $providerIdPost = getPostVar('providerId');
+        $providerIdPost = util::getPostVar('providerId');
         if ($idplist->exists($providerIdPost)) { // Use InCommon authn
-            setCookieVar('providerId',$providerIdPost);
+            util::setCookieVar('providerId',$providerIdPost);
             redirectToTestIdP($providerIdPost);
         } else { // Either providerId not set or not in whitelist
-            unsetCookieVar('providerId');
+            util::unsetCookieVar('providerId');
             printLogonPage();
         }
     break; // End case 'Log On'
@@ -39,10 +39,10 @@ switch ($submit) {
 
     case "Show Help": // Toggle showing of help text on and off
     case "Hide Help":
-        if (getSessionVar('showhelp') == 'on') {
-            unsetSessionVar('showhelp');
+        if (util::getSessionVar('showhelp') == 'on') {
+            util::unsetSessionVar('showhelp');
         } else {
-            setSessionVar('showhelp','on');
+            util::setSessionVar('showhelp','on');
         }
         printLogonPage();
     break; // End case 'Show Help' / 'Hide Help'
@@ -102,9 +102,9 @@ function printLogonPage() {
 function redirectToTestIdP($providerId='') {
     // If providerId not set, try the session and cookie values
     if (strlen($providerId) == 0) {
-        $providerId = getSessionVar('providerId');
+        $providerId = util::getSessionVar('providerId');
         if (strlen($providerId) == 0) {
-            $providerId = getCookieVar('providerId');
+            $providerId = util::getCookieVar('providerId');
         }
     }
     

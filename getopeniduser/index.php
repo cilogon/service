@@ -12,10 +12,10 @@ require_once("Auth/OpenID/AX.php");
 /* Check the csrf cookie against either a hidden <form> element or a *
  * PHP session variable, and get the value of the "submit" element.  */
 $submit = csrf::verifyCookieAndGetSubmit();
-unsetSessionVar('submit');
+util::unsetSessionVar('submit');
 
 /* Get the URL to reply to after database query. */
-$responseurl = getSessionVar('responseurl');
+$responseurl = util::getSessionVar('responseurl');
 
 if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
     getUserAndRespond($responseurl);
@@ -50,23 +50,23 @@ function getUserAndRespond($responseurl) {
     $fullname = '';
     $emailaddr = '';
 
-    unsetSessionVar('openiderror');
+    util::unsetSessionVar('openiderror');
     $datastore = $openid->getStorage();
     if (is_null($datastore)) {
-        setSessionVar('openiderror',
+        util::setSessionVar('openiderror',
             'Internal OpenID error. Please contact <a href="mailto:help@cilogon.org">help@cilogon.org</a> or select a different identity provider.');
     } else {
         $consumer = new Auth_OpenID_Consumer($datastore);
-        $response = $consumer->complete(getScriptDir(true));
+        $response = $consumer->complete(util::getScriptDir(true));
 
         // Check the response status.
         if ($response->status == Auth_OpenID_CANCEL) {
             // This means the authentication was canceled.
-            setSessionVar('openiderror',
+            util::setSessionVar('openiderror',
                 'OpenID logon canceled. Please try again.');
         } elseif ($response->status == Auth_OpenID_FAILURE) {
             // Authentication failed; display an error message.
-            setSessionVar('openiderror',
+            util::setSessionVar('openiderror',
                 'OpenID authentication failed: ' . 
                 $response->message . '. Please try again.');
         } elseif ($response->status == Auth_OpenID_SUCCESS) {
@@ -123,7 +123,7 @@ function getUserAndRespond($responseurl) {
             }
 
         } else {
-            setSessionVar('openiderror',
+            util::setSessionVar('openiderror',
                 'OpenID logon error. Please try again.');
         }
 
@@ -131,10 +131,10 @@ function getUserAndRespond($responseurl) {
     }
 
     /* Make sure no OpenID error was reported */
-    if (strlen(getSessionVar('openiderror')) == 0) {
+    if (strlen(util::getSessionVar('openiderror')) == 0) {
         /* If all required attributes are available, get the       *
          * database user id and status code of the database query. */
-        $providerId = getCookieVar('providerId');
+        $providerId = util::getCookieVar('providerId');
         $providerName = openid::getProviderName($providerId);
         /* In the database, keep a consistent ProviderId format:   *
          * only allow "http" (not "https") and remove any "www."   *
@@ -156,19 +156,21 @@ function getUserAndRespond($responseurl) {
                           $firstname,
                           $lastname,
                           $emailaddr);
-            setSessionVar('uid',$dbs->user_uid);
-            setSessionVar('dn',$dbs->distinguished_name);
-            setSessionVar('status',$dbs->status);
+            util::setSessionVar('uid',$dbs->user_uid);
+            util::setSessionVar('dn',$dbs->distinguished_name);
+            util::setSessionVar('twofactor',$dbs->two_factor);
+            util::setSessionVar('status',$dbs->status);
         } else { // Missing one or more required attributes
-            unsetSessionVar('uid');
-            unsetSessionVar('dn');
-            setSessionVar('status',
+            util::unsetSessionVar('uid');
+            util::unsetSessionVar('dn');
+            util::unsetSessionVar('twofactor');
+            util::setSessionVar('status',
                 dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']);
         }
 
         // If 'status' is not STATUS_OK*, then send an error email
-        if (getSessionVar('status') & 1) { // Bad status codes are odd-numbered
-            sendErrorAlert('Failure in /getopeniduser/',
+        if (util::getSessionVar('status') & 1) { // Bad status codes are odd
+            util::sendErrorAlert('Failure in /getopeniduser/',
                 'OpenId ID     = ' . ((strlen($openidid) > 0) ? 
                     $openidid : '<MISSING>') . "\n" .
                 'Provider URL  = ' . ((strlen($providerId) > 0) ? 
@@ -181,37 +183,38 @@ function getUserAndRespond($responseurl) {
                     $lastname : '<MISSING>') . "\n" .
                 'Email Address = ' . ((strlen($emailaddr) > 0) ? 
                     $emailaddr : '<MISSING>') . "\n" .
-                'Database UID  = ' . ((strlen($i=getSessionVar('uid')) > 0) ? 
-                    $i : '<MISSING>') . "\n" .
+                'Database UID  = ' . ((strlen(
+                    $i=util::getSessionVar('uid')) > 0) ? 
+                        $i : '<MISSING>') . "\n" .
                 'Status Code   = ' . ((strlen($i = array_search(
-                    getSessionVar('status'),dbservice::$STATUS)) > 0) ? 
+                    util::getSessionVar('status'),dbservice::$STATUS)) > 0) ? 
                         $i : '<MISSING>')
             );
-            unsetSessionVar('firstname');
-            unsetSessionVar('lastname');
-            unsetSessionVar('loa');
-            unsetSessionVar('idp');
-            unsetSessionVar('openidID');
+            util::unsetSessionVar('firstname');
+            util::unsetSessionVar('lastname');
+            util::unsetSessionVar('loa');
+            util::unsetSessionVar('idp');
+            util::unsetSessionVar('openidID');
         } else {
-            setSessionVar('firstname',$firstname);
-            setSessionVar('lastname',$lastname);
-            setSessionVar('loa','openid');
-            setSessionVar('idp',$providerId);
-            setSessionVar('openidID',$openidid);
+            util::setSessionVar('firstname',$firstname);
+            util::setSessionVar('lastname',$lastname);
+            util::setSessionVar('loa','openid');
+            util::setSessionVar('idp',$providerId);
+            util::setSessionVar('openidID',$openidid);
         }
 
-        setSessionVar('idpname',$providerName); // So we can check for 'Google'
-        setSessionVar('submit',getSessionVar('responsesubmit'));
+        util::setSessionVar('idpname',$providerName); // Enable check for Google
+        util::setSessionVar('submit',util::getSessionVar('responsesubmit'));
 
         $csrf->setTheCookie();
         $csrf->setTheSession();
     } else {
-        unsetSessionVar('submit');
+        util::unsetSessionVar('submit');
     }
 
-    unsetSessionVar('responsesubmit');
-    unsetSessionVar('ePPN');
-    unsetSessionVar('ePTID');
+    util::unsetSessionVar('responsesubmit');
+    util::unsetSessionVar('ePPN');
+    util::unsetSessionVar('ePTID');
 
     /* Finally, redirect to the calling script. */
     header('Location: ' . $responseurl);

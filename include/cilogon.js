@@ -423,7 +423,8 @@ function doFocus(id) {
  * and attempts to give text field focuts to each field, in order.         *
  ***************************************************************************/
 function textInputFocus() {
-  return doFocus("searchlist") || doFocus("password1") || doFocus("lifetime");
+  return doFocus("searchlist") || doFocus("password1") || 
+         doFocus("lifetime") || doFocus("gacode");
 }
 
 /***************************************************************************

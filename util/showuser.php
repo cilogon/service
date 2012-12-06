@@ -46,6 +46,7 @@ function printUser($dbs) {
     echo "email = $dbs->email\n";
     echo "distinguished_name = $dbs->distinguished_name\n";
     echo "serial_string = $dbs->serial_string\n";
+    echo "two_factor = $dbs->two_factor\n";
 }
 
 ?>

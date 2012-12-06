@@ -15,11 +15,11 @@ $submit = csrf::verifyCookieAndGetSubmit();
  * button then read in the various form elements and verify that *
  * the form values are non-empty (or at least make sense).       */
 if ($submit == 'Submit') {
-    $yourName = getPostVar('yourName');
-    $emailAddr = getPostVar('emailAddr');
-    $providerId = getPostVar('providerId');
-    $otherIdP = getPostVar('otherIdP');
-    $comments = getPostVar('comments');
+    $yourName = util::getPostVar('yourName');
+    $emailAddr = util::getPostVar('emailAddr');
+    $providerId = util::getPostVar('providerId');
+    $otherIdP = util::getPostVar('otherIdP');
+    $comments = util::getPostVar('comments');
 
     /* Check for non-empty Name, Email, IdP, and valid Email Address */
     if ((strlen($yourName) > 2) &&
@@ -108,7 +108,8 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
     </p>
 
     <div class="contactform">
-      <form action="' , getScriptDir() , '" method="post" class="requestform">
+      <form action="' , util::getScriptDir() , 
+      '" method="post" class="requestform">
       <fieldset>
       <legend>Contact Information</legend>
       <p>

@@ -75,7 +75,7 @@ class portalcookie {
      ********************************************************************/
     function write() {
         if (!empty($this->portalarray)) {
-            setCookieVar(self::cookiename,
+            util::setCookieVar(self::cookiename,
                          base64_encode(serialize($this->portalarray)));
         }
     }
@@ -86,7 +86,7 @@ class portalcookie {
      * This should be called before any HTML is output.                 *
      ********************************************************************/
     public static function removeTheCookie() {
-        unsetCookieVar(self::cookiename);
+        util::unsetCookieVar(self::cookiename);
     }
 
     /********************************************************************

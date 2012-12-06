@@ -44,8 +44,8 @@ function getMyProxyCredential(
 
     // Make sure the username passed in is not empty
     if (strlen($username) == 0) {
-        sendErrorAlert('getMyProxyCredential Error',
-                       'MyProxy Error = Missing MyProxy username');
+        util::sendErrorAlert('getMyProxyCredential Error',
+                             'MyProxy Error = Missing MyProxy username');
         return $retstr;
     }
     
@@ -94,9 +94,9 @@ function getMyProxyCredential(
     $retstr = implode("\n",$output);
 
     if ($return_val > 0) {
-        sendErrorAlert('getMyProxyCredential Error',
-                       "MyProxy Error = $return_val\n" .
-                       "MyProxy Output= $retstr");
+        util:: sendErrorAlert('getMyProxyCredential Error',
+                              "MyProxy Error = $return_val\n" .
+                              "MyProxy Output= $retstr");
         $retstr = '';
     }
 

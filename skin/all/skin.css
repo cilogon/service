@@ -1,5 +1,6 @@
 div.certactionbox,
 div.tokenactionbox,
+div.twofactoractionbox,
 div.logofftextbox {
   border: 1px solid #888;
   display: block;
@@ -11,4 +12,8 @@ p.p12certificatelifetime {
 
 div.skincilogonlogo {
   display: inline;
+}
+
+p.silvercheckbox {
+  display: block;
 }
