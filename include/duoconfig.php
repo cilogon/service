@@ -2,10 +2,14 @@
 
 /************************************************************************
  * Class name : duoconfig                                               *
- * Description: This class 
+ * Description: This class reads the Duo Security configuration from    *
+ * /var/www/config/cilogon.ini and stores the values in a 'param'       *
+ * array.                                                               *
  *                                                                      *
  * Example usage:                                                       *
- *    require_once('duoconfig.php');                                      *
+ *    require_once('duoconfig.php');                                    *
+ *    $duoconfig = new duoconfig();                                     *
+ *    $ikey = $duoconfig->param['ikey'];                                *
  ************************************************************************/
 
 class duoconfig {
