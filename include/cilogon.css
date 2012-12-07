@@ -500,4 +500,8 @@ iframe#duo_iframe {
   background: transparent;
   border: none;
 }
+/* For now, hide the Duo Security method */
+table.twofactortypes tr.twofactorduorow {
+  display: none;
+}
 /***** End Two-Factor-related stuff *****/
