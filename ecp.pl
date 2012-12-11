@@ -5,7 +5,7 @@
 # Authors     : Terry Fleury <tfleury@illinois.edu>                     #
 #               Scott Koranda <skoranda@gmail.com>                      #
 # Create Date : July 06, 2011                                           #
-# Last Update : September 27, 2012                                      #
+# Last Update : December 10, 2012                                       #
 #                                                                       #
 # This PERL script allows a user to get an end-user X.509 certificate   #
 # or PKCS12 credential from the CILogon Service. It can also get the    #
@@ -38,7 +38,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.011";
+our $VERSION = "0.012";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -76,6 +76,7 @@ my $inkey = '';
 my $outkey = '';
 my $csr = '';
 my $passwd = '';
+my $tfpass = '';
 my $lifetime = 0;
 my $vo = '';
 my $outputfile = '';
@@ -104,6 +105,7 @@ GetOptions(\%opts, 'help|h|?',
                    'vo|O=s',
                    'out|o=s',
                    'password|P=s',
+                   'twofactor|T=s',
                    'url|U=s') or pod2usage(-verbose=>1) && exit;
 
 # If the user asked for help, print it and then exit.
@@ -433,7 +435,8 @@ if ($get eq 'p') {
     }
 }
 
-# If getting a certificate or a credential, get the lifetime and VO
+# If getting a certificate or a credential, get the lifetime, 
+# and check for VO and two-factor passcode command line options
 if (($get eq 'c') || ($get eq 'p')) {
     my $maxlifetime = (($get eq 'c') ? 277 : 9516);
     if (exists $opts{lifetime}) {
@@ -463,7 +466,13 @@ if (($get eq 'c') || ($get eq 'p')) {
     # Check if the user specified a "--vo" command line parameter
     if (exists $opts{vo}) {
         $vo = trim($opts{vo});
-        print "Using CILogon Virtual Organization '$vo'\n" if ($verbose);
+        print "Using CILogon Virtual Organization '$vo'.\n" if ($verbose);
+    }
+
+    # Check if the user specified a "--twofactor" command line parameter
+    if (exists $opts{twofactor}) {
+        $tfpass = trim($opts{twofactor});
+        print "Using two-factor passcode '$tfpass'.\n" if ($verbose);
     }
 }
 
@@ -611,7 +620,7 @@ if ($responseConsumerURL ne $assertionConsumerServiceURL) {
 
 # Take the response from the IdP, but replace the <ecp:Response> SOAP header
 # with the <ecp:RelayState> SOAP header found earlier. Then send this new
-# message to the SP.
+# message to the SP's assertionConsumerServiceURL.
 if (!($idpresp =~ s#(<soap11:Header>).*(</soap11:Header>)#$1$relaystate$2#i)) {
     warn "Error: Could not find <ecp:Response> SOAP header in the " .
          "IdP response." if (!$quiet);
@@ -635,43 +644,72 @@ $cookiejar->set_cookie(1,'CSRF',$randstr,'/',$uri->host,$uri->port,1,1);
 # Final communication with the original $urltoget. Should return a
 # certificate, a PKCS12 credential, or the HTML of a particular URL.
 print "Finally, attempting to get the $getstr..." if ($verbose);
-if ($get eq 'u') {  # 'Get' the user-defined URL
-    $response = $ua->get($urltoget);
-} else { # Getting a certificate or credential requires 'post' for form vars
-    my %formvars;
-    $formvars{'CSRF'} = $randstr;
-    if (length($vo) > 0) {
-        $formvars{'cilogon_vo'} = $vo;
-    }
-    if ($get eq 'c') {
-        $formvars{'submit'} = 'certreq';
-        $formvars{'certreq'} = $csr;
-        $formvars{'certlifetime'} = $lifetime;
-    }
-    if ($get eq 'p') {
-        $formvars{'submit'} = 'pkcs12';
-        $formvars{'p12password'} = $passwd;
-        $formvars{'p12lifetime'} = $lifetime;
+my $authOK = 0;
+my %formvars;
+do {
+    if ($get eq 'u') {  # 'Get' the user-defined URL
+        $response = $ua->get($urltoget);
+    } else { # Getting a certificate or credential requires 'post' for form vars
+        $formvars{'CSRF'} = $randstr;
+        if (length($vo) > 0) {
+            $formvars{'cilogon_vo'} = $vo;
+        }
+        if (length($tfpass) > 0) {
+            $formvars{'tfpasscode'} = $tfpass;
+        }
+        if ($get eq 'c') {
+            $formvars{'submit'} = 'certreq';
+            $formvars{'certreq'} = $csr;
+            $formvars{'certlifetime'} = $lifetime;
+        }
+        if ($get eq 'p') {
+            $formvars{'submit'} = 'pkcs12';
+            $formvars{'p12password'} = $passwd;
+            $formvars{'p12lifetime'} = $lifetime;
+        }
+
+        $response = $ua->post($urltoget,\%formvars);
     }
 
-    $response = $ua->post($urltoget,\%formvars);
-}
-if ($response->is_success) {
-    print "Success!\n" if ($verbose);
-    if (length($outputfile) > 0) {
-        open(OUTFILE,">$outputfile");
-        print OUTFILE $response->decoded_content;
-        close OUTFILE;
-        print "Output written to '$outputfile'.\n" if ($verbose);
+    if ($response->is_success) {
+        $authOK = 1;
+        print "Success!\n" if ($verbose);
+        if (length($outputfile) > 0) {
+            open(OUTFILE,">$outputfile");
+            print OUTFILE $response->decoded_content;
+            close OUTFILE;
+            print "Output written to '$outputfile'.\n" if ($verbose);
+        } else {
+            print $response->decoded_content . "\n";
+        }
     } else {
-        print $response->decoded_content . "\n";
+        # Check for "401 Unauthorized", which means two-factor is enabled
+        if ($response->code == 401) {
+            # Two-factor prompt is in the "realm" field. Must urlDecode it.
+            my $realm;
+            my $headerauth = $response->header('WWW-Authenticate');
+            ($headerauth =~ /realm="(.*)"$/) && ($realm = urlDecode($1));
+
+            # Prompt for the passcode
+            $tfpass = '';
+            print "\n" . $response->message . ".\n" . $realm . "\n";
+            while (length($tfpass) == 0) {
+                $tfpass = trim($term->readline());
+                if (length($tfpass) == 0) {
+                    warn "Error: Passcode cannot be empty." if (!$quiet);
+                }
+            }
+            # Since $authOK is still false, loop to try to get the URL again
+        } else {
+            # Some other server error code - failure
+            print "Failure! Error code: " . $response->status_line . "\n" if 
+                ($verbose);
+            warn "Error: Unable to get the $getstr. Try the --verbose " .
+                 "command line option." if (!$quiet);
+            exit 1;
+        }
     }
-} else {
-    print "Failure! Error code: " . $response->status_line . "\n" if ($verbose);
-    warn "Error: Unable to get the $getstr. Try the --verbose " .
-         "command line option." if (!$quiet);
-    exit 1;
-}
+} until ($authOK);
 
 # Made it this far means success!
 exit 0;
@@ -902,6 +940,22 @@ sub resetTerm
     exit 1;
 }
 
+#########################################################################
+# Subroutine: urlDecode()                                               #
+# Parameter : A string encoded with PHP 'urlencode()'                   #
+# Returns   : The decoded string, with '+' replaced by ' ' (space), and #
+#             URL entities decoded to their base representations.       #
+# This subroutine decodes a string that was encoded with the PHP        #
+# function 'urlencode'.                                                 #
+#########################################################################
+sub urlDecode {
+    my $url = shift;
+    $url =~ tr/+/ /;
+    $url =~ s/%([a-fA-F0-9]{2,2})/chr(hex($1))/eg;
+    $url =~ s/<!--(.|\n)*-->//g;
+    return $url;
+}
+
 
 
 __END__
@@ -1029,6 +1083,14 @@ so you must specify it with the B<--vo> option.
 
 Specify a password string to encrypt the private key of the PKCS12
 credential. This password must be at least 12 characters in length.
+
+=item B<-T> I<passcode>, B<--twofactor> I<passcode>
+
+Specify a passcode for two-factor authentication. If two-factor
+authentication had been previously enabled for your account (via the web
+interface), use this value to validate the two-factor authentication step.
+If you specify '0' (zero) as the I<passcode>, two-factor authentication will 
+be disabled for your account.
 
 =item B<-U> I<url>, B<--url> I<url>
 

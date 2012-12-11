@@ -470,7 +470,8 @@ class util {
             'ePTID'        => 'ePTID',
             'openID'       => 'OpenID',
             'loa'          => 'LOA',
-            'cilogon_skin' => 'Skin Name'
+            'cilogon_skin' => 'Skin Name',
+            'twofactor'    => 'Two-Factor'
         );
 
         $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .

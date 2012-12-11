@@ -212,6 +212,10 @@ function getPKCS12() {
         return; // ERROR means no further processing is necessary
     }
 
+    if (!twofactor::ecpCheck()) {
+        return; // ERROR means no further processing is necessary
+    }
+
     generateP12();  // Try to create the PKCS12 credential file on disk
 
     /* Look for the p12error PHP session variable. If set, return it. */
@@ -268,6 +272,10 @@ function getCert() {
     if (util::getSessionVar('status') & 1) { // Bad status codes are odd
         outputError(array_search(util::getSessionVar('status'),
                                  dbservice::$STATUS));
+        return; // ERROR means no further processing is necessary
+    }
+
+    if (!twofactor::ecpCheck()) {
         return; // ERROR means no further processing is necessary
     }
 
