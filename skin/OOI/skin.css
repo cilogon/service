@@ -54,6 +54,9 @@ input.submit:active {
 div.contactform {
   background: #333;
 }
+div.noticebanner {
+  color: #000;
+}
 /***** End a few misc element *****/
 
 /***** Begin the "CILogon Service" header at the top of each page *****/
