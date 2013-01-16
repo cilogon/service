@@ -21,6 +21,9 @@ a:active {
 /***** End basic elements *****/
 
 /***** Begin a few misc elements *****/
+div.boxed {
+  border: 0;
+}
 div.boxheader {
   color: #fff;
   border: 1px solid #999;
@@ -79,6 +82,9 @@ div.titlebox {
 /***** End PageHeader titlebox *****/
 
 /***** Begin page footer *****/
+div.footer {
+  border: 0;
+}
 div.footer a:link {
   color: #ccc;
 }
@@ -98,7 +104,7 @@ div.actionbox,
 div.p12actionbox,
 div.certactionbox,
 div.logoffactionbox {
-  border: 1px solid #999;
+  border: 1px solid #333;
   display: block;
   background-color: #1e1e1e;
 }
