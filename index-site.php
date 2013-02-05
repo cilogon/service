@@ -268,7 +268,6 @@ function printCertInfo() {
  * link for the usercred.p12 file is presented to the user.             *
  ************************************************************************/
 function printGetCertificate() {
-    global $csrf;
     global $skin;
 
     $downloadcerttext = "Clicking this button will generate a link to a new certificate, which you can download to your local computer. The certificate is valid for up to 13 months."; 
