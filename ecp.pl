@@ -3,9 +3,8 @@
 #########################################################################
 # Script      : ecp.pl                                                  #
 # Authors     : Terry Fleury <tfleury@illinois.edu>                     #
-#               Scott Koranda <skoranda@gmail.com>                      #
 # Create Date : July 06, 2011                                           #
-# Last Update : December 10, 2012                                       #
+# Last Update : February 5, 2013                                        #
 #                                                                       #
 # This PERL script allows a user to get an end-user X.509 certificate   #
 # or PKCS12 credential from the CILogon Service. It can also get the    #
@@ -38,7 +37,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.012";
+our $VERSION = "0.013";
 $VERSION = eval $VERSION;
 
 use strict;
