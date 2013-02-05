@@ -1,5 +1,7 @@
 <?php
 
+require_once('loggit.php');
+
 /************************************************************************
  * Class name : csrf                                                    *
  * Description: This class creates and manages CSRF (cross-site request *
@@ -250,6 +252,8 @@ class csrf {
         // remove the csrf cookie.
         if (strlen($retval) == 0) {
             self::removeTheCookie();
+            $log = new loggit();
+            $log->info('CSRF check failed.');
         }
         return $retval;
     }
