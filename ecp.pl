@@ -4,7 +4,7 @@
 # Script      : ecp.pl                                                  #
 # Authors     : Terry Fleury <tfleury@illinois.edu>                     #
 # Create Date : July 06, 2011                                           #
-# Last Update : February 5, 2013                                        #
+# Last Update : February 07, 2013                                       #
 #                                                                       #
 # This PERL script allows a user to get an end-user X.509 certificate   #
 # or PKCS12 credential from the CILogon Service. It can also get the    #
@@ -37,7 +37,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.013";
+our $VERSION = "0.014";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -701,8 +701,12 @@ do {
             # Since $authOK is still false, loop to try to get the URL again
         } else {
             # Some other server error code - failure
-            print "Failure! Error code: " . $response->status_line . "\n" if 
-                ($verbose);
+            if ($verbose) {
+                print "Failure! Error code: " . $response->status_line . "\n";
+                if (length($response->decoded_content) > 0) {
+                    print $response->decoded_content . "\n";
+                }
+            }
             warn "Error: Unable to get the $getstr. Try the --verbose " .
                  "command line option." if (!$quiet);
             exit 1;
