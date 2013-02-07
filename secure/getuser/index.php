@@ -20,11 +20,20 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
 } elseif ($submit == 'certreq') {
     getCert();
 } else {
-    $location = 'https://' . HOSTNAME;
-    if (strlen($responseurl) > 0) {
-        $location = $responseurl;
+    // If the REQUEST_URI was "/secure/getcert" then it was ECP.
+    // Respond with an error message rather than a redirect.
+    if (preg_match('%/secure/getcert%',util::getServerVar('REQUEST_URI'))) {
+        $log->info('"/secure/getcert" error: Either CSRF check failed, ' . 
+                   'or invalid "submit" command issued.');
+        outputError('Unable to complete ECP transaction. Either CSRF ' . 
+                    'check failed, or invalid "submit" command issued.');
+    } else { // Redirect to $responseurl or main homepage
+        $location = 'https://' . HOSTNAME;
+        if (strlen($responseurl) > 0) {
+            $location = $responseurl;
+        }
+        header('Location: ' . $location);
     }
-    header('Location: ' . $location);
 }
 
 /************************************************************************
@@ -202,17 +211,21 @@ function getUserAndRespond($responseurl) {
  * file and sets the HTTP response code to an error code.               *
  ************************************************************************/
 function getPKCS12() {
+    global $log;
+
     getUID(); // Get the user's database user ID, put info in PHP session
     checkForceSkin(util::getSessionVar('idp')); // Force a skin to be used?
 
     // If 'status' is not STATUS_OK*, then return error message
     if (util::getSessionVar('status') & 1) { // Bad status codes are odd
-        outputError(array_search(util::getSessionVar('status'),
-                                 dbservice::$STATUS));
+        $errstr=array_search(util::getSessionVar('status'),dbservice::$STATUS);
+        $log->info("ECP PKCS12 error: $errstr.");
+        outputError($errstr);
         return; // ERROR means no further processing is necessary
     }
 
     if (!twofactor::ecpCheck()) {
+        $log->info("ECP PKCS12 error: Two-factor check failed.");
         return; // ERROR means no further processing is necessary
     }
 
@@ -221,6 +234,7 @@ function getPKCS12() {
     /* Look for the p12error PHP session variable. If set, return it. */
     $p12error = util::getSessionVar('p12error');
     if (strlen($p12error) > 0) {
+        $log->info("ECP PKCS12 error: $p12error");
         outputError($p12error);
     } else { // Try to read the .p12 file from disk and return it
         $p12 = util::getSessionVar('p12');
@@ -236,9 +250,11 @@ function getPKCS12() {
         } 
         
         if (strlen($p12file) > 0) {
+            $log->info("ECP PKCS12 success!");
             header('Content-type: application/x-pkcs12');
             echo $p12file;
         } else {
+            $log->info("ECP PKCS12 error: Missing or empty PKCS12 file.");
             outputError('Missing or empty PKCS12 file.');
         }
     }
@@ -257,10 +273,12 @@ function getPKCS12() {
  ************************************************************************/
 function getCert() {
     global $skin;
+    global $log;
 
     /* Verify that a non-empty certreq <form> variable was posted */
     $certreq = util::getPostVar('certreq');
     if (strlen($certreq) == 0) {
+        $log->info("ECP certreq error: Missing certificate request.");
         outputError('Missing certificate request.');
         return; // ERROR means no further processing is necessary
     }
@@ -270,12 +288,14 @@ function getCert() {
 
     // If 'status' is not STATUS_OK*, then return error message
     if (util::getSessionVar('status') & 1) { // Bad status codes are odd
-        outputError(array_search(util::getSessionVar('status'),
-                                 dbservice::$STATUS));
+        $errstr=array_search(util::getSessionVar('status'),dbservice::$STATUS);
+        $log->info("ECP certreq error: $errstr.");
+        outputError($errstr);
         return; // ERROR means no further processing is necessary
     }
 
     if (!twofactor::ecpCheck()) {
+        $log->info("ECP certreq error: Two-factor check failed.");
         return; // ERROR means no further processing is necessary
     }
 
@@ -324,12 +344,15 @@ function getCert() {
             $certlifetime,'/var/www/config/hostcred.pem','',$certreq);
 
         if (strlen($cert) > 0) { // Successfully got a certificate!
+            $log->info("ECP getcert success!");
             header('Content-type: text/plain');
             echo $cert;
         } else { // The myproxy-logon command failed - shouldn't happen!
+            $log->info("ECP certreq error: MyProxy unable to create certificate.");
             outputError('Error! MyProxy unable to create certificate.');
         }
     } else { // Couldn't find the 'dn' PHP session value - shouldn't happen!
+        $log->info("ECP certreq error: Missing 'dn' session value.");
         outputError('Missing username. Please enable cookies.');
     }
 }
