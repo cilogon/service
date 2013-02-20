@@ -120,8 +120,8 @@ class shiberror {
         $errorstr1 = '';  // For logging - one line
         $errorstr2 = '';  // For HTML and email - multi-line
         foreach ($this->errorarray as $key => $value) {
-            $errorstr1 .= htmlentities($key.'="' . $value . '" ');
-            $errorstr2 .= htmlentities(sprintf("%-14s= %s\n",$key,$value));
+            $errorstr1 .= util::htmlent($key.'="' . $value . '" ');
+            $errorstr2 .= util::htmlent(sprintf("%-14s= %s\n",$key,$value));
         }
 
         $log->error('Shibboleth error: ' . $errorstr1);

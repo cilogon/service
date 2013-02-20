@@ -206,10 +206,8 @@ class dbservice {
 
     /********************************************************************
      * Function  : getUser                                              *
-     * Parameters: Variable number of parameters: 1, 2, or 6.           *
+     * Parameters: Variable number of parameters: 1 or 6.               *
      *             For 1 parameter : $uid (database user identifier)    *
-     *             For 2 parameters: $remote_user and $idp - used by    *
-     *                 OpenID authentication.                           *
      *             For 6 parameters: $remote_user, $idp,                *
      *                 $idp_display_name, $first_name, $last_name,      *
      *                 $email - used by InCommon authentication.        *
@@ -226,17 +224,13 @@ class dbservice {
         if ($numargs == 1) {
             $retval = $this->call('action=getUser&user_uid=' . 
                 urlencode(func_get_arg(0)));
-        } elseif ($numargs == 2) {
-            $retval = $this->call('action=getUser&remote_user=' .
-                urlencode(func_get_arg(0)) . '&idp=' .
-                urlencode(func_get_arg(1)));
         } elseif ($numargs == 6) {
             $retval = $this->call('action=getUser&remote_user=' .
                 urlencode(func_get_arg(0)) . '&idp=' .
                 urlencode(func_get_arg(1)) . '&idp_display_name=' .
                 urlencode(func_get_arg(2)) . '&first_name=' .
-                urlencode(func_get_arg(3)) . '&last_name=' .
-                urlencode(func_get_arg(4)) . '&email=' .
+                urlencode(iconv("UTF-8","UTF-7",func_get_arg(3))).'&last_name='.
+                urlencode(iconv("UTF-8","UTF-7",func_get_arg(4))).'&email=' .
                 urlencode(func_get_arg(5)));
         }
         return $retval;

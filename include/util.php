@@ -445,6 +445,20 @@ class util {
     }
 
     /********************************************************************
+     * Function  : htmlent                                              *
+     * Parameter : A string to process with htmlentities().             *
+     * Returns   : The input string processed by htmlentities with      *
+     *             specific options.                                    *
+     * This method is necessary since htmlentities() does not seem to   *
+     * obey the default arguments as documented in the PHP manual, and  *
+     * instead encodes accented characters incorrectly. By specifying   *
+     * the flags and encoding, the problem is solved.                   *
+    /********************************************************************/
+    public static function htmlent($str) {
+        return htmlentities($str,ENT_COMPAT|ENT_HTML401,"UTF-8");
+    }
+
+    /********************************************************************
      * Function  : sendErrorAlert                                       *
      * Parameters: (1) A brief summary of the error (in email subject)  *
      *             (2) A detailed description of the error (in the      *

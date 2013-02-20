@@ -312,7 +312,7 @@ function printWAYF($showremember=true,$incommonidps=false) {
         if ($entityId == $providerId) {
             echo ' selected="selected"';
         }
-        echo '>' , htmlentities($idpName) , '</option>' , "\n    ";
+        echo '>' , util::htmlent($idpName) , '</option>' , "\n    ";
     }
 
     echo '  </select>
@@ -1422,7 +1422,7 @@ function gotUserSuccess() {
         // are in the user name. If so, send an email alert.
         $dn = util::getSessionVar('dn');
         $dn = reformatDN(preg_replace('/\s+email=.+$/','',$dn));
-        $htmldn = htmlentities($dn);
+        $htmldn = util::htmlent($dn);
         if (strcmp($dn,$htmldn) != 0) {
             util::sendErrorAlert('New user DN contains HTML entities',
                 "htmlentites(DN) = $htmldn\n");
@@ -1479,7 +1479,7 @@ function printNewUserPage() {
     Welcome! Your new certificate subject is as follows. 
     </p>
     <p>
-    <blockquote><tt>' , htmlentities($dn) , '</tt></blockquote>
+    <blockquote><tt>' , util::htmlent($dn) , '</tt></blockquote>
     </p>
     <p>
     You may need to register this certificate subject with relying parties.
@@ -1586,8 +1586,8 @@ function printUserChangedPage() {
                 echo '
                 <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
                   <th>First Name:</th>
-                  <td>'.htmlentities($prevfirst).'</td>
-                  <td>'.htmlentities($first).'</td>
+                  <td>'.util::htmlent($prevfirst).'</td>
+                  <td>'.util::htmlent($first).'</td>
                 </tr>
                 ';
                 $tablerowodd = !$tablerowodd;
@@ -1597,8 +1597,8 @@ function printUserChangedPage() {
                 echo '
                 <tr' , ($tablerowodd ? ' class="odd"' : '') , '>
                   <th>Last Name:</th>
-                  <td>'.htmlentities($prevlast).'</td>
-                  <td>'.htmlentities($last).'</td>
+                  <td>'.util::htmlent($prevlast).'</td>
+                  <td>'.util::htmlent($last).'</td>
                 </tr>
                 ';
                 $tablerowodd = !$tablerowodd;
@@ -1635,11 +1635,11 @@ function printUserChangedPage() {
                 <table cellspacing="0">
                   <tr>
                     <td>Previous Subject DN:</td>
-                    <td>' , htmlentities($prevdn) , '</td>
+                    <td>' , util::htmlent($prevdn) , '</td>
                   </tr>
                   <tr>
                     <td>Current Subject DN:</td>
-                    <td>' , htmlentities($dn) , '</td>
+                    <td>' , util::htmlent($dn) , '</td>
                   </tr>
                 </table>
                 </blockquote>

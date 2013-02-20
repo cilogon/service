@@ -231,7 +231,7 @@ function printCertInfo() {
     <table class="certinfo">
       <tr>
         <th>Certificate&nbsp;Subject:</th>
-        <td>' , htmlentities($dn) , '</td>
+        <td>' , util::htmlent($dn) , '</td>
       </tr>
       <tr>
         <th>Identity&nbsp;Provider:</th>

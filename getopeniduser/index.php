@@ -71,7 +71,7 @@ function getUserAndRespond($responseurl) {
                 $response->message . '. Please try again.');
         } elseif ($response->status == Auth_OpenID_SUCCESS) {
             // This means the authentication succeeded; extract the identity.
-            $openidid = htmlentities($response->getDisplayIdentifier());
+            $openidid = $response->getDisplayIdentifier();
 
             // Get attributes from Verisign
             $sreg = null;
@@ -87,24 +87,20 @@ function getUserAndRespond($responseurl) {
 
             // Look for email attribute
             if (@$sreg['email']) {
-                $emailaddr = htmlentities(@$sreg['email']);
+                $emailaddr = @$sreg['email'];
             } elseif (@$data['http://axschema.org/contact/email'][0]) {
-                $emailaddr = htmlentities(
-                    @$data['http://axschema.org/contact/email'][0]);
+                $emailaddr = @$data['http://axschema.org/contact/email'][0];
             }
 
             // Look for fullname attribute, or firstname+lastname
             if (@$sreg['fullname']) {
-                $fullname = htmlentities(@$sreg['fullname']);
+                $fullname = @$sreg['fullname'];
             } elseif (@$data['http://axschema.org/namePerson'][0]) {
-                $fullname = htmlentities(
-                    @$data['http://axschema.org/namePerson'][0]);
+                $fullname = @$data['http://axschema.org/namePerson'][0];
             } elseif ((@$data['http://axschema.org/namePerson/first'][0]) &&
                       (@$data['http://axschema.org/namePerson/last'][0])) {
-                $fullname = htmlentities(
-                    @$data['http://axschema.org/namePerson/first'][0]) .  ' ' . 
-                        htmlentities(
-                        @$data['http://axschema.org/namePerson/last'][0]);
+                $fullname = @$data['http://axschema.org/namePerson/first'][0] .
+                     ' ' .  @$data['http://axschema.org/namePerson/last'][0];
             }
 
             // If found fullname, split into firstname and lastname

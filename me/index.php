@@ -187,14 +187,14 @@ function printBrowserCookies($browsercount) {
                      '<td><input type="checkbox" name="del_browser[]" ',
                      'value="', $key , '"/></td>' ,
                      '<td style="padding-right:2em"><tt>' ,
-                     htmlentities($key) ,
+                     util::htmlent($key) ,
                      '</tt></td><td><tt>';
                 // Special handling of portalparams cookie
                 if ($key == portalcookie::cookiename) {
                     $pc = new portalcookie();
-                    echo htmlentities($pc->toString());
+                    echo util::htmlent($pc->toString());
                 } else {
-                    echo htmlentities($value);
+                    echo util::htmlent($value);
                 }
                 echo '</tt></td></tr>';
             }
@@ -247,9 +247,9 @@ function printSessionVariables($sessioncount) {
                      '<td><input type="checkbox" name="del_session[]" ',
                      'value="', $key , '"/></td>' ,
                      '<td style="padding-right:2em"><tt>' ,
-                     htmlentities($key) ,
+                     util::htmlent($key) ,
                      '</tt></td><td><tt>' ,
-                     htmlentities($value) ,
+                     util::htmlent($value) ,
                      '</tt></td></tr>';
             }
         }
@@ -290,9 +290,9 @@ function printEnvironmentVars() {
     ksort($_SERVER);
     foreach ($_SERVER as $key => $value) {
         echo '<tr><td style="padding-right:2em"><tt>' ,
-             htmlentities($key) ,
+             util::htmlent($key) ,
              '</tt></td><td><tt>' ,
-             htmlentities($value) ,
+             util::htmlent($value) ,
              '</tt></td></tr>';
     }
 
