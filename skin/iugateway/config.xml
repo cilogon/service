@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+  <initialidp>urn:mace:incommon:iu.edu</initialidp>
+
+  <forceinitialidp>1</forceinitialidp>
+
+  <delegate>
+    <forcelifetime>12</forcelifetime>
+    <forceremember>1</forceremember>
+  </delegate>
+
+</config>

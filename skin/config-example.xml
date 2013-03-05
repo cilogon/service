@@ -18,6 +18,21 @@
   -->
 
 
+  <!-- <forceinitialidp>
+       This option can be used in conjunction with <initialidp>. This
+       option is functionally equivalent to having the "Remember this
+       selection" checkbox checked on the IdP selection page. When set to 1,
+       <forceinitialidp> bypasses the IdP selection page and immediately
+       redirects the user to the <initialidp>. Note that it does NOT
+       actually check the "Remember this selection" checkbox (as the
+       checkbox sets the 'keepidp' cookie), but rather forces a redirect to
+       the <initialidp> every time.
+  -->
+  <!--
+  <forceinitialidp>1</forceinitialidp>
+  -->
+
+
   <!-- <idplistsize>
        This sets the size of the IdP <select> HTML element. If not
        specified, it defaults to 4 (meaning 4 IdPs are shown at a time).
