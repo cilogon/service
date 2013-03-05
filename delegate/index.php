@@ -8,9 +8,6 @@ require_once('Auth/OpenID/Consumer.php');
 /* The full URL of the 'delegation/authorized' OAuth script. */
 define('AUTHORIZED_URL','http://localhost:8080/delegation/authorized');
 
-/* Read in the whitelist of currently available IdPs. */
-$idplist = new idplist();
-
 /* Loggit object for logging info to syslog. */
 $log = new loggit();
 
@@ -34,23 +31,7 @@ if (verifyOAuthToken(util::getGetVar('oauth_token'))) {
 
         case 'Log On': // Check for OpenID or InCommon usage.
         case 'Continue': // For OOI
-            // Set the cookie for keepidp if the checkbox was checked
-            if (strlen(util::getPostVar('keepidp')) > 0) {
-                util::setCookieVar('keepidp','checked');
-            } else {
-                util::unsetCookieVar('keepidp');
-            }
-            $providerIdPost = util::getPostVar('providerId');
-            if (openid::urlExists($providerIdPost)) { // Use OpenID authn
-                util::setCookieVar('providerId',$providerIdPost);
-                redirectToGetOpenIDUser($providerIdPost);
-            } elseif ($idplist->exists($providerIdPost)) { // Use InCommon authn
-                util::setCookieVar('providerId',$providerIdPost);
-                redirectToGetUser($providerIdPost);
-            } else { // Either providerId not set or not in whitelist
-                util::unsetCookieVar('providerId');
-                printLogonPage();
-            }
+            handleLogOnButtonClicked();
         break; // End case 'Log On'
 
         case 'gotuser': // Return from the getuser script
@@ -103,45 +84,11 @@ if (verifyOAuthToken(util::getGetVar('oauth_token'))) {
 
         case 'Show Help': // Toggle showing of help text on and off
         case 'Hide Help':
-            if (util::getSessionVar('showhelp') == 'on') {
-                util::unsetSessionVar('showhelp');
-            } else {
-                util::setSessionVar('showhelp','on');
-            }
-
-            $stage = util::getSessionVar('stage');
-            if (verifyCurrentSession()) {
-                if ($stage == 'main') {
-                    printMainPage();
-                } elseif ($stage == 'managetwofactor') {
-                    printTwoFactorPage();
-                } else {
-                    printLogonPage();
-                }
-            } else {
-                printLogonPage(true);
-            }
+            handleHelpButtonClicked();
         break; // End case 'Show Help' / 'Hide Help'
 
         default: // No submit button clicked nor PHP session submit variable set
-            /* If both the "keepidp" and the "providerId" cookies were set *
-             * (and the providerId is a whitelisted IdP or valid OpenID    *
-             * provider) then skip the Logon page and proceed to the       *
-             * appropriate getuser script.                                 */
-            $providerIdCookie = util::getCookieVar('providerId');
-            if ((strlen($providerIdCookie) > 0) && 
-                (strlen(util::getCookieVar('keepidp')) > 0)) {
-                if (openid::urlExists($providerIdCookie)) { // Use OpenID authn
-                    redirectToGetOpenIDUser($providerIdCookie);
-                } elseif ($idplist->exists($providerIdCookie)) { // Use InCommon
-                    redirectToGetUser($providerIdCookie);
-                } else { // $providerIdCookie not in whitelist
-                    util::unsetCookieVar('providerId');
-                    printLogonPage();
-                }
-            } else { // One of the cookies for providerId or keepidp was not set
-                printLogonPage();
-            }
+            handleNoSubmitButtonClicked();
         break; // End default case
 
     } // End switch ($submit)

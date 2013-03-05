@@ -866,6 +866,114 @@ function handleDuoSecurityLogin() {
 }
 
 /************************************************************************
+ * Function  : handleLogOnButtonClicked                                 *
+ * This function is called when the user clicks the "Log On" button     *
+ * on the IdP selection page. It checks to see if the "Remember this    *
+ * selection" checkbox was checked and sets a cookie appropriately. It  *
+ * also sets a cookie 'providerId' so the last chosen IdP will be       *
+ * selected the next time the user visits the site. The function then   *
+ * calls the appropriate "redirectTo..." function to send the user      *
+ * to the chosen IdP.                                                   *
+ ************************************************************************/
+function handleLogOnButtonClicked() {
+    // Read in the whitelist of currently available InCommon IdPs
+    $idplist = new idplist();
+
+    // Set the cookie for keepidp if the checkbox was checked
+    if (strlen(util::getPostVar('keepidp')) > 0) {
+        util::setCookieVar('keepidp','checked');
+    } else {
+        util::unsetCookieVar('keepidp');
+    }
+
+    // Set the cookie for the last chosen IdP and redirect to it
+    $providerIdPost = util::getPostVar('providerId');
+    if (openid::urlExists($providerIdPost)) { // Use OpenID authn
+        util::setCookieVar('providerId',$providerIdPost);
+        redirectToGetOpenIDUser($providerIdPost);
+    } elseif ($idplist->exists($providerIdPost)) { // Use InCommon authn
+        util::setCookieVar('providerId',$providerIdPost);
+        redirectToGetUser($providerIdPost);
+    } else { // Either providerId not set or not in whitelist
+        util::unsetCookieVar('providerId');
+        printLogonPage();
+    }
+}
+/************************************************************************
+ * Function  : handleHelpButtonClicked                                  *
+ * This function is called when the user clicks on the "Show Help" /    *
+ * "Hide Help" button in the upper right corner of the page. It toggles *
+ * the 'showhelp' session variable and redisplays the appropriate page  *
+ * with help now shown or hidden.                                       *
+ ************************************************************************/
+function handleHelpButtonClicked() {
+    if (util::getSessionVar('showhelp') == 'on') {
+        util::unsetSessionVar('showhelp');
+    } else {
+        util::setSessionVar('showhelp','on');
+    }
+
+    $stage = util::getSessionVar('stage');
+    if (verifyCurrentSession()) {
+        if ($stage == 'main') {
+            printMainPage();
+        } elseif ($stage == 'managetwofactor') {
+            printTwoFactorPage();
+        } else {
+            printLogonPage();
+        }
+    } else {
+        printLogonPage(true);
+    }
+}
+
+/************************************************************************
+ * Function  : handleNoSubmitButtonClicked                              *
+ * This function is the "default" case when no "submit" button has been *
+ * clicked, or if the submit session variable is not set. It checks     *
+ * to see if either the <forceinitialidp> option is set, or if the      *
+ * "Remember this selection" checkbox was previously checked. If so,    *
+ * then rediret to the appropriate IdP. Otherwise, print the main       *
+ * Log On page.                                                         *
+ ************************************************************************/
+function handleNoSubmitButtonClicked() {
+    global $skin;
+
+    // Read in the whitelist of currently available InCommon IdPs
+    $idplist = new idplist();
+
+    /* If the <forceinitialidp> option is set, use the <initialidp> *
+     * as the providerId and <forceinitialidp> as keepIdp.          *
+     * Otherwise, get the cookies 'providerId' and 'keepidp'.       */
+    $forceinitialidp = (int)$skin->getConfigOption('forceinitialidp');
+    $initialidp = (string)$skin->getConfigOption('initialidp');
+    if (($forceinitialidp == 1) && (strlen($initialidp) > 0)) {
+        $providerId = $initialidp;
+        $keepIdp = $forceinitialidp;
+    } else {
+        $providerId = util::getCookieVar('providerId');
+        $keepIdp = util::getCookieVar('keepidp');
+    }
+
+    /* If both "keepidp" and "providerId" were set (and the         *
+     * providerId is a whitelisted IdP or valid OpenID provider),   *
+     * then skip the Logon page and proceed to the appropriate      *
+     * getuser script.                                              */
+    if ((strlen($providerId) > 0) && (strlen($keepIdp) > 0)) {
+        if (openid::urlExists($providerId)) { // Use OpenID authn
+            redirectToGetOpenIDUser($providerId);
+        } elseif ($idplist->exists($providerId)) { // Use InCommon
+            redirectToGetUser($providerId);
+        } else { // $providerId not in whitelist
+            util::unsetCookieVar('providerId');
+            printLogonPage();
+        }
+    } else { // One of providerId or keepidp was not set
+        printLogonPage();
+    }
+}
+
+/************************************************************************
  * Function  : printIcon                                                *
  * Parameters: (1) The prefix of the "...Icon.png" image to be shown.   *
  *                 E.g. to show "errorIcon.png", pass in "error".       *
