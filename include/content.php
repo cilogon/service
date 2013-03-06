@@ -2050,11 +2050,10 @@ function reformatDN($dn) {
     $dnformat = (string)$skin->getConfigOption('dnformat');
     if (!is_null($dnformat)) {
         if ($dnformat == 'rfc2253') {
-            if (preg_match('%/DC=org/DC=cilogon/C=US/O=(.*)/CN=(.*)%',
-                           $dn,$match)) {
-                $newdn = 'CN='.$match[2].',O='.$match[1].
-                         ',C=US,DC=cilogon,DC=org';
-            }
+            require_once('Net/LDAP2/Util.php');
+            $newdn = Net_LDAP2_Util::canonical_dn(
+                         preg_split('%/%',substr($dn,1)),
+                             array('reverse'=>'true'));
         }
     }
     return $newdn;
