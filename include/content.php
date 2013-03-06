@@ -2049,11 +2049,13 @@ function reformatDN($dn) {
     $newdn = $dn;
     $dnformat = (string)$skin->getConfigOption('dnformat');
     if (!is_null($dnformat)) {
-        if ($dnformat == 'rfc2253') {
+        if (($dnformat == 'rfc2253') &&
+            (preg_match('%/DC=(.*)/DC=(.*)/C=(.*)/O=(.*)/CN=(.*)%',
+                        $dn,$match))) {
+            array_shift($match);
             require_once('Net/LDAP2/Util.php');
-            $newdn = Net_LDAP2_Util::canonical_dn(
-                         preg_split('%/%',substr($dn,1)),
-                             array('reverse'=>'true'));
+            $m = array_reverse(Net_LDAP2_Util::escape_dn_value($match));
+            $newdn = "CN=$m[0],O=$m[1],C=$m[2],DC=$m[3],DC=$m[4]";
         }
     }
     return $newdn;
