@@ -388,7 +388,7 @@ class skin {
     }
 
     /********************************************************************
-     * Function  : portalListed                                         *
+     * Function  : inPortalList                                         *
      * Parameter : A "callback" URL of a portal accessing the delegate  *
      *             service.                                             *
      * Returns   : True if the callback URL matches one of the patterns *
@@ -400,19 +400,15 @@ class skin {
      * This is used to hide the "Site Name / Site URL / Service URL"    *
      * box on the delegation WAYF page, for example.                    *
      ********************************************************************/
-    function portalListed($portalurl) {
-        $retval = true;  // Assume the portalurl matches a listed <portal>
+    function inPortalList($portalurl) {
+        $retval = false;  // Assume the portalurl not a listed <portal>
         if ($this->hasPortalList()) {
             $portallist = $this->getConfigOption('portallist');
-            $found = false;
             foreach ($portallist->portal as $portalmatch) {
                 if (preg_match(((string)$portalmatch),$portalurl)) {
-                    $found = true;
+                    $retval = true;
                     break;
                 }
-            }
-            if (!$found) {
-                $retval = false;
             }
         }
         return $retval;
