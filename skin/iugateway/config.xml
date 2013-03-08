@@ -10,4 +10,15 @@
     <forceremember>1</forceremember>
   </delegate>
 
+  <!-- TODO: Need list of portals for the <forceinitialidp> option. 
+       For now, <forceinitialidp> works for all sites.
+  -->
+  <portallist>
+    <portal>/.*/</portal>
+  </portallist>
+
+  <portallistaction>
+    <allowforceinitialidp>1</allowforceinitialidp>
+  </portallistaction>
+
 </config>

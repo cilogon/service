@@ -26,7 +26,9 @@
        redirects the user to the <initialidp>. Note that it does NOT
        actually check the "Remember this selection" checkbox (as the
        checkbox sets the 'keepidp' cookie), but rather forces a redirect to
-       the <initialidp> every time.
+       the <initialidp> every time. See also the <allowforceinitialidp>
+       option in the <portallistaction> section below to restrict this
+       behavior to a certain set of portal callback URIs.
   -->
   <!--
   <forceinitialidp>1</forceinitialidp>
@@ -284,10 +286,18 @@
        Portal Info block (Site Name / Site URL / Service URL) for portals
        in the <portallist> (rather than hiding it for the entire skin, as is
        currently possible via CSS).
+       <allowforceinitialidp> If present, set to 1. This option is used in
+       conjunction with <forceinitialidp> (and <initialidp>). If set, then
+       <forceinitialidp> is valid only for portals in the <portallist>. This
+       prevents a malicious portal sysadmin from specifying a skin that has
+       <forceinitialidp> (and <initialidp>) set, but using it for their
+       portal when they have no business doing so. Basically, it limits
+       the <forceinitialidp> behavior to a specific set of portals.
   -->
   <!--
   <portallistaction>
     <hideportalinfo>1</hideportalinfo>
+    <allowforceinitialidp>1</allowforceinitialidp>
   </portallistaction>
   -->
 
