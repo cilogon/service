@@ -169,20 +169,17 @@ function printLogonPage() {
       <br />
     ';
 
-    // If the skin has a <portallist>, and <hideportalinfo> is set, check
-    // to see if the callback URL matches one of the regular expressions in
-    // the <portallist>. If so, we do NOT want to show the portal info.
+    // If the <hideportalinfo> option is set, do not show the portal info if
+    // the callback uri is in the portal list.
     $showportalinfo = true;
-    if ($skin->hasPortalList()) {
-        $hpi = $skin->getConfigOption('portallistaction','hideportalinfo');
-        if ((!is_null($hpi)) && ((int)$hpi == 1) &&
-            ($skin->portalListed(util::getSessionVar('callbackuri')))) {
-            $showportalinfo = false; 
-        }
+    if (((int)$skin->getConfigOption('portallistaction','hideportalinfo')==1) &&
+         ($skin->inPortalList(util::getSessionVar('callbackuri')))) {
+        $showportalinfo = false; 
     }
 
     if ($showportalinfo) {
         echo '
+          <br/>
           <p>"' , 
           htmlspecialchars(util::getSessionVar('portalname')) , 
           '" requests that you select an Identity Provider and click "' ,
