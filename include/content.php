@@ -944,13 +944,26 @@ function handleNoSubmitButtonClicked() {
 
     /* If the <forceinitialidp> option is set, use the <initialidp> *
      * as the providerId and <forceinitialidp> as keepIdp.          *
-     * Otherwise, get the cookies 'providerId' and 'keepidp'.       */
+     * Otherwise, read the cookies 'providerId' and 'keepidp'.      */
+    $readidpcookies = true;  // Assume config options are not set
     $forceinitialidp = (int)$skin->getConfigOption('forceinitialidp');
     $initialidp = (string)$skin->getConfigOption('initialidp');
     if (($forceinitialidp == 1) && (strlen($initialidp) > 0)) {
-        $providerId = $initialidp;
-        $keepIdp = $forceinitialidp;
-    } else {
+        // If the <allowforceinitialidp> option is set, then make sure
+        // the callback uri is in the portal list.
+        $afii=$skin->getConfigOption('portallistaction','allowforceinitialidp');
+        if ((is_null($afii)) || // Option not set, no need to check portal list
+            (((int)$afii == 1) && 
+              ($skin->inPortalList(util::getSessionVar('callbackuri'))))) {
+            $providerId = $initialidp;
+            $keepIdp = $forceinitialidp;
+            $readidpcookies = false; // Don't read in the IdP cookies
+        }
+    }
+    
+    /* <initialidp> options not set, or portal not in portal list?  *
+     * Get idp and "Remember this selection" from cookies instead.  */
+    if ($readidpcookies) {
         $providerId = util::getCookieVar('providerId');
         $keepIdp = util::getCookieVar('keepidp');
     }
