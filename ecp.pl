@@ -4,7 +4,7 @@
 # Script      : ecp.pl                                                  #
 # Authors     : Terry Fleury <tfleury@illinois.edu>                     #
 # Create Date : July 06, 2011                                           #
-# Last Update : February 07, 2013                                       #
+# Last Update : March 19, 2013                                          #
 #                                                                       #
 # This PERL script allows a user to get an end-user X.509 certificate   #
 # or PKCS12 credential from the CILogon Service. It can also get the    #
@@ -37,7 +37,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.014";
+our $VERSION = "0.015";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -674,8 +674,29 @@ do {
         $authOK = 1;
         print "Success!\n" if ($verbose);
         if (length($outputfile) > 0) {
+            # If outputfile is the same as outkey, read in outkey first,
+            # then write output followed by outkey so that cert is before
+            # key in the resulting file.
+            my $keyfile = '';
+            if ($outputfile eq $outkey) {
+                my $res = open(KEYFILE,$outkey);
+                if (defined $res) {
+                    while(<KEYFILE>) {
+                        $keyfile .= $_;
+                    }
+                } else {
+                    warn "Error: Unable to read key from file " . 
+                         "'$outkey'." if (!$quiet);
+                    $keyfile = '';
+                }
+                close KEYFILE;
+            }
             open(OUTFILE,">$outputfile");
             print OUTFILE $response->decoded_content;
+            # If outputfile is the same as outkey, output key after cert.
+            if (length($keyfile) > 0) {
+                print OUTFILE "\n$keyfile";
+            }
             close OUTFILE;
             print "Output written to '$outputfile'.\n" if ($verbose);
         } else {
