@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 
 #########################################################################
+#                                                                       #
 # Script      : ecp.pl                                                  #
 # Authors     : Terry Fleury <tfleury@illinois.edu>                     #
 # Create Date : July 06, 2011                                           #
@@ -20,14 +21,33 @@
 # for the ECP location.                                                 #
 #                                                                       #
 #########################################################################
-# NOTE: You must set the OPENSSL_BIN constant below to be the full path #
-# of the "openssl" binary on your system.                               #
+#                                                                       #
+# NOTES ON THE CONSTANTS BELOW:                                         #
+#                                                                       #
+# * You must set the OPENSSL_BIN constant below to be the full path     #
+#   of the "openssl" binary on your system.                             #
+#                                                                       #
+# * The ECP_IDPS_URL points to a text file listing ECP-enabled IdPs.    #
+#   This file is maintained by CILogon. If you wish to use your own     #
+#   list of ECP-enabled IdPs, the format of the file is very simple:    #
+#       https://example.com/idp/profile/SAML2/SOAP/ECP Example IdP      #
+#   The first string is the IdP's ECP endpoint. Then a space. The rest  #
+#   of the line is a text description which will appear in the list of  #
+#   ECP-enabled IdPs. Put one entry per line. For a local file, you     #
+#   would set "ECP_IDPS_URL => 'file:///path/to/local/file.txt'".       #
+#                                                                       #
+# * The DEFAULT_IDP is the pretty-print name of the IdP that will be    #
+#   selected by default.                                                #
+#                                                                       #
+# * GET_CERT_URL is the CILogon endpoint for fetching a certificate or  #
+#   PKCS12 credential.                                                  #
+#                                                                       #
 #########################################################################
 
 use constant { 
     OPENSSL_BIN  =>'/usr/bin/openssl' ,  ### CHANGE THIS IF NECESSARY
-    DEFAULT_IDP  =>'ProtectNetwork' ,
     ECP_IDPS_URL =>'https://cilogon.org/include/ecpidps.txt' ,
+    DEFAULT_IDP  =>'ProtectNetwork' ,
     GET_CERT_URL =>'https://ecp.cilogon.org/secure/getcert/' ,
     HEADER_ACCEPT=>'text/html; application/vnd.paos+xml' ,
     HEADER_PAOS  =>'ver="urn:liberty:paos:2003-08";"urn:oasis:names:tc:SAML:2.0:profiles:SSO:ecp"' ,
@@ -37,7 +57,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.015";
+our $VERSION = "0.016";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -57,6 +77,7 @@ use Symbol qw(gensym);
 # Handle <Ctrl>+C to reset the terminal to non-bold text
 $SIG{INT} = \&resetTerm;
 
+# Declare variables for command line options
 my %opts = ();
 my %idps = ();
 my $verbose = 0;
@@ -160,7 +181,7 @@ if (exists $opts{idpurl}) {
     }
 }
 
-# If no valid --idpurl given, check for a valid --idpname
+# If no valid --idpurl given, check for a valid --idpname, use partial match
 if ((length($idpurl) == 0) && (exists $opts{idpname})) {
     my $found = 0;
     $idpname = trim($opts{idpname});
@@ -514,6 +535,7 @@ if ($outputfile =~ /^stdout$/i) {
 #########################################################################
 
 # Request the target from the SP and include headers indicating ECP.
+# The SP should initially respond with a SOAP message.
 # Save any cookies from the IdP and/or SP in a cookie_jar.
 my $ua = LWP::UserAgent->new();
 my $cookie_jar = HTTP::Cookies->new();
@@ -543,7 +565,7 @@ if ($response->is_success) {
     exit 1;
 }
 
-# Get <ecp:RelayState> element
+# Get <ecp:RelayState> element from the SP's SOAP response
 ($xmlstr =~ m#(<ecp:RelayState.*</ecp:RelayState>)#i) && ($relaystate = $1);
 if (!$relaystate) {
     warn "Error: No <ecp:RelayState> block in response from '$urltoget'." if 
@@ -590,7 +612,7 @@ if ($response->is_success) {
     exit 1;
 }
 
-# Find the AssertionConsumerServiceURL from the response
+# Find the AssertionConsumerServiceURL from the IdP's response
 ($idpresp=~m#AssertionConsumerServiceURL=\"([^\"]*)\"#i) && 
     ($assertionConsumerServiceURL=$1);
 if (!$assertionConsumerServiceURL) {
@@ -599,7 +621,8 @@ if (!$assertionConsumerServiceURL) {
     exit 1;
 }
 
-# Make sure responseConsumerURL and assertionConsumerServiceURL are equal
+# Make sure responseConsumerURL and assertionConsumerServiceURL are equal.
+# If not, send SOAP fault to the SP and exit.
 $headers = HTTP::Headers->new();
 $ua->default_headers($headers);
 if ($responseConsumerURL ne $assertionConsumerServiceURL) {
@@ -635,6 +658,8 @@ print "Done!\n" if ($verbose);
 # No need to check for response. We only want the (shibboleth) cookie.
 
 # Add a random CSRF cookie for the certificate or PKCs12 credential request.
+# This random CSRF value must also be posted to the CILogon service (as a
+# <form> value) to pass the CILogon Service's CSRF check.
 my $cookiejar = $ua->cookie_jar;
 my $uri = URI->new($urltoget);
 my $randstr = join('',map { ('a'..'z', 0..9)[rand 36] } (1..10));
@@ -649,7 +674,7 @@ do {
     if ($get eq 'u') {  # 'Get' the user-defined URL
         $response = $ua->get($urltoget);
     } else { # Getting a certificate or credential requires 'post' for form vars
-        $formvars{'CSRF'} = $randstr;
+        $formvars{'CSRF'} = $randstr; # Add CSRF <form> value to match cookie
         if (length($vo) > 0) {
             $formvars{'cilogon_vo'} = $vo;
         }
@@ -684,7 +709,7 @@ do {
                     while(<KEYFILE>) {
                         $keyfile .= $_;
                     }
-                } else {
+                } else { # This shouldn't happen, but just in case.
                     warn "Error: Unable to read key from file " . 
                          "'$outkey'." if (!$quiet);
                     $keyfile = '';
@@ -721,7 +746,7 @@ do {
             }
             # Since $authOK is still false, loop to try to get the URL again
         } else {
-            # Some other server error code - failure
+            # Some other server error code = failure
             if ($verbose) {
                 print "Failure! Error code: " . $response->status_line . "\n";
                 if (length($response->decoded_content) > 0) {
