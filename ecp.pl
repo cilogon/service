@@ -57,7 +57,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.017";
+our $VERSION = "0.018";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -70,8 +70,9 @@ use Crypt::SSLeay;
 use HTTP::Cookies;
 use URI;
 use IPC::Open3;
-use File::Spec;
 use File::Basename;
+use File::Spec;
+use File::Temp qw(tempfile);
 use Symbol qw(gensym);
 
 # Handle <Ctrl>+C to reset the terminal to non-bold text
@@ -94,6 +95,7 @@ my $getstr = '';
 my $certreq = '';
 my $inkey = '';
 my $outkey = '';
+my $outkeyfh;
 my $keyfile = '';
 my $csr = '';
 my $passwd = '';
@@ -330,7 +332,7 @@ if ($get eq 'c') {
     # Check to make sure that the openssl binary is available
     if (!checkOpenSSL()) { 
         warn "Error: Unable to execute the OpenSSL command at '" .
-            OPENSSL_BIN . "'. Aborting." if (!$quiet);
+             OPENSSL_BIN . "'. Aborting." if (!$quiet);
         exit 1;
     }
 
@@ -393,8 +395,9 @@ if ($get eq 'c') {
             }
         }
 
-        if (length($inkey) == 0) { # No private key, create one instead
-
+        if (length($inkey) > 0) { # Read in key from specified file
+            $keyfile = $inkey;
+        } else { # No private key to read in, create one instead
             if (exists $opts{outkey}) { # Verify can write out to file
                 $outkey = trim($opts{outkey});
                 if (!fileWriteable($outkey)) {
@@ -404,30 +407,41 @@ if ($get eq 'c') {
                 }
             }
 
-            # No private key output file given. Prompt for filename.
+            # No private key output file specified. For '--proxyfile', use
+            # a temp file. Otherwise, prompt for outkey filename.
             if (length($outkey) == 0) {
-                $reply = $term->get_reply(
-                         prompt   => 'Enter filename',
-                         print_me => 'Enter filename for outputting the private key:',
-                         default  => 'userkey.pem',
-                         allow    => \&fileWriteable
-                         );
-                $outkey = trim($reply);
+                if (exists $opts{proxyfile}) {
+                    ($outkeyfh,$outkey) = 
+                        tempfile(UNLINK=>1,TMPDIR=>1,SUFFIX=>'.pem');
+                } else {
+                    $reply = $term->get_reply(
+                             prompt   => 'Enter filename',
+                             print_me => 'Enter filename for outputting the private key:',
+                             default  => 'userkey.pem',
+                             allow    => \&fileWriteable
+                             );
+                    $outkey = trim($reply);
+                    open($outkeyfh,">",$outkey);
+                }
+            }
+
+            my $genrsacmd = OPENSSL_BIN . ' genrsa 2048';
+            my $genrsa = runCmdGetStdout($genrsacmd);
+            if (length($genrsa) > 0) {
+                print $outkeyfh $genrsa;
+                close $outkeyfh;
+                chmod 0600, $outkey;
+                $keyfile = $outkey;
+            } else {
+                warn "Error: Unable to create private key in '$outkey'. " .
+                     "Aborting." if (!$quiet);
+                exit 1;
             }
         }
 
-        my $reqcmd = OPENSSL_BIN . ' req -new -subj "/CN=ignore"';
-        if (length($inkey) > 0) {
-            $reqcmd .= " -key $inkey";
-            $keyfile = $inkey;
-        } else {
-            $reqcmd .= " -newkey rsa:2048 -nodes -keyout $outkey";
-            $keyfile = $outkey;
-        }
+        my $reqcmd = OPENSSL_BIN . ' req -new -subj "/CN=ignore"' .
+                     " -key $keyfile";
         $csr = runCmdGetStdout($reqcmd);
-        if (length($outkey) > 0) {
-            chmod 0600, $outkey;
-        }
         if (length($csr) == 0) {
             warn "Error: Unable to create certificate signing request. " .
                  "Aborting." if (!$quiet);
@@ -435,7 +449,6 @@ if ($get eq 'c') {
         }
     }
 
-    
     print "Using the following certificate signing request (CSR):\n$csr\n" if
         ($verbose);
 }
@@ -535,7 +548,7 @@ if (length($outputfile) == 0) {
              );
     $outputfile = trim($reply);
 }
-if ($outputfile =~ /^stdout$/i) {
+if ($outputfile =~ /^(stdout|-)$/i) {
     $outputfile = ''; # Empty string later means to write to STDOUT
 }
 
@@ -722,9 +735,6 @@ do {
                     my $res = open(KEYFILE,$keyfile);
                     if (defined $res) {
                         while(<KEYFILE>) {
-                            # The openssl 'req' command stupidly omits 'RSA'
-                            # from the -----BEGIN/END PRIVATE KEY----- lines.
-                            $_ =~ s/(-----)(BEGIN|END) (PRIVATE KEY-----)/$1$2 RSA $3/;
                             $keystr .= $_;
                         }
                     } else { # This shouldn't happen, but just in case.
@@ -849,22 +859,22 @@ sub isValidURL
 # Subroutine: fileWriteable($filename)                                  #
 # Parameter : $filename - The name of a file (specified with or without #
 #             the full path) to test for write-ability.  Can also be    #
-#             'STDOUT' which implies write to <stdout>.                 #
-# Returns   : 1 if passed-in filename is writeable or 'STDOUT',         #
+#             'STDOUT' or '-' which imply write to <stdout>.            #
+# Returns   : 1 if passed-in filename is writeable or 'STDOUT'/'-',     #
 #             0 otherwise.                                              #
 # This subroutine takes in a string representing a filename. The        #
-# filename can be 'STDOUT', or prefixed with a directory or not (at     #
-# which point the current working directory is assumed). It checks to   #
-# see if the file already exists, and if so, is the file writeable.     #
-# Otherwise, it checks the containing directory to see if a file can    #
-# be created there. If so, 1 is returned, otherwise 0 is returned.      #
+# filename can be 'STDOUT' or '-', or prefixed with a directory or not  #
+# (at which point the current working directory is assumed). It checks  #
+# to see if the file already exists, and if so, is the file writeable.  #
+# Otherwise, it checks the containing directory to see if a file can be #
+# created there. If so, 1 is returned, otherwise 0 is returned.         #
 #########################################################################
 sub fileWriteable
 {
     my $filename = trim(shift);
     my $retval = 0;
     if (length($filename) > 0) {
-        if ($filename =~ /^stdout$/i) {
+        if ($filename =~ /^(stdout|)-$/i) {
             $retval = 1;
         } elsif (-e $filename) {
             if (-w $filename) {
@@ -1043,6 +1053,7 @@ sub getProxyFilename
     my $retval    = '';
     my $proxyname = "x509up_u";
     my $realuid   = $<;
+    delete $ENV{'TMPDIR'};
     my $tmpdir    = File::Spec->tmpdir();
 
     # First, check the environment variable X509_USER_PROXY
@@ -1175,7 +1186,9 @@ B<--outkey> instead to write the private key to a specific file.
 
 When creating a certificate signing request (CSR) on-the-fly, generate a new
 private key and write it to file . Use this option if you do not have a
-private key for creating the CSR. 
+private key for creating the CSR. Note that this option is not necessary
+when using the B<--proxyfile> option since the key will be written to the
+resulting Globus proxy file.
 
 =item B<-t> I<hours>, B<--lifetime> I<hours>
 
@@ -1210,8 +1223,8 @@ the URL to fetch.  Be sure to include C<http(s)://> in the URL string.
 =item B<-o> I<filename>, B<--out> I<filename>
 
 Specify the destination of the certificate, PKCS12 credential, or contents of
-the specified URL.  If you specify C<STDOUT> as the I<filename>, output will
-be sent to the terminal.
+the specified URL.  If you specify C<STDOUT> or C<-> as the I<filename>,
+output will be sent to the terminal.
 
 =item B<-1>, B<--proxyfile>
 
