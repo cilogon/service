@@ -57,7 +57,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.020";
+our $VERSION = "0.021";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -1260,7 +1260,7 @@ B<--proxyfile> option, so you must specify it on the command line.
 
 =over
 
-=item ecp.pl 
+=item ecp.pl
 
 Execute the ECP client program in fully-interactive mode. You will be
 prompted for all required information.
@@ -1292,6 +1292,15 @@ C<joesmith> and password C<mypass>. Read in a certificate signing request
 here because a private key is needed only for the creation of the CSR.)  Set
 the lifetime of the certificate to 168 hours (1 week). Output the fetched
 certificate to the terminal.
+
+=item ecp.pl --proxyfile --idpname urbana --certreq create --lifetime 12
+
+Get a certificate from the CILogon Service. Authenticate to the Identity
+Provider at the University of Illinois at Urbana-Champaign, prompting the
+user for username and password. Generate a certificate signing request
+on-the-fly. Set the lifetime of the certificate to 12 hours. Output the
+fetched certificate and private key to the Globus proxy file location (e.g.,
+/tmp/x509up_u500).
 
 =item ecp.pl --get pkcs12 --idpname urbana --idpuser joesmith 
              --idppass mypass --password abcdefghijkl --lifetime 8766 
