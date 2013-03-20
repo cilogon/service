@@ -57,7 +57,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.016";
+our $VERSION = "0.017";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -94,6 +94,7 @@ my $getstr = '';
 my $certreq = '';
 my $inkey = '';
 my $outkey = '';
+my $keyfile = '';
 my $csr = '';
 my $passwd = '';
 my $tfpass = '';
@@ -126,6 +127,7 @@ GetOptions(\%opts, 'help|h|?',
                    'out|o=s',
                    'password|P=s',
                    'twofactor|T=s',
+                   'proxyfile|1',
                    'url|U=s') or pod2usage(-verbose=>1) && exit;
 
 # If the user asked for help, print it and then exit.
@@ -265,6 +267,14 @@ if ($verbose) {
     print "Logging in with username '$idpuser'.\n";
 }
 
+# If the '--proxyfile' command line option is set, two things happen:
+# (1) the Globus proxy filename is used as the $outputfile, and
+# (2) the '--get' operation is set to 'cert'.
+# Thus, any other '--out' or '--get' command line parameters are ignored.
+if (exists $opts{proxyfile}) {
+    $opts{out} = getProxyFilename();
+    $opts{get} = 'c';
+}
 
 # Next, figure out the 'get' operation: cert, pkcs12, or url
 
@@ -409,8 +419,10 @@ if ($get eq 'c') {
         my $reqcmd = OPENSSL_BIN . ' req -new -subj "/CN=ignore"';
         if (length($inkey) > 0) {
             $reqcmd .= " -key $inkey";
+            $keyfile = $inkey;
         } else {
             $reqcmd .= " -newkey rsa:2048 -nodes -keyout $outkey";
+            $keyfile = $outkey;
         }
         $csr = runCmdGetStdout($reqcmd);
         if (length($outkey) > 0) {
@@ -699,30 +711,41 @@ do {
         $authOK = 1;
         print "Success!\n" if ($verbose);
         if (length($outputfile) > 0) {
-            # If outputfile is the same as outkey, read in outkey first,
-            # then write output followed by outkey so that cert is before
-            # key in the resulting file.
-            my $keyfile = '';
-            if ($outputfile eq $outkey) {
-                my $res = open(KEYFILE,$outkey);
-                if (defined $res) {
-                    while(<KEYFILE>) {
-                        $keyfile .= $_;
+            # If a certificate was fetched (not a PKCS12 or other) and 
+            # either (a) the outputfile is the same as keyfile OR (b) the
+            # user specified the '--proxyfile' command line option, read in
+            # the keyfile, then output cert followed by contents of keyfile
+            # so that cert is before key in the resulting file.
+            my $keystr = '';
+            if ($get eq 'c') {
+                if (($outputfile eq $keyfile) || (exists $opts{proxyfile})) {
+                    my $res = open(KEYFILE,$keyfile);
+                    if (defined $res) {
+                        while(<KEYFILE>) {
+                            # The openssl 'req' command stupidly omits 'RSA'
+                            # from the -----BEGIN/END PRIVATE KEY----- lines.
+                            $_ =~ s/(-----)(BEGIN|END) (PRIVATE KEY-----)/$1$2 RSA $3/;
+                            $keystr .= $_;
+                        }
+                    } else { # This shouldn't happen, but just in case.
+                        warn "Error: Unable to read key from file " . 
+                             "'$keyfile'." if (!$quiet);
+                        $keystr = '';
                     }
-                } else { # This shouldn't happen, but just in case.
-                    warn "Error: Unable to read key from file " . 
-                         "'$outkey'." if (!$quiet);
-                    $keyfile = '';
+                    close KEYFILE;
                 }
-                close KEYFILE;
             }
             open(OUTFILE,">$outputfile");
             print OUTFILE $response->decoded_content;
-            # If outputfile is the same as outkey, output key after cert.
-            if (length($keyfile) > 0) {
-                print OUTFILE "\n$keyfile";
+            # If we read in a key file, write it out after the cert.
+            if (length($keystr) > 0) {
+                print OUTFILE "\n$keystr";
             }
             close OUTFILE;
+            # For Globus proxy file, max permissions is 600
+            if (exists $opts{proxyfile}) {
+                chmod 0600, $outputfile;
+            }
             print "Output written to '$outputfile'.\n" if ($verbose);
         } else {
             print $response->decoded_content . "\n";
@@ -869,7 +892,7 @@ sub fileWriteable
 # filename is empty or if the file can be read. If so, 1 is returned,   #
 # otherwise 0 is returned. This subroutine is used by one of the        #
 # get_reply() calls when prompting the user for a CSR to read in,       #
-# blank meaning to create a CSR on-the-fly.                             # 
+# blank meaning to create a CSR on-the-fly.                             #
 #########################################################################
 sub blankOrReadable
 {
@@ -887,7 +910,7 @@ sub blankOrReadable
 # This subroutine checks to see if the OpenSSL binary (specified by the #
 # OPENSSL_BIN constant at the top of this file) is available. It        #
 # actually calls 'openssl version' to make sure that the program        #
-# really is openssl.                                                    # 
+# really is openssl.                                                    #
 #########################################################################
 sub checkOpenSSL
 {
@@ -1003,6 +1026,44 @@ sub urlDecode {
     $url =~ s/%([a-fA-F0-9]{2,2})/chr(hex($1))/eg;
     $url =~ s/<!--(.|\n)*-->//g;
     return $url;
+}
+
+#########################################################################
+# Subroutine: getProxyFilename()                                        #
+# Returns   : The full path and filename of the Globus credential file. #
+# This subroutine calculates the full path and filename where Globus    #
+# would check for a credential. It first checks the X509_USER_PROXY     #
+# environment variable. If not set, it tries to use the UID for the     #
+# user in the system temporary directory (expect for Win32 systems).    #
+# If still not set, it uses the username in the system temporary        #
+# directory.                                                            #
+#########################################################################
+sub getProxyFilename
+{
+    my $retval    = '';
+    my $proxyname = "x509up_u";
+    my $realuid   = $<;
+    my $tmpdir    = File::Spec->tmpdir();
+
+    # First, check the environment variable X509_USER_PROXY
+    my $envvalue = $ENV{'X509_USER_PROXY'};
+    if (length($envvalue) > 0) {
+        $retval = $envvalue;
+    } 
+    
+    # Next, try the temp directory plus UID for non-Win32 systems
+    # (Can't do this on Win32 systems since $< always returns 0)
+    if ((length($retval) == 0) && ($^O ne 'MSWin32')) {
+        $retval = File::Spec->catfile($tmpdir,$proxyname.$realuid);
+    }
+
+    # As a last resort, use temp directory plus username
+    if (length($retval) == 0) {
+        my $username = lc(getlogin || getpwuid($realuid) || 'nousername');
+        $retval = File::Spec->catfile($tmpdir,$proxyname.'_'.$username);
+    }
+
+    return $retval;
 }
 
 
@@ -1126,7 +1187,7 @@ lifetime for a PKCS12 credential is 9516 hours (13 months).
 
 Specify the name of a CILogon-configured "virtual organization". Note that
 the program does NOT prompt for a virtual organization in interactive mode,
-so you must specify it with the B<--vo> option.
+so you must specify it with the B<--vo> command line option.
 
 =item B<-w> I<password>, B<--password> I<password>
 
@@ -1151,6 +1212,16 @@ the URL to fetch.  Be sure to include C<http(s)://> in the URL string.
 Specify the destination of the certificate, PKCS12 credential, or contents of
 the specified URL.  If you specify C<STDOUT> as the I<filename>, output will
 be sent to the terminal.
+
+=item B<-1>, B<--proxyfile>
+
+This option will write the certificate and key to the Globus proxy
+credential filename. This is typically something like I</tmp/x509up_u500> on
+*nix systems or I<%TEMP%\x509_up_u_johndoe> on Windows systems. If the
+environment variable X509_USER_PROXY is set, that value will be used
+instead. Specifying this option overrides the B<--out> option, and sets the
+B<--get cert> option. Note that the program does not prompt for the
+B<--proxyfile> option, so you must specify it on the command line.
 
 =back
 
