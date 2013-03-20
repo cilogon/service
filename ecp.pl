@@ -57,7 +57,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.019";
+our $VERSION = "0.020";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -1068,11 +1068,6 @@ sub getProxyFilename
     my $realuid   = $<;
     delete $ENV{'TMPDIR'};
     my $tmpdir    = File::Spec->tmpdir();
-
-    # For MacOS, force $tmpdir to be '/tmp'
-    #if (($^O eq 'MacOS') || ($^O eq 'rhapsody') || ($^O eq 'darwin')) {
-        #$tmpdir = '/tmp';
-    #}
 
     # First, check the environment variable X509_USER_PROXY
     my $envvalue = $ENV{'X509_USER_PROXY'};
