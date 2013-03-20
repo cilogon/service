@@ -5,7 +5,7 @@
 # Script      : ecp.pl                                                  #
 # Authors     : Terry Fleury <tfleury@illinois.edu>                     #
 # Create Date : July 06, 2011                                           #
-# Last Update : March 19, 2013                                          #
+# Last Update : March 20, 2013                                          #
 #                                                                       #
 # This PERL script allows a user to get an end-user X.509 certificate   #
 # or PKCS12 credential from the CILogon Service. It can also get the    #
@@ -57,7 +57,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.018";
+our $VERSION = "0.019";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -92,10 +92,12 @@ my $idppass = '';
 my $get = '';
 my $geturl = '';
 my $getstr = '';
+my $genrsa = '';
 my $certreq = '';
 my $inkey = '';
 my $outkey = '';
 my $outkeyfh;
+my $outkeystdout = 0;
 my $keyfile = '';
 my $csr = '';
 my $passwd = '';
@@ -407,26 +409,34 @@ if ($get eq 'c') {
                 }
             }
 
-            # No private key output file specified. For '--proxyfile', use
-            # a temp file. Otherwise, prompt for outkey filename.
-            if (length($outkey) == 0) {
-                if (exists $opts{proxyfile}) {
-                    ($outkeyfh,$outkey) = 
-                        tempfile(UNLINK=>1,TMPDIR=>1,SUFFIX=>'.pem');
-                } else {
-                    $reply = $term->get_reply(
-                             prompt   => 'Enter filename',
-                             print_me => 'Enter filename for outputting the private key:',
-                             default  => 'userkey.pem',
-                             allow    => \&fileWriteable
-                             );
-                    $outkey = trim($reply);
-                    open($outkeyfh,">",$outkey);
+            # No private key output file specified. If '--proxyfile' wasn't
+            # specified, prompt for outkey filename.
+            if ((length($outkey) == 0) && (!exists $opts{proxyfile})) {
+                $reply = $term->get_reply(
+                         prompt   => 'Enter filename',
+                         print_me => 'Enter filename for outputting the private key:',
+                         default  => 'userkey.pem',
+                         allow    => \&fileWriteable
+                         );
+                $outkey = trim($reply);
+            }
+
+            # If still no outkey filename and '--proxyfile' was specified,
+            # or if STDOUT was given as the outkey filename, write the 
+            # key to a temp file.
+            if (((length($outkey) == 0) && (exists $opts{proxyfile})) || 
+                ($outkey =~ /^(stdout|-)$/i)) {
+                if ($outkey =~ /^(stdout|-)$/i) {
+                    $outkeystdout = 1; # Print key to stdout at the very end
                 }
+                ($outkeyfh,$outkey) = 
+                    tempfile(UNLINK=>1,TMPDIR=>1,SUFFIX=>'.pem');
+            } else {
+                open($outkeyfh,">",$outkey);
             }
 
             my $genrsacmd = OPENSSL_BIN . ' genrsa 2048';
-            my $genrsa = runCmdGetStdout($genrsacmd);
+            $genrsa = runCmdGetStdout($genrsacmd);
             if (length($genrsa) > 0) {
                 print $outkeyfh $genrsa;
                 close $outkeyfh;
@@ -449,7 +459,7 @@ if ($get eq 'c') {
         }
     }
 
-    print "Using the following certificate signing request (CSR):\n$csr\n" if
+    print "Using the following certificate signing request (CSR):\n$csr" if
         ($verbose);
 }
 
@@ -760,6 +770,9 @@ do {
         } else {
             print $response->decoded_content . "\n";
         }
+        if ($outkeystdout == 1) {
+            print $genrsa;
+        }
     } else {
         # Check for "401 Unauthorized", which means two-factor is enabled
         if ($response->code == 401) {
@@ -874,7 +887,7 @@ sub fileWriteable
     my $filename = trim(shift);
     my $retval = 0;
     if (length($filename) > 0) {
-        if ($filename =~ /^(stdout|)-$/i) {
+        if ($filename =~ /^(stdout|-)$/i) {
             $retval = 1;
         } elsif (-e $filename) {
             if (-w $filename) {
@@ -1056,6 +1069,11 @@ sub getProxyFilename
     delete $ENV{'TMPDIR'};
     my $tmpdir    = File::Spec->tmpdir();
 
+    # For MacOS, force $tmpdir to be '/tmp'
+    #if (($^O eq 'MacOS') || ($^O eq 'rhapsody') || ($^O eq 'darwin')) {
+        #$tmpdir = '/tmp';
+    #}
+
     # First, check the environment variable X509_USER_PROXY
     my $envvalue = $ENV{'X509_USER_PROXY'};
     if (length($envvalue) > 0) {
@@ -1186,9 +1204,10 @@ B<--outkey> instead to write the private key to a specific file.
 
 When creating a certificate signing request (CSR) on-the-fly, generate a new
 private key and write it to file . Use this option if you do not have a
-private key for creating the CSR. Note that this option is not necessary
-when using the B<--proxyfile> option since the key will be written to the
-resulting Globus proxy file.
+private key for creating the CSR. If you specify C<STDOUT> or C<-> as the
+I<filename>, output will be sent to the terminal (after the certificate).
+Note that this option is not necessary when using the B<--proxyfile> option
+since the key will be written to the resulting Globus proxy file.
 
 =item B<-t> I<hours>, B<--lifetime> I<hours>
 
