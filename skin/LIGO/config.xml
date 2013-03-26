@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+  <pkcs12>
+    <initiallifetime>
+      <number>3</number>
+      <multiplier>24</multiplier>
+    </initiallifetime>
+    <maxlifetime>72</maxlifetime>
+  </pkcs12>
+
+  <gsca>
+    <initiallifetime>
+      <number>3</number>
+      <multiplier>86400</multiplier>
+    </initiallifetime>
+    <maxlifetime>72</maxlifetime>
+  </gsca>
+
+  <delegate>
+    <initiallifetime>72</initiallifetime>
+    <maxlifetime>72</maxlifetime>
+  </delegate>
+
+  <ecp>
+    <defaultlifetime>72</defaultlifetime>
+    <maxlifetime>72</maxlifetime>
+  </ecp>
+
+</config>

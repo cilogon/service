@@ -1,0 +1,1 @@
+https://login.ligo.org/idp/shibboleth LIGO
