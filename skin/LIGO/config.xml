@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 
+  <initialidp>https://login.ligo.org/idp/shibboleth</initialidp>
+
   <pkcs12>
     <initiallifetime>
       <number>3</number>
