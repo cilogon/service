@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This is a comment -->
 <config>
+
   <initialidp>urn:mace:incommon:clemson.edu</initialidp>
 
   <idpblacklist>
@@ -11,4 +11,7 @@
     <idp>urn:mace:incommon:idp.protectnetwork.org</idp>
 -->
   </idpblacklist>
+
+  <usesha1>1</usesha1>
+
 </config>
