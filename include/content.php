@@ -9,8 +9,8 @@ require_once('myproxy.php');
 /* notification box at the top of each page.                            */
 /*
 define('BANNER_TEXT',
-       'The CILogon Service may be unavailable on Wednesday June 20
-        10:00am - 11:00am Central Time due to service software upgrades.'
+       'The CILogon Service may be unavailable on Sunday June 23
+        5:30am - 9:00am Central Time due to campus network upgrades.'
 );
 */
 
