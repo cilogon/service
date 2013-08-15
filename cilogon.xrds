@@ -30,11 +30,11 @@
         </Service>  
         <Service priority="70">  
             <Type>http://specs.openid.net/auth/2.0/return_to</Type>  
-            <URI>https://polo2.cites.illinois.edu/getopeniduser/</URI>  
+            <URI>https://polo2.ncsa.illinois.edu/getopeniduser/</URI>  
         </Service>  
         <Service priority="80">  
             <Type>http://specs.openid.net/auth/2.0/return_to</Type>  
-            <URI>https://polo-staging.cites.illinois.edu/getopeniduser/</URI>  
+            <URI>https://polo-staging.ncsa.illinois.edu/getopeniduser/</URI>  
         </Service>  
     </XRD>  
 </xrds:XRDS>  
