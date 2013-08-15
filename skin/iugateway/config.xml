@@ -10,11 +10,9 @@
     <forceremember>1</forceremember>
   </delegate>
 
-  <!-- TODO: Need list of portals for the <forceinitialidp> option. 
-       For now, <forceinitialidp> works for all sites.
-  -->
   <portallist>
-    <portal>/.*/</portal>
+    <portal>#^https://cybergateway\.uits\.iu\.edu/#</portal>
+    <portal>#^https://iub\.globusonline\.org/#</portal>
   </portallist>
 
   <portallistaction>
