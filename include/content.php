@@ -7,12 +7,11 @@ require_once('myproxy.php');
 /* If needed, set the "Notification" banner text to a non-empty value   */
 /* and uncomment the "define" statement in order to display a           */
 /* notification box at the top of each page.                            */
-/*
+
 define('BANNER_TEXT',
-       'The CILogon Service may be unavailable on Sunday June 23
-        5:30am - 9:00am Central Time due to campus network upgrades.'
+       'The CILogon Service may be unavailable on Thursday August 22
+        10:00am - 11:00am Central Time due to service software upgrades.'
 );
-*/
 
 /* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
 define('GETUSER_URL','https://' . HOSTNAME . '/secure/getuser/');
