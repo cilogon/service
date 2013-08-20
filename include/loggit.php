@@ -74,7 +74,8 @@ class loggit {
         /* NEED TO CHANGE THIS WHEN USING HTTP_Session2 */
         if (session_id() != '') {
             foreach ($_SESSION as $key => $value) {
-                $envstr .= $key . '="' . $value . '" ';
+                $envstr .= $key . '="' . 
+                    (is_array($value) ? 'Array' : $value) . '" ';
             }
         }
 
