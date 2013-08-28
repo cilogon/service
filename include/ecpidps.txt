@@ -1,3 +1,4 @@
+https://idp.iu.edu/shibboleth-idp/profile/SAML2/SOAP/ECP Indiana University
 https://login.ligo.org/idp/profile/SAML2/SOAP/ECP LIGO Scientific Collaboration
 https://shib.lternet.edu/idp/profile/SAML2/SOAP/ECP LTER Network
 https://idp.protectnetwork.org/protectnetwork-idp/profile/SAML2/SOAP/ECP ProtectNetwork
