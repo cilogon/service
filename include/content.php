@@ -7,12 +7,12 @@ require_once('myproxy.php');
 /* If needed, set the "Notification" banner text to a non-empty value   */
 /* and uncomment the "define" statement in order to display a           */
 /* notification box at the top of each page.                            */
-
+/*
 define('BANNER_TEXT',
-       'The CILogon Service may be unavailable for short periods on Thursday
+       'The CILogon Service may be unavailable for short periods on Thursday,
         August 29 between 10am and 11am Central Time due to service upgrades.'
 );
-
+*/
 /* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
 define('GETUSER_URL','https://' . HOSTNAME . '/secure/getuser/');
 define('GETOPENIDUSER_URL','https://' . HOSTNAME . '/getopeniduser/');
@@ -395,7 +395,7 @@ function printWAYF($showremember=true,$incommonidps=false) {
           title="CyberInfrastructure">CI</acronym>). In order to test your identity
           provider with the CILogon Service, you must first Log On. If your preferred
           identity provider is not listed, please fill out the <a target="_blank"
-          href="https://cilogon.org/requestidp/">"request a new organization"
+          href="https://' , HOSTNAME , '/requestidp/">"request a new organization"
           form</a>, and we will try to add your identity provider in the future.
           </p>
           ';
@@ -413,7 +413,7 @@ function printWAYF($showremember=true,$incommonidps=false) {
           college, please select it for your identity
           provider.  If your school is not listed,
           please fill out the <a target="_blank"
-          href="https://cilogon.org/requestidp/">"request a new organization"
+          href="https://' , HOSTNAME , '/requestidp/">"request a new organization"
           form</a>, and we will try to add your school in the future.
           </p>
           ';
