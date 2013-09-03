@@ -9,17 +9,11 @@ util::startPHPSession();
 // util::startTiming();
 
 /************************************************************************
- * Class name : twofactor                                               *
- * Description: This class contains a bunch of static (class) methods   *
- * for handling two-factor authentication. Information about which      *
- * methods are registered and/or enabled is stored in the datastore.    *
- * However, to speed access to the two-factor information, the session  *
- * variable 'twofactor' contains the current state. To populate the     *
- * 'twofactor' session variable, call the read() method. This is done   *
- * (automatically) by the 'getuser' and 'getopeniduser' servlets when   *
- * the user logs on. If changes are made to the 'twofactor' session     *
- * variable, call the write() method to save the new state to the       *
- * datastore.                                                           *
+ * Class name : util                                                    *
+ * Description: This class contains a bunch of static (class) utility   *
+ * methods, for example getting and setting server environment          *
+ * variables and handling cookies. See the header for each function for *
+ * detailed description.                                                *
  ************************************************************************/
 class util {
 
