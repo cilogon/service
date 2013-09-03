@@ -109,13 +109,6 @@ function redirectToTestIdP($providerId='') {
     }
     
     // Set up the "header" string for redirection thru mod_shib
-    /*
-    $hostname = getMachineHostname();
-    $testidp_url = "https://" . $hostname . "/secure/testidp/";
-    $redirect = 
-        "Location: https://" . $hostname . "/Shibboleth.sso/Login?" .
-        'target=' . urlencode($testidp_url);
-    */
     $testidp_url = 'https://' . HOSTNAME . '/secure/testidp/';
     $redirect = 
         'Location: https://' . HOSTNAME . '/Shibboleth.sso/Login?' .
