@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+  <initialidp>urn:mace:incommon:iu.edu</initialidp>
+
+  <idpblacklist>
+    <idp>https://www.google.com/accounts/o8/id</idp>
+    <idp>https://openid.paypal-ids.com</idp>
+    <idp>https://pip.verisignlabs.com</idp>
+    <idp>https://yahoo.com</idp>
+    <idp>urn:mace:incommon:idp.protectnetwork.org</idp>
+  </idpblacklist>
+
+  <delegate>
+    <forcelifetime>1</forcelifetime>
+    <forceremember>1</forceremember>
+  </delegate>
+
+</config>
