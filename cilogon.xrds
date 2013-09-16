@@ -26,7 +26,7 @@
         </Service>  
         <Service priority="60">  
             <Type>http://specs.openid.net/auth/2.0/return_to</Type>  
-            <URI>https://polo1.cites.illinois.edu/getopeniduser/</URI>  
+            <URI>https://polo1.ncsa.illinois.edu/getopeniduser/</URI>  
         </Service>  
         <Service priority="70">  
             <Type>http://specs.openid.net/auth/2.0/return_to</Type>  
