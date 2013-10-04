@@ -211,6 +211,7 @@ function getUserAndRespond($responseurl) {
  * file and sets the HTTP response code to an error code.               *
  ************************************************************************/
 function getPKCS12() {
+    global $skin;
     global $log;
 
     getUID(); // Get the user's database user ID, put info in PHP session
@@ -229,6 +230,7 @@ function getPKCS12() {
         return; // ERROR means no further processing is necessary
     }
 
+    $skin->setMyProxyInfo();
     generateP12();  // Try to create the PKCS12 credential file on disk
 
     /* Look for the p12error PHP session variable. If set, return it. */
@@ -336,6 +338,7 @@ function getCert() {
     $dn = util::getSessionVar('dn');
     if (strlen($dn) > 0) {
         /* Append extra info, such as 'skin', to be processed by MyProxy. */
+        $skin->setMyProxyInfo();
         $myproxyinfo = util::getSessionVar('myproxyinfo');
         if (strlen($myproxyinfo) > 0) {
             $dn .= " $myproxyinfo";
