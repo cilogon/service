@@ -217,7 +217,7 @@ decoration to make it look like a button.  Notice the addition of the
     <td>
       <div style="border: 5px outset #696; cursor:pointer;
       display:inline-block; padding:3px;" 
-      onclick="location.href='http://cilogon.org'">
+      onclick="location.href='https://cilogon.org'">
       <a href="https://cilogon.org" 
       style="font-family:Arial,sans-serif; font-style:italic;
       font-weight:bold; font-size:28px; color:#363;
@@ -230,7 +230,7 @@ decoration to make it look like a button.  Notice the addition of the
     <form action="#" method="post">
     <textarea cols="68" rows="9">
 &lt;div style="border: 5px outset #696; cursor:pointer; padding:3px;
-display:inline-block;" onclick="location.href='http://cilogon.org'"&gt;
+display:inline-block;" onclick="location.href='https://cilogon.org'"&gt;
 &lt;a href="https://cilogon.org" 
 style="font-family:Arial,sans-serif; font-style:italic;
 font-weight:bold; font-size:28px; color:#363; 
