@@ -1533,11 +1533,12 @@ function gotUserSuccess() {
     // current PHP session), if the skin has "forceremember" set, 
     // OR if the skin has "initialremember" set and there is no 
     // cookie for the current portal, then we should go to the main
-    // page, skipping the New User and User Changed pages.
+    // page, skipping the New User page. Note that we still want to
+    // show the User Changed page to inform the user about updated
+    // DN strings.
     $callbackuri = util::getSessionVar('callbackuri');
     if ((strlen($callbackuri) > 0) &&
-        (($status == dbservice::$STATUS['STATUS_NEW_USER']) ||
-         ($status == dbservice::$STATUS['STATUS_USER_UPDATED']))) {
+        ($status == dbservice::$STATUS['STATUS_NEW_USER'])) {
         // Extra check for new users: see if any HTML entities
         // are in the user name. If so, send an email alert.
         $dn = util::getSessionVar('dn');
