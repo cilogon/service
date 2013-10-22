@@ -482,6 +482,8 @@ class util {
             'twofactor'    => 'Two-Factor'
         );
 
+        $remoteaddr = self::getServerVar('REMOTE_ADDR');
+        $remotehost = gethostbyaddr($remoteaddr);
         $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .
                     'X-Mailer: PHP/' . phpversion();
         $mailsubj = 'CILogon Service on ' . HOSTNAME . ' - ' . $summary;
@@ -493,7 +495,8 @@ CILogon Service - ' . $summary . '
 Session Variables
 -----------------
 Server Host   = ' . HOSTNAME . '
-Remote Address= ' . self::getServerVar('REMOTE_ADDR') . '
+Remote Address= ' . $remoteaddr . '
+' . (($remotehost !== false) ? "Remote Host   = $remotehost" : '' ) . '
 ';
 
         foreach ($sessionvars as $svar => $sname) {
