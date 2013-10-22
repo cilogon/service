@@ -94,9 +94,9 @@ function getMyProxyCredential(
     $retstr = implode("\n",$output);
 
     if ($return_val > 0) {
-        util:: sendErrorAlert('getMyProxyCredential Error',
-                              "MyProxy Error = $return_val\n" .
-                              "MyProxy Output= $retstr");
+        util::sendErrorAlert('getMyProxyCredential Error',
+                             "MyProxy Error = $return_val\n" .
+                             "MyProxy Output= $retstr");
         $retstr = '';
     }
 
