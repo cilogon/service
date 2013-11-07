@@ -3,5 +3,6 @@ https://shib.lternet.edu/idp/profile/SAML2/SOAP/ECP LTER Network
 https://idp.protectnetwork.org/protectnetwork-idp/profile/SAML2/SOAP/ECP ProtectNetwork
 https://shibboleth2.uchicago.edu/idp/profile/SAML2/SOAP/ECP University of Chicago
 https://shibboleth.illinois.edu/idp/profile/SAML2/SOAP/ECP University of Illinois at Urbana-Champaign
+https://shibboleth.umich.edu/idp/profile/SAML2/SOAP/ECP University of Michigan
 https://idp.u.washington.edu/idp/profile/SAML2/SOAP/ECP University of Washington
 https://login.wisc.edu/idp/profile/SAML2/SOAP/ECP University of Wisconsin-Madison
