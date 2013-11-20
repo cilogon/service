@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+  <initialidp>urn:mace:incommon:duke.edu</initialidp>
+
+  <forceinitialidp>1</forceinitialidp>
+
+  <delegate>
+    <forcelifetime>12</forcelifetime>
+    <forceremember>1</forceremember>
+  </delegate>
+
+  <portallist>
+    <portal>#^https://portal\.duke\.ci-connect\.net/#</portal>
+  </portallist>
+
+  <portallistaction>
+    <allowforceinitialidp>1</allowforceinitialidp>
+  </portallistaction>
+
+</config>
