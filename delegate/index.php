@@ -82,6 +82,10 @@ if (verifyOAuthToken(util::getGetVar('oauth_token'))) {
             verifySessionAndCall('handleGoogleAuthenticatorLogin');
         break; // End case 'Enter'
 
+        case 'EnterDuo': // Verify Duo Security login
+            verifySessionAndCall('handleDuoSecurityLogin');
+        break; // End case 'EnterDuo'
+
         case 'Show Help': // Toggle showing of help text on and off
         case 'Hide Help':
             handleHelpButtonClicked();
