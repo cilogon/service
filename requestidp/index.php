@@ -9,7 +9,7 @@ define('DEFAULT_OPTION_TEXT','-- Choose one -or- Type one in below --');
 
 /* Check the csrf cookie against either a hidden <form> element or a   *
  * PHP session variable, and get the value of the "submit" element.    */
-$submit = csrf::verifyCookieAndGetSubmit();
+$submit = $csrf->verifyCookieAndGetSubmit();
 
 /* If the CSRF cookie was good and the user clicked the "Submit" *
  * button then read in the various form elements and verify that *

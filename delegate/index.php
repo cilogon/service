@@ -15,7 +15,7 @@ $log = new loggit();
  * PHP session variable, and get the value of the "submit" element.  *
  * Note: replace CR/LF with space for "Show/Hide Help" buttons.      */
 $retchars = array("\r\n","\n","\r");
-$submit = str_replace($retchars," ",csrf::verifyCookieAndGetSubmit());
+$submit = str_replace($retchars," ",$csrf->verifyCookieAndGetSubmit());
 util::unsetSessionVar('submit');
 
 $log->info('submit="' . $submit . '"');
@@ -86,8 +86,8 @@ if (verifyOAuthToken(util::getGetVar('oauth_token'))) {
             verifySessionAndCall('handleDuoSecurityLogin');
         break; // End case 'EnterDuo'
 
-        case 'Show Help': // Toggle showing of help text on and off
-        case 'Hide Help':
+        case 'Show  Help ': // Toggle showing of help text on and off
+        case 'Hide  Help ':
             handleHelpButtonClicked();
         break; // End case 'Show Help' / 'Hide Help'
 

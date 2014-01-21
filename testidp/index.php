@@ -14,7 +14,7 @@ $idplist = new idplist();
  * PHP session variable, and get the value of the "submit" element.  *
  * Note: replace CR/LF with space for "Show/Hide Help" buttons.      */
 $retchars = array("\r\n","\n","\r");
-$submit = str_replace($retchars," ",csrf::verifyCookieAndGetSubmit());
+$submit = str_replace($retchars," ",$csrf->verifyCookieAndGetSubmit());
 util::unsetSessionVar('submit');
 
 /* Depending on the value of the clicked "submit" button or the    *
@@ -37,8 +37,8 @@ switch ($submit) {
         header('Location: http://www.google.com/');
     break;
 
-    case "Show Help": // Toggle showing of help text on and off
-    case "Hide Help":
+    case 'Show  Help ': // Toggle showing of help text on and off
+    case 'Hide  Help ':
         if (util::getSessionVar('showhelp') == 'on') {
             util::unsetSessionVar('showhelp');
         } else {

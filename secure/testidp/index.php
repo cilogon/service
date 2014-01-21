@@ -8,7 +8,7 @@ define('ADD_SUBMIT_TEXT','Add Your IdP to the CILogon Service');
 
 /* Check the csrf cookie against either a hidden <form> element or a   *
  * PHP session variable, and get the value of the "submit" element.    */
-$submit = csrf::verifyCookieAndGetSubmit();
+$submit = $csrf->verifyCookieAndGetSubmit();
 
 /* Get the full list of InCommon IdPs and the whitelist of *
  * IdPs available to the CILogon Service.                  */

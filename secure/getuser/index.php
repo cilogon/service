@@ -7,7 +7,7 @@ require_once('../../include/myproxy.php');
 
 /* Check the csrf cookie against either a hidden <form> element or a *
  * PHP session variable, and get the value of the "submit" element.  */
-$submit = csrf::verifyCookieAndGetSubmit();
+$submit = $csrf->verifyCookieAndGetSubmit();
 util::unsetSessionVar('submit');
 
 /* Get the URL to reply to after database query. */
@@ -194,8 +194,7 @@ function getUserAndRespond($responseurl) {
     util::setSessionVar('submit',util::getSessionVar('responsesubmit'));
     util::unsetSessionVar('responsesubmit');
 
-    $csrf->setTheCookie();
-    $csrf->setTheSession();
+    $csrf->setCookieAndSession();
 
     /* Finally, redirect to the calling script. */
     header('Location: ' . $responseurl);
