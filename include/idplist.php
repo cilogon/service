@@ -57,7 +57,7 @@ class idplist {
 
     /* Set the constants to correspond to your particular set up.       */
     const defaultIdPFilename      = '/var/www/html/include/idplist.xml';
-    const defaultInCommonFilename = '/etc/shibboleth/InCommon-metadata.xml';
+    const defaultInCommonFilename = '/var/cache/shibboleth/InCommon-metadata.xml';
     const testIdPFilename         = '/var/www/html/include/testidplist.xml';
 
     /* The $idpdom is a DOMDocument which holds the list of IdP         *
