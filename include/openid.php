@@ -45,10 +45,11 @@ class openid {
      * OpenID providers which do NOT require a username in the URL are  *
      * supported at this time.                                          */
     public static $providerUrls = array(
-        'https://www.google.com/accounts/o8/id' => 'Google' ,
-        'https://openid.paypal-ids.com'         => 'PayPal' , 
-        'https://pip.verisignlabs.com'          => 'Verisign' ,
-        // 'https://yahoo.com'                  => 'Yahoo'
+        'https://www.google.com/accounts/o8/id'     => 'Google' ,
+        // 'https://accounts.google.com/o/oauth2/auth' => 'Google+' ,
+        'https://openid.paypal-ids.com'             => 'PayPal' , 
+        'https://pip.verisignlabs.com'              => 'Verisign' ,
+        // 'https://yahoo.com'                      => 'Yahoo'
     );
 
     /* Database connection for the OpenID library.                      */
@@ -121,6 +122,18 @@ class openid {
      ********************************************************************/
     public static function urlExists($url) {
         return (strlen(self::getProviderName($url)) > 0);
+    }
+
+    /********************************************************************
+     * Function  : isGoogleOAuth2                                       *
+     * Parameter : The URL of an OpenID provider.                       *
+     * Returns   : True if the provider name corresponding to the URL   *
+     *             is 'Google+'. False otherwise.                       *
+     * This is a convenience method which returns true if the passed-in *
+     * URL is the one used by Google OAUth2 authentication.             *
+     ********************************************************************/
+    public static function isGoogleOAuth2($url) {
+        return (self::getProviderName($url) == 'Google+');
     }
 
     /********************************************************************
