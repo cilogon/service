@@ -20,6 +20,9 @@ class util {
     // Initialize by calling util::startTiming();
     public static $timeit;
 
+    // Read the cilogon.ini file into an array
+    public static $ini_array = null;
+
     /********************************************************************
      * Function  : setDefines                                           *
      * This function defines several named constants.                   *
@@ -237,13 +240,12 @@ class util {
         // No parameter given? Use the value read in from cilogon.ini file.
         // If storage.phpsessions == 'mysql', create a sessionmgr().
         if (is_null($storetype)) {
-            static $ini_array = null; // Read the ini file just once
-            if (is_null($ini_array)) {
-                $ini_array = @parse_ini_file(CILOGON_INI_FILE);
+            if (is_null(self::$ini_array)) {
+                self::$ini_array = @parse_ini_file(CILOGON_INI_FILE);
             }
-            if ((is_array($ini_array)) &&
-                (array_key_exists('storage.phpsessions',$ini_array))) {
-                $storetype = $ini_array['storage.phpsessions'];
+            if ((is_array(self::$ini_array)) &&
+                (array_key_exists('storage.phpsessions',self::$ini_array))) {
+                $storetype = self::$ini_array['storage.phpsessions'];
             }
         }
 
@@ -296,6 +298,28 @@ class util {
                       '://' . self::getServerVar('HTTP_HOST') . $retval;
         }
         return $retval;
+    }
+
+    /********************************************************************
+     * Function   : getMachineHostname                                  *
+     * Returns    : The full machine-specific hostname of this host.    *
+     * This function is utilized in the formation of the URL for the    *
+     * PKCS12 credential download link.  It returns a combination of    *
+     * the local machine name (the first part of the 'uname') and the   *
+     * HTTP hostname (as defined by HOSTNAME).  This usually results    *
+     * in something like 'polo1.cilogon.org', since polo1 is the local  *
+     * machine name, and cilogon.org is the HTTP_HOST name.             *
+     ********************************************************************/
+    public static function getMachineHostname() {
+        $unamesplit = preg_split('/\./',php_uname('n'));
+        $hostname = @$unamesplit[0];
+        $serversplit = preg_split('/\./',HOSTNAME);
+        if (count($serversplit) > 2) { 
+            // Delete the first component if more than 2
+            unset($serversplit[0]);
+        }
+        $url = $hostname . '.' . implode('.',$serversplit);
+        return $url;
     }
 
     /********************************************************************
@@ -486,7 +510,8 @@ class util {
         $remotehost = gethostbyaddr($remoteaddr);
         $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .
                     'X-Mailer: PHP/' . phpversion();
-        $mailsubj = 'CILogon Service on ' . HOSTNAME . ' - ' . $summary;
+        $mailsubj = 'CILogon Service on ' . self::getMachineHostname() . 
+                    ' - ' . $summary;
         $mailmsg  = '
 CILogon Service - ' . $summary . '
 -----------------------------------------------------------
