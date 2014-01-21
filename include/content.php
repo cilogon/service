@@ -363,10 +363,10 @@ function printWAYF($showremember=true,$incommonidps=false) {
     </p>
     ';
 
-    $openiderror = util::getSessionVar('openiderror');
-    if (strlen($openiderror) > 0) {
-        echo "<p class=\"openiderror\">$openiderror</p>";
-        util::unsetSessionVar('openiderror');
+    $logonerror = util::getSessionVar('logonerror');
+    if (strlen($logonerror) > 0) {
+        echo "<p class=\"logonerror\">$logonerror</p>";
+        util::unsetSessionVar('logonerror');
     }
 
     echo '
@@ -889,10 +889,14 @@ function handleLogOnButtonClicked() {
     $providerIdPost = util::getPostVar('providerId');
     if (openid::urlExists($providerIdPost)) { // Use OpenID authn
         util::setCookieVar('providerId',$providerIdPost);
-        redirectToGetOpenIDUser($providerIdPost);
+        if (openid::isGoogleOAuth2($providerIdPost)) {
+            redirectToGetGoogleOAuth2User($providerIdPost);
+        } else {
+            redirectToGetOpenIDUser($providerIdPost);
+        }
     } elseif ($idplist->exists($providerIdPost)) { // Use InCommon authn
         util::setCookieVar('providerId',$providerIdPost);
-        redirectToGetUser($providerIdPost);
+        redirectToGetShibUser($providerIdPost);
     } else { // Either providerId not set or not in whitelist
         util::unsetCookieVar('providerId');
         printLogonPage();
@@ -973,9 +977,13 @@ function handleNoSubmitButtonClicked() {
      * getuser script.                                              */
     if ((strlen($providerId) > 0) && (strlen($keepIdp) > 0)) {
         if (openid::urlExists($providerId)) { // Use OpenID authn
-            redirectToGetOpenIDUser($providerId);
+            if (openid::isGoogleOAuth2($providerId)) {
+                redirectToGetGoogleOAuth2User($providerId);
+            } else {
+                redirectToGetOpenIDUser($providerId);
+            }
         } elseif ($idplist->exists($providerId)) { // Use InCommon
-            redirectToGetUser($providerId);
+            redirectToGetShibUser($providerId);
         } else { // $providerId not in whitelist
             util::unsetCookieVar('providerId');
             printLogonPage();
@@ -1021,7 +1029,7 @@ function printHelpButton() {
 
     echo '
       <input type="submit" name="submit" class="helpbutton" value="' , 
-      (util::getSessionVar('showhelp')=='on' ? 'Hide' : 'Show') , '&#10;Help" />
+      (util::getSessionVar('showhelp')=='on' ? 'Hide':'Show') , '&#10; Help " />
       </form>
     </div>
     ';
@@ -1090,7 +1098,7 @@ function verifySessionAndCall($func,$params=array()) {
 }
 
 /************************************************************************
- * Function   : redirectToGetUser                                       *
+ * Function   : redirectToGetShibUser                                   *
  * Parameters : (1) An entityId of the authenticating IdP.  If not      *
  *                  specified (or set to the empty string), we check    *
  *                  providerId PHP session variable and providerId      *
@@ -1121,8 +1129,8 @@ function verifySessionAndCall($func,$params=array()) {
  * including the 'responsesubmit' variable which is set as the return   *
  * 'submit' variable in the 'getuser' script.                           *
  ************************************************************************/
-function redirectToGetUser($providerId='',$responsesubmit='gotuser',
-                           $responseurl=null,$allowsilver=true) {
+function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
+                               $responseurl=null,$allowsilver=true) {
     global $csrf;
     global $log;
     global $skin;
@@ -1149,8 +1157,7 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
             (is_null($responseurl) ? util::getScriptDir(true) : $responseurl));
         util::setSessionVar('submit','getuser');
         util::setSessionVar('responsesubmit',$responsesubmit);
-        $csrf->setTheCookie();
-        $csrf->setTheSession();
+        $csrf->setCookieAndSession();
 
         // Set up the "header" string for redirection thru mod_shib 
         $redirect = 
@@ -1162,10 +1169,16 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
          * also when coming back (target=...) after authenticating at IdP.
          */
         if (HOSTNAME == 'cilogon.org') {
-            $redirect = preg_replace('/cilogon.org/',getMachineHostname(),
+            $redirect = preg_replace('/cilogon.org/',util::getMachineHostname(),
                                      $redirect);
         }
         if (strlen($providerId) > 0) {
+            // Use special NIHLogin Shibboleth SessionInitiator for acsByIndex
+            if ($providerId == 'urn:mace:incommon:nih.gov') {
+                $redirect = preg_replace('%/Shibboleth.sso/Login%',
+                                         '/Shibboleth.sso/NIHLogin',$redirect);
+            }
+
             $redirect .= '&providerId=' . urlencode($providerId);
 
             // To bypass SSO at IdP, check for skin's 'forceauthn'
@@ -1198,10 +1211,7 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
  *                  specified (or set to the empty string), we check    *
  *                  providerId PHP session variable and providerId      *
  *                  cookie (in that order) for non-empty values.        *
- *              (2) (Optional) The username to replace the string       *
- *                  'username' in the OpenID URL (if necessary).        *
- *                  Defaults to 'username'.                             *
- *              (3) (Optional) The value of the PHP session 'submit'    *
+ *              (2) (Optional) The value of the PHP session 'submit'    *
  *                  variable to be set upon return from the 'getuser'   *
  *                  script.  This is utilized to control the flow of    *
  *                  this script after "getuser". Defaults to 'gotuser'. *
@@ -1213,7 +1223,7 @@ function redirectToGetUser($providerId='',$responsesubmit='gotuser',
  * database to store temporary tokens used by OpenID upon successful    *
  * authentication.  Next, create a new OpenID consumer and attempt to   *
  * redirect to the appropriate OpenID provider.  Upon any error, set    *
- * the 'openiderror' PHP session variable and redisplay the main logon  *
+ * the 'logonerror' PHP session variable and redisplay the main logon   *
  * screen.                                                              *
  ************************************************************************/
 function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
@@ -1221,7 +1231,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
     global $log;
     global $skin;
 
-    $openiderrorstr = 'Internal OpenID error. Please contact <a href="mailto:help@cilogon.org">help@cilogon.org</a> or select a different identity provider.';
+    $logonerrorstr = 'Internal logon error. Please contact <a href="mailto:help@cilogon.org">help@cilogon.org</a> or select a different identity provider.';
 
     // If providerId not set, try the session and cookie values
     if (strlen($providerId) == 0) {
@@ -1238,19 +1248,18 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
         printMainPage();
     } else { // Otherwise, redirect to the getopeniduser script
         // Set PHP session varilables needed by the getopeniduser script
-        util::unsetSessionVar('openiderror');
+        util::unsetSessionVar('logonerror');
         util::setSessionVar('responseurl',util::getScriptDir(true));
         util::setSessionVar('submit','getuser');
         util::setSessionVar('responsesubmit',$responsesubmit);
-        $csrf->setTheCookie();
-        $csrf->setTheSession();
+        $csrf->setCookieAndSession();
 
         $auth_request = null;
         $openid = new openid();
         $datastore = $openid->getStorage();
 
         if (is_null($datastore)) {
-            util::setSessionVar('openiderror',$openiderrorstr);
+            util::setSessionVar('logonerror',$logonerrorstr);
         } else {
             require_once("Auth/OpenID/Consumer.php");
             require_once("Auth/OpenID/SReg.php");
@@ -1261,7 +1270,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
             $auth_request = $consumer->begin($providerId);
 
             if (!$auth_request) {
-                util::setSessionVar('openiderror',$openiderrorstr);
+                util::setSessionVar('logonerror',$logonerrorstr);
             } else {
                 // Get attributes from Verisign
                 $sreg_request = Auth_OpenID_SRegRequest::build(
@@ -1300,14 +1309,14 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
                 if ($pape_request) {
                     $auth_request->addExtension($pape_request);
                 }
-
+                
                 // Start the OpenID authentication request
                 if ($auth_request->shouldSendRedirect()) {
                     $redirect_url = $auth_request->redirectURL(
                         'https://' . HOSTNAME . '/',
                         GETOPENIDUSER_URL);
                     if (Auth_OpenID::isFailure($redirect_url)) {
-                        util::setSessionVar('openiderror',$openiderrorstr);
+                        util::setSessionVar('logonerror',$logonerrorstr);
                     } else {
                         $log->info('OpenID Login="' . $providerId . '"');
                         header("Location: " . $redirect_url);
@@ -1319,7 +1328,7 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
                         GETOPENIDUSER_URL,
                         false, array('id' => $form_id));
                     if (Auth_OpenID::isFailure($form_html)) {
-                        util::setSessionVar('openiderror',$openiderrorstr);
+                        util::setSessionVar('logonerror',$logonerrorstr);
                     } else {
                         $log->info('OpenID Login="' . $providerId . '"');
                         print $form_html;
@@ -1330,7 +1339,82 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
             }
         }
 
-        if (strlen(util::getSessionVar('openiderror')) > 0) {
+        if (strlen(util::getSessionVar('logonerror')) > 0) {
+            printLogonPage();
+        }
+    }
+}
+
+/************************************************************************
+ * Function   : redirectToGetGoogleOAuth2User                           *
+ * Parameters : (1) An OpenID provider name. See the $providerarray in  *
+ *                  the openid.php class for a full list. If not        *
+ *                  specified (or set to the empty string), we check    *
+ *                  providerId PHP session variable and providerId      *
+ *                  cookie (in that order) for non-empty values.        *
+ *              (2) (Optional) The value of the PHP session 'submit'    *
+ *                  variable to be set upon return from the 'getuser'   *
+ *                  script.  This is utilized to control the flow of    *
+ *                  this script after "getuser". Defaults to 'gotuser'. *
+ * This method redirects control flow to the getopeniduser script for   *
+ * when the user logs in via Google OAuth 2.0. It first checks to see   *
+ * if we have a valid session. If so, we don't need to redirect and     *
+ * instead simply show the Get Certificate page. Otherwise, we start    *
+ * a Google OAuth 2.0 logon by composing a parameterized GET URL using  *
+ * the Google OAuth 2.0 endpoint. (See                                  *
+ * https://developers.google.com/accounts/docs/OAuth2Login for more     *
+ * information.)                                                        *
+ ************************************************************************/
+function redirectToGetGoogleOAuth2User($providerId='',$responsesubmit='gotuser') {
+    global $csrf;
+    global $log;
+    global $skin;
+
+    // If providerId not set, try the session and cookie values
+    if (strlen($providerId) == 0) {
+        $providerId = util::getSessionVar('providerId');
+        if (strlen($providerId) == 0) {
+            $providerId = util::getCookieVar('providerId');
+        }
+    }
+
+    // If the user has a valid 'uid' in the PHP session, and the
+    // providerId matches the 'idp' in the PHP session, then 
+    // simply go to the 'Download Certificate' button page.
+    if (verifyCurrentSession($providerId)) {
+        printMainPage();
+    } else { // Otherwise, redirect to the Google OAuth 2.0 endpoint
+        // Set PHP session varilables needed by the getopeniduser script
+        util::unsetSessionVar('logonerror');
+        util::setSessionVar('responseurl',util::getScriptDir(true));
+        util::setSessionVar('submit','getuser');
+        util::setSessionVar('responsesubmit',$responsesubmit);
+        $csrf->setCookieAndSession();
+                
+        // To bypass SSO at IdP, check for skin's 'forceauthn'
+        $max_auth_age = null;
+        $forceauthn = $skin->getConfigOption('forceauthn');
+        if ((!is_null($forceauthn)) && ((int)$forceauthn == 1)) {
+            $max_auth_age = '0';
+        }
+
+        // If we can read the Google OAuth clientid from the config file,
+        // craft the Google OAuth 2.0 query string URL and redirect.
+        if ((is_array(util::$ini_array)) &&
+            (array_key_exists('googleoauth2.clientid',util::$ini_array))) {
+            $clientid = util::$ini_array['googleoauth2.clientid'];
+            $redirect_url = openid::getProviderURL('Google+') . '?' .
+                'response_type=code&' .
+                "client_id=$clientid&" .
+                'scope=openid+profile+email&' .
+                'state=' . $csrf->getTokenValue() . '&' .
+                'openid.realm=' . 'https://' . HOSTNAME . '/' . '&' .
+                'redirect_uri=' . GETOPENIDUSER_URL . '&' .
+                (is_null($max_auth_age) ? '' : "max_auth_age=$max_auth_age&") .
+                'access_type=offline';
+            header("Location: " . $redirect_url);
+        } else {
+            util::setSessionVar('logonerror','Unable to read config file.');
             printLogonPage();
         }
     }
@@ -1941,8 +2025,8 @@ function generateP12() {
             /* Verify the usercred.p12 file was actually created */
             $size = @filesize($p12file);
             if (($size !== false) && ($size > 0)) {
-                $p12link = 'https://' . getMachineHostname() . '/pkcs12/' .
-                           $p12dir . '/usercred.p12';
+                $p12link = 'https://' . util::getMachineHostname() . 
+                           '/pkcs12/' .  $p12dir . '/usercred.p12';
                 $p12 = (time()+300) . " " . $p12link;
                 util::setSessionVar('p12',$p12);
                 $log->info('Generated New User Certificate="'.$p12link.'"');
@@ -1962,27 +2046,6 @@ function generateP12() {
             'Missing username. Please enable cookies.');
         $log->info("Error creating certificate - missing dn session variable");
     }
-}
-
-/************************************************************************
- * Function   : getMachineHostname                                      *
- * Returns    : The full machine-specific hostname of this host.        *
- * This function is utilized in the formation of the URL for the PKCS12 *
- * credential download link.  It returns a combination of the local     *
- * machine name (the first part of the 'uname') and the HTTP hostname   *
- * (as defined by HOSTNAME in the util.php file).  This usually results *
- * in something like 'polo1.cilogon.org', since polo1 is the local      *
- * machine name, and cilogon.org is the HTTP_HOST name.                 *
- ************************************************************************/
-function getMachineHostname() {
-    $unamesplit = preg_split('/\./',php_uname('n'));
-    $hostname = @$unamesplit[0];
-    $serversplit = preg_split('/\./',HOSTNAME);
-    if (count($serversplit) > 2) { // Delete the first component if more than 2
-        unset($serversplit[0]);
-    }
-    $url = $hostname . '.' . implode('.',$serversplit);
-    return $url;
 }
 
 /************************************************************************
