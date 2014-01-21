@@ -77,8 +77,8 @@ class shiberror {
                 if (strlen(util::getSessionVar('responseurl')) > 0) {
                     $responseurl = util::getSessionVar('responseurl');
                 }
-                redirectToGetUser(util::getCookieVar('providerId'),
-                                  'gotuser',$responseurl,false);
+                redirectToGetShibUser(util::getCookieVar('providerId'),
+                                     'gotuser',$responseurl,false);
             } else {
                 $this->printError();
             }
