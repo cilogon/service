@@ -443,7 +443,7 @@ function getTitleText($cookie) {
         "keepidp" => "Remember if you checked the 'Remember this selection' checkbox when you selected and Identity Provider." ,
         "lastname" => "Your surname set by your Identity Provider." ,
         "loa" => "Level of Assurance set by your Identity Provider." ,
-        "openiderror" => "A text message of the reason for the last OpenID authentication error." ,
+        "logonerror" => "A text message of the reason for the last authentication error." ,
         "openidID" => "Your user identifier set by the OpenID Identity Provider." ,
         "p12error" => "A text message of the reason why the PKCS12 certificate could not be created." ,
         "p12lifetime" => "This multiplied by the p12multipler gives the lifetime of the PKCS12 certificate in hours." ,

@@ -224,7 +224,7 @@ select#providerId {
 input#searchlist {
   font-size: 8pt;
 }
-p.openiderror {
+p.logonerror {
   border: 3px double red;
   text-align: center;
   background-color: #fcc;
