@@ -339,4 +339,24 @@
   <usesha1>1</usesha1>
   -->
 
+  <!-- <deployjava>
+       If set to 1, include the deployJava.js JavaScript (available from
+       http://docs.oracle.com/javase/6/docs/technotes/guides/jweb/deployment_advice.html)
+       which is called by cilogon.js (in enableCertlifetime) to make sure
+       that the latest version of Java is installed on the client machine.
+       This is really only necessary if the Java Web Start (JWS) client is
+       used. It can cause problems for "regular" users of CILogon who get
+       PKCS12 certificates, since the script will tell the user that Java
+       needs to be installed or updated even though JWS isn't the method
+       used for downloading a credential. By default, the deployJava.js
+       script is NOT included in the HTML output, thus the test for Java is
+       not performed. Note that the display of the JWS downloader (i.e., the
+       "Download Certificate" button) is controlled by CSS (in skin.css via
+       the div.certactionbox entry), NOT by config.xml. So if you show the
+       JWS downloader via CSS, you must also set <deployjava> to 1.
+  -->
+  <!--
+  <deployjava>1</deployjava>
+  -->
+
 </config>

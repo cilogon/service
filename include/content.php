@@ -71,9 +71,16 @@ function printHeader($title='',$extra='',$csrfcookie=true) {
 
     $skin->printSkinLink();
 
-    echo '<script type="text/javascript" src="/include/cilogon.js"></script>
-    <script type="text/javascript" src="/include/deployJava.js"></script>
+    $deployjava = $skin->getConfigOption('deployjava');
+    if ((!is_null($deployjava)) && ((int)$deployjava == 1)) {
+        echo '<script type="text/javascript" src="/include/deployJava.js"></script>';
+    }
 
+    echo '
+    <script type="text/javascript" src="/include/cilogon.js"></script>
+    ' ; 
+
+    echo '
 <!--[if IE]>
     <style type="text/css">
       body { behavior: url(/include/csshover3.htc); }

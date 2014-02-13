@@ -512,7 +512,9 @@ function enableCertlifetime() {
     certmultiplierselect.disabled = false;
   }
   if (mayneedjavapara !== null) {
-    if (!deployJava.isWebStartInstalled("1.6.0")) {
+    if ((typeof deployJava === "object") &&
+        (typeof deployJava.isWebStartInstalled === "function") &&
+        (!deployJava.isWebStartInstalled("1.6.0"))) {
       mayneedjavapara.style.display = "block";
       mayneedjavapara.style.height = "1.5em";
       mayneedjavapara.style.width = "auto";
