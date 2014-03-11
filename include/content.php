@@ -1978,11 +1978,6 @@ function generateP12() {
     } elseif ($loa == 'openid') {
         $port = 7516;
     }
-    /* Check if we should use SHA-1 version of MyProxy servers */
-    $usesha1 = $skin->getConfigOption('usesha1');
-    if ((!is_null($usesha1)) && ((int)$usesha1 == 1)) {
-        $port--;
-    }
 
     $dn = util::getSessionVar('dn');
     if (strlen($dn) > 0) {

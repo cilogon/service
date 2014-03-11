@@ -308,11 +308,6 @@ function getCert() {
     } elseif ($loa == 'openid') {
         $port = 7516;
     }
-    /* Check if we should use SHA-1 version of MyProxy servers */
-    $usesha1 = $skin->getConfigOption('usesha1');
-    if ((!is_null($usesha1)) && ((int)$usesha1 == 1)) {
-        $port--;
-    }
 
     /* Get the certificate lifetime. Set to a default value if not set. */
     $certlifetime = (int)(util::getPostVar('certlifetime'));

@@ -329,16 +329,6 @@
   <forceauthn>1</forceauthn>
   -->
 
-  <!-- <usesha1>
-       If set to 1, use the SHA-1 hash function when getting a certificate
-       from the MyProxy server. In the code, this subtracts 1 from the myproxy
-       port number since the odd-numbered myproxy ports are configured to use
-       SHA-1. The default is for MyProxy to use SHA-256.
-  -->
-  <!--
-  <usesha1>1</usesha1>
-  -->
-
   <!-- <deployjava>
        If set to 1, include the deployJava.js JavaScript (available from
        http://docs.oracle.com/javase/6/docs/technotes/guides/jweb/deployment_advice.html)
