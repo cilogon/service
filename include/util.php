@@ -342,7 +342,7 @@ class util {
             $lines = file($filename,FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
             foreach ($lines as $line_num => $line) {
                 $values = preg_split('/\s+/',$line,2);
-                $retarray[$values[0]] = $values[1];
+                $retarray[$values[0]] = @$values[1];
             }
         }
 

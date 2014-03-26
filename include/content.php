@@ -265,6 +265,13 @@ function printWAYF($showremember=true,$incommonidps=false) {
             }
         }
 
+        /* Check the global blacklist.txt file and remove any IdPs listed. */
+        $globalblacklistfile = '/var/www/html/include/blacklist.txt';
+        $globalblackidps = util::readArrayFromFile($globalblacklistfile);
+        foreach (array_keys($globalblackidps) as $blackidp) {
+            unset($idps[(string)$blackidp]);
+        }
+
         /* Make sure previously selected IdP is in list of available IdPs. */
         if ((strlen($providerId) > 0) && (!isset($idps[$providerId]))) {
             $providerId = '';
