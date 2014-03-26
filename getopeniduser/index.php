@@ -291,7 +291,8 @@ function saveToDataStore($openidid,$providerId,$providerName,
                       $databaseProviderName,
                       $firstname,
                       $lastname,
-                      $emailaddr);
+                      $emailaddr,
+                      $openidid);
         util::setSessionVar('uid',$dbs->user_uid);
         util::setSessionVar('dn',$dbs->distinguished_name);
         util::setSessionVar('twofactor',$dbs->two_factor);

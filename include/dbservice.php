@@ -206,11 +206,16 @@ class dbservice {
 
     /********************************************************************
      * Function  : getUser                                              *
-     * Parameters: Variable number of parameters: 1 or 6.               *
+     * Parameters: Variable number of parameters: 1, 6, 7, or 8.        *
      *             For 1 parameter : $uid (database user identifier)    *
      *             For 6 parameters: $remote_user, $idp,                *
      *                 $idp_display_name, $first_name, $last_name,      *
      *                 $email - used by InCommon authentication.        *
+     *             For 7 parameters: same as 6 plus                     *
+     *                 $openid - ID returned by OpenID authn            *
+     *             For 8 parameters: same as 6 plus                     *
+     *                 $eppn - eduPersonPrincipalName SAML attribute    *
+     *                 $eptid - eduPersonTargetedID SAML attribute      *
      * Returns   : True if the servlet returned correctly. Else false.  *
      * This method calls the 'getUser' action of the servlet and sets   *
      * the class member variables associated with user info             *
@@ -224,14 +229,33 @@ class dbservice {
         if ($numargs == 1) {
             $retval = $this->call('action=getUser&user_uid=' . 
                 urlencode(func_get_arg(0)));
-        } elseif ($numargs == 6) {
-            $retval = $this->call('action=getUser&remote_user=' .
-                urlencode(func_get_arg(0)) . '&idp=' .
-                urlencode(func_get_arg(1)) . '&idp_display_name=' .
-                urlencode(func_get_arg(2)) . '&first_name=' .
-                urlencode(iconv("UTF-8","UTF-7",func_get_arg(3))).'&last_name='.
-                urlencode(iconv("UTF-8","UTF-7",func_get_arg(4))).'&email=' .
-                urlencode(func_get_arg(5)));
+        } elseif ($numargs >= 6) {
+            $cmd  = 'action=getUser' .
+                    '&remote_user=' . urlencode(func_get_arg(0)) .
+                    '&idp=' . urlencode(func_get_arg(1)) .
+                    '&idp_display_name=' . urlencode(func_get_arg(2)) .
+                    '&first_name=' .
+                     urlencode(iconv("UTF-8","UTF-7",func_get_arg(3))) .
+                     '&last_name=' .
+                     urlencode(iconv("UTF-8","UTF-7",func_get_arg(4))) .
+                     '&email=' . urlencode(func_get_arg(5));
+            if ($numargs == 7) {
+                $arg6 = func_get_arg(6);
+                if (strlen($arg6) > 0) {
+                    $cmd .= '&openid=' . urlencode($arg6);
+                }
+            }
+            if ($numargs == 8) {
+                $arg6 = func_get_arg(6);
+                if (strlen($arg6) > 0) {
+                    $cmd .= '&eppn=' . urlencode($arg6);
+                }
+                $arg7 = func_get_arg(7);
+                if (strlen($arg7) > 0) {
+                    $cmd .= '&eptid=' . urlencode($arg7);
+                }
+            }
+            $retval = $this->call($cmd);
         }
         return $retval;
     }

@@ -109,7 +109,9 @@ function getUID() {
                       $shibarray['Organization Name'],
                       $firstname,
                       $lastname,
-                      $shibarray['Email Address']
+                      $shibarray['Email Address'],
+                      $shibarray['ePPN'],
+                      $shibarray['ePTID']
                      );
         util::setSessionVar('uid',$dbs->user_uid);
         util::setSessionVar('dn',$dbs->distinguished_name);
