@@ -4,9 +4,9 @@ require_once('DB.php');
 
 /************************************************************************
  * Class name : dbprops                                                 *
- * Description: This class reads the database config file (as specified *
- *              by the class constant databaseConfigFile) for the       *
- *              username, password, and database name used for storage. *
+ * Description: This class reads the config file (as specified by the   *
+ *              class constant cilogon_ini_file) for the username,      *
+ *              password, and database name used for storage.           *
  *              You specify which database type to use when calling     *
  *              the constructor, either 'mysql' or 'pgsql'. There is    *
  *              also a method getDBConnect to open a PEAR DB database   *
@@ -15,8 +15,8 @@ require_once('DB.php');
  *              There is a constant in the class that you should set    *
  *              for your particular set up:                             *
  *                                                                      *
- *              databaseConfigFile - this is the full path and name     *
- *                  of the cilogon.xml file containing the database     *
+ *              cilogon_ini_file - this is the full path and name       *
+ *                  of the cilogon.ini file containing the database     *
  *                  parameters (such as username and password). The     *
  *                  designated database is used by the OpenID consumer  *
  *                  to store temporary tokens.                          *
@@ -25,21 +25,21 @@ require_once('DB.php');
 class dbprops {
 
     /* Set the constant to correspond to your particular set up.       */
-    const databaseConfigFile = '/var/www/config/cilogon.xml';
+    const cilogon_ini_file = '/var/www/config/cilogon.ini';
 
-    private $xml;     // SimpleXML object representation of config file
-    private $dbtype;  // Either 'mysql' or 'pgsql'
+    private $ini_array; // Read .ini file into an array
+    private $dbtype;    // Either 'mysql' or 'pgsql'
 
     /********************************************************************
      * Function  : __construct                                          *
      * Parameter : Database type, either 'mysql' or 'pgsql'. Defaults   *
      *             to 'mysql'.                                          *
      * The constuctor sets several class variables and reads the        *
-     * database config file into the SimpleXML class object $xml.       *
+     * cilogon_ini_file config file into the array $ini_array.          *
      ********************************************************************/
     function __construct($db='mysql') {
         $this->dbtype = $db;
-        $this->xml = @simplexml_load_file(self::databaseConfigFile);
+        $this->ini_array = @parse_ini_file(self::cilogon_ini_file);
     }
 
     /********************************************************************
@@ -48,28 +48,16 @@ class dbprops {
      *             'password', or 'database'.                           *
      * Returns   : The value of the desired attribute, or empty string  *
      *             on error.                                            *
-     * This is a general method which runs an xpath query on the        *
-     * class $xml object to find the username, password, or database    *
-     * value from the config file.                                      *
+     * This is a general method looks in the $ini_array for the named   *
+     * attribute to return the username, password, or database value.   *
      ********************************************************************/
     function queryAttribute($attr) {
         $retstr = '';
 
-        if ($this->xml !== false) {
-            /* Since the database config file uses 'postgres' and       *
-             * 'postgresql' instead of 'pgsql', we need to set          *
-             * variables used by the xpath query.                       */
-            $dbstr1 = $this->dbtype;
-            $dbstr2 = $this->dbtype;
-            if ($this->dbtype == 'pgsql') {
-                $dbstr1 = 'postgres';
-                $dbstr2 = 'postgresql';
-            }
-
-            $query = $this->xml->xpath("/config/service[@name='" . 
-                     $dbstr1 . "']/" . $dbstr2 . '/@' . $attr);
-            if ($query !== false) {
-                $retstr = (string)$query[0];
+        if (is_array($this->ini_array)) {
+            $query = $this->dbtype . '.' . $attr;
+            if (array_key_exists($query,$this->ini_array)) {
+                $retstr = $this->ini_array[$query];
             }
         }
 
@@ -111,7 +99,7 @@ class dbprops {
      * Returns   : A PEAR DB object connected to a database, or null    *
      *             on error connecting to database.                     *
      * This function uses the PEAR DB module to connect to database     *
-     * using the parameters found in the databaseConfigFile. Upon       *
+     * using the parameters found in the cilogon_ini_file. Upon       *
      * success, it returns a DB connection returned by "DB::connect"    *
      * suitable for future DB calls. If there is a problem connecting,  *
      * it returns null.                                                 *
