@@ -9,9 +9,6 @@ require_once('include/content.php');
 // Check for a Shibboleth error and handle it
 $shiberror = new shiberror();
 
-/* Loggit object for logging info to syslog. */
-$log = new loggit();
-
 /* Check the csrf cookie against either a hidden <form> element or a *
  * PHP session variable, and get the value of the "submit" element.  *
  * Note: replace CR/LF with space for "Show/Hide Help" buttons.      */

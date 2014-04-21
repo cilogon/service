@@ -8,9 +8,6 @@ require_once('Auth/OpenID/Consumer.php');
 /* The full URL of the 'delegation/authorized' OAuth script. */
 define('AUTHORIZED_URL','http://localhost:8080/delegation/authorized');
 
-/* Loggit object for logging info to syslog. */
-$log = new loggit();
-
 /* Check the csrf cookie against either a hidden <form> element or a *
  * PHP session variable, and get the value of the "submit" element.  *
  * Note: replace CR/LF with space for "Show/Hide Help" buttons.      */
