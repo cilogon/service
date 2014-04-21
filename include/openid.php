@@ -270,9 +270,9 @@ class openid {
         }
 
         if ($storetype == 'pgsql') {
-            $storage = $this->getMySQLStorage();
-        } elseif ($storetype == 'mysql') {
             $storage = $this->getPostgreSQLStorage();
+        } elseif ($storetype == 'mysql') {
+            $storage = $this->getMySQLStorage();
         } else {
             $storage = $this->getFileStorage();
         }
