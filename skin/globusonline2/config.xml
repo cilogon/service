@@ -13,8 +13,6 @@
     <forceremember>1</forceremember>
   </delegate>
 
-  <poweredbyimg>/images/poweredby32.png</poweredbyimg>
-
   <forceauthn>1</forceauthn>
 
 </config>
