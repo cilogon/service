@@ -167,7 +167,7 @@ class openid {
      *             an Auth_OpenID_Consumer.                             *
      * This method connects to a PostgreSQL database in order to store  *
      * the temporary OpenID tokens used by an Auth_OpenID_Consumer.  It *
-     * reads database parameters from a local database.properties file  *
+     * reads database parameters from a local configuration file        *
      * and tries to open a connection to the PostgreSQL database.  If   *
      * successful, it creates a new Auth_OpenID_PostgreSQLStore to be   *
      * returned for use by an Auth_OpenID_Consumer.                     *
@@ -182,7 +182,7 @@ class openid {
      *             an Auth_OpenID_Consumer.                             *
      * This method connects to a MySQL database in order to store the   *
      * temporary OpenID tokens used by an Auth_OpenID_Consumer.  It     *
-     * reads database parameters from a local database.properties file  *
+     * reads database parameters from a local configuration file        *
      * and tries to open a connection to the MySQL database.  If        *
      * successful, it creates a new Auth_OpenID_MySQLStore to be        *
      * returned for use by an Auth_OpenID_Consumer.                     *
@@ -199,7 +199,7 @@ class openid {
      *             Auth_OpenID_Consumer.                                *
      * This method connects to a database in order to store the         *
      * temporary OpenID tokens used by an Auth_OpenID_Consumer.  It     *
-     * reads database parameters from a local database.properties file  *
+     * reads database parameters from a local configuration file        *
      * and tries to open a connection to the specified database, either *
      * PostgreSQL (pgsql) or MySQL (mysql).  If successful, it creates  *
      * a new Auth_OpenID_PostgreSQL or Auth_OpenID_MySQLStore to be     *
