@@ -59,8 +59,6 @@ echo 'rm -f logo'
 rm -f logo
 echo 'ln -sf images/cilogon-ci-80-w.png logo'
 ln -sf images/cilogon-ci-80-w.png logo
-echo 'ln -sf gridshib-ca-2.0.1 gridshib-ca'
-ln -sf gridshib-ca-2.0.1 gridshib-ca
 echo 'cd /var/www/html/skin/globusonline2/'
 cd /var/www/html/skin/globusonline2/
 echo 'rm -f logo_globus.png'
