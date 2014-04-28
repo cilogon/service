@@ -105,6 +105,8 @@ class idplist {
             (($dom = DOMDocument::load($this->getFilename())) !== false)) {
             $this->idpdom = $dom;
             $retval = true;
+        } else {
+            $this->idpdom = null;
         }
         return $retval;
     }
@@ -117,10 +119,12 @@ class idplist {
      ********************************************************************/
     function write() {
         $retval = false; // Assume write failed
-        $this->idpdom->preserveWhiteSpace = false;
-        $this->idpdom->formatOutput = true;
-        if ($this->idpdom->save($this->getFilename()) > 0) {
-            $retval = true;
+        if (!is_null($this->idpdom)) {
+            $this->idpdom->preserveWhiteSpace = false;
+            $this->idpdom->formatOutput = true;
+            if ($this->idpdom->save($this->getFilename()) > 0) {
+                $retval = true;
+            }
         }
         return $retval;
     }
