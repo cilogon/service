@@ -301,28 +301,6 @@ class util {
     }
 
     /********************************************************************
-     * Function   : getMachineHostname                                  *
-     * Returns    : The full machine-specific hostname of this host.    *
-     * This function is utilized in the formation of the URL for the    *
-     * PKCS12 credential download link.  It returns a combination of    *
-     * the local machine name (the first part of the 'uname') and the   *
-     * HTTP hostname (as defined by HOSTNAME).  This usually results    *
-     * in something like 'polo1.cilogon.org', since polo1 is the local  *
-     * machine name, and cilogon.org is the HTTP_HOST name.             *
-     ********************************************************************/
-    public static function getMachineHostname() {
-        $unamesplit = preg_split('/\./',php_uname('n'));
-        $hostname = @$unamesplit[0];
-        $serversplit = preg_split('/\./',HOSTNAME);
-        if (count($serversplit) > 2) { 
-            // Delete the first component if more than 2
-            unset($serversplit[0]);
-        }
-        $url = $hostname . '.' . implode('.',$serversplit);
-        return $url;
-    }
-
-    /********************************************************************
      * Function  : readArrayFromFile                                    *
      * Parameter : The name of the file to read.                        *
      * Return    : An array containing the contents of the file.        *
@@ -510,7 +488,7 @@ class util {
         $remotehost = gethostbyaddr($remoteaddr);
         $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .
                     'X-Mailer: PHP/' . phpversion();
-        $mailsubj = 'CILogon Service on ' . self::getMachineHostname() . 
+        $mailsubj = 'CILogon Service on ' . php_uname('n') . 
                     ' - ' . $summary;
         $mailmsg  = '
 CILogon Service - ' . $summary . '

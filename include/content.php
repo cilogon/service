@@ -14,7 +14,7 @@ define('BANNER_TEXT',
 );
 */
 /* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
-define('GETUSER_URL','https://' . HOSTNAME . '/secure/getuser/');
+define('GETUSER_URL','https://' . getMachineHostname() . '/secure/getuser/');
 define('GETOPENIDUSER_URL','https://' . HOSTNAME . '/getopeniduser/');
 
 /* Loggit object for logging info to syslog. */
@@ -1175,17 +1175,10 @@ function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
 
         // Set up the "header" string for redirection thru mod_shib 
         $redirect = 
-            'Location: https://' . HOSTNAME . '/Shibboleth.sso/Login?' .
+            'Location: https://' . getMachineHostname() .
+            '/Shibboleth.sso/Login?' .
             'target=' . urlencode(GETUSER_URL);
-        /*
-         * Special handling for cilogon.org - redirect to polo1.cilogon.org
-         * or polo2.cilogon.org when initiating Shibboleth session, and
-         * also when coming back (target=...) after authenticating at IdP.
-         */
-        if (HOSTNAME == 'cilogon.org') {
-            $redirect = preg_replace('/cilogon.org/',util::getMachineHostname(),
-                                     $redirect);
-        }
+
         if (strlen($providerId) > 0) {
             // Use special NIHLogin Shibboleth SessionInitiator for acsByIndex
             if ($providerId == 'urn:mace:incommon:nih.gov') {
@@ -2034,7 +2027,7 @@ function generateP12() {
             /* Verify the usercred.p12 file was actually created */
             $size = @filesize($p12file);
             if (($size !== false) && ($size > 0)) {
-                $p12link = 'https://' . util::getMachineHostname() . 
+                $p12link = 'https://' . getMachineHostname() . 
                            '/pkcs12/' .  $p12dir . '/usercred.p12';
                 $p12 = (time()+300) . " " . $p12link;
                 util::setSessionVar('p12',$p12);
@@ -2204,6 +2197,37 @@ function getMinMaxLifetimes($section,$defaultmaxlifetime) {
     }
 
     return array($minlifetime,$maxlifetime);
+}
+
+/********************************************************************
+ * Function   : getMachineHostname                                  *
+ * Returns    : The full cilogon-specific hostname of this host.    *
+ * This function is utilized in the formation of the URL for the    *
+ * PKCS12 credential download link.  It returns a host-specific     *
+ * URL hostname by mapping the local machine hostname (as returned  *
+ * by 'uname -n') to an InCommon metadata cilogon.org hostname      *
+ * (e.g., polo2.cilogon.org). This function contains an array       *
+ * '$hostnames' where the values are the local machine hostname and *
+ * the keys are the *.cilogon.org hostname. Since this array is     *
+ * fairly static, I didn't see the need to read it in from a config *
+ * file. In case the local machine hostname cannot be found in the  *
+ * $hostnames array, 'cilogon.org' is returned by default.          *
+ ********************************************************************/
+function getMachineHostname() {
+    $retval = 'cilogon.org';
+    $hostnames = array(
+        "polo1.ncsa.illinois.edu"        => "polo1.cilogon.org" ,
+        "poloa.ncsa.illinois.edu"        => "polo1.cilogon.org" ,
+        "polo2.ncsa.illinois.edu"        => "polo2.cilogon.org" ,
+        "polob.ncsa.illinois.edu"        => "polo2.cilogon.org" ,
+        "polot.ncsa.illinois.edu"        => "test.cilogon.org" ,
+        "polo-staging.ncsa.illinois.edu" => "test.cilogon.org" ,
+    );
+    $localhost = php_uname('n');
+    if (array_key_exists($localhost,$hostnames)) {
+        $retval = $hostnames[$localhost];
+    }
+    return $retval;
 }
 
 ?>
