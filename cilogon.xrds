@@ -22,7 +22,7 @@
         </Service>  
         <Service priority="50">  
             <Type>http://specs.openid.net/auth/2.0/return_to</Type>  
-            <URI>https://polo-staging.cilogon.org/getopeniduser/</URI>  
+            <URI>https://polo3.cilogon.org/getopeniduser/</URI>  
         </Service>  
     </XRD>  
 </xrds:XRDS>  
