@@ -2220,6 +2220,7 @@ function getMachineHostname() {
         "poloa.ncsa.illinois.edu"        => "polo1.cilogon.org" ,
         "polo2.ncsa.illinois.edu"        => "polo2.cilogon.org" ,
         "polob.ncsa.illinois.edu"        => "polo2.cilogon.org" ,
+        "fozzie.nics.utk.edu"            => "polo3.cilogon.org" ,
         "polot.ncsa.illinois.edu"        => "test.cilogon.org" ,
         "polo-staging.ncsa.illinois.edu" => "test.cilogon.org" ,
     );
