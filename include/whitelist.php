@@ -136,11 +136,14 @@ class whitelist {
      *             false otherwise.                                     *
      * This function writes out the list of entityIDs in $whitearray    *
      * to the whitelist file.  The <EntityID>...</EntityID> tags are    *
-     * re-added as appropriate.                                         *
+     * re-added as appropriate. To be super safe, the whitelist is      *
+     * first written to a temporary file, which is then renamed to the  *
+     * final desired filename.                                          *
      ********************************************************************/
     function writeToFile() {
          $retval = false; // Assume write failed
-         if ($fh = fopen($this->getFilename(),'w')) {
+         $tmpfname = tempnam("/tmp","WHI");
+         if ($fh = fopen($tmpfname,'w')) {
              if (flock($fh,LOCK_EX)) {
                  foreach ($this->whitearray as $key => $value) {
                      fwrite($fh,"$key\n");
@@ -148,7 +151,11 @@ class whitelist {
                  flock($fh,LOCK_UN);
              }
              fclose($fh);
-             $retval = true;
+             if (@rename($tmpfname,$this->getFilename())) {
+                 $retval = true;
+             } else {
+                 @unlink($tmpfname);
+             }
          }
          return $retval;
     }

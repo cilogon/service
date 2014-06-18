@@ -337,11 +337,14 @@ class util {
      *     key value                                                    *
      * The "key" and "value" strings are separated by a space. Note     *
      * that a "key" may not contain any whitespace (e.g. tabs), but a   *
-     * "value" may contain whitespace.                                  *
+     * "value" may contain whitespace. To be super safe, the array is   *
+     * first written to a temporary file, which is then renamed to the  *
+     * final desired filename.                                          *
      ********************************************************************/
     public static function writeArrayToFile($filename,$thearray) {
         $retval = false;  // Assume write failed
-        if ($fh = fopen($filename,'w')) {
+        $tmpfnmae = tempnam("/tmp","ARR");
+        if ($fh = fopen($tmpfname,'w')) {
             if (flock($fh,LOCK_EX)) {
                 foreach ($thearray as $key => $value) {
                     fwrite($fh,"$key $value\n");
@@ -349,7 +352,11 @@ class util {
                 flock($fh,LOCK_UN);
             }
             fclose($fh);
-            $retval = true;
+            if (@rename($tmpfname,$filename)) {
+                $retval = true;
+            } else {
+                @unlink($tmpfname);
+            }
         }
 
         return $retval;

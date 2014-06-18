@@ -113,17 +113,23 @@ class idplist {
 
     /********************************************************************
      * Function  : write                                                *
-     * Returns   : True if the idpdom was written to the ldplist XML    *
+     * Returns   : True if the idpdom was written to the idplist XML    *
      *             file. False otherwise.                               *
-     * This method writes the class $idpdom to an XML file.             *
+     * This method writes the class $idpdom to an XML file. It does     *
+     * this by first writing to a temporary file in /tmp, then renaming *
+     * the temp file to the final idplist XML filename.                 *
      ********************************************************************/
     function write() {
         $retval = false; // Assume write failed
         if (!is_null($this->idpdom)) {
             $this->idpdom->preserveWhiteSpace = false;
             $this->idpdom->formatOutput = true;
-            if ($this->idpdom->save($this->getFilename()) > 0) {
+            $tmpfname = tempnam("/tmp","IDP");
+            if (($this->idpdom->save($tmpfname) > 0) &&
+                (@rename($tmpfname,$this->getFilename()))) {
                 $retval = true;
+            } else {
+                @unlink($tmpfname);
             }
         }
         return $retval;
