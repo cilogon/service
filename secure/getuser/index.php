@@ -178,6 +178,7 @@ function getUID() {
     }
     util::unsetSessionVar('requestsilver');
     util::unsetSessionVar('openidID');
+    util::unsetSessionVar('oidcID');
 }
 
 /************************************************************************

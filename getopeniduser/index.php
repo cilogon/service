@@ -53,6 +53,7 @@ function getGoogleOAuth2AndRespond() {
     $lastname = '';
     $fullname = '';
     $emailaddr = '';
+    $oidcid = '';
 
     util::unsetSessionVar('logonerror');
     
@@ -107,6 +108,7 @@ function getGoogleOAuth2AndRespond() {
                     // Get the OpenID identifier and email
                     $openidid = @$token_data['payload']['openid_id'];
                     $emailaddr = @$token_data['payload']['email'];
+                    $oidcid = @$token_data['payload']['sub'];
                 }
 
                 try {
@@ -136,7 +138,7 @@ function getGoogleOAuth2AndRespond() {
         $providerId = util::getCookieVar('providerId');
         $providerName = openid::getProviderName($providerId);
         saveToDataStore($openidid,$providerId,$providerName,
-                        $firstname,$lastname,$emailaddr);
+                        $firstname,$lastname,$emailaddr,$oidcid);
     } else {
         util::unsetSessionVar('submit');
     }
@@ -245,6 +247,7 @@ function getUserAndRespond() {
  *              (4) The first name of the user                          *
  *              (5) The last name of the user                           *
  *              (6) The email address of the user                       *
+ *              (7) (Optional) The OIDC identifier from Google          *
  * This function saves the user logon information in the datastore.     *
  * It verifies that all parameters are not empty strings. It then       *
  * calls the "getUser" function of the dbservice to save the data.      *
@@ -252,7 +255,7 @@ function getUserAndRespond() {
  * there was a problem, an email alert is sent out.                     *
  ************************************************************************/
 function saveToDataStore($openidid,$providerId,$providerName,
-                         $firstname,$lastname,$emailaddr) {
+                         $firstname,$lastname,$emailaddr,$oidcid='') {
     global $csrf;
 
     $dbs = new dbservice();
@@ -292,7 +295,9 @@ function saveToDataStore($openidid,$providerId,$providerName,
                       $firstname,
                       $lastname,
                       $emailaddr,
-                      $openidid);
+                      $openidid,
+                      '',
+                      $oidcid);
         util::setSessionVar('uid',$dbs->user_uid);
         util::setSessionVar('dn',$dbs->distinguished_name);
         util::setSessionVar('twofactor',$dbs->two_factor);
@@ -310,6 +315,8 @@ function saveToDataStore($openidid,$providerId,$providerName,
         util::sendErrorAlert('Failure in /getopeniduser/',
             'OpenId ID     = ' . ((strlen($openidid) > 0) ? 
                 $openidid : '<MISSING>') . "\n" .
+            'OIDC ID       = ' . ((strlen($oidcid) > 0) ? 
+                $oidcid : '<MISSING>') . "\n" .
             'Provider URL  = ' . ((strlen($providerId) > 0) ? 
                 $providerId : '<MISSING>') . "\n" .
             'Provider Name = ' . ((strlen($providerName) > 0) ? 
@@ -332,12 +339,14 @@ function saveToDataStore($openidid,$providerId,$providerName,
         util::unsetSessionVar('loa');
         util::unsetSessionVar('idp');
         util::unsetSessionVar('openidID');
+        util::unsetSessionVar('oidcID');
     } else {
         util::setSessionVar('firstname',$firstname);
         util::setSessionVar('lastname',$lastname);
         util::setSessionVar('loa','openid');
         util::setSessionVar('idp',$providerId);
         util::setSessionVar('openidID',$openidid);
+        util::setSessionVar('oidcID',$oidcid);
     }
 
     util::setSessionVar('idpname',$providerName); // Enable check for Google

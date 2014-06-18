@@ -206,13 +206,15 @@ class dbservice {
 
     /********************************************************************
      * Function  : getUser                                              *
-     * Parameters: Variable number of parameters: 1, 6, 7, or 8.        *
+     * Parameters: Variable number of parameters: 1, or 6-9.            *
      *             For 1 parameter : $uid (database user identifier)    *
      *             For 6 parameters: $remote_user, $idp,                *
      *                 $idp_display_name, $first_name, $last_name,      *
      *                 $email - used by InCommon authentication.        *
-     *             For 7 parameters: same as 6 plus                     *
+     *             For 7 or 9 parameters: same as 6 plus                *
      *                 $openid - ID returned by OpenID authn            *
+     *                 8th parameter not used                           *
+     *                 $oidcic - Google OIDC identifier "sub" field     *
      *             For 8 parameters: same as 6 plus                     *
      *                 $eppn - eduPersonPrincipalName SAML attribute    *
      *                 $eptid - eduPersonTargetedID SAML attribute      *
@@ -239,10 +241,16 @@ class dbservice {
                      '&last_name=' .
                      urlencode(iconv("UTF-8","UTF-7",func_get_arg(4))) .
                      '&email=' . urlencode(func_get_arg(5));
-            if ($numargs == 7) {
+            if (($numargs == 7) || ($numargs == 9)) {
                 $arg6 = func_get_arg(6);
                 if (strlen($arg6) > 0) {
-                    $cmd .= '&openid=' . urlencode($arg6);
+                    $cmd .= '&open_id=' . urlencode($arg6);
+                }
+                if ($numargs == 9) {
+                    $arg8 = func_get_arg(8);
+                    if (strlen($arg8) > 0) {
+                        $cmd .= '&oidc=' . urlencode($arg8);
+                    }
                 }
             }
             if ($numargs == 8) {

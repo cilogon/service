@@ -355,8 +355,8 @@ class skin {
                         "remote_addr=$remoteaddr";
         }
 
-        // Add ePPN, ePTID, and openidID if available
-        foreach (array('ePPN','ePTID','openidID') as $id) {
+        // Add ePPN, ePTID, openidID, and oidcID if available
+        foreach (array('ePPN','ePTID','openidID','oidcID') as $id) {
             $sessvar = util::getSessionVar($id);
             if (strlen($sessvar) > 0) {
                 $infostr .= (strlen($infostr) > 0 ? ',' : '') . "$id=$sessvar";
