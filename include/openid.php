@@ -47,7 +47,7 @@ class openid {
     public static $providerUrls = array(
         'https://www.google.com/accounts/o8/id'     => 'Google' ,
         // 'https://accounts.google.com/o/oauth2/auth' => 'Google+' ,
-        'https://openid.paypal-ids.com'             => 'PayPal' , 
+        // 'https://openid.paypal-ids.com'             => 'PayPal' , 
         'https://pip.verisignlabs.com'              => 'Verisign' ,
         // 'https://yahoo.com'                      => 'Yahoo'
     );
