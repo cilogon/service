@@ -9,8 +9,8 @@ require_once('myproxy.php');
 /* notification box at the top of each page.                            */
 /*
 define('BANNER_TEXT',
-       'The CILogon Service may be unavailable for short periods on Monday,
-        March 31 between 1pm and 2pm Central Time due to service upgrades.'
+       'CILogon may be unavailable for brief periods on Tuesday,
+        June 3 at 7am Central Time for firewall upgrades.'
 );
 */
 /* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
