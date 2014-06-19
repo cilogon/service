@@ -2,6 +2,7 @@
 body {
   font-family: "helvetica neue",Helvetica,Arial,Verdana,sans-serif;
   color: #333333;
+  background: #000 url("/skin/xsede/background.jpg") no-repeat top center;
 }
 a,
 a:link,
@@ -16,6 +17,7 @@ a:visited {
 /***** Begin a few misc elements *****/
 div.boxed {
   border: 1px solid #2F5999;
+  background-color: #FFF;
 }
 input.submit {
   display: inline;
@@ -71,7 +73,7 @@ input.submit:hover {
 
 /***** Begin the "CILogon Service" header at the top of each page *****/
 div.logoheader {
-  background: url("/skin/xsede/background.jpg") no-repeat top center;
+  background: none;
   height: 94px;
 }
 div.logoheader h1 {
@@ -136,6 +138,7 @@ div.boxheader {
 div.footer {
   border: 1px solid #2F5999;
   color: #666666;
+  background-color: #FFF;
 }
 div.footer a,
 div.footer a:link,
