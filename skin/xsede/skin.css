@@ -1,0 +1,199 @@
+/***** Begin basic elements *****/
+body {
+  font-family: "helvetica neue",Helvetica,Arial,Verdana,sans-serif;
+  color: #333333;
+}
+a,
+a:link,
+a:visited {
+  color: #5783A6;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+} 
+/***** End basic elements *****/
+
+/***** Begin a few misc elements *****/
+div.boxed {
+  border: 1px solid #2F5999;
+}
+input.submit {
+  display: inline;
+  float: none;
+  background-color: #003358;
+  background-image: linear-gradient(#005383, #003358 45%, #002646);
+  border: 1px solid #001A38;
+  box-shadow: 0px 1px 1px #4289C6 inset, 0px 1px 2px rgba(0, 0, 0, 0.5);
+  color: #EEE;
+  font-size: 11px;
+  letter-spacing: 1.6px;
+  margin: 0px;
+  padding: 10px 18px 8px;
+  text-shadow: -1px -1px 1px #333;
+  text-transform: uppercase;
+  border-radius: 4px;
+  font-weight: bold;
+  overflow: visible;
+  width: auto;
+  font-family: Arial,Helvetica,Verdana,sans-serif;
+  text-decoration: none;
+  vertical-align: baseline;
+  border-collapse: collapse;
+  border-spacing: 0px;
+  word-spacing: 1px;
+}
+input.submit:hover {
+  display: inline;
+  float: none;
+  color: #FFF;
+  border: 1px solid #001A38;
+  box-shadow: 0px 1px 1px #6FC8E8 inset, 0px 1px 2px rgba(0, 0, 0, 0.5);
+  background-color: #004B83;
+  background-image: linear-gradient(#007DC1, #004B83 45%, #003563);
+  font-size: 11px;
+  letter-spacing: 1.6px;
+  margin: 0px;
+  padding: 10px 18px 8px;
+  text-shadow: -1px -1px 1px #333;
+  text-transform: uppercase;
+  border-radius: 4px;
+  font-weight: bold;
+  overflow: visible;
+  width: auto;
+  font-family: Arial,Helvetica,Verdana,sans-serif;
+  text-decoration: none;
+  vertical-align: baseline;
+  border-collapse: collapse;
+  border-spacing: 0px;
+  word-spacing: 1px;
+}
+/***** End a few misc element *****/
+
+/***** Begin the "CILogon Service" header at the top of each page *****/
+div.logoheader {
+  background: url("/skin/xsede/background.jpg") no-repeat top center;
+  height: 94px;
+}
+div.logoheader h1 {
+  background: url("/skin/xsede/logo.png") no-repeat top left;
+  margin: 8px 8px;
+  width: 250px;
+  height: 75px;
+  float: left;
+}
+/***** End the "CILogon Service" header at the top of each page *****/
+
+/***** Begin certinfo table *****/
+table.certinfo,
+table.portalinfo1,
+table.portalinfo2 {
+  margin: 1em;
+  width: 96%;
+  border: 1px solid #2F5999;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+table.certinfo th,
+table.portalinfo1 th,
+table.portalinfo2 th {
+  text-align: right;
+  padding-right: 1em;
+}
+table.certinfo a,
+table.portalinfo1 a,
+table.portalinfo2 a,
+table.certinfo a:link,
+table.portalinfo1 a:link,
+table.portalinfo2 a:link,
+table.certinfo a:visited,
+table.portalinfo1 a:visited,
+table.portalinfo2 a:visited {
+  color: #27638C;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+} 
+table.certinfo a:hover,
+table.portalinfo1 a:hover,
+table.portalinfo2 a:hover,
+table.certinfo a:active,
+table.portalinfo1 a:active,
+table.portalinfo2 a:active {
+  text-decoration: underline;
+}
+
+/***** Begin PageHeader titlebox *****/
+div.titlebox {
+  border: 3px solid #2F5999;
+  background-color: #f0f5ff;
+}
+div.boxheader {
+  background-color: #c0d5ff;
+}
+/***** End PageHeader titlebox *****/
+
+/***** Begin page footer *****/
+div.footer {
+  border: 1px solid #2F5999;
+  color: #666666;
+}
+div.footer a,
+div.footer a:link,
+div.footer a:visited {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  color: #0099FF;
+} 
+/***** End page footer *****/
+
+/***** Begin summary div on testidp page *****/
+div.summary {
+  background-color: #F2F5F8;
+}
+/***** End summary div on testidp page *****/
+
+/***** Begin userchanged div and table *****/
+div.userchanged table {
+  border: 1px solid #D6DDB9;
+}
+div.userchanged table tr th {
+  border: 1px solid #D6DDB9;
+  background-color: #F2F5F8;
+}
+div.userchanged table tr.headings th {
+  border: 1px solid #D6DDB9;
+  background-color: #F2F5F8;
+}
+div.userchanged table tr td {
+  border: 1px solid #D6DDB9;
+  background-color: #F2F5F8;
+}
+div.userchanged table tr.odd th {
+  border: 1px solid #D6DDB9;
+  background-color: #f0faff;
+}
+div.userchanged table tr.odd td {
+  border: 1px solid #D6DDB9;
+  background-color: #f0faff;
+}
+/***** End userchanged div and table *****/
+
+/***** Begin skincilogonlogo *****/
+div.skincilogonlogo {
+  display: inline;
+  margin: 8px;
+  margin-top: 15px;
+}
+/***** End skincilogonlogo *****/
+
+/***** Begin Help-related stuff *****/
+table.helptable td.helpcell div {
+  background-color: #F2F5F8;
+  margin-right: 1em;
+}
+tr.inforow td.helpcell {
+  background-color: #F2F5F8;
+}
+/***** End Help-related stuff *****/
+
