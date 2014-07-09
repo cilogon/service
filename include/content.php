@@ -9,10 +9,10 @@ require_once('myproxy.php');
 /* notification box at the top of each page.                            */
 /*
 define('BANNER_TEXT',
-       'CILogon may be unavailable for brief periods on Tuesday,
-        June 3 at 7am Central Time for firewall upgrades.'
+       'The ProtectNetwork Identity Provider is currently unavailable.'
 );
 */
+
 /* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
 define('GETUSER_URL','https://' . getMachineHostname() . '/secure/getuser/');
 define('GETOPENIDUSER_URL','https://' . HOSTNAME . '/getopeniduser/');
@@ -112,6 +112,15 @@ function printHeader($title='',$extra='',$csrfcookie=true) {
     if ((defined('BANNER_TEXT')) && (strlen(BANNER_TEXT) > 0)) {
         echo '
         <div class="noticebanner">' , BANNER_TEXT , '</div>
+        ';
+    }
+
+    $providerId = util::getSessionVar('idp');
+    if ($providerId == "urn:mace:incommon:idp.protectnetwork.org") {
+        echo '
+        <div class="noticebanner">Availability of the ProtectNetwork 
+        Identity Provider (IdP) will end after December 2014. Please 
+        consider using another IdP.</div>
         ';
     }
 }
