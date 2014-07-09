@@ -94,7 +94,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
     target="_blank"
     href="https://wiki.cites.uiuc.edu/wiki/display/UIID/POP3RP-CILogon">InCommon
     Participant Operational Practices</a> document for the CILogon Service
-    and then <a target="_blank" href="/secure/testidp/">test your IdP</a> to
+    and then <a target="_blank" href="/testidp/">test your IdP</a> to
     verify you are releasing the required attributes.  If all required
     attributes have been released by your organization, you can immediately
     make it available to users of the CILogon Service.
