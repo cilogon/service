@@ -9,7 +9,8 @@ require_once('myproxy.php');
 /* notification box at the top of each page.                            */
 /*
 define('BANNER_TEXT',
-       'The ProtectNetwork Identity Provider is currently unavailable.'
+       'The CILogon Service may be unavailable for short periods on Monday,
+        March 31 between 1pm and 2pm Central Time due to service upgrades.'
 );
 */
 
@@ -441,57 +442,18 @@ function printWAYF($showremember=true,$incommonidps=false) {
           </p>
           ';
 
-          $googleavail   = $skin->idpAvailable('http://google.com/accounts/o8/id');
-          $paypalavail   = $skin->idpAvailable('http://openid.paypal-ids.com');
-          $verisignavail = $skin->idpAvailable('http://pip.verisignlabs.com');
-          $numavail      = $googleavail + $paypalavail + $verisignavail;
-
-          if ($numavail > 0) {
+          $googleavail=$skin->idpAvailable('http://google.com/accounts/o8/id');
+          if ($googleavail) {
               echo '
               <p>
-              If you have a ';
-              
-              if ($googleavail) {
-                  echo '<a target="_blank"
-                  href="http://google.com/profiles/me">Google</a>';
-                  if ($numavail > 2) {
-                      echo ', ';
-                  } elseif ($numavail == 2) {
-                      echo ' or ';
-                  }
-              }
-              
-              
-              if ($paypalavail) {
-                  echo '<a target="_blank"
-                  href="https://openid.paypal-ids.com/">PayPal</a> ';
-                  if ($numavail > 1) {
-                      echo 'or ';
-                  }
-              }
-              
-              if ($verisignavail) {
-                  echo ' <a target="_blank"
-                  href="https://pip.verisignlabs.com/">VeriSign</a> ';
-              }
-
-              echo ' account, you can select one of these providers for
+              If you have a <a target="_blank"
+              href="http://google.com/profiles/me">Google</a>
+              account, you can select it for
               authenticating to the CILogon Service.
               </p>
               ';
           }
 
-          if ($skin->idpAvailable('urn:mace:incommon:idp.protectnetwork.org')) {
-              echo '
-              <p>
-              Alternatively, you can <a
-              target="_blank"
-              href="https://www.protectnetwork.org/pnidm/registration.html">register
-              for a ProtectNetwork UserID</a> and use that for authenticating to
-              the CILogon Service.
-              </p>
-              ';
-          }
       }
 
       echo '
