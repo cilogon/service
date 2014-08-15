@@ -42,10 +42,6 @@ header('Location: ' . $responseurl);
 function getUserAndRespond2() {
     global $csrf;
 
-/*
-global $log;
-*/
-
     $firstname = '';
     $lastname = '';
     $fullname = '';
@@ -107,10 +103,6 @@ global $log;
                     $openidid = @$token_data['payload']['openid_id'];
                     $emailaddr = @$token_data['payload']['email'];
                     $oidcid = @$token_data['payload']['sub'];
-/*
-$payload = print_r(@$token_data['payload'],true);
-$log->info("----------- $payload ----------");
-*/
                 }
 
                 try {
