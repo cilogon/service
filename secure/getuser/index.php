@@ -28,11 +28,10 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
         outputError('Unable to complete ECP transaction. Either CSRF ' . 
                     'check failed, or invalid "submit" command issued.');
     } else { // Redirect to $responseurl or main homepage
-        $location = 'https://' . HOSTNAME;
-        if (strlen($responseurl) > 0) {
-            $location = $responseurl;
+        if (strlen($responseurl) == 0) {
+            $responseurl = 'https://' . HOSTNAME;
         }
-        header('Location: ' . $location);
+        header('Location: ' . $responseurl);
     }
 }
 
@@ -54,131 +53,36 @@ function getUID() {
     $idplist = new idplist();
     $shibarray = $idplist->getShibInfo();
 
-    /* If either firstname or lastname is empty but displayName *
-     * is okay, extract first/last name from the displayName.   */
-    $firstname   = $shibarray['First Name'];
-    $lastname    = $shibarray['Last Name'];
-    $displayname = $shibarray['Display Name'];
-    if (strlen($displayname) > 0) {
-        if ((strlen($firstname) == 0) && (strlen($lastname) == 0)) {
-            if (preg_match('/^([^\s]+)\s*(.*)$/',$displayname,$matches)) {
-                $firstname = $matches[1];
-                $lastname = $matches[2];
-                // If only a single name, duplicate first and last name
-                if (strlen($lastname) == 0) { 
-                    $lastname = $firstname;
-                }
-            }
-        } elseif (strlen($firstname) == 0) {
-            if (preg_match('/^([^\s]+)\s+/',$displayname,$matches)) {
-                $firstname = $matches[1];
-            }
-        } elseif (strlen($lastname) == 0) {
-            if (preg_match('/\s+([^\s]+)$/',$displayname,$matches)) {
-                $lastname = $matches[1];
-            }
-        }
+    $firstname = $shibarray['First Name'];
+    $lastname = $shibarray['Last Name'];
+    if ((strlen($firstname) == 0) || (strlen($lastname) == 0)) {
+        list($firstname,$lastname) = util::getFirstAndLastName(
+            $shibarray['Display Name'],$firstname,$lastname);
     }
-
-    // If only a single name, copy first name <=> last name
-    if (strlen($lastname) == 0) { 
-        $lastname = $firstname;
-    }
-    if (strlen($firstname) == 0) {
-        $firstname = $lastname;
-    }
-
-    $validator = new EmailAddressValidator();
 
     /* Hack for test IdP at boingo.ncsa.uiuc.edu */
     if (strlen($shibarray['Organization Name']) == 0) {
         $shibarray['Organization Name'] = 'Unspecified';
     }
 
-    /* If all required attributes are available, get the database  *
-     * user id and the status code returned by the database query. */
-    if ((strlen($shibarray['User Identifier']) > 0) &&
-        (strlen($shibarray['Identity Provider']) > 0) &&
-        (strlen($shibarray['Organization Name']) > 0) &&
-        (strlen($firstname) > 0) &&
-        (strlen($lastname) > 0) &&
-        (strlen($shibarray['Email Address']) > 0) && 
-        ($validator->check_email_address($shibarray['Email Address']))) {
-        $dbs->getUser($shibarray['User Identifier'],
-                      $shibarray['Identity Provider'],
-                      $shibarray['Organization Name'],
-                      $firstname,
-                      $lastname,
-                      $shibarray['Email Address'],
-                      $shibarray['ePPN'],
-                      $shibarray['ePTID']
-                     );
-        util::setSessionVar('uid',$dbs->user_uid);
-        util::setSessionVar('dn',$dbs->distinguished_name);
-        util::setSessionVar('twofactor',$dbs->two_factor);
-        util::setSessionVar('status',$dbs->status);
-    } else {  // Missing one or more SAML attributes
-        util::unsetSessionVar('uid');
-        util::unsetSessionVar('dn');
-        util::unsetSessionVar('twofactor');
-        util::setSessionVar('status',
-            dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']);
+    /* Extract Silver Level of Assurance from Shib-AuthnContext-Class */
+    if (preg_match('%http://id.incommon.org/assurance/silver%',
+                   util::getServerVar('Shib-AuthnContext-Class'))) {
+        $shibarray['Level of Assurance'] = 
+            'http://incommonfederation.org/assurance/silver';
     }
 
-    // If 'status' is not STATUS_OK*, then send an error email
-    if (util::getSessionVar('status') & 1) { // Bad status codes are odd
-        util::sendErrorAlert('Failure in /secure/getuser/',
-            'Remote_User   = ' . 
-                ((strlen($i = $shibarray['User Identifier']) > 0) ?
-                    $i :'<MISSING>')."\n".
-            'IdP           = ' .
-                ((strlen($i = $shibarray['Identity Provider']) > 0) ?
-                    $i : '<MISSING>')."\n".
-            'Organization  = ' .
-                ((strlen($i = $shibarray['Organization Name']) > 0) ?
-                    $i : '<MISSING>')."\n".
-            'First Name    = ' .
-                ((strlen($firstname) > 0) ?
-                    $firstname : '<MISSING>')."\n".
-            'Last Name     = ' .
-                ((strlen($lastname) > 0) ?
-                    $lastname : '<MISSING>')."\n".
-            'Email Address = ' .
-                ((strlen($i = $shibarray['Email Address']) > 0) ?
-                    $i : '<MISSING>')."\n".
-            'Database UID  = ' .
-                ((strlen($dbs->user_uid) > 0) ?
-                    $dbs->user_uid : '<MISSING>')."\n".
-            'Status Code   = ' .
-                ((strlen($i = array_search(
-                    util::getSessionVar('status'),dbservice::$STATUS)) > 0) ? 
-                        $i : '<MISSING>')
-        );
-        util::unsetSessionVar('firstname');
-        util::unsetSessionVar('lastname');
-        util::unsetSessionVar('loa');
-        util::unsetSessionVar('idp');
-        util::unsetSessionVar('idpname');
-        util::unsetSessionVar('ePPN');
-        util::unsetSessionVar('ePTID');
-    } else {
-        // Set additional session variables needed by the calling script
-        if (preg_match('%http://id.incommon.org/assurance/silver%',
-                       util::getServerVar('Shib-AuthnContext-Class'))) {
-            $shibarray['Level of Assurance'] = 
-                'http://incommonfederation.org/assurance/silver';
-        }
-        util::setSessionVar('firstname',$firstname);
-        util::setSessionVar('lastname',$lastname);
-        util::setSessionVar('loa',$shibarray['Level of Assurance']);
-        util::setSessionVar('idp',$shibarray['Identity Provider']);
-        util::setSessionVar('idpname',$shibarray['Organization Name']);
-        util::setSessionVar('ePPN',$shibarray['ePPN']);
-        util::setSessionVar('ePTID',$shibarray['ePTID']);
-    }
-    util::unsetSessionVar('requestsilver');
-    util::unsetSessionVar('openidID');
-    util::unsetSessionVar('oidcID');
+    util::saveUserToDataStore(
+        $shibarray['User Identifier'],
+        $shibarray['Identity Provider'],
+        $shibarray['Organization Name'],
+        $firstname,
+        $lastname,
+        $shibarray['Email Address'],
+        $shibarray['Level of Assurance'],
+        $shibarray['ePPN'],
+        $shibarray['ePTID']
+    );
 }
 
 /************************************************************************
@@ -193,11 +97,6 @@ function getUserAndRespond($responseurl) {
     global $csrf;
 
     getUID(); // Get the user's database user ID, put info in PHP session
-
-    util::setSessionVar('submit',util::getSessionVar('responsesubmit'));
-    util::unsetSessionVar('responsesubmit');
-
-    $csrf->setCookieAndSession();
 
     /* Finally, redirect to the calling script. */
     header('Location: ' . $responseurl);

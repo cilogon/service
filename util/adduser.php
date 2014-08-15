@@ -3,7 +3,7 @@
 require_once('../include/autoloader.php');
 require_once('../include/util.php');
 
-if ($argc == 7) {
+if ($argc >= 7) {
 
     $remoteuser = $argv[1];
     $idp = $argv[2];
@@ -11,6 +11,14 @@ if ($argc == 7) {
     $firstname = $argv[4];
     $lastname = $argv[5];
     $emailaddr = $argv[6];
+    $eppn = '';
+    $eptid = '';
+    $open_id = '';
+    $oidc = '';
+    if ($argc >= 8) { $eppn = $argv[7]; }
+    if ($argc >= 9) { $eptid = $argv[8]; }
+    if ($argc >= 10) { $open_id = $argv[9]; }
+    if ($argc >= 11) { $oidc = $argv[10]; }
 
     if ((strlen($remoteuser) > 0) &&
         (strlen($idp) > 0) &&
@@ -21,7 +29,8 @@ if ($argc == 7) {
 
         $dbs = new dbservice();
         $dbs->getUser($remoteuser, $idp, $idpname, 
-                      $firstname, $lastname, $emailaddr);
+                      $firstname, $lastname, $emailaddr,
+                      $eppn, $eptid, $open_id, $oidc);
 
         printInfo($dbs);
 
@@ -41,8 +50,9 @@ if ($argc == 7) {
 }
 
 function printUsage() {
-    echo "Usage: adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME EMAIL\n";
-    echo "Note: All parameters must be specified for both InCommon and OpenID.\n";
+    echo "Usage: adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME EMAIL EPPN EPTID OPENID OIDC\n";
+    echo "Note: The first six parameters must be specified for both InCommon and OpenID.\n";
+    echo "      The last four parameters are optional.\n";
 }
 
 function printInfo($dbs) {

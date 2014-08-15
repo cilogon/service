@@ -13,10 +13,9 @@ define('BANNER_TEXT',
         March 31 between 1pm and 2pm Central Time due to service upgrades.'
 );
 */
-
 /* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
 define('GETUSER_URL','https://' . getMachineHostname() . '/secure/getuser/');
-define('GETOPENIDUSER_URL','https://' . HOSTNAME . '/getopeniduser/');
+define('GETOIDCUSER_URL','https://' . HOSTNAME . '/getuser/');
 
 /* Loggit object for logging info to syslog. */
 $log = new loggit();
@@ -65,8 +64,6 @@ function printHeader($title='',$extra='',$csrfcookie=true) {
     <head><title>' , $title , '</title> 
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="initial-scale=0.6" />
-    <meta http-equiv="X-XRDS-Location" 
-          content="https://' , HOSTNAME , '/cilogon.xrds"/>
     <link rel="stylesheet" type="text/css" href="/include/cilogon.css" />
     ';
 
@@ -245,15 +242,12 @@ function printWAYF($showremember=true,$incommonidps=false) {
 
     if ($incommonidps) { /* Get all InCommon IdPs only */
         $idps = $idplist->getInCommonIdPs();
-    } else { /* Get the whitelisted InCommon IdPs, plus maybe OpenId IdPs  */
+    } else { /* Get the whitelisted InCommon IdPs, plus maybe Google  */
         $idps = $idplist->getWhitelistedIdPs();
 
-        /* Add the list of OpenID providers into the $idps array so as to  */
-        /* have a single selection list.  Keys are the IdP identifiers,    */
-        /* values are the provider display names, sorted by names.         */
-        foreach (openid::$providerUrls as $url => $name) {
-            $idps[$url] = $name;
-        }
+        /* Add Google to the list */
+        $idps[GOOGLE_OIDC] = 'Google';
+
         natcasesort($idps);
 
         /* Check to see if the skin's config.xml has a whitelist of IDPs.  */
@@ -293,7 +287,7 @@ function printWAYF($showremember=true,$incommonidps=false) {
             if ((!is_null($initialidp)) && (isset($idps[$initialidp]))) {
                 $providerId = $initialidp;
             } else {
-                $providerId = openid::getProviderUrl('Google');
+                $providerId = GOOGLE_OIDC;
             }
         }
     }
@@ -442,7 +436,7 @@ function printWAYF($showremember=true,$incommonidps=false) {
           </p>
           ';
 
-          $googleavail=$skin->idpAvailable('http://google.com/accounts/o8/id');
+          $googleavail=$skin->idpAvailable(GOOGLE_OIDC);
           if ($googleavail) {
               echo '
               <p>
@@ -872,13 +866,9 @@ function handleLogOnButtonClicked() {
 
     // Set the cookie for the last chosen IdP and redirect to it
     $providerIdPost = util::getPostVar('providerId');
-    if (openid::urlExists($providerIdPost)) { // Use OpenID authn
+    if ($providerIdPost == GOOGLE_OIDC) { // Log in with Google
         util::setCookieVar('providerId',$providerIdPost);
-        if (openid::isGoogleOAuth2($providerIdPost)) {
-            redirectToGetGoogleOAuth2User($providerIdPost);
-        } else {
-            redirectToGetOpenIDUser($providerIdPost);
-        }
+        redirectToGetGoogleOAuth2User();
     } elseif ($idplist->exists($providerIdPost)) { // Use InCommon authn
         util::setCookieVar('providerId',$providerIdPost);
         redirectToGetShibUser($providerIdPost);
@@ -961,12 +951,8 @@ function handleNoSubmitButtonClicked() {
      * then skip the Logon page and proceed to the appropriate      *
      * getuser script.                                              */
     if ((strlen($providerId) > 0) && (strlen($keepIdp) > 0)) {
-        if (openid::urlExists($providerId)) { // Use OpenID authn
-            if (openid::isGoogleOAuth2($providerId)) {
-                redirectToGetGoogleOAuth2User($providerId);
-            } else {
-                redirectToGetOpenIDUser($providerId);
-            }
+        if ($providerId == GOOGLE_OIDC) { // Use Google
+            redirectToGetGoogleOAuth2User();
         } elseif ($idplist->exists($providerId)) { // Use InCommon
             redirectToGetShibUser($providerId);
         } else { // $providerId not in whitelist
@@ -1183,158 +1169,12 @@ function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
 }
 
 /************************************************************************
- * Function   : redirectToGetOpenIDUser                                 *
- * Parameters : (1) An OpenID provider name. See the $providerarray in  *
- *                  the openid.php class for a full list. If not        *
- *                  specified (or set to the empty string), we check    *
- *                  providerId PHP session variable and providerId      *
- *                  cookie (in that order) for non-empty values.        *
- *              (2) (Optional) The value of the PHP session 'submit'    *
- *                  variable to be set upon return from the 'getuser'   *
- *                  script.  This is utilized to control the flow of    *
- *                  this script after "getuser". Defaults to 'gotuser'. *
- * This method redirects control flow to the getopeniduser script for   *
- * when the user logs in via OpenID.  It first checks to see if we have *
- * a valid session.  If so, we don't need to redirect and instead       *
- * simply show the Get Certificate page.  Otherwise, we start an OpenID *
- * logon by using the PHP / OpenID library.  First, connect to the      *
- * database to store temporary tokens used by OpenID upon successful    *
- * authentication.  Next, create a new OpenID consumer and attempt to   *
- * redirect to the appropriate OpenID provider.  Upon any error, set    *
- * the 'logonerror' PHP session variable and redisplay the main logon   *
- * screen.                                                              *
- ************************************************************************/
-function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
-    global $csrf;
-    global $log;
-    global $skin;
-
-    $logonerrorstr = 'Internal logon error. Please contact <a href="mailto:help@cilogon.org">help@cilogon.org</a> or select a different identity provider.';
-
-    // If providerId not set, try the session and cookie values
-    if (strlen($providerId) == 0) {
-        $providerId = util::getSessionVar('providerId');
-        if (strlen($providerId) == 0) {
-            $providerId = util::getCookieVar('providerId');
-        }
-    }
-
-    // If the user has a valid 'uid' in the PHP session, and the
-    // providerId matches the 'idp' in the PHP session, then 
-    // simply go to the 'Download Certificate' button page.
-    if (verifyCurrentSession($providerId)) {
-        printMainPage();
-    } else { // Otherwise, redirect to the getopeniduser script
-        // Set PHP session varilables needed by the getopeniduser script
-        util::unsetSessionVar('logonerror');
-        util::setSessionVar('responseurl',util::getScriptDir(true));
-        util::setSessionVar('submit','getuser');
-        util::setSessionVar('responsesubmit',$responsesubmit);
-        $csrf->setCookieAndSession();
-
-        $auth_request = null;
-        $openid = new openid();
-        $datastore = $openid->getStorage();
-
-        if (is_null($datastore)) {
-            util::setSessionVar('logonerror',$logonerrorstr);
-        } else {
-            require_once("Auth/OpenID/Consumer.php");
-            require_once("Auth/OpenID/SReg.php");
-            require_once("Auth/OpenID/PAPE.php");
-            require_once("Auth/OpenID/AX.php");
-
-            $consumer = new Auth_OpenID_Consumer($datastore);
-            $auth_request = $consumer->begin($providerId);
-
-            if (!$auth_request) {
-                util::setSessionVar('logonerror',$logonerrorstr);
-            } else {
-                // Get attributes from Verisign
-                $sreg_request = Auth_OpenID_SRegRequest::build(
-                    array('fullname','email'));
-                if ($sreg_request) {
-                    $auth_request->addExtension($sreg_request);
-                }
-
-                // Get attributes from Google and Yahoo
-                $attributes = array(
-                    Auth_OpenID_AX_AttrInfo::make(
-                        'http://axschema.org/contact/email',1,1,'email'),
-                    Auth_OpenID_AX_AttrInfo::make(
-                        'http://axschema.org/namePerson/first',1,1,'firstname'),
-                    Auth_OpenID_AX_AttrInfo::make(
-                        'http://axschema.org/namePerson/last',1,1,'lastname'),
-                    Auth_OpenID_AX_AttrInfo::make(
-                        'http://axschema.org/namePerson',1,0,'fullname')
-                );
-                $ax = new Auth_OpenID_AX_FetchRequest;
-                foreach($attributes as $attr){
-                    $ax->add($attr);
-                }
-                $auth_request->addExtension($ax);
-
-                // Add a PAPE extension for OpenID Trust Level 1 and also
-                // possibly force user authentication every time.
-                $max_auth_age = null;
-                // To bypass SSO at IdP, check for skin's 'forceauthn'
-                $forceauthn = $skin->getConfigOption('forceauthn');
-                if ((!is_null($forceauthn)) && ((int)$forceauthn == 1)) {
-                    $max_auth_age = '0';
-                }
-                $pape_request = new Auth_OpenID_PAPE_Request(
-                    array('http://www.idmanagement.gov/schema/2009/05/icam/openid-trust-level1.pdf'),$max_auth_age);
-                if ($pape_request) {
-                    $auth_request->addExtension($pape_request);
-                }
-                
-                // Start the OpenID authentication request
-                if ($auth_request->shouldSendRedirect()) {
-                    $redirect_url = $auth_request->redirectURL(
-                        'https://' . HOSTNAME . '/',
-                        GETOPENIDUSER_URL);
-                    if (Auth_OpenID::isFailure($redirect_url)) {
-                        util::setSessionVar('logonerror',$logonerrorstr);
-                    } else {
-                        $log->info('OpenID Login="' . $providerId . '"');
-                        header("Location: " . $redirect_url);
-                    }
-                } else {
-                    $form_id = 'openid_message';
-                    $form_html = $auth_request->htmlMarkup(
-                        'https://' . HOSTNAME . '/',
-                        GETOPENIDUSER_URL,
-                        false, array('id' => $form_id));
-                    if (Auth_OpenID::isFailure($form_html)) {
-                        util::setSessionVar('logonerror',$logonerrorstr);
-                    } else {
-                        $log->info('OpenID Login="' . $providerId . '"');
-                        print $form_html;
-                    }
-                }
-
-                $openid->disconnect();
-            }
-        }
-
-        if (strlen(util::getSessionVar('logonerror')) > 0) {
-            printLogonPage();
-        }
-    }
-}
-
-/************************************************************************
  * Function   : redirectToGetGoogleOAuth2User                           *
- * Parameters : (1) An OpenID provider name. See the $providerarray in  *
- *                  the openid.php class for a full list. If not        *
- *                  specified (or set to the empty string), we check    *
- *                  providerId PHP session variable and providerId      *
- *                  cookie (in that order) for non-empty values.        *
- *              (2) (Optional) The value of the PHP session 'submit'    *
- *                  variable to be set upon return from the 'getuser'   *
- *                  script.  This is utilized to control the flow of    *
- *                  this script after "getuser". Defaults to 'gotuser'. *
- * This method redirects control flow to the getopeniduser script for   *
+ * Parameter  : (Optional) The value of the PHP session 'submit'        *
+ *              variable to be set upon return from the 'getuser'       *
+ *              script.  This is utilized to control the flow of        *
+ *              this script after "getuser". Defaults to 'gotuser'.     *
+ * This method redirects control flow to the getuser script for         *
  * when the user logs in via Google OAuth 2.0. It first checks to see   *
  * if we have a valid session. If so, we don't need to redirect and     *
  * instead simply show the Get Certificate page. Otherwise, we start    *
@@ -1343,18 +1183,12 @@ function redirectToGetOpenIDUser($providerId='',$responsesubmit='gotuser') {
  * https://developers.google.com/accounts/docs/OAuth2Login for more     *
  * information.)                                                        *
  ************************************************************************/
-function redirectToGetGoogleOAuth2User($providerId='',$responsesubmit='gotuser') {
+function redirectToGetGoogleOAuth2User($responsesubmit='gotuser') {
     global $csrf;
     global $log;
     global $skin;
 
-    // If providerId not set, try the session and cookie values
-    if (strlen($providerId) == 0) {
-        $providerId = util::getSessionVar('providerId');
-        if (strlen($providerId) == 0) {
-            $providerId = util::getCookieVar('providerId');
-        }
-    }
+    $providerId = GOOGLE_OIDC;
 
     // If the user has a valid 'uid' in the PHP session, and the
     // providerId matches the 'idp' in the PHP session, then 
@@ -1362,7 +1196,7 @@ function redirectToGetGoogleOAuth2User($providerId='',$responsesubmit='gotuser')
     if (verifyCurrentSession($providerId)) {
         printMainPage();
     } else { // Otherwise, redirect to the Google OAuth 2.0 endpoint
-        // Set PHP session varilables needed by the getopeniduser script
+        // Set PHP session varilables needed by the getuser script
         util::unsetSessionVar('logonerror');
         util::setSessionVar('responseurl',util::getScriptDir(true));
         util::setSessionVar('submit','getuser');
@@ -1381,13 +1215,13 @@ function redirectToGetGoogleOAuth2User($providerId='',$responsesubmit='gotuser')
         if ((is_array(util::$ini_array)) &&
             (array_key_exists('googleoauth2.clientid',util::$ini_array))) {
             $clientid = util::$ini_array['googleoauth2.clientid'];
-            $redirect_url = openid::getProviderURL('Google+') . '?' .
+            $redirect_url = $providerId . '?' .
                 'response_type=code&' .
                 "client_id=$clientid&" .
                 'scope=openid+profile+email&' .
                 'state=' . $csrf->getTokenValue() . '&' .
                 'openid.realm=' . 'https://' . HOSTNAME . '/' . '&' .
-                'redirect_uri=' . GETOPENIDUSER_URL . '&' .
+                'redirect_uri=' . GETOIDCUSER_URL . '&' .
                 (is_null($max_auth_age) ? '' : "max_auth_age=$max_auth_age&") .
                 'access_type=offline';
             header("Location: " . $redirect_url);
@@ -1499,7 +1333,7 @@ function handleGotUser() {
                 have not yet associated a first and last name with your
                 Google account. To rectify this problem, go to the <a
                 target="_blank"
-                href="https://www.google.com/accounts/EditUserInfo">Google
+                href="https://security.google.com/settings/security/contactinfo">Google
                 Account Edit Personal Information page</a>, enter a First
                 Name and a Last Name, and click the "Save" button.  (All
                 other Google account information is optional and not
@@ -1520,7 +1354,7 @@ function handleGotUser() {
                 echo '
                 <p class="centered">
                 <input type="hidden" name="providerId" value="' ,
-                openid::getProviderUrl('Google') , '" />
+                GOOGLE_OIDC , '" />
                 <input type="submit" name="submit" class="submit" 
                 value="' , $lobtext , '" />
                 </p>

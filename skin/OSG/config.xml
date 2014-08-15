@@ -4,12 +4,7 @@
   <initialidp>urn:mace:incommon:clemson.edu</initialidp>
 
   <idpblacklist>
-    <idp>https://www.google.com/accounts/o8/id</idp>
-    <idp>https://openid.paypal-ids.com</idp>
-    <idp>https://pip.verisignlabs.com</idp>
-<!-- ProtectNetwork accepted per Mine Altunay Apr 17 2013.
-    <idp>urn:mace:incommon:idp.protectnetwork.org</idp>
--->
+    <idp>https://accounts.google.com/o/oauth2/auth</idp>
   </idpblacklist>
 
 </config>

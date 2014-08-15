@@ -71,14 +71,11 @@
        typically shown to the user on the "Log On" page. You can remove
        IdPs from the list by specifying them in the blacklist below. (Use
        the entityIds for InCommon, IdP endpoint URLs for OpenID.) In this
-       example, we remove the OpenID providers from the list.
+       example, we remove the Google OIDC provider from the list.
   -->
   <!--
   <idpblacklist>
-    <idp>https://www.google.com/accounts/o8/id</idp>
-    <idp>https://openid.paypal-ids.com</idp>
-    <idp>https://pip.verisignlabs.com</idp>
-    <idp>https://yahoo.com</idp>
+    <idp>https://accounts.google.com/o/oauth2/auth</idp>
   </idpblacklist>
   -->
 

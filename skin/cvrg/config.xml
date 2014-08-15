@@ -12,10 +12,8 @@
     <idp>urn:mace:incommon:mcnc.org</idp>
     <!-- ProtectNetwork -->
     <idp>urn:mace:incommon:idp.protectnetwork.org</idp>
-    <!-- OpenID IdPs -->
-    <idp>https://www.google.com/accounts/o8/id</idp>
-    <idp>https://openid.paypal-ids.com</idp>
-    <idp>https://pip.verisignlabs.com</idp>
+    <!-- Google -->
+    <idp>https://accounts.google.com/o/oauth2/auth</idp>
     <!-- Test IdPs -->
     <idp>https://boingo.ncsa.uiuc.edu/idp/shibboleth</idp>
     <idp>https://comanage.psu.edu/idp/shibboleth</idp>

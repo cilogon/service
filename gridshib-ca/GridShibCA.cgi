@@ -1,4 +1,4 @@
-#!/usr/bin/perl -T -w -I /usr/local/gridshib-ca-2.0.1/perl
+#!/usr/bin/perl -T -w -I /usr/local/gridshib-ca/perl
 ######################################################################
 #
 # This file is part of the GriShib-CA distribution.  Copyright

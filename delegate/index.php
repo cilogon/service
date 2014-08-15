@@ -3,10 +3,9 @@
 require_once('../include/util.php');
 require_once('../include/autoloader.php');
 require_once('../include/content.php');
-require_once('Auth/OpenID/Consumer.php');
 
-/* The full URL of the 'delegation/authorized' OAuth script. */
-define('AUTHORIZED_URL','http://localhost:8080/delegation/authorized');
+/* The full URL of the 'oauth/authorized' OAuth script. */
+define('AUTHORIZED_URL','http://localhost:8080/oauth/authorized');
 
 /* Check the csrf cookie against either a hidden <form> element or a *
  * PHP session variable, and get the value of the "submit" element.  *
@@ -525,11 +524,11 @@ function printCancelPage() {
  * my OK for this portal' checkbox which saved the 'remember' cookie    *
  * for the current portal. It first reads the cookie for the portal and *
  * updates the 'lifetime' and 'remember' parameters, then (re)saves     *
- * the cookie.  Then it calls out to the 'delegation/authorized'        *
- * servlet in order to do the back-end certificate delegation process.  *
- * If the $always parameter is true, then the user is automatically     *
- * returned to the portal's successuri or failureuri.  Otherwise, the   *
- * user is presented with a page showing the result of the attempted    *
+ * the cookie.  Then it calls out to the 'oauth/authorized' servlet     *
+ * in order to do the back-end certificate delegation process. If the   *
+ * $always parameter is true, then the user is automatically returned   *
+ * to the portal's successuri or failureuri.  Otherwise, the user is    *
+ * presented with a page showing the result of the attempted            *
  * certificate delegation as well as a link to "return to your portal". *
  ************************************************************************/
 function handleAllowDelegation($always=false) {
@@ -579,18 +578,12 @@ function handleAllowDelegation($always=false) {
     $certtext = '';    // Output of 'openssl x509 -noout -text -in cert.pem'
     $myproxyinfo = util::getSessionVar('myproxyinfo');
 
-    // Now call out to the "delegation/authorized" servlet to execute
+    // Now call out to the "oauth/authorized" servlet to execute
     // the delegation the credential to the portal.
     $ch = curl_init();
     if ($ch !== false) {
-        $authurl = AUTHORIZED_URL;
         $tempcred = util::getSessionVar('tempcred');
-        // Change 'delegation' to 'oauth' if present in tempcred
-        if (preg_match('/delegation2/',$tempcred)) {
-            $authurl = 
-                preg_replace('%/delegation[^/]*/%','/oauth/',$authurl);
-        }
-        $url = $authurl . '?' .
+        $url = AUTHORIZED_URL . '?' .
                'oauth_token=' . urlencode($tempcred) . '&' .
                'cilogon_lifetime=' . $lifetime . '&' .
                'cilogon_loa=' . urlencode(util::getSessionVar('loa')) . '&' .
@@ -682,7 +675,7 @@ function handleAllowDelegation($always=false) {
             the site to use the issued certificate.
             </p>
             ';
-            // If we got the cert from the 'delegation/authorized' script,
+            // If we got the cert from the 'oauth/authorized' script,
             // output it in an expandable/scrollable <div> for user info.
             if (strlen($certtext) > 0) {
                 echo '

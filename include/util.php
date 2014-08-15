@@ -41,6 +41,10 @@ class util {
             $thedomainname = $matches[0];
         }
         define('DOMAINNAME',$thedomainname);
+
+        // The old Google OpenID2 and new Google+ OIDC URLs
+        define('GOOGLE_OID2','https://www.google.com/accounts/o8/id');
+        define('GOOGLE_OIDC','https://accounts.google.com/o/oauth2/auth');
     }
 
     /********************************************************************
@@ -477,7 +481,7 @@ class util {
     public static function sendErrorAlert($summary,$detail,
                                           $mailto='alerts@cilogon.org') {
         $sessionvars = array(
-            'idp'          => 'IdP',
+            'idp'          => 'IdP ID',
             'idpname'      => 'IdP Name',
             'uid'          => 'Database UID',
             'dn'           => 'Cert DN',
@@ -485,7 +489,8 @@ class util {
             'lastname'     => 'Last Name',
             'ePPN'         => 'ePPN',
             'ePTID'        => 'ePTID',
-            'openID'       => 'OpenID',
+            'openID'       => 'OpenID ID',
+            'oidcID'       => 'OIDC ID',
             'loa'          => 'LOA',
             'cilogon_skin' => 'Skin Name',
             'twofactor'    => 'Two-Factor'
@@ -516,6 +521,214 @@ Remote Address= ' . $remoteaddr . '
         }
 
         mail($mailto,$mailsubj,$mailmsg,$mailfrom);
+    }
+
+    /********************************************************************
+     * Function  : getFirstAndLastName                                  *
+     * Parameters: (1) The "full name" of the user                      *
+     *             (2) (Optional) The "first name" of the user          *
+     *             (3) (Optional) The "last name" of the user           *
+     * Return    : an array "list(firstname,lastname)"                  *
+     * This function attempts to get the first and last name of a user  *
+     * extracted from the "full name" (displayName) of the user.        *
+     * Simply pass in all name info (full, first, and last) and the     *
+     * function first tries to break up the full name into first/last.  *
+     * If this is not sufficient, the function checks first and last    *
+     * name. Finally, if either first or last is blank, the function    *
+     * duplicates first <=> last so both names have the same value.     *
+     * Note that even with all this, you still need to check if the     *
+     * returned (first,last) names are blank.                           *
+    /********************************************************************/
+    public static function getFirstAndLastName($full,$first='',$last='') {
+        $firstname = '';
+        $lastname = '';
+
+        # Try to split the incoming $full name into first and last names
+        if (strlen($full) > 0) {
+            $names = preg_split('/\s+/',$full,2);
+            $firstname = @$names[0];
+            $lastname =  @$names[1];
+        }
+
+        # If either first or last name blank, then use incoming $first and $last
+        if (strlen($firstname) == 0) {
+            $firstname = $first;
+        }
+        if (strlen($lastname) == 0) {
+            $lastname = $last;
+        }
+
+        # Finally, if only a single name, copy first name <=> last name
+        if (strlen($lastname) == 0) { 
+            $lastname = $firstname;
+        }
+        if (strlen($firstname) == 0) {
+            $firstname = $lastname;
+        }
+
+        # Return both names as an array (i.e., use list($first,last)=...)
+        return array($firstname,$lastname);
+    }
+
+    /********************************************************************
+     * Function  : saveUserToDataStore                                  *
+     * Parameters: (1) remote_user from http session                    *
+     *             (2) provider IdP Identifier / URL endpoint           *
+     *             (3) pretty print provider IdP name                   *
+     *             (4) user's first name                                *
+     *             (5) user's last name                                 *
+     *             (6) user's email address                             *
+     *             (7) level of assurance (e.g., openid/basic/silver)   *
+     *             (8) (optional) ePPN (for SAML IdPs)                  *
+     *             (9) (optional) ePTID (for SAML IdPs)                 *
+     *             (10) (optional) OpenID 2.0 Identifier                *
+     *             (11) OpenID Connect Identifier                       *
+     * This function is called when a user logs on to save identity     *
+     * information to the datastore. As it is used by both Shibboleth   *
+     * and OpenID Identity Providers, some parameters passed in may     *
+     * be blank (empty string). The function verifies that the minimal  *
+     * sets of parameters are valid, the dbservice servlet is called    *
+     * to save the user info. Then various session variables are set    *
+     * for use by the program later on. In case of error, an email      *
+     * alert is sent showing the missing parameters.                    *
+    /********************************************************************/
+    public static function saveUserToDataStore($remoteuser,$providerId,
+        $providerName,$firstname,$lastname,$emailaddr,$loa,
+        $eppn='',$eptid='',$openidid='',$oidcid='') {
+
+        global $csrf;
+
+        $dbs = new dbservice();
+        $validator = new EmailAddressValidator();
+
+        // Keep original values of providerName and providerId
+        $databaseProviderName = $providerName;
+        $databaseProviderId   = $providerId;
+
+        // Make sure parameters are not empty strings, and email is valid
+        if (  ((strlen($remoteuser) > 0) ||
+               (strlen($eppn) > 0) ||
+               (strlen($eptid) > 0) ||
+               (strlen($openidid) > 0) ||
+               (strlen($oidcid) > 0)) && 
+            (strlen($databaseProviderId) > 0) &&
+            (strlen($databaseProviderName) > 0)  &&
+            (strlen($firstname) > 0) &&
+            (strlen($lastname) > 0) &&
+            (strlen($emailaddr) > 0) &&
+            ($validator->check_email_address($emailaddr))) {
+
+            /* For the new Google OAuth 2.0 endpoint, we want to keep the   *
+             * old Google OpenID endpoint URL in the database (so user does *
+             * not get a new certificate subject DN). Change the providerId *
+             * and providerName to the old Google OpenID values.            */
+            if (($databaseProviderName == 'Google+') ||
+                ($databaseProviderId == GOOGLE_OIDC)) {
+                $databaseProviderName = 'Google';
+                $databaseProviderId = GOOGLE_OID2;
+            }
+
+            /* In the database, keep a consistent ProviderId format: only   *
+             * allow "http" (not "https") and remove any "www." prefix.     */
+            if ($loa == 'openid') {
+                $databaseProviderId = preg_replace('%^https://(www\.)?%',
+                    'http://',$databaseProviderId);
+            }
+
+            $dbs->getUser($remoteuser,
+                          $databaseProviderId,
+                          $databaseProviderName,
+                          $firstname,
+                          $lastname,
+                          $emailaddr,
+                          $eppn,
+                          $eptid,
+                          $openidid,
+                          $oidcid);
+            util::setSessionVar('uid',$dbs->user_uid);
+            util::setSessionVar('dn',$dbs->distinguished_name);
+            util::setSessionVar('twofactor',$dbs->two_factor);
+            util::setSessionVar('status',$dbs->status);
+        } else { // Missing one or more required attributes
+            util::unsetSessionVar('uid');
+            util::unsetSessionVar('dn');
+            util::unsetSessionVar('twofactor');
+            util::setSessionVar('status',
+                dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']);
+        }
+
+        // If 'status' is not STATUS_OK*, then send an error email
+        if (util::getSessionVar('status') & 1) { // Bad status codes are odd
+            util::sendErrorAlert('Failure in ' . 
+                                 (($loa == 'openid') ? '' : '/secure') .
+                                 '/getuser/',
+                'Remote_User   = ' . ((strlen($remoteuser) > 0) ? 
+                    $remoteuser : '<MISSING>') . "\n" .
+                'IdP ID        = ' . ((strlen($databaseProviderId) > 0) ? 
+                    $databaseProviderId : '<MISSING>') . "\n" .
+                'IdP Name      = ' . ((strlen($databaseProviderName) > 0) ? 
+                    $databaseProviderName : '<MISSING>') . "\n" .
+                'First Name    = ' . ((strlen($firstname) > 0) ? 
+                    $firstname : '<MISSING>') . "\n" .
+                'Last Name     = ' . ((strlen($lastname) > 0) ? 
+                    $lastname : '<MISSING>') . "\n" .
+                'Email Address = ' . ((strlen($emailaddr) > 0) ? 
+                    $emailaddr : '<MISSING>') . "\n" .
+                'ePPN          = ' . ((strlen($eppn) > 0) ? 
+                    $eppn : '<MISSING>') . "\n" .
+                'ePTID         = ' . ((strlen($eptid) > 0) ? 
+                    $eptid : '<MISSING>') . "\n" .
+                'OpenID ID     = ' . ((strlen($openidid) > 0) ? 
+                    $openidid : '<MISSING>') . "\n" .
+                'OIDC ID       = ' . ((strlen($oidcid) > 0) ? 
+                    $oidcid : '<MISSING>') . "\n" .
+                'Database UID  = ' . ((strlen(
+                    $i=util::getSessionVar('uid')) > 0) ? 
+                        $i : '<MISSING>') . "\n" .
+                'Status Code   = ' . ((strlen($i = array_search(
+                    util::getSessionVar('status'),dbservice::$STATUS)) > 0) ? 
+                        $i : '<MISSING>')
+            );
+            util::unsetSessionVar('firstname');
+            util::unsetSessionVar('lastname');
+            util::unsetSessionVar('loa');
+            util::unsetSessionVar('idp');
+            util::unsetSessionVar('ePPN');
+            util::unsetSessionVar('ePTID');
+            util::unsetSessionVar('openidID');
+            util::unsetSessionVar('oidcID');
+        } else {
+            util::setSessionVar('firstname',$firstname);
+            util::setSessionVar('lastname',$lastname);
+            util::setSessionVar('loa',$loa);
+            util::setSessionVar('idp',$providerId);
+            util::setSessionVar('ePPN',$eppn);
+            util::setSessionVar('ePTID',$eptid);
+            util::setSessionVar('openidID',$openidid);
+            util::setSessionVar('oidcID',$oidcid);
+        }
+
+        util::setSessionVar('idpname',$providerName); // Enable check for Google
+        util::setSessionVar('submit',util::getSessionVar('responsesubmit'));
+        util::unsetSessionVar('responsesubmit');
+        util::unsetSessionVar('requestsilver');
+
+        $csrf->setCookieAndSession();
+
+
+        if (strlen($eppn) == 0) {
+            util::unsetSessionVar('ePPN');
+        }
+        if (strlen($eptid) == 0) {
+            util::unsetSessionVar('ePTID');
+        }
+        if (strlen($openidid) == 0) {
+            util::unsetSessionVar('openidID');
+        }
+        if (strlen($oidcid) == 0) {
+            util::unsetSessionVar('oidcID');
+        }
+
     }
 
 }

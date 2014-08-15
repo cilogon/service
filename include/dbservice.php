@@ -107,6 +107,10 @@ class dbservice {
     public $last_name;
     public $email;
     public $distinguished_name;
+    public $eppn;
+    public $eptid;
+    public $open_id;
+    public $oidc;
     public $serial_string;
     public $create_time;
     public $oauth_token;
@@ -206,18 +210,16 @@ class dbservice {
 
     /********************************************************************
      * Function  : getUser                                              *
-     * Parameters: Variable number of parameters: 1, or 6-9.            *
+     * Parameters: Variable number of parameters: 1, 6, or 10.          *
      *             For 1 parameter : $uid (database user identifier)    *
      *             For 6 parameters: $remote_user, $idp,                *
      *                 $idp_display_name, $first_name, $last_name,      *
-     *                 $email - used by InCommon authentication.        *
-     *             For 7 or 9 parameters: same as 6 plus                *
-     *                 $openid - ID returned by OpenID authn            *
-     *                 8th parameter not used                           *
-     *                 $oidcic - Google OIDC identifier "sub" field     *
-     *             For 8 parameters: same as 6 plus                     *
+     *                 $email - common to both Shibboleth & OIDC        *
+     *             For 10 parameters: same as 6 plus                    *
      *                 $eppn - eduPersonPrincipalName SAML attribute    *
      *                 $eptid - eduPersonTargetedID SAML attribute      *
+     *                 $openid - ID returned by OpenID authn            *
+     *                 $oidc - Google OIDC identifier "sub" field       *
      * Returns   : True if the servlet returned correctly. Else false.  *
      * This method calls the 'getUser' action of the servlet and sets   *
      * the class member variables associated with user info             *
@@ -232,35 +234,20 @@ class dbservice {
             $retval = $this->call('action=getUser&user_uid=' . 
                 urlencode(func_get_arg(0)));
         } elseif ($numargs >= 6) {
-            $cmd  = 'action=getUser' .
-                    '&remote_user=' . urlencode(func_get_arg(0)) .
-                    '&idp=' . urlencode(func_get_arg(1)) .
-                    '&idp_display_name=' . urlencode(func_get_arg(2)) .
-                    '&first_name=' .
-                     urlencode(iconv("UTF-8","UTF-7",func_get_arg(3))) .
-                     '&last_name=' .
-                     urlencode(iconv("UTF-8","UTF-7",func_get_arg(4))) .
-                     '&email=' . urlencode(func_get_arg(5));
-            if (($numargs == 7) || ($numargs == 9)) {
-                $arg6 = func_get_arg(6);
-                if (strlen($arg6) > 0) {
-                    $cmd .= '&open_id=' . urlencode($arg6);
-                }
-                if ($numargs == 9) {
-                    $arg8 = func_get_arg(8);
-                    if (strlen($arg8) > 0) {
-                        $cmd .= '&oidc=' . urlencode($arg8);
+            $params = array('remote_user','idp','idp_display_name',
+                            'first_name','last_name','email',
+                            'eppn','eptid','open_id','oidc');
+            $cmd = 'action=getUser';
+            for ($i = 0; $i < $numargs; $i++) {
+                $arg = func_get_arg($i);
+                if (strlen($arg) > 0) {
+                    $cmd .= '&' . $params[$i] . '=';
+                    // Convert first_name and last_name to UTF-7
+                    if (($i == 3) || ($i == 4)) {
+                        $cmd .= urlencode(iconv("UTF-8","UTF-7",$arg));
+                    } else {
+                        $cmd .= urlencode($arg);
                     }
-                }
-            }
-            if ($numargs == 8) {
-                $arg6 = func_get_arg(6);
-                if (strlen($arg6) > 0) {
-                    $cmd .= '&eppn=' . urlencode($arg6);
-                }
-                $arg7 = func_get_arg(7);
-                if (strlen($arg7) > 0) {
-                    $cmd .= '&eptid=' . urlencode($arg7);
                 }
             }
             $retval = $this->call($cmd);
@@ -481,6 +468,18 @@ class dbservice {
                     }
                     if (preg_match('/distinguished_name=([^\r\n]+)/',$output,$match)) {
                         $this->distinguished_name = urldecode($match[1]);
+                    }
+                    if (preg_match('/eppn=([^\r\n]+)/',$output,$match)) {
+                        $this->eppn = urldecode($match[1]);
+                    }
+                    if (preg_match('/eptid=([^\r\n]+)/',$output,$match)) {
+                        $this->eptid = urldecode($match[1]);
+                    }
+                    if (preg_match('/open_id=([^\r\n]+)/',$output,$match)) {
+                        $this->open_id = urldecode($match[1]);
+                    }
+                    if (preg_match('/oidc=([^\r\n]+)/',$output,$match)) {
+                        $this->oidc = urldecode($match[1]);
                     }
                     if (preg_match('/serial_string=([^\r\n]+)/',$output,$match)) {
                         $this->serial_string = urldecode($match[1]);

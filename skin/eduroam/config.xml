@@ -4,9 +4,7 @@
   <initialidp>urn:mace:incommon:idp.protectnetwork.org</initialidp>
 
   <idpblacklist>
-    <idp>https://www.google.com/accounts/o8/id</idp>
-    <idp>https://openid.paypal-ids.com</idp>
-    <idp>https://pip.verisignlabs.com</idp>
+    <idp>https://accounts.google.com/o/oauth2/auth</idp>
   </idpblacklist>
 
 </config>

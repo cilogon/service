@@ -44,6 +44,10 @@ function printUser($dbs) {
     echo "idp = $dbs->idp\n";
     echo "idp_display_name = $dbs->idp_display_name\n";
     echo "email = $dbs->email\n";
+    echo "eppn = $dbs->eppn\n";
+    echo "eptid = $dbs->eptid\n";
+    echo "open_id = $dbs->open_id\n";
+    echo "oidc = $dbs->oidc\n";
     echo "distinguished_name = $dbs->distinguished_name\n";
     echo "serial_string = $dbs->serial_string\n";
     echo "two_factor = $dbs->two_factor\n";
