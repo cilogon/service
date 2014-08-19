@@ -14,6 +14,21 @@
 # cvs -d:pserver:anonymous@cilogon.cvs.sourceforge.net:/cvsroot/cilogon \
 #      export -D now -d html service/html
 #
+# If you prefer to be able to keep the files current via 'cvs update', 
+# you can replace the last cvs command above with this one:
+#
+# cvs -d:pserver:anonymous@cilogon.cvs.sourceforge.net:/cvsroot/cilogon \
+#     checkout -P -d html service/html
+#
+# This cvs command creates 'CVS' directories which allow for 'cvs update'
+# commands to keep the code up-to-date. Note that if you choose this method,
+# you should configure your httpd server NOT to serve files in the CVS
+# directories. This can be done in Apache httpd by adding the following
+# lines to your httpd.conf file:
+#
+# RedirectMatch 404 /\\.(svn|git|hg|bzr|cvs)(/|$)
+# RedirectMatch 404 "(?:.*)/(?:CVS|RCS|_darcs)(?:/.*)?$"
+#
 # Once you have checked out the files, you need to create some symlinks for
 # proper functionality. This file contains the script necessary to do so.
 # Simply 'execute' the file as follows:
