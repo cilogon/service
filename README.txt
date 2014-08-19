@@ -96,5 +96,8 @@ cd /var/www/html/
 filename=`basename $0`
 
 echo "Done! You can now delete this $filename file."
+echo
+echo "NOTE: You should also create /var/www/html/include/idplist.xml"
+echo "      by running /etc/cron.hourly/idplist.cron ."
 
 exit 0
