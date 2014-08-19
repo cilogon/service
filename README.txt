@@ -11,6 +11,7 @@
 # cd /var/www/
 # cvs -d:pserver:anonymous@cilogon.cvs.sourceforge.net:/cvsroot/cilogon \
 #      login
+# ### Password is empty ###
 # cvs -d:pserver:anonymous@cilogon.cvs.sourceforge.net:/cvsroot/cilogon \
 #      export -D now -d html service/html
 #
