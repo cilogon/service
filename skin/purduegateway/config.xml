@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+  <initialidp>https://idp.purdue.edu/idp/shibboleth</initialidp>
+
+  <forceinitialidp>1</forceinitialidp>
+
+  <delegate>
+    <forcelifetime>12</forcelifetime>
+    <forceremember>1</forceremember>
+  </delegate>
+
+  <portallist>
+    <portal>#^https://transfer\.rcac\.purdue\.edu/#</portal>
+    <portal>#^https://purdue\.test\.globuscs\.info/#</portal>
+  </portallist>
+
+  <portallistaction>
+    <allowforceinitialidp>1</allowforceinitialidp>
+  </portallistaction>
+
+</config>
