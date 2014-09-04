@@ -398,7 +398,7 @@ class twofactor {
         $serialstr,
         '@cilogon.org%3Fsecret%3D',
         $secret,
-        '" />
+        '%26issuer%3DCILogon" />
         </div>
         <div id="securitycode" style="float:left;margin-left:2em">
         <table style="margin-left:2em">
