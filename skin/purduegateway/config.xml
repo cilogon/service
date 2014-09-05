@@ -13,6 +13,7 @@
   <portallist>
     <portal>#^https://transfer\.rcac\.purdue\.edu/#</portal>
     <portal>#^https://purdue\.test\.globuscs\.info/#</portal>
+    <portal>#^https://purdue\.qa\.globuscs\.info/#</portal>
   </portallist>
 
   <portallistaction>
