@@ -9,8 +9,9 @@ require_once('myproxy.php');
 /* notification box at the top of each page.                            */
 /*
 define('BANNER_TEXT',
-       'The CILogon Service may be unavailable for short periods on Monday,
-        March 31 between 1pm and 2pm Central Time due to service upgrades.'
+       'We are currently experiencing issues with Google logins. If you 
+        attempt to log on with Google and receive an error message, please
+        select another Identity Provider.'
 );
 */
 /* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
@@ -1329,15 +1330,15 @@ function handleGotUser() {
                 printErrorBox('
                 <p>
                 There was a problem logging on.  It appears that you have
-                attempted to use Google as your identity provider, but you
-                have not yet associated a first and last name with your
-                Google account. To rectify this problem, go to the <a
+                attempted to use Google as your identity provider, but your
+                name or email address was missing. This may be a temporariy
+                issue.  To rectify this problem, go to the <a
                 target="_blank"
                 href="https://security.google.com/settings/security/contactinfo">Google
-                Account Edit Personal Information page</a>, enter a First
-                Name and a Last Name, and click the "Save" button.  (All
-                other Google account information is optional and not
-                required by the CILogon Service.)
+                Account Edit Personal Information page</a>, enter your First
+                Name, Last Name, and email address, and click the "Save"
+                button.  (All other Google account information is optional
+                and not required by the CILogon Service.)
                 </p>
                 <p>
                 After you have updated your Google account profile, click
