@@ -113,6 +113,9 @@ function getUserAndRespond2() {
                     $me = null;
                 }
                 if (!is_null($me)) {
+                    if (strlen($emailaddr) == 0) {
+                        $emailaddr = $me->getEmails()[0]->getValue();
+                    }
                     list($firstname,$lastname) = util::getFirstAndLastName(
                         @$me['displayName'],
                         @$me['name']['givenName'],
