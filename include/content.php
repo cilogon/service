@@ -1224,7 +1224,7 @@ function redirectToGetGoogleOAuth2User($responsesubmit='gotuser') {
                 'openid.realm=' . 'https://' . HOSTNAME . '/' . '&' .
                 'redirect_uri=' . GETOIDCUSER_URL . '&' .
                 (is_null($max_auth_age) ? '' : "max_auth_age=$max_auth_age&") .
-                'access_type=offline';
+                'access_type=offline&prompt=select_account';
             header("Location: " . $redirect_url);
         } else {
             util::setSessionVar('logonerror','Unable to read config file.');
