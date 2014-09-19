@@ -540,10 +540,13 @@ EOT;
         $shibarray['Email Address'] = util::getServerVar('HTTP_MAIL');
         $shibarray['Level of Assurance'] = util::getServerVar('HTTP_ASSURANCE');
         
-        /* Make sure to use only the first of multiple email addresses. */
-        if (($pos = strpos($shibarray['Email Address'],';')) !== false) {
-            $shibarray['Email Address'] = 
-              substr($shibarray['Email Address'],0,$pos);
+        /* Make sure to use only the first of multiple values. */
+        $attrs = array('ePPN','ePTID','First Name','Last Name',
+                       'Display Name','Email Address');
+        foreach ($attrs as $attr) {
+            if (($pos = strpos($shibarray[$attr],';')) !== false) {
+                $shibarray[$attr] = substr($shibarray[$attr],0,$pos);
+            }
         }
 
         /* Next, read the attributes for the given IdP. This includes   *
