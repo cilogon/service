@@ -13,4 +13,25 @@
 -->
 <config>
 
+<!-- As of Sept. 25, 2014, the default behavior for the delegation use-case 
+     is to always skip the "Certificate Lifetime" and "Certificate Details"
+     pages. This makes it so client (portal) sites without a configured
+     skin will only see the "Select IdP" page. This includes our test
+     clients on merge.ncsa.illinois.edu. In order NOT to skip these pages,
+     first go to the CILogon Server you want to test and pass a "skin=all"
+     parameter so that the default skin is not used, for example:
+
+         https://test.cilogon.org/all
+
+     Then go to merge.ncsa.illinois.edu and select test.cilogon.org as the
+     CILogon Server. To reset the skin to the default configuration, go to:
+
+         https://test.cilogon.org/default
+-->
+
+  <delegate>
+    <forcelifetime>12</forcelifetime>
+    <forceremember>1</forceremember>
+  </delegate>
+
 </config>
