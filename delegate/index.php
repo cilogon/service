@@ -186,6 +186,10 @@ function printLogonPage() {
           getLogOnButtonText() ,
           '". If you do not approve this request, do not proceed.
           </p>
+          <p><em>By proceeding you agree to share your name and
+          email address with "' ,
+          htmlspecialchars(util::getSessionVar('portalname')) ,
+          '"</em>.</p>
         ';
 
         printPortalInfo('1');
