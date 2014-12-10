@@ -3317,3 +3317,4 @@ if (isset($_GET['data'])) {
     return QRcode::png($_GET['data'],false,QR_ECLEVEL_L,8,0);
 }
 
+?>
