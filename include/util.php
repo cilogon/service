@@ -134,8 +134,6 @@ class util {
         if ($exp > 0) {
             $exp += time();
         }
-        // For transition to domain-specific cookies, unset host-specific cookie
-        setcookie($cookie,'',time()-3600,'/','',true);
         setcookie($cookie,$value,$exp,'/','.'.DOMAINNAME,true);
     }
 
@@ -147,7 +145,6 @@ class util {
      * time.                                                            *
      ********************************************************************/
     public static function unsetCookieVar($cookie) {
-        setcookie($cookie,'',time()-3600,'/','',true);
         setcookie($cookie,'',time()-3600,'/','.'.DOMAINNAME,true);
         unset($_COOKIE[$cookie]);
     }
