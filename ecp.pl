@@ -5,7 +5,7 @@
 # Script      : ecp.pl                                                  #
 # Authors     : Terry Fleury <tfleury@illinois.edu>                     #
 # Create Date : July 06, 2011                                           #
-# Last Update : August 15, 2014                                         #
+# Last Update : December 12, 2014                                       #
 #                                                                       #
 # This PERL script allows a user to get an end-user X.509 certificate   #
 # or PKCS12 credential from the CILogon Service. It can also get the    #
@@ -57,7 +57,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.022";
+our $VERSION = "0.023";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -213,7 +213,7 @@ if ((length($idpurl) == 0) && (length($idpname) == 0)) {
     my %idpidx;
     @idpidx{@idpnames} = (0..$#idpnames);
     my $defidp = $idpidx{ DEFAULT_IDP.'' };
-    push(@idpnames,'Specify the URL of another IdP');
+    push(@idpnames,'Specify the ECP endpoint URL of another ECP-enabled IdP');
     $reply = $term->get_reply(
              prompt   => 'Choose',
              print_me => 'Select an Identity Provider (IdP):',
@@ -221,7 +221,7 @@ if ((length($idpurl) == 0) && (length($idpname) == 0)) {
              default  => $idpnames[$defidp]
              );
 
-    if ($reply eq 'Specify the URL of another IdP') {
+    if ($reply eq 'Specify the ECP endpoint URL of another ECP-enabled IdP') {
         $idpurl = '';
         while (!isValidURL($idpurl)) {
             $idpurl = trim($term->readline('Enter the IdP URL: '));
@@ -1159,12 +1159,12 @@ the full IdP name. Use B<--listidps> to show the list of available IdPs.
 
 =item B<-e> I<idpurl>, B<--idpurl> I<idpurl>
 
-Specify the full URL of an ECP-enabled Identity Provider to use for
-authentication. You can specify one of the available ECP-enabled IdPs, or
-another ECP-enabled IdP endpoint URL. In the latter case, the ECP-enabled
-IdP should be an InCommon member. Otherwise, the CILogon certificate server
-may reject the request. If both B<--idpname> and B<--idpurl> are specified,
-B<--idpurl> takes precedence.
+Specify the full ECP endpoint URL of an ECP-enabled Identity Provider (IdP)
+to use for authentication. You can specify the URL of one of the available
+ECP-enabled IdPs, or another ECP-enabled IdP endpoint URL. In the latter
+case, the ECP-enabled IdP should be an InCommon member. Otherwise, the
+CILogon certificate server may reject the request. If both B<--idpname> and
+B<--idpurl> are specified, B<--idpurl> takes precedence.
 
 =item B<-u> I<username>, B<--idpuser> I<username>
 
