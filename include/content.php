@@ -9,9 +9,8 @@ require_once('myproxy.php');
 /* notification box at the top of each page.                            */
 /*
 define('BANNER_TEXT',
-       'We are currently experiencing issues with Google logins. If you 
-        attempt to log on with Google and receive an error message, please
-        select another Identity Provider.'
+       'We are currently experiencing problems issuing certificates. We are
+       working on a solution. We apologize for the inconvenience.'
 );
 */
 /* The full URL of the Shibboleth-protected and OpenID getuser scripts. */
@@ -1331,7 +1330,7 @@ function handleGotUser() {
                 <p>
                 There was a problem logging on.  It appears that you have
                 attempted to use Google as your identity provider, but your
-                name or email address was missing. This may be a temporariy
+                name or email address was missing. This may be a temporary
                 issue.  To rectify this problem, go to the <a
                 target="_blank"
                 href="https://security.google.com/settings/security/contactinfo">Google
