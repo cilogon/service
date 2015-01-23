@@ -3,7 +3,6 @@
 require_once('../include/util.php');
 require_once('../include/autoloader.php');
 require_once('../include/content.php');
-require_once('../include/dbservice.php');
 require_once('Google/Client.php');
 require_once('Google/Service/Plus.php');
 
