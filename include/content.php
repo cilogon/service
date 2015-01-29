@@ -1302,6 +1302,10 @@ function unsetGetUserSessionVars() {
     util::unsetSessionVar('p12');
     util::unsetSessionVar('p12lifetime');
     util::unsetSessionVar('p12multiplier');
+    util::unsetSessionVar('ePPN');
+    util::unsetSessionVar('ePTID');
+    util::unsetSessionVar('openidID');
+    util::unsetSessionVar('oidcID');
     util::unsetSessionVar('authntime');
 }
 
