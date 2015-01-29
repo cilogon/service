@@ -79,6 +79,7 @@ function getMyProxyCredential(
     $cmd = '/bin/env ' . 
            $USER_CERT_ENV . ' ' . 
            $env . ' ' .
+           'MYPROXY_SOCKET_TIMEOUT=1 ' .
            MYPROXY_LOGON . ' ' .
            ' -s ' . escapeshellarg($server) .
            " -p $port" .
