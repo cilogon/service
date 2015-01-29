@@ -1085,6 +1085,13 @@ function verifySessionAndCall($func,$params=array()) {
  *                  authnContextClassRef? If not, then ignore the       *
  *                  "Request Silver" checkbox and silver certification  *
  *                  in metadata. Defaults to true.                      *
+ *              (5) (Optional) True to force user (re)authentication,   *
+ *                  false NOT to force user (re)authentication.         *
+ *                  Defaults to null. Note that if this parameter is    *
+ *                  passed in as 'false' but the skin has 'forceauthn'  *
+ *                  set to true, the user will NOT be forced to         *
+ *                  (re)authenticate at the IdP.                        *
+ * This method redirects control flow to the getuser script for         *
  * If the first parameter (a whitelisted entityId) is not specified,    *
  * we check to see if either the providerId PHP session variable or the *
  * providerId cookie is set (in that order) and use one if available.   *
@@ -1101,7 +1108,8 @@ function verifySessionAndCall($func,$params=array()) {
  * 'submit' variable in the 'getuser' script.                           *
  ************************************************************************/
 function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
-                               $responseurl=null,$allowsilver=true) {
+                               $responseurl=null,$allowsilver=true,
+                               $forceauthn=null) {
     global $csrf;
     global $log;
     global $skin;
@@ -1145,10 +1153,14 @@ function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
 
             $redirect .= '&providerId=' . urlencode($providerId);
 
-            // To bypass SSO at IdP, check for skin's 'forceauthn'
-            $forceauthn = $skin->getConfigOption('forceauthn');
-            if ((!is_null($forceauthn)) && ((int)$forceauthn == 1)) {
+            // To bypass SSO at IdP, check for 'forceauthn'
+            if ($forceauthn) {
                 $redirect .= '&forceAuthn=true';
+            } elseif (is_null($forceauthn)) { // Check the skin's option instead
+                $forceauthn = $skin->getConfigOption('forceauthn');
+                if ((!is_null($forceauthn)) && ((int)$forceauthn == 1)) {
+                    $redirect .= '&forceAuthn=true';
+                }
             }
 
             // If Silver IdP or "Request Silver" checked, send extra parameter
@@ -1170,10 +1182,16 @@ function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
 
 /************************************************************************
  * Function   : redirectToGetGoogleOAuth2User                           *
- * Parameter  : (Optional) The value of the PHP session 'submit'        *
- *              variable to be set upon return from the 'getuser'       *
- *              script.  This is utilized to control the flow of        *
- *              this script after "getuser". Defaults to 'gotuser'.     *
+ * Parameters : (1) (Optional) The value of the PHP session 'submit'    *
+ *                  variable to be set upon return from the 'getuser'   *
+ *                  script.  This is utilized to control the flow of    *
+ *                  this script after "getuser". Defaults to 'gotuser'. *
+ *              (2) (Optional) True to force user (re)authentication,   *
+ *                  false NOT to force user (re)authentication.         *
+ *                  Defaults to null. Note that if this parameter is    *
+ *                  passed in as 'false' but the skin has 'forceauthn'  *
+ *                  set to true, the user will NOT be forced to         *
+ *                  (re)authenticate at the IdP.                        *
  * This method redirects control flow to the getuser script for         *
  * when the user logs in via Google OAuth 2.0. It first checks to see   *
  * if we have a valid session. If so, we don't need to redirect and     *
@@ -1183,7 +1201,8 @@ function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
  * https://developers.google.com/accounts/docs/OAuth2Login for more     *
  * information.)                                                        *
  ************************************************************************/
-function redirectToGetGoogleOAuth2User($responsesubmit='gotuser') {
+function redirectToGetGoogleOAuth2User($responsesubmit='gotuser',
+                                       $forceauthn=null) {
     global $csrf;
     global $log;
     global $skin;
@@ -1203,11 +1222,15 @@ function redirectToGetGoogleOAuth2User($responsesubmit='gotuser') {
         util::setSessionVar('responsesubmit',$responsesubmit);
         $csrf->setCookieAndSession();
                 
-        // To bypass SSO at IdP, check for skin's 'forceauthn'
+        // To bypass SSO at IdP, check for 'forceauthn'
         $max_auth_age = null;
-        $forceauthn = $skin->getConfigOption('forceauthn');
-        if ((!is_null($forceauthn)) && ((int)$forceauthn == 1)) {
+        if ($forceauthn) {
             $max_auth_age = '0';
+        } elseif (is_null($forceauthn)) { // Check the skin's option instead
+            $forceauthn = $skin->getConfigOption('forceauthn');
+            if ((!is_null($forceauthn)) && ((int)$forceauthn == 1)) {
+                $max_auth_age = '0';
+            }
         }
 
         // If we can read the Google OAuth clientid from the config file,
@@ -1279,6 +1302,7 @@ function unsetGetUserSessionVars() {
     util::unsetSessionVar('p12');
     util::unsetSessionVar('p12lifetime');
     util::unsetSessionVar('p12multiplier');
+    util::unsetSessionVar('authntime');
 }
 
 /************************************************************************
@@ -1792,7 +1816,8 @@ function generateP12() {
             $dn .= " $myproxyinfo";
         }
         /* Attempt to fetch a credential from the MyProxy server */
-        $cert = getMyProxyCredential($dn,'','myproxy.cilogon.org',
+        $cert = getMyProxyCredential($dn,'',
+            'myproxy.cilogon.org,myproxy2.cilogon.org',
             $port,$lifetime,'/var/www/config/hostcred.pem','');
 
         /* The 'openssl pkcs12' command is picky in that the private  *
