@@ -668,7 +668,7 @@ class dbservice {
             echo "client_id=$this->client_id\n";
         }
         if (!is_null($this->client_home_uri)) {
-            echo "client_id=$this->client_home_uri\n";
+            echo "client_home_uri=$this->client_home_uri\n";
         }
         if (count($this->client_callback_uris) > 0) {
             natcasesort($this->client_callback_uris);
