@@ -67,6 +67,7 @@ class dbservice {
 
     /* Define the URL for the dbService */
     const defaultDBServiceURL = 'http://localhost:8080/oauth/dbService';
+    const oauth2DBServiceURL  = 'http://localhost:8080/oauth2/dbService';
 
     /* The various STATUS_* constants, originally from Store.pm. The    *
      * The keys of the array are strings corresponding to the contant   *
@@ -92,6 +93,7 @@ class dbservice {
         'STATUS_MISSING_PARAMETER_ERROR'   => 0xFFFF9,
         'STATUS_NO_REMOTE_USER'            => 0xFFFFB,
         'STATUS_NO_IDENTITY_PROVIDER'      => 0xFFFFD,
+        'STATUS_NO_CLIENT_FOUND'           => 0xFFFFF,
     );
 
     /* Define the various member variables previously stored by *
@@ -120,6 +122,10 @@ class dbservice {
     public $cilogon_portal_name;
     public $two_factor;
     public $idp_uids;  /* IdPs stored in the "values" of the array */
+    public $client_name;
+    public $client_id;
+    public $client_home_uri;
+    public $client_callback_uris;  /* This is an array of URLs */
 
     private $dbserviceurl;
 
@@ -163,6 +169,7 @@ class dbservice {
         $this->clearUser();
         $this->clearPortal();
         $this->clearIdps();
+        $this->clearClient();
     }
 
     /********************************************************************
@@ -209,6 +216,19 @@ class dbservice {
     }
 
     /********************************************************************
+     * Function  : clearClient                                          *
+     * Set all of the class member variables associated with            *
+     * getClient() to 'null'.                                           *
+     ********************************************************************/
+    function clearClient() {
+        $this->status = null;
+        $this->client_name = null;
+        $this->client_id = null;
+        $this->client_home_uri = null;
+        $this->client_callback_uris = array();
+    }
+
+    /********************************************************************
      * Function  : getUser                                              *
      * Parameters: Variable number of parameters: 1, 6, or 10.          *
      *             For 1 parameter : $uid (database user identifier)    *
@@ -229,6 +249,7 @@ class dbservice {
     function getUser() {
         $retval = false;
         $this->clearUser();
+        $this->setDBServiceURL(self::defaultDBServiceURL);
         $numargs = func_num_args();
         if ($numargs == 1) {
             $retval = $this->call('action=getUser&user_uid=' . 
@@ -266,6 +287,7 @@ class dbservice {
      ********************************************************************/
     function getLastArchivedUser($uid) {
         $this->clearUser();
+        $this->setDBServiceURL(self::defaultDBServiceURL);
         return $this->call('action=getLastArchivedUser&user_uid=' .
             urlencode($uid));
     }
@@ -281,6 +303,7 @@ class dbservice {
      ********************************************************************/
     function removeUser($uid) {
         $this->clearUser();
+        $this->setDBServiceURL(self::defaultDBServiceURL);
         return $this->call('action=removeUser&user_uid=' .
             urlencode($uid));
     }
@@ -298,6 +321,7 @@ class dbservice {
      ********************************************************************/
     function getTwoFactorInfo($uid) {
         $this->two_factor = null;
+        $this->setDBServiceURL(self::defaultDBServiceURL);
         return $this->call('action=getTwoFactorInfo&user_uid=' .
             urlencode($uid));
     }
@@ -315,6 +339,7 @@ class dbservice {
      ********************************************************************/
     function setTwoFactorInfo($uid,$two_factor='') {
         $this->two_factor = $two_factor;
+        $this->setDBServiceURL(self::defaultDBServiceURL);
         return $this->call('action=setTwoFactorInfo&user_uid=' .
             urlencode($uid) . '&two_factor=' . urlencode($two_factor));
     }
@@ -330,6 +355,7 @@ class dbservice {
      ********************************************************************/
     function getPortalParameters($oauth_token) {
         $this->clearPortal();
+        $this->setDBServiceURL(self::defaultDBServiceURL);
         return $this->call('action=getPortalParameter&oauth_token=' .
             urlencode($oauth_token));
     }
@@ -345,6 +371,7 @@ class dbservice {
      ********************************************************************/
     function getIdps() {
         $this->clearIdps();
+        $this->setDBServiceURL(self::defaultDBServiceURL);
         return $this->call('action=getAllIdps');
     }
 
@@ -362,6 +389,7 @@ class dbservice {
      * returns true.                                                    *
      ********************************************************************/
     function setIdps() {
+        $this->setDBServiceURL(self::defaultDBServiceURL);
         $cmdstr = 'action=setAllIdps';
         foreach ($this->idp_uids as $value) {
             $cmdstr .=  '&idp_uid=' . urlencode($value);
@@ -407,6 +435,45 @@ class dbservice {
             $this->idp_uids[] = $value;
         }
         return $this->setIdps();
+    }
+
+    /********************************************************************
+     * Function  : getClient                                            *
+     * Parameter : The Oauth 2.0 Client ID (client_id).                 *
+     * Returns   : True if the servlet returned correctly. Else false.  *
+     * This method calls the 'getClient' action of the Oauth 2.0        *
+     * servlet and sets the class member variables associated with      *
+     * client info appropriately.  If the servlet returns correctly     *
+     * (i.e. an HTTP status code of 200), this method returns true.     *
+     ********************************************************************/
+    function getClient($cid) {
+        $this->clearClient();
+        $this->setDBServiceURL(self::oauth2DBServiceURL);
+        return $this->call('action=getClient&client_id=' .
+            urlencode($cid));
+    }
+
+    /********************************************************************
+     * Function  : setTransactionState                                  *
+     * Parameters: (1) The 'code' as returned by the OAuth 2.0 server.  *
+     *             (2) The database user UID.                           *
+     *             (3) The Unix timestamp of the user authentication.   *
+     * Returns   : True if the servlet returned correctly. Else false.  *
+     * This method calls the 'setTransactionState' action of the Oauth  *
+     * 2.0 servlet to associate the Oauth 2.0 'code' with the database  *
+     * user UID. This is necessary for the Oauth 2.0 server to be able  *
+     * to return information about the user (name, email address) as    *
+     * well as return a certificate for the user. If the servlet        *
+     * returns correctly (i.e. an HTTP status code of 200), this method *
+     * returns true. Check the "status" return value to verify that     *
+     * the transaction state was set successfully.                      *
+     ********************************************************************/
+    function setTransactionState($code,$uid,$authntime) {
+        $this->setDBServiceURL(self::oauth2DBServiceURL);
+        return $this->call('action=setTransactionState' .
+            '&code=' . urlencode($code) .
+            '&user_uid=' . urlencode($uid) .
+            '&auth_time=' . urlencode($authntime));
     }
 
     /********************************************************************
@@ -510,6 +577,18 @@ class dbservice {
                             $this->idp_uids[] = urldecode($value);
                         }
                     }
+                    if (preg_match('/client_name=([^\r\n]+)/',$output,$match)) {
+                        $this->client_name = urldecode($match[1]);
+                    }
+                    if (preg_match('/client_id=([^\r\n]+)/',$output,$match)) {
+                        $this->client_id = urldecode($match[1]);
+                    }
+                    if (preg_match('/client_home_uri=([^\r\n]+)/',$output,$match)) {
+                        $this->client_home_uri = urldecode($match[1]);
+                    }
+                    if (preg_match('/client_callback_uris=([^\r\n]+)/',$output,$match)) {
+                        $this->client_callback_uris = explode(urldecode($match[1]),',');
+                    }
                 }
             }
             curl_close($ch);
@@ -582,8 +661,24 @@ class dbservice {
             }
             echo "}\n";
         }
+        if (!is_null($this->client_name)) {
+            echo "client_name=$this->client_name\n";
+        }
+        if (!is_null($this->client_id)) {
+            echo "client_id=$this->client_id\n";
+        }
+        if (!is_null($this->client_home_uri)) {
+            echo "client_id=$this->client_home_uri\n";
+        }
+        if (count($this->client_callback_uris) > 0) {
+            natcasesort($this->client_callback_uris);
+            echo "client_callback_uris={\n";
+            foreach($this->client_callback_uris as $value) {
+                echo "    $value\n";
+            }
+            echo "}\n";
+        }
     }
-
 
 }
 
