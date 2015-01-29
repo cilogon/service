@@ -490,7 +490,8 @@ class util {
             'oidcID'       => 'OIDC ID',
             'loa'          => 'LOA',
             'cilogon_skin' => 'Skin Name',
-            'twofactor'    => 'Two-Factor'
+            'twofactor'    => 'Two-Factor',
+            'authntime'    => 'Authn Time'
         );
 
         $remoteaddr = self::getServerVar('REMOTE_ADDR');
@@ -694,6 +695,7 @@ Remote Address= ' . $remoteaddr . '
             util::unsetSessionVar('ePTID');
             util::unsetSessionVar('openidID');
             util::unsetSessionVar('oidcID');
+            util::unsetSessionVar('authntime');
         } else {
             util::setSessionVar('firstname',$firstname);
             util::setSessionVar('lastname',$lastname);
@@ -703,6 +705,7 @@ Remote Address= ' . $remoteaddr . '
             util::setSessionVar('ePTID',$eptid);
             util::setSessionVar('openidID',$openidid);
             util::setSessionVar('oidcID',$oidcid);
+            util::setSessionVar('authntime',time());
         }
 
         util::setSessionVar('idpname',$providerName); // Enable check for Google

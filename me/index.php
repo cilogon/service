@@ -429,6 +429,7 @@ function getTitleText($cookie) {
      * "p12 error" appears before "p12".                                */
     $explain = array(
         "activation" => "The expiration time and activation code for use by CILogon-enabled applications." ,
+        "authntime" => "The Unix timestamp of the last successful user authentication.",
         "callbackuri" => "The URL of the callback servlet used by portals connecting to the CILogon Delegate service." ,
         "certlifetime" => "This multiplied by the certmultipler gives the lifetime of the GridShib-CA certificate in seconds." ,
         "certmultiplier" => "This multiplied by the certlifetime gives the lifetime of the GridShib-CA certificate in seconds." ,
@@ -465,6 +466,7 @@ function getTitleText($cookie) {
         "submit" => "The name of the 'submit' button clicked." ,
         "successuri" => "A URL used by portals for redirection after successful issuance of a certificate." ,
         "tempcred" => "An OAUTH identifier used to track portal sessions." ,
+        "twofactor" => "The types of two-factor authentication configured for your account, ga for Google Authenticator, duo for Duo Security.",
         "uid" => "The datastore user identifier." ,
     );
 
