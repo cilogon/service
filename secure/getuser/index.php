@@ -240,7 +240,8 @@ function getCert() {
             $dn .= " $myproxyinfo";
         }
         /* Attempt to fetch a credential from the MyProxy server */
-        $cert = getMyProxyCredential($dn,'','myproxy.cilogon.org',$port,
+        $cert = getMyProxyCredential($dn,'',
+            'myproxy.cilogon.org,myproxy2.cilogon.org',$port,
             $certlifetime,'/var/www/config/hostcred.pem','',$certreq);
 
         if (strlen($cert) > 0) { // Successfully got a certificate!
