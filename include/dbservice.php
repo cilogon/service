@@ -93,7 +93,8 @@ class dbservice {
         'STATUS_MISSING_PARAMETER_ERROR'   => 0xFFFF9,
         'STATUS_NO_REMOTE_USER'            => 0xFFFFB,
         'STATUS_NO_IDENTITY_PROVIDER'      => 0xFFFFD,
-        'STATUS_NO_CLIENT_FOUND'           => 0xFFFFF,
+        'STATUS_CLIENT_NOT_FOUND'          => 0xFFFFF,
+        'STATUS_TRANSACTION_NOT_FOUND'     => 0x10001,
     );
 
     /* Define the various member variables previously stored by *
