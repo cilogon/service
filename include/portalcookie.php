@@ -10,7 +10,7 @@ require_once('util.php');
  * button to remember the allowed delegation upon future accesses.      *
  * The information related to certificate "lifetime" and "remember" the *
  * delegation settings is stored in a single cookie.  Since the data    *
- * is acutally a two dimensional array (first element is the name of    *
+ * is actually a two dimensional array (first element is the name of    *
  * the portal to delegate the certificate to, the second element is     *
  * the "lifetime" and "remember" settings), the stored cookie is        *
  * actually a base64 encoded serialization of the 2D array.  This class *
