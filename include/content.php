@@ -1023,14 +1023,15 @@ function printHelpButton() {
 function verifyCurrentSession($providerId='') {
     $retval = false;
 
-    $uid     = util::getSessionVar('uid');
-    $idp     = util::getSessionVar('idp');
-    $idpname = util::getSessionVar('idpname');
-    $status  = util::getSessionVar('status');
-    $dn      = util::getSessionVar('dn');
+    $uid       = util::getSessionVar('uid');
+    $idp       = util::getSessionVar('idp');
+    $idpname   = util::getSessionVar('idpname');
+    $status    = util::getSessionVar('status');
+    $dn        = util::getSessionVar('dn');
+    $authntime = util::getSessionVar('authntime');
     if ((strlen($uid) > 0) && (strlen($idp) > 0) && 
         (strlen($idpname) > 0) && (strlen($status) > 0) &&
-        (strlen($dn) > 0) &&
+        (strlen($dn) > 0) && (strlen($authntime) > 0) &&
         (!($status & 1))) {  // All STATUS_OK codes are even
         if ((strlen($providerId) == 0) || ($providerId == $idp)) {
             $retval = true;
@@ -1085,12 +1086,6 @@ function verifySessionAndCall($func,$params=array()) {
  *                  authnContextClassRef? If not, then ignore the       *
  *                  "Request Silver" checkbox and silver certification  *
  *                  in metadata. Defaults to true.                      *
- *              (5) (Optional) True to force user (re)authentication,   *
- *                  false NOT to force user (re)authentication.         *
- *                  Defaults to null. Note that if this parameter is    *
- *                  passed in as 'false' but the skin has 'forceauthn'  *
- *                  set to true, the user will NOT be forced to         *
- *                  (re)authenticate at the IdP.                        *
  * This method redirects control flow to the getuser script for         *
  * If the first parameter (a whitelisted entityId) is not specified,    *
  * we check to see if either the providerId PHP session variable or the *
@@ -1108,8 +1103,7 @@ function verifySessionAndCall($func,$params=array()) {
  * 'submit' variable in the 'getuser' script.                           *
  ************************************************************************/
 function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
-                               $responseurl=null,$allowsilver=true,
-                               $forceauthn=null) {
+                               $responseurl=null,$allowsilver=true) {
     global $csrf;
     global $log;
     global $skin;
@@ -1153,10 +1147,14 @@ function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
 
             $redirect .= '&providerId=' . urlencode($providerId);
 
-            // To bypass SSO at IdP, check for 'forceauthn'
+            // To bypass SSO at IdP, check for session var 'forceauthn' == 1
+            $forceauthn = util::getSessionVar('forceauthn');
+            util::unsetSessionVar('forceauthn');
             if ($forceauthn) {
                 $redirect .= '&forceAuthn=true';
-            } elseif (is_null($forceauthn)) { // Check the skin's option instead
+            } elseif (strlen($forceauthn)==0) { 
+                // 'forceauth' was not set to '0' in the session, so 
+                // check the skin's option instead.
                 $forceauthn = $skin->getConfigOption('forceauthn');
                 if ((!is_null($forceauthn)) && ((int)$forceauthn == 1)) {
                     $redirect .= '&forceAuthn=true';
@@ -1186,12 +1184,6 @@ function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
  *                  variable to be set upon return from the 'getuser'   *
  *                  script.  This is utilized to control the flow of    *
  *                  this script after "getuser". Defaults to 'gotuser'. *
- *              (2) (Optional) True to force user (re)authentication,   *
- *                  false NOT to force user (re)authentication.         *
- *                  Defaults to null. Note that if this parameter is    *
- *                  passed in as 'false' but the skin has 'forceauthn'  *
- *                  set to true, the user will NOT be forced to         *
- *                  (re)authenticate at the IdP.                        *
  * This method redirects control flow to the getuser script for         *
  * when the user logs in via Google OAuth 2.0. It first checks to see   *
  * if we have a valid session. If so, we don't need to redirect and     *
@@ -1201,8 +1193,7 @@ function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
  * https://developers.google.com/accounts/docs/OAuth2Login for more     *
  * information.)                                                        *
  ************************************************************************/
-function redirectToGetGoogleOAuth2User($responsesubmit='gotuser',
-                                       $forceauthn=null) {
+function redirectToGetGoogleOAuth2User($responsesubmit='gotuser') {
     global $csrf;
     global $log;
     global $skin;
@@ -1222,11 +1213,15 @@ function redirectToGetGoogleOAuth2User($responsesubmit='gotuser',
         util::setSessionVar('responsesubmit',$responsesubmit);
         $csrf->setCookieAndSession();
                 
-        // To bypass SSO at IdP, check for 'forceauthn'
+        // To bypass SSO at IdP, check for session var 'forceauthn' == 1
+        $forceauthn = util::getSessionVar('forceauthn');
+        util::unsetSessionVar('forceauthn');
         $max_auth_age = null;
         if ($forceauthn) {
             $max_auth_age = '0';
-        } elseif (is_null($forceauthn)) { // Check the skin's option instead
+        } elseif (strlen($forceauthn)==0) { 
+            // 'forceauth' was not set to '0' in the session, so 
+            // check the skin's option instead.
             $forceauthn = $skin->getConfigOption('forceauthn');
             if ((!is_null($forceauthn)) && ((int)$forceauthn == 1)) {
                 $max_auth_age = '0';
@@ -1453,16 +1448,25 @@ function gotUserSuccess() {
 
     $status = util::getSessionVar('status');
 
-    // For the 'delegate' case (when there is a callbackuri in the 
-    // current PHP session), if the skin has "forceremember" set, 
-    // OR if the skin has "initialremember" set and there is no 
-    // cookie for the current portal, then we should go to the main
-    // page, skipping the New User page. Note that we still want to
-    // show the User Changed page to inform the user about updated
-    // DN strings.
+    // If this is the first time the user has used the CILogon Service, we
+    // skip the New User page under the following circumstances.
+    // (1) We are using the OIDC authorization endpoint code flow (check for
+    // 'clientparams' session variable);
+    // (2) We are using the 'delegate' code flow (check for 'callbackuri'
+    // session variable), and one of the following applies:
+    //    (a) Skin has 'forceremember' set or
+    //    (b) Skin has 'initialremember' set and there is no cookie for the
+    //        current portal
+    // In these cases, we skip the New User page and proceed directly to the
+    // main page. Note that we still want to show the User Changed page to
+    // inform the user about updated DN strings.
+    $clientparams = json_decode(util::getSessionVar('clientparams'),true);
     $callbackuri = util::getSessionVar('callbackuri');
-    if ((strlen($callbackuri) > 0) &&
-        ($status == dbservice::$STATUS['STATUS_NEW_USER'])) {
+    $forceremember = $skin->getConfigOption('delegate','forceremember');
+
+    if (($status == dbservice::$STATUS['STATUS_NEW_USER']) &&
+        ((strlen($callbackuri) > 0) || 
+         (isset($clientparams['code'])))) {
         // Extra check for new users: see if any HTML entities
         // are in the user name. If so, send an email alert.
         $dn = util::getSessionVar('dn');
@@ -1473,18 +1477,24 @@ function gotUserSuccess() {
                 "htmlentites(DN) = $htmldn\n");
         }
 
-        // Check forcerememeber skin option to skip new user page
-        $forceremember = $skin->getConfigOption('delegate','forceremember');
-        if ((!is_null($forceremember)) && ((int)$forceremember == 1)) {
+        if (isset($clientparams['code'])) {
+            // OIDC authorization code flow always skips New User page
             $status = dbservice::$STATUS['STATUS_OK'];
-        } else {
-            $initialremember = 
-                $skin->getConfigOption('delegate','initialremember');
-            if ((!is_null($initialremember)) && ((int)$initialremember==1)){
-                $portal = new portalcookie();
-                $portallifetime = $portal->getPortalLifetime($callbackuri);
-                if ((strlen($portallifetime)==0) || ($portallifetime==0)) {
-                    $status = dbservice::$STATUS['STATUS_OK'];
+        } elseif (strlen($callbackuri) > 0) {
+            // Delegation code flow might skip New User page
+            if ((!is_null($forceremember)) && ((int)$forceremember == 1)) {
+            // Check forcerememeber skin option to skip new user page
+                $status = dbservice::$STATUS['STATUS_OK'];
+            } else {
+                // Check initialremember skin option PLUS no portal cookie
+                $initialremember = 
+                    $skin->getConfigOption('delegate','initialremember');
+                if ((!is_null($initialremember)) && ((int)$initialremember==1)){
+                    $portal = new portalcookie();
+                    $portallifetime = $portal->getPortalLifetime($callbackuri);
+                    if ((strlen($portallifetime)==0) || ($portallifetime==0)) {
+                        $status = dbservice::$STATUS['STATUS_OK'];
+                    }
                 }
             }
         }
@@ -1571,21 +1581,25 @@ function printNewUserPage() {
  ************************************************************************/
 function printUserChangedPage() {
     global $log;
+    $errstr = '';
 
     $log->info('User IdP attributes changed.');
 
     $uid = util::getSessionVar('uid');
     $dbs = new dbservice();
-    $dbs->getUser($uid);
-    if (!($dbs->status & 1)) {  // STATUS_OK codes are even
+    if (($dbs->getUser($uid)) && 
+        (!($dbs->status & 1))) {  // STATUS_OK codes are even
+
         $idpname = $dbs->idp_display_name;
         $first   = $dbs->first_name;
         $last    = $dbs->last_name;
         $email   = $dbs->email;
         $dn      = $dbs->distinguished_name;
         $dn      = reformatDN(preg_replace('/\s+email=.+$/','',$dn));
-        $dbs->getLastArchivedUser($uid);
-        if (!($dbs->status & 1)) {  // STATUS_OK codes are even
+
+        if (($dbs->getLastArchivedUser($uid)) &&
+            (!($dbs->status & 1))) {  // STATUS_OK codes are even
+
             $previdpname = $dbs->idp_display_name;
             $prevfirst   = $dbs->first_name;
             $prevlast    = $dbs->last_name;
@@ -1701,12 +1715,12 @@ function printUserChangedPage() {
                 clients.  Possible problems which may occur include:
                 </p>
                 <ul>
-                <li>If your "from" address does not match what is contained in
-                    the certificate, recipients may fail to verify your signed
-                    email messages.</li>
-                <li>If the email address in the certificate does not match the
-                    destination address, senders may have difficulty encrypting
-                    email addressed to you.</li>
+                <li>If your "from" address does not match what is
+                    contained in the certificate, recipients may fail to
+                    verify your signed email messages.</li>
+                <li>If the email address in the certificate does not
+                    match the destination address, senders may have
+                    difficulty encrypting email addressed to you.</li>
                 </ul>
                 ';
             }
@@ -1721,7 +1735,8 @@ function printUserChangedPage() {
             printFormHead();
             echo '
             <p class="centered">
-            <input type="submit" name="submit" class="submit" value="Proceed" />
+            <input type="submit" name="submit" class="submit"
+            value="Proceed" />
             </p>
             </form>
             </div>
@@ -1731,12 +1746,26 @@ function printUserChangedPage() {
 
             
         } else {  // Database error, should never happen
-            $log->error('Database error reading previous user attributes.');
+            if (!is_null($dbs->status)) {
+                $errstr = array_search($dbs->status,dbservice::$STATUS);
+            }
+            $log->error('Database error reading last archived ' . 
+                        'user attributes. ' . $errstr);
+            util::sendErrorAlert('dbService Error',
+                'Error calling dbservice action "getLastArchivedUser" in ' .
+                'printUserChangedPaged() method. ' . $errstr);
             unsetGetUserSessionVars();
             printLogonPage();
         }
     } else {  // Database error, should never happen
-        $log->error('Database error reading current user attributes.');
+        if (!is_null($dbs->status)) {
+            $errstr = array_search($dbs->status,dbservice::$STATUS);
+        }
+        $log->error('Database error reading current user attributes. ' .
+                    $errstr);
+        util::sendErrorAlert('dbService Error',
+            'Error calling dbservice action "getUser" in ' .
+            'printUserChangedPaged() method. ' . $errstr);
         unsetGetUserSessionVars();
         printLogonPage();
     }
