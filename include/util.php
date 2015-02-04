@@ -633,20 +633,25 @@ Remote Address= ' . $remoteaddr . '
                     'http://',$databaseProviderId);
             }
 
-            $dbs->getUser($remoteuser,
-                          $databaseProviderId,
-                          $databaseProviderName,
-                          $firstname,
-                          $lastname,
-                          $emailaddr,
-                          $eppn,
-                          $eptid,
-                          $openidid,
-                          $oidcid);
+            $result = $dbs->getUser($remoteuser,
+                                    $databaseProviderId,
+                                    $databaseProviderName,
+                                    $firstname,
+                                    $lastname,
+                                    $emailaddr,
+                                    $eppn,
+                                    $eptid,
+                                    $openidid,
+                                    $oidcid); 
             util::setSessionVar('uid',$dbs->user_uid);
             util::setSessionVar('dn',$dbs->distinguished_name);
             util::setSessionVar('twofactor',$dbs->two_factor);
             util::setSessionVar('status',$dbs->status);
+            if (!$result) {
+                util::sendErrorAlert('dbService Error',
+                    'Error calling dbservice action "getUser" in ' .
+                    'saveUserToDatastore() method.');
+            }
         } else { // Missing one or more required attributes
             util::unsetSessionVar('uid');
             util::unsetSessionVar('dn');
