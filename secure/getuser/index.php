@@ -49,7 +49,6 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
  * SAML attributes were missing.                                        *
  ************************************************************************/
 function getUID() {
-    $dbs = new dbservice();
     $idplist = new idplist();
     $shibarray = $idplist->getShibInfo();
 
