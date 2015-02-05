@@ -67,6 +67,8 @@ if (verifyOIDCParams()) {
                 'User%20denied%20authorization%20request' .
                 ((isset($clientparams['state'])) ? 
                     '&state='.$clientparams['state'] : '');
+            util::unsetSessionVar('clientparams');
+            unsetGetUserSessionVars();
             header('Location: ' . $location);
         break; // End case 'Cancel'
 
@@ -470,10 +472,10 @@ function verifyOIDCParams() {
                             }
                             if (isset($params['error'])) {
                                 // Got "error" - simply return to OIDC client
-                                header("Location: $redirect_url");
                                 $clientparams = array();
                                 util::unsetSessionVar('clientparams');
                                 unsetGetUserSessionVars();
+                                header("Location: $redirect_url");
                                 exit; // No further processing necessary
                             } elseif (isset($params['code'])) {
                                 // Got "code" - save to session and call 
