@@ -62,14 +62,14 @@ if (verifyOIDCParams()) {
         case 'Cancel': // User denies release of attributes
             // If user clicked the 'Cancel' button, return to the
             // OIDC client with an error message.
-            $location = $clientparams['redirect_uri'] . '?' .
-                'error=access_denied&error_description=' . 
+            $redirect = 'Location: ' . $clientparams['redirect_uri'] .
+                '?error=access_denied&error_description=' . 
                 'User%20denied%20authorization%20request' .
                 ((isset($clientparams['state'])) ? 
                     '&state='.$clientparams['state'] : '');
             util::unsetSessionVar('clientparams');
             unsetGetUserSessionVars();
-            header('Location: ' . $location);
+            header($redirect);
         break; // End case 'Cancel'
 
         case 'Manage Two-Factor':
