@@ -6,7 +6,7 @@
   <forceinitialidp>1</forceinitialidp>
 
   <delegate>
-    <forcelifetime>12</forcelifetime>
+    <forcelifetime>240</forcelifetime>
     <forceremember>1</forceremember>
   </delegate>
 
