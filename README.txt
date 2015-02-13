@@ -91,6 +91,12 @@ echo 'rm -f index.php'
 rm -f index.php
 echo 'ln -sf index-site.php index.php'
 ln -sf index-site.php index.php
+echo 'cd /var/www/html/authorize/'
+cd /var/www/html/authorize/
+echo 'rm -f index.php'
+rm -f index.php
+echo 'ln -sf index-site.php index.php'
+ln -sf index-site.php index.php
 echo 'cd /var/www/html/'
 cd /var/www/html/
 echo 'chmod 775 pkcs12'
