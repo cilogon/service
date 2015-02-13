@@ -103,6 +103,8 @@ echo 'chmod 775 pkcs12'
 chmod 775 pkcs12
 echo 'chgrp apache pkcs12'
 chgrp apache pkcs12
+echo 'mkdir -p /var/www/virthosts/crl'
+mkdir -p /var/www/virthosts/crl
 
 filename=`basename $0`
 
