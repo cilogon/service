@@ -1,7 +1,7 @@
 alias = cilogon-basic
 url = http://ca.cilogon.org/
 ca_url = https://cilogon.org/cilogon-basic.pem
-crl_url = http://crl.cilogon.org/cilogon-basic.crl
+crl_url = http://crl-cilogon.ncsa-security.net/cilogon-basic.crl;http://crl.cilogon.org/cilogon-basic.crl
 email = ca@cilogon.org
 status = accredited:iota
 version = @VERSION@
