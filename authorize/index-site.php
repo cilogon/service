@@ -4,8 +4,8 @@ require_once('../include/util.php');
 require_once('../include/autoloader.php');
 require_once('../include/content.php');
 
-/* The full URL of the 'oauth2/authorize' OAuth 2.0 (OIDC) script */
-define('AUTHORIZE_URL','http://localhost:8080/oauth2/authorize');
+/* The full URL of the 'oauth2/init' OAuth 2.0 (OIDC) script */
+define('AUTHORIZE_URL','http://localhost:8080/oauth2/init');
 
 /* Check the csrf cookie against either a hidden <form> element or a *
  * PHP session variable, and get the value of the "submit" element.  *
