@@ -299,7 +299,8 @@ EOT;
                         "Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='http://macedir.org/entity-category-support']/saml:AttributeValue");
                     if (($xp !== false) && (count($xp)>0)) {
                         foreach ($xp as $value) {
-                            if ($value == 'http://id.incommon.org/category/research-and-scholarship') {
+                            if (($value == 'http://id.incommon.org/category/research-and-scholarship') ||
+                                ($value == 'http://refeds.org/category/research-and-scholarship')) {
                                 $this->addNode($dom,$idp,'RandS','1');
                                 break;
                             }
