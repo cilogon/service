@@ -220,6 +220,7 @@ EOT;
 
                 // Loop through the IdPs searching for desired attributes
                 foreach ($result as $idx) {
+
                     // Get the entityID of the IdP. Save it for later.
                     // The entityID will be the keys of the class idpdom.
                     $entityID = '';
@@ -227,6 +228,21 @@ EOT;
                     if (($xp !== false) && (count($xp)>0)) {
                         $entityID = (string)$xp[0]->entityID;
                     } else { // No entityID is bad!
+                        continue;
+                    }
+
+                    // Check for RegistrationInfo == https://incommon.org
+                    // Need to set namespace prefixes for xpath queries to work.
+                    $sxe = $idx[0];
+                    $sxe->registerXPathNamespace('mdattr',
+                        'urn:oasis:names:tc:SAML:metadata:attribute');
+                    $sxe->registerXPathNamespace('saml',
+                        'urn:oasis:names:tc:SAML:2.0:assertion');
+                    $sxe->registerXPathNamespace('mdrpi',
+                        'urn:oasis:names:tc:SAML:metadata:rpi');
+                    $xp = $sxe->xpath(
+                        "Extensions/mdrpi:RegistrationInfo[@registrationAuthority='https://incommon.org']");
+                    if (($xp === false) || (count($xp) == 0)) {
                         continue;
                     }
 
@@ -277,12 +293,6 @@ EOT;
                     }
 
                     // Check for assurance-certification = silver.
-                    // Need to set namespace prefixes for xpath query to work.
-                    $sxe = $idx[0];
-                    $sxe->registerXPathNamespace('mdattr',
-                        'urn:oasis:names:tc:SAML:metadata:attribute');
-                    $sxe->registerXPathNamespace('saml',
-                        'urn:oasis:names:tc:SAML:2.0:assertion');
                     $xp = $sxe->xpath(
                         "Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:oasis:names:tc:SAML:attribute:assurance-certification']/saml:AttributeValue");
                     if (($xp !== false) && (count($xp)>0)) {
