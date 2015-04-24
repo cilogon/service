@@ -1,0 +1,126 @@
+/***** Begin basic elements *****/
+body {
+  font: normal Arial, Helvetica, Verdana, lucida,"lucida-sans unicode",sans-serif;
+	background-color: #575757;
+  color: #000;
+}
+a {
+  text-decoration: none;
+  font-weight: bold;
+}
+a:link {
+	color: #0776bc;
+}
+a:visited {
+	color: #0776bc;
+}
+a:hover {
+	text-decoration: underline;
+	color: #0776bc;
+}
+/***** End basic elements *****/
+
+/***** Begin a few misc elements *****/
+div.boxed {
+  border: 0;
+}
+div.boxheader {
+  color: #fff;
+  border: 1px solid #999;
+  background-color: #444;
+}
+input.submit {
+  color: #000; 
+  font-size: 12px; 
+  font-weight: 400; 
+  letter-spacing: 2px; 
+  padding-top: 5px; 
+  padding-right: 10px; 
+  padding-bottom: 5px;   
+  padding-left: 10px; 
+  text-decoration: none; 
+  background: #bbb;
+}
+
+div.contactform {
+  background: #fff;
+}
+div.noticebanner {
+  color: #000;
+}
+/***** End a few misc element *****/
+
+/***** Begin the "CILogon Service" header at the top of each page *****/
+div.logoheader {
+  background: #f2efea;
+  height: 86px;
+  width: 100%;
+  min-width: 600px;
+  border-top: 7px solid #6d6d6b;
+  border-bottom: 27px solid #f58c1e;
+}
+div.logoheader h1 {
+  background: transparent url("/skin/NICS/nicslogo.png") no-repeat top left;
+  margin-top: 7px;
+  margin-left: 10%;
+  width: 332px;
+  height: 73px;
+  float: left;
+}
+/***** End the "CILogon Service" header at the top of each page *****/
+
+
+/***** Begin page footer *****/
+div.footer {
+  border: 0;
+  color: #aaa;
+}
+div.footer a:link {
+  color: #ccc;
+}
+div.footer a:visited {
+  color: #999;
+}
+div.footer a:hover {
+  color: #fff;
+}
+div.footer a:active {
+  color: #000;
+}
+/***** End page footer *****/
+
+/***** Begin actionbox containing action buttons and WAYF *****/
+div.actionbox,
+div.p12actionbox,
+div.logoffactionbox {
+  border: 1px solid #333;
+  display: block;
+  background-color: #fff;
+}
+/***** End actionbox *****/
+
+/***** Begin certinfo / portalinfo table *****/
+table.certinfo,
+table.portalinfo1,
+table.portalinfo2 {
+  background-color: #fff;
+}
+/***** End certinfo / portalinfo table *****/
+
+
+/***** Begin skincilogonlogo *****/
+div.skincilogonlogo {
+  margin-top: 17px;
+  display: inline;
+}
+/***** End skincilogonlogo *****/
+
+/***** Begin Help-related stuff *****/
+table.helptable td.helpcell div {
+  background-color: #fff;
+  margin-right: 1em;
+}
+tr.inforow td.helpcell {
+  background-color: #fff;
+}
+/***** End Help-related stuff *****/
