@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 
+  <idpblacklist>
+    <idp>https://accounts.google.com/o/oauth2/auth</idp>
+  </idpblacklist>
+
   <delegate>
     <forcelifetime>12</forcelifetime>
     <forceremember>1</forceremember>
