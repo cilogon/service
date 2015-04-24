@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+  <delegate>
+    <forcelifetime>12</forcelifetime>
+    <forceremember>1</forceremember>
+  </delegate>
+
+</config>
