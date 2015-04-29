@@ -632,7 +632,7 @@ $headers = HTTP::Headers->new();
 $headers->authorization_basic($idpuser,$idppass);
 $ua->default_headers($headers);
 print "Logging in to IdP '$idpurl' with \n$xmlstr\n... " if ($verbose);
-$response = $ua->post($idpurl,Content=>$xmlstr);
+$response = $ua->post($idpurl,Content_Type=>'text/xml',Content=>$xmlstr);
 if ($response->is_success) {
     $idpresp = $response->decoded_content;
     if ($verbose) {
