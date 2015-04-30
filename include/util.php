@@ -597,7 +597,6 @@ Remote Address= ' . $remoteaddr . '
         global $csrf;
 
         $dbs = new dbservice();
-        $validator = new EmailAddressValidator();
 
         // Keep original values of providerName and providerId
         $databaseProviderName = $providerName;
@@ -614,7 +613,7 @@ Remote Address= ' . $remoteaddr . '
             (strlen($firstname) > 0) &&
             (strlen($lastname) > 0) &&
             (strlen($emailaddr) > 0) &&
-            ($validator->check_email_address($emailaddr))) {
+            (filter_var($emailaddr,FILTER_VALIDATE_EMAIL))) {
 
             /* For the new Google OAuth 2.0 endpoint, we want to keep the   *
              * old Google OpenID endpoint URL in the database (so user does *

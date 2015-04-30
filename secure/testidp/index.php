@@ -76,8 +76,7 @@ function printTestPage() {
     <h2>Summary</h2>
     ';
 
-    $validator = new EmailAddressValidator();
-    $emailvalid = $validator->check_email_address($shibarray['Email Address']);
+    $emailvalid = filter_var($shibarray['Email Address'],FILTER_VALIDATE_EMAIL);
 
     if ((strlen($shibarray['Identity Provider']) > 0) &&
         (strlen($shibarray['User Identifier']) > 0) &&

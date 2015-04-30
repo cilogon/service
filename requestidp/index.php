@@ -4,7 +4,6 @@ require_once('../include/util.php');
 require_once('../include/autoloader.php');
 require_once('../include/content.php');
 
-$validator = new EmailAddressValidator();
 define('DEFAULT_OPTION_TEXT','-- Choose one -or- Type one in below --');
 
 /* Check the csrf cookie against either a hidden <form> element or a   *
@@ -24,7 +23,7 @@ if ($submit == 'Submit') {
     /* Check for non-empty Name, Email, IdP, and valid Email Address */
     if ((strlen($yourName) > 2) &&
         (strlen($emailAddr) > 2) &&
-        ($validator->check_email_address($emailAddr)) &&
+        (filter_var($emailAddr,FILTER_VALIDATE_EMAIL)) &&
             (($providerId != DEFAULT_OPTION_TEXT) ||
              (strlen($otherIdP) > 2))) {
         /* Everything is okay! Send email request and print "Thank you!" */
@@ -63,7 +62,6 @@ if ($submit == 'Submit') {
  ************************************************************************/
 function printRequestForm($verify=false,$yourName='',$emailAddr='',
                           $providerId='',$otherIdP='',$comments='') {
-    global $validator;
     global $csrf;  // Initialized in content.php
 
     $goterror = false;  /* Did we find any errors in the form? */
@@ -129,7 +127,7 @@ function printRequestForm($verify=false,$yourName='',$emailAddr='',
       <input id="emailAddr" name="emailAddr" class="text" type="text" 
        size="50" maxlength="80" value="' , $emailAddr , '" />';
 
-    if (($verify) && (!$validator->check_email_address($emailAddr))) {
+    if (($verify) && (!filter_var($emailAddr,FILTER_VALIDATE_EMAIL))) {
         printIcon('error','Please enter a valid email address.');
         $goterror = true;
     }
