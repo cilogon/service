@@ -76,9 +76,12 @@ function printTestPage() {
     <h2>Summary</h2>
     ';
 
+    $validator = new EmailAddressValidator();
+    $emailvalid = $validator->check_email_address($shibarray['Email Address']);
+
     if ((strlen($shibarray['Identity Provider']) > 0) &&
         (strlen($shibarray['User Identifier']) > 0) &&
-        (strlen($shibarray['Email Address']) > 0) &&
+        (strlen($shibarray['Email Address']) > 0) && ($emailvalid) &&
         (strlen($shibarray['Organization Name']) > 0) &&
             ((strlen($shibarray['Display Name']) > 0) ||
                  ((strlen($shibarray['First Name']) > 0) &&
@@ -254,7 +257,7 @@ function printTestPage() {
             <td>' , $shibarray['Email Address'] , '</td>
             <td>';
 
-    if (strlen($shibarray['Email Address']) == 0) {
+    if ((strlen($shibarray['Email Address']) == 0) || (!$emailvalid)) {
         printIcon('error','Missing valid email address.');
     }
 
