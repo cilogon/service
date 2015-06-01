@@ -234,61 +234,24 @@ function printWAYF($showremember=true,$incommonidps=false) {
     $searchtext = "Enter characters to search for in the list above.";
 
     /* Get an array of IdPs */
-    $idplist = new idplist();
+    $idps = getCompositeIdPList($incommonidps);
 
     /* Check if the user had previously selected an IdP from the list. */
-    $keepidp     = util::getCookieVar('keepidp');
-    $providerId  = util::getCookieVar('providerId');
+    $keepidp    = util::getCookieVar('keepidp');
+    $providerId = util::getCookieVar('providerId');
 
-    if ($incommonidps) { /* Get all InCommon IdPs only */
-        $idps = $idplist->getInCommonIdPs();
-    } else { /* Get the whitelisted InCommon IdPs, plus maybe Google  */
-        $idps = $idplist->getWhitelistedIdPs();
+    /* Make sure previously selected IdP is in list of available IdPs. */
+    if ((strlen($providerId) > 0) && (!isset($idps[$providerId]))) {
+        $providerId = '';
+    }
 
-        /* Add Google to the list */
-        $idps[GOOGLE_OIDC] = 'Google';
-
-        natcasesort($idps);
-
-        /* Check to see if the skin's config.xml has a whitelist of IDPs.  */
-        /* If so, go thru master IdP list and keep only those IdPs in the  */
-        /* config.xml's whitelist.                                         */
-        if ($skin->hasIdpWhitelist()) {
-            foreach ($idps as $entityId => $displayName) {
-                if (!$skin->idpWhitelisted($entityId)) {
-                    unset($idps[$entityId]);
-                }
-            }
-        }
-        /* Next, check to see if the skin's config.xml has a blacklist of  */
-        /* IdPs. If so, cull down the master IdP list removing 'bad' IdPs. */
-        if ($skin->hasIdpBlacklist()) {
-            $idpblacklist = $skin->getConfigOption('idpblacklist');
-            foreach ($idpblacklist->idp as $blackidp) {
-                unset($idps[(string)$blackidp]);
-            }
-        }
-
-        /* Check the global blacklist.txt file and remove any IdPs listed. */
-        $globalblacklistfile = '/var/www/html/include/blacklist.txt';
-        $globalblackidps = util::readArrayFromFile($globalblacklistfile);
-        foreach (array_keys($globalblackidps) as $blackidp) {
-            unset($idps[(string)$blackidp]);
-        }
-
-        /* Make sure previously selected IdP is in list of available IdPs. */
-        if ((strlen($providerId) > 0) && (!isset($idps[$providerId]))) {
-            $providerId = '';
-        }
-
-        /* If no previous providerId, get from skin, or default to Google. */
-        if (strlen($providerId) == 0) {
-            $initialidp = (string)$skin->getConfigOption('initialidp');
-            if ((!is_null($initialidp)) && (isset($idps[$initialidp]))) {
-                $providerId = $initialidp;
-            } else {
-                $providerId = GOOGLE_OIDC;
-            }
+    /* If no previous providerId, get from skin, or default to Google. */
+    if (strlen($providerId) == 0) {
+        $initialidp = (string)$skin->getConfigOption('initialidp');
+        if ((!is_null($initialidp)) && (isset($idps[$initialidp]))) {
+            $providerId = $initialidp;
+        } else {
+            $providerId = GOOGLE_OIDC;
         }
     }
 
@@ -410,11 +373,12 @@ function printWAYF($showremember=true,$incommonidps=false) {
           echo '
           <p>
           CILogon facilitates secure access to CyberInfrastructure (<acronym
-          title="CyberInfrastructure">CI</acronym>). In order to test your identity
-          provider with the CILogon Service, you must first Log On. If your preferred
-          identity provider is not listed, please fill out the <a target="_blank"
-          href="https://' , HOSTNAME , '/requestidp/">"request a new organization"
-          form</a>, and we will try to add your identity provider in the future.
+          title="CyberInfrastructure">CI</acronym>). In order to test your
+          identity provider with the CILogon Service, you must first Log On.
+          If your preferred identity provider is not listed, please fill out
+          the <a target="_blank" href="https://' , HOSTNAME ,
+          '/requestidp/">"request a new organization" form</a>, and we will
+          try to add your identity provider in the future.
           </p>
           ';
       } else { /* If not InCommon only, print help text for OpenID providers. */
@@ -431,8 +395,9 @@ function printWAYF($showremember=true,$incommonidps=false) {
           college, please select it for your identity
           provider.  If your school is not listed,
           please fill out the <a target="_blank"
-          href="https://' , HOSTNAME , '/requestidp/">"request a new organization"
-          form</a>, and we will try to add your school in the future.
+          href="https://' , HOSTNAME , '/requestidp/">"request a new
+          organization" form</a>, and we will try to add your school in the
+          future.
           </p>
           ';
 
@@ -447,7 +412,6 @@ function printWAYF($showremember=true,$incommonidps=false) {
               </p>
               ';
           }
-
       }
 
       echo '
@@ -854,8 +818,8 @@ function handleDuoSecurityLogin() {
  * to the chosen IdP.                                                   *
  ************************************************************************/
 function handleLogOnButtonClicked() {
-    // Read in the whitelist of currently available InCommon IdPs
-    $idplist = new idplist();
+    // Get the list of currently available IdPs
+    $idps = getCompositeIdPList();
 
     // Set the cookie for keepidp if the checkbox was checked
     if (strlen(util::getPostVar('keepidp')) > 0) {
@@ -864,19 +828,22 @@ function handleLogOnButtonClicked() {
         util::unsetCookieVar('keepidp');
     }
 
-    // Set the cookie for the last chosen IdP and redirect to it
+    // Set the cookie for the last chosen IdP and redirect to it if in list
     $providerIdPost = util::getPostVar('providerId');
-    if ($providerIdPost == GOOGLE_OIDC) { // Log in with Google
+    if ((strlen($providerIdPost) > 0) && (isset($idps[$providerIdPost]))) {
         util::setCookieVar('providerId',$providerIdPost);
-        redirectToGetGoogleOAuth2User();
-    } elseif ($idplist->exists($providerIdPost)) { // Use InCommon authn
-        util::setCookieVar('providerId',$providerIdPost);
-        redirectToGetShibUser($providerIdPost);
-    } else { // Either providerId not set or not in whitelist
+        if ($providerIdPost == GOOGLE_OIDC) { // Log in with Google
+            redirectToGetGoogleOAuth2User();
+        } else { // Use InCommon authn
+            redirectToGetShibUser($providerIdPost);
+        }
+    } else { // IdP not in list, or no IdP selected
         util::unsetCookieVar('providerId');
+        util::setSessionVar('logonerror','Please select a valid IdP.');
         printLogonPage();
     }
 }
+
 /************************************************************************
  * Function  : handleHelpButtonClicked                                  *
  * This function is called when the user clicks on the "Show Help" /    *
@@ -2093,6 +2060,62 @@ function getMachineHostname() {
         $retval = $hostnames[$localhost];
     }
     return $retval;
+}
+
+/************************************************************************
+ * Function   : getCompositeIdPList                                     *
+ * Parameter  : Show all InCommon IdPs in selection list? True or       *
+ *              false. Defaults to false, which means show only         *
+ *              whitelisted IdPs.                                       *
+ * This function generates a list of IdPs to display in the "Select     *
+ * An Identity Provider" box on the main CILogon page or on the         *
+ * TestIdP page. For the main CILogon page, this is a filtered list of  *
+ * IdPs based on the skin's whitelist/blacklist and the global          *
+ * blacklist file. For the TestIdP page, the list is all InCommon IdPs. *
+ ************************************************************************/
+function getCompositeIdPList($incommonidps=false) {
+    global $skin;
+
+    $retarray = array();
+    $idplist = new idplist();
+
+    if ($incommonidps) { /* Get all InCommon IdPs only */
+        $retarray = $idplist->getInCommonIdPs();
+    } else { /* Get the whitelisted InCommon IdPs, plus maybe Google  */
+        $retarray = $idplist->getWhitelistedIdPs();
+
+        /* Add Google to the list */
+        $retarray[GOOGLE_OIDC] = 'Google';
+
+        /* Check to see if the skin's config.xml has a whitelist of IDPs.  */
+        /* If so, go thru master IdP list and keep only those IdPs in the  */
+        /* config.xml's whitelist.                                         */
+        if ($skin->hasIdpWhitelist()) {
+            foreach ($retarray as $entityId => $displayName) {
+                if (!$skin->idpWhitelisted($entityId)) {
+                    unset($retarray[$entityId]);
+                }
+            }
+        }
+        /* Next, check to see if the skin's config.xml has a blacklist of  */
+        /* IdPs. If so, cull down the master IdP list removing 'bad' IdPs. */
+        if ($skin->hasIdpBlacklist()) {
+            $idpblacklist = $skin->getConfigOption('idpblacklist');
+            foreach ($idpblacklist->idp as $blackidp) {
+                unset($retarray[(string)$blackidp]);
+            }
+        }
+
+        /* Check the global blacklist.txt file and remove any IdPs listed. */
+        $globalblacklistfile = '/var/www/html/include/blacklist.txt';
+        $globalblackidps = util::readArrayFromFile($globalblacklistfile);
+        foreach (array_keys($globalblackidps) as $blackidp) {
+            unset($retarray[(string)$blackidp]);
+        }
+    }
+
+    uasort($retarray,'strcasecmp');
+    return $retarray;
 }
 
 ?>
