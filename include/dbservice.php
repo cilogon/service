@@ -655,7 +655,7 @@ class dbservice {
             echo "two_factor=$this->two_factor\n";
         }
         if (count($this->idp_uids) > 0) {
-            natcasesort($this->idp_uids);
+            uasort($this->idp_uids,'strcasecmp');
             echo "idp_uids={\n";
             foreach($this->idp_uids as $value) {
                 echo "    $value\n";
@@ -672,7 +672,7 @@ class dbservice {
             echo "client_home_uri=$this->client_home_uri\n";
         }
         if (count($this->client_callback_uris) > 0) {
-            natcasesort($this->client_callback_uris);
+            uasort($this->client_callback_uris,'strcasecmp');
             echo "client_callback_uris={\n";
             foreach($this->client_callback_uris as $value) {
                 echo "    $value\n";
