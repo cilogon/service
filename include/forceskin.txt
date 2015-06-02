@@ -2,3 +2,4 @@ https://login.ligo.org/idp/shibboleth LIGO
 https://login2.ligo.org/idp/shibboleth LIGO
 https://login3.ligo.org/idp/shibboleth LIGO
 https://login4.ligo.org/idp/shibboleth LIGO
+https://dev.seedme.org/cilogon/response SeedMe
