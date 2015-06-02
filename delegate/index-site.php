@@ -802,6 +802,11 @@ function verifyOAuthToken($token='') {
         $retval = true;
     }
 
+    // As a final check, see if this portal requires a certain skin
+    if ($retval) {
+        checkForceSkin(util::getSessionVar('callbackuri'));
+    }
+
     return $retval;
 }
 
