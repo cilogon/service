@@ -1413,6 +1413,27 @@ function handleGotUser() {
 function gotUserSuccess() {
     global $skin;
 
+    // Extra security check: Once the user has successfully authenticated
+    // with an IdP, verify that the chosen IdP was actually whitelisted.
+    // If not, then set error message and show Select an Identity Provider
+    // page again.
+    $idps = getCompositeIdPList();
+    $providerId = util::getSessionVar('idp');
+    if ((strlen($providerId) > 0) && (!isset($idps[$providerId]))) {
+        util::setSessionVar('logonerror',
+            'Invalid IdP selected. Please try again.');
+        util::sendErrorAlert('Authentication attempt using non-whitelisted IdP',
+'A user successfully authenticated with an IdP, however, the 
+selected IdP was not in the list of whitelisted IdPs as determined 
+by the current skin. This might indicate the user attempted to 
+circumvent the security check in "gotUserSuccess()" for valid 
+IdPs for the skin.');
+        util::unsetCookieVar('providerId');
+        unsetGetUserSessionVars();
+        printLogonPage();
+        return;
+    }
+
     $status = util::getSessionVar('status');
 
     // If this is the first time the user has used the CILogon Service, we
@@ -1973,23 +1994,32 @@ function reformatDN($dn) {
 
 /************************************************************************
  * Function   : checkForceSkin                                          *
- * Parameter  : The entityId of the user-selected IdP.                  *
+ * Parameter  : The entityId of the user-selected IdP, OR the           *
+ *              callbackuri of the current portal.                      *
  * Side Effect: Sets the "cilogon_skin" session variable if needed.     *
  * This function checks the forceskin.txt file to see if the passed-in  *
- * entityId requires the use of a particular skin. This file has lines  *
- * consisting of "entityId skinname" pairs. An entry in this file means *
- * that when a user selects that IdP, he is forced to use the           *
- * specified skin. This is accomplished by setting the cilogon_skin     *
- * session variable.                                                    *
+ * entityId or portal callbackuri requires the use of a particular      *
+ * skin. The forceskin.txt file has lines consisting of                 *
+ * "entityId skinname" or "callbackuri skinname" pairs. An entry in     *
+ * this file means that when a user selects that IdP or comes from that *
+ * portal, he is forced to use the specified skin. This is accomplished *
+ * by setting the cilogon_skin session variable and re-initializing the *
+ * global $skin variable.                                               *
  ************************************************************************/
-function checkForceSkin($entityId) {
+function checkForceSkin($entityorcallback='') {
     global $skin;
 
-    $forceskinfile = '/var/www/html/include/forceskin.txt';
-    $idps = util::readArrayFromFile($forceskinfile);
-    if (array_key_exists($entityId,$idps)) {
-        util::setSessionVar('cilogon_skin',$idps[$entityId]);
-        $skin->__construct(); // Need to reinitialize the skinname
+    if (strlen($entityorcallback) > 0) {
+        $forceskinfile = '/var/www/html/include/forceskin.txt';
+        $ar = util::readArrayFromFile($forceskinfile);
+        if (array_key_exists($entityorcallback,$ar)) {
+            util::setSessionVar('cilogon_skin',$ar[$entityorcallback]);
+            // Need to reinitialize the global $skin by calling methods in
+            // $skin->__construct(), but ignoring GET or POST parameters.
+            $skin->readSkinName(true);
+            $skin->setMyProxyInfo();
+            $skin->readConfigFile();
+        }
     }
 }
 
