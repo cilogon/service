@@ -70,6 +70,10 @@ class skin {
 
     /********************************************************************
      * Function  : readSkinName                                         *
+     * Parameter : skipgetpost - If true, do not try to read one of     *
+     *             the various "skin" or "vo" query string GET or form  *
+     *             POST parameters, using only the "cilogon_skin" PHP   *
+     *             session value. Defaults to false.                    *
      * Get the name of the skin and store it in the class variable      *
      * $skinname.  This function checks for the name of the skin in     *
      * several places: (1) In a URL parameter (can be "?skin=",         *
@@ -80,22 +84,27 @@ class skin {
      * class variable $skinname AND the "cilogon_skin" PHP session      *
      * variable (for use on future page loads by the user).             *
      ********************************************************************/
-    function readSkinName() {
+    function readSkinName($skipgetpost=false) {
         $this->skinname = '';
 
-        // First, look for "?skin=..."
-        $skinvar = util::getGetVar('skin');
-        if (strlen($skinvar) == 0) {
-            // Next, look for "?cilogon_skin=..."
-            $skinvar = util::getGetVar('cilogon_skin');
-        }
-        if (strlen($skinvar) == 0) {
-            // Next, look for "?vo=..."
-            $skinvar = util::getGetVar('vo');
-        }
-        if (strlen($skinvar) == 0) {
-            // Next, check "cilogon_vo" form input variable
-            $skinvar = util::getPostVar('cilogon_vo');
+        $skinvar = '';
+        if (!$skipgetpost) {
+            if (strlen($skinvar) == 0) {
+                // First, look for "?skin=..."
+                $skinvar = util::getGetVar('skin');
+            }
+            if (strlen($skinvar) == 0) {
+                // Next, look for "?cilogon_skin=..."
+                $skinvar = util::getGetVar('cilogon_skin');
+            }
+            if (strlen($skinvar) == 0) {
+                // Next, look for "?vo=..."
+                $skinvar = util::getGetVar('vo');
+            }
+            if (strlen($skinvar) == 0) {
+                // Next, check "cilogon_vo" form input variable
+                $skinvar = util::getPostVar('cilogon_vo');
+            }
         }
         if (strlen($skinvar) == 0) {
             // Finally, check "cilogon_skin" PHP session variable
