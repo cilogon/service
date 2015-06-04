@@ -54,7 +54,7 @@ function printHeader($title='',$extra='',$csrfcookie=true) {
     $skinpoweredbyimg = (string)$skin->getConfigOption('poweredbyimg');
     if ((!is_null($skinpoweredbyimg)) && 
         (strlen($skinpoweredbyimg) > 0) &&
-        (is_readable($_SERVER{'DOCUMENT_ROOT'} . $skinpoweredbyimg))) {
+        (is_readable('/var/www/html' . $skinpoweredbyimg))) {
         $poweredbyimg = $skinpoweredbyimg;
     }
 
@@ -988,6 +988,8 @@ function printHelpButton() {
  * If all checks are good, then this function returns true.             *
  ************************************************************************/
 function verifyCurrentSession($providerId='') {
+    global $skin;
+
     $retval = false;
 
     $uid       = util::getSessionVar('uid');
@@ -1003,6 +1005,11 @@ function verifyCurrentSession($providerId='') {
         if ((strlen($providerId) == 0) || ($providerId == $idp)) {
             $retval = true;
         }
+    }
+
+    // As a final check, see if the IdP requires a forced skin
+    if ($retval) {
+        $skin->init();
     }
 
     return $retval;
@@ -1077,15 +1084,9 @@ function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
 
     // If providerId not set, try the session and cookie values
     if (strlen($providerId) == 0) {
-        $providerId = util::getSessionVar('providerId');
-        if (strlen($providerId) == 0) {
-            $providerId = util::getCookieVar('providerId');
-        }
+        $providerId = util::getCookieVar('providerId');
     }
     
-    // Check if this IdP requires the use of a particular 'skin'
-    checkForceSkin($providerId);
-
     // If the user has a valid 'uid' in the PHP session, and the
     // providerId matches the 'idp' in the PHP session, then 
     // simply go to the main page.
@@ -1294,6 +1295,7 @@ function unsetPortalSessionVars() {
  * values).  If not, we print an error message to the user.             *
  ************************************************************************/
 function handleGotUser() {
+    global $skin;
     global $log;
 
     $uid = util::getSessionVar('uid');
@@ -1391,11 +1393,31 @@ function handleGotUser() {
         ';
         printFooter();
     } else { // Got one of the STATUS_OK status codes
-        // Check if two-factor authn is enabled and proceed accordingly
-        if (twofactor::getEnabled() == 'none') {
-            gotUserSuccess();
-        } else {
-            twofactor::printPage();
+        // Extra security check: Once the user has successfully authenticated
+        // with an IdP, verify that the chosen IdP was actually whitelisted.
+        // If not, then set error message and show Select an Identity Provider
+        // page again.
+        $skin->init();  // Check for forced skin
+        $idps = getCompositeIdPList();
+        $providerId = util::getSessionVar('idp');
+        if ((strlen($providerId) > 0) && (!isset($idps[$providerId]))) {
+            util::setSessionVar('logonerror',
+                'Invalid IdP selected. Please try again.');
+            util::sendErrorAlert('Authentication attempt using non-whitelisted IdP',
+    'A user successfully authenticated with an IdP, however, the 
+selected IdP was not in the list of whitelisted IdPs as determined 
+by the current skin. This might indicate the user attempted to 
+circumvent the security check in "handleGotUser()" for valid 
+IdPs for the skin.');
+            util::unsetCookieVar('providerId');
+            unsetGetUserSessionVars();
+            printLogonPage();
+        } else { // Check if two-factor authn is enabled and proceed accordingly
+            if (twofactor::getEnabled() == 'none') {
+                gotUserSuccess();
+            } else {
+                twofactor::printPage();
+            }
         }
     }
 }
@@ -1412,27 +1434,6 @@ function handleGotUser() {
  ************************************************************************/
 function gotUserSuccess() {
     global $skin;
-
-    // Extra security check: Once the user has successfully authenticated
-    // with an IdP, verify that the chosen IdP was actually whitelisted.
-    // If not, then set error message and show Select an Identity Provider
-    // page again.
-    $idps = getCompositeIdPList();
-    $providerId = util::getSessionVar('idp');
-    if ((strlen($providerId) > 0) && (!isset($idps[$providerId]))) {
-        util::setSessionVar('logonerror',
-            'Invalid IdP selected. Please try again.');
-        util::sendErrorAlert('Authentication attempt using non-whitelisted IdP',
-'A user successfully authenticated with an IdP, however, the 
-selected IdP was not in the list of whitelisted IdPs as determined 
-by the current skin. This might indicate the user attempted to 
-circumvent the security check in "gotUserSuccess()" for valid 
-IdPs for the skin.');
-        util::unsetCookieVar('providerId');
-        unsetGetUserSessionVars();
-        printLogonPage();
-        return;
-    }
 
     $status = util::getSessionVar('status');
 
@@ -1857,7 +1858,7 @@ function generateP12() {
 
         if (strlen($cert2) > 0) { // Successfully got a certificate!
             /* Create a temporary directory in /var/www/html/pkcs12/ */
-            $tdirparent = util::getServerVar('DOCUMENT_ROOT') . '/pkcs12/';
+            $tdirparent = '/var/www/html/pkcs12/';
             $polonum = '3';   // Prepend the polo? number to directory
             if (preg_match('/(\d+)\./',php_uname('n'),$polomatch)) {
                 $polonum = $polomatch[1];
@@ -1990,37 +1991,6 @@ function reformatDN($dn) {
         }
     }
     return $newdn;
-}
-
-/************************************************************************
- * Function   : checkForceSkin                                          *
- * Parameter  : The entityId of the user-selected IdP, OR the           *
- *              callbackuri of the current portal.                      *
- * Side Effect: Sets the "cilogon_skin" session variable if needed.     *
- * This function checks the forceskin.txt file to see if the passed-in  *
- * entityId or portal callbackuri requires the use of a particular      *
- * skin. The forceskin.txt file has lines consisting of                 *
- * "entityId skinname" or "callbackuri skinname" pairs. An entry in     *
- * this file means that when a user selects that IdP or comes from that *
- * portal, he is forced to use the specified skin. This is accomplished *
- * by setting the cilogon_skin session variable and re-initializing the *
- * global $skin variable.                                               *
- ************************************************************************/
-function checkForceSkin($entityorcallback='') {
-    global $skin;
-
-    if (strlen($entityorcallback) > 0) {
-        $forceskinfile = '/var/www/html/include/forceskin.txt';
-        $ar = util::readArrayFromFile($forceskinfile);
-        if (array_key_exists($entityorcallback,$ar)) {
-            util::setSessionVar('cilogon_skin',$ar[$entityorcallback]);
-            // Need to reinitialize the global $skin by calling methods in
-            // $skin->__construct(), but ignoring GET or POST parameters.
-            $skin->readSkinName(true);
-            $skin->setMyProxyInfo();
-            $skin->readConfigFile();
-        }
-    }
 }
 
 /************************************************************************
