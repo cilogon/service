@@ -100,12 +100,9 @@ function printLogonPage() {
  * (i.e. without stopping at a WAYF).                                   *
  ************************************************************************/
 function redirectToTestIdP($providerId='') {
-    // If providerId not set, try the session and cookie values
+    // If providerId not set, try the cookie value
     if (strlen($providerId) == 0) {
-        $providerId = util::getSessionVar('providerId');
-        if (strlen($providerId) == 0) {
-            $providerId = util::getCookieVar('providerId');
-        }
+        $providerId = util::getCookieVar('providerId');
     }
     
     // Set up the "header" string for redirection thru mod_shib
