@@ -68,6 +68,7 @@ if (verifyOIDCParams()) {
                 ((isset($clientparams['state'])) ? 
                     '&state='.$clientparams['state'] : '');
             util::unsetSessionVar('clientparams');
+            util::unsetSessionVar('cilogon_skin');
             unsetGetUserSessionVars();
             header($redirect);
         break; // End case 'Cancel'
@@ -319,6 +320,7 @@ function printMainPage() {
     }
 
     util::unsetSessionVar('clientparams');
+    util::unsetSessionVar('cilogon_skin');
     unsetGetUserSessionVars();
     header($redirect);
 }
@@ -474,6 +476,7 @@ function verifyOIDCParams() {
                                 // Got "error" - simply return to OIDC client
                                 $clientparams = array();
                                 util::unsetSessionVar('clientparams');
+                                util::unsetSessionVar('cilogon_skin');
                                 unsetGetUserSessionVars();
                                 header("Location: $redirect_url");
                                 exit; // No further processing necessary
