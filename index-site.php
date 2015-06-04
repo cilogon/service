@@ -104,14 +104,16 @@ switch ($submit) {
  * OpenID script.                                                       *
  ************************************************************************/
 function printLogonPage($clearcookies=false) {
+    global $skin;
     global $log;
-
-    $log->info('Welcome page hit.');
 
     if ($clearcookies) {
         util::removeShibCookies();
         unsetGetUserSessionVars();
+        $skin->init(true);  // Clear cilogon_skin var; check for forced skin
     }
+
+    $log->info('Welcome page hit.');
 
     util::setSessionVar('stage','logon'); // For Show/Hide Help button clicks
 
