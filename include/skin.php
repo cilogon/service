@@ -1,5 +1,7 @@
 <?php
 
+require_once('util.php');
+
 /************************************************************************
  * Class name : skin                                                    *
  * Description: This class reads in CSS and configuration options       *
@@ -56,55 +58,96 @@ class skin {
     // A SimpleXMLElement object for the config.xml file
     protected $configxml;
 
+    // An array of (URI,skinname) pairs for forcing skin application
+    protected $forcearray;
+    protected $forceskinfileread = false;
+
     /********************************************************************
      * Function  : __construct - default constructor                    *
      * Returns   : A new skin object.                                   *
-     * Default constructor.  Finds the name of the skin (if any) and    *
-     * reads in the config.xml file (if present).                       *
+     * Default constructor. Calls init() to do the actual work.         *
      ********************************************************************/
     function __construct() {
-        $this->readSkinName();
-        $this->setMyProxyInfo();
-        $this->readConfigFile();
+        $this->init();
     }
 
     /********************************************************************
-     * Function  : readSkinName                                         *
-     * Parameter : skipgetpost - If true, do not try to read one of     *
-     *             the various "skin" or "vo" query string GET or form  *
-     *             POST parameters, using only the "cilogon_skin" PHP   *
-     *             session value. Defaults to false.                    *
+     * Function  : init                                                 *
+     * Parameter : True to reset the 'cilogon_skin' PHP session var to  *
+     *             blank so that findSkinName doesn't check for it.     *
+     *             Defaults to 'false'.                                 *
+     * This function does the work of (re)initializing the skin object. *
+     * It finds the name of the skin (if any) and reads in the skin's   *
+     * config.xml file (if present). Call this function to reset the    *
+     * skin in case of possible forced skin due to IdP or portal        *
+     * callbackURL.                                                     *
+     ********************************************************************/
+    function init($reset=false) {
+        if ($reset) {
+            util::unsetSessionVar('cilogon_skin');
+        }
+
+        // Read the forceskin.txt file into an array, just once
+        if (!$this->forceskinfileread) {
+            $this->forceskinfileread = true;
+            $this->forcearray = util::readArrayFromFile(
+                '/var/www/html/include/forceskin.txt');
+        }
+
+        $this->findSkinName();
+        $this->readConfigFile();
+        $this->setMyProxyInfo();
+    }
+
+    /********************************************************************
+     * Function  : findSkinName                                         *
+     * Side Effect: Sets the "cilogon_skin" session variable if needed. *
      * Get the name of the skin and store it in the class variable      *
      * $skinname.  This function checks for the name of the skin in     *
-     * several places: (1) In a URL parameter (can be "?skin=",         *
-     * "?cilogon_skin=", "?vo=") (2) cilogon_vo form input variable     *
-     * and (3) "cilogon_skin" PHP session variable.  If it finds the    *
-     * skin name in any of these, it then checks to see if such a named *
-     * 'skin/..." directory exists on the server.  If so, it sets the   *
-     * class variable $skinname AND the "cilogon_skin" PHP session      *
-     * variable (for use on future page loads by the user).             *
+     * several places: (1) The forceskin.txt file for a matching IdP    *
+     * entityID or portal callbackURL, (2) in a URL parameter (can be   *
+     * "?skin=", "?cilogon_skin=", "?vo="), (3) cilogon_vo form input   *
+     * variable (POST for ECP case), or (4) "cilogon_skin" PHP session  *
+     * variable.  If it finds the skin name in any of these, it then    *
+     * checks to see if such a named 'skin/..." directory exists on the *
+     * server. If so, it sets the class variable $skinname AND the      *
+     * "cilogon_skin" PHP session variable (for use on future page      *
+     * loads by the user).                                              *
      ********************************************************************/
-    function readSkinName($skipgetpost=false) {
+    function findSkinName() {
         $this->skinname = '';
-
         $skinvar = '';
-        if (!$skipgetpost) {
-            if (strlen($skinvar) == 0) {
-                // First, look for "?skin=..."
-                $skinvar = util::getGetVar('skin');
+
+        // Check for matching IdP or callbackURI in the forceskin.txt file
+        $uristocheck = array(util::getSessionVar('idp'),
+                             util::getSessionVar('callbackuri'));
+        foreach ($uristocheck as $value) {
+            if (strlen($value) > 0) {
+                $skin = $this->getForceSkin($value);
+                if (strlen($skin) > 0) {
+                    $skinvar = $skin;
+                    break;
+                }
             }
-            if (strlen($skinvar) == 0) {
-                // Next, look for "?cilogon_skin=..."
-                $skinvar = util::getGetVar('cilogon_skin');
-            }
-            if (strlen($skinvar) == 0) {
-                // Next, look for "?vo=..."
-                $skinvar = util::getGetVar('vo');
-            }
-            if (strlen($skinvar) == 0) {
-                // Next, check "cilogon_vo" form input variable
-                $skinvar = util::getPostVar('cilogon_vo');
-            }
+        }
+
+        // If no force skin found, check GET and POST parameters, as well as
+        // previously set cilogon_skin PHP session variable.
+        if (strlen($skinvar) == 0) {
+            // First, look for "?skin=..."
+            $skinvar = util::getGetVar('skin');
+        }
+        if (strlen($skinvar) == 0) {
+            // Next, look for "?cilogon_skin=..."
+            $skinvar = util::getGetVar('cilogon_skin');
+        }
+        if (strlen($skinvar) == 0) {
+            // Next, look for "?vo=..."
+            $skinvar = util::getGetVar('vo');
+        }
+        if (strlen($skinvar) == 0) {
+            // Next, check "cilogon_vo" form input variable
+            $skinvar = util::getPostVar('cilogon_vo');
         }
         if (strlen($skinvar) == 0) {
             // Finally, check "cilogon_skin" PHP session variable
@@ -113,10 +156,10 @@ class skin {
 
         // If we found $skinvar, check to see if a skin directory with that
         // name exists.  Loop through all skin directories so we can do a
-        // case-insenstive comparison.  If we find a match, set skinname.
+        // case-insenstive comparison. If we find a match, set skinname.
         $found = false;
         if (strlen($skinvar) > 0) {
-            $basedir = $_SERVER{'DOCUMENT_ROOT'} . '/skin';
+            $basedir = '/var/www/html/skin';
             if ($handle = opendir($basedir)) {
                 while ((false !== ($file=readdir($handle))) && (!$found)) {
                     if (($file != '.') && ($file != '..') && 
@@ -140,7 +183,7 @@ class skin {
      * Returns   : The name of the skin stored in the protected class   *
      *             variable $skinname.                                  *
      * This function returns the name of the skin.  Note that you must  *
-     * call readSkinName to set the name of the skin.                   *
+     * call findSkinName to set the name of the skin.                   *
      ********************************************************************/
     function getSkinName() {
         return $this->skinname;
@@ -160,10 +203,9 @@ class skin {
 
         /* Note that if $this->skinname is blank, then we are simply    *
          * reading the config.xml file at the top-level skin directory. */
-        if (is_readable($_SERVER{'DOCUMENT_ROOT'} . '/skin/' . 
-                     $this->skinname . '/config.xml')) {
-            $xml = @simplexml_load_file($_SERVER{'DOCUMENT_ROOT'} . 
-                   '/skin/' . $this->skinname . '/config.xml');
+        $skinconf = '/var/www/html/skin/' . $this->skinname . '/config.xml';
+        if (is_readable($skinconf)) {
+            $xml = @simplexml_load_file($skinconf);
             if ($xml !== false) {
                 $this->configxml = $xml;
             }
@@ -223,7 +265,7 @@ class skin {
      ********************************************************************/
     function printSkinLink() {
         if ((strlen($this->skinname) > 0) &&
-            (is_readable($_SERVER{'DOCUMENT_ROOT'} . '/skin/' . 
+            (is_readable('/var/www/html/skin/' . 
                          $this->skinname . '/skin.css'))) {
             echo '
             <link rel="stylesheet" type="text/css" 
@@ -418,6 +460,30 @@ class skin {
                     $retval = true;
                     break;
                 }
+            }
+        }
+        return $retval;
+    }
+
+    /********************************************************************
+     * Function  : getForceSkin                                         *
+     * Parameter : A URI to search for in the forceskin.txt file.       *
+     * Returns   : The skin name for the URI, or empty string if not    *
+     *             found.                                               *
+     * The forceskin.txt file contains "uripattern skinname" pairs      *
+     * corresponding to IdP entityIDs or portal callbackurls that       *
+     * should have a particular skin force-applied. This function looks *
+     * in the forceskin.txt file for a pattern-matched URI and returns  *
+     * the corresponding skin name if found. If not found, empty        *
+     * string is returned.                                              *
+     ********************************************************************/
+    function getForceSkin($uri) {
+        $retval = '';  // Assume uri is not in forceskin.txt
+
+        foreach ($this->forcearray as $key => $value) {
+            if (preg_match($key,$uri)) {
+                $retval = $value;
+                break;
             }
         }
         return $retval;
