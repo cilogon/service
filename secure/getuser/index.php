@@ -115,7 +115,8 @@ function getPKCS12() {
     global $log;
 
     getUID(); // Get the user's database user ID, put info in PHP session
-    checkForceSkin(util::getSessionVar('idp')); // Force a skin to be used?
+
+    $skin->init(); // Check for forced skin
 
     // If 'status' is not STATUS_OK*, then return error message
     if (util::getSessionVar('status') & 1) { // Bad status codes are odd
@@ -186,7 +187,8 @@ function getCert() {
     }
 
     getUID(); // Get the user's database user ID, put info in PHP session
-    checkForceSkin(util::getSessionVar('idp')); // Force a skin to be used?
+
+    $skin->init(); // Check for forced skin
 
     // If 'status' is not STATUS_OK*, then return error message
     if (util::getSessionVar('status') & 1) { // Bad status codes are odd
