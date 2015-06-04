@@ -311,6 +311,7 @@ class util {
      * where "key" and "value" are separated by whitespace.  The "key"  *
      * portion of the string may not contain any whitespace, but the    *
      * "value" part of the line may contain whitespace. Any empty lines *
+     * or lines starting with '#" (comments, without leading spaces)    *
      * in the file are skipped.  Note that this assumes that each "key" *
      * in the file is unique.  If there is any problem reading the      *
      * file, the resulting array will be empty.                         *
@@ -318,10 +319,13 @@ class util {
     public static function readArrayFromFile($filename) {
         $retarray = array();
         if (is_readable($filename)) {
-            $lines = file($filename,FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
-            foreach ($lines as $line_num => $line) {
-                $values = preg_split('/\s+/',$line,2);
-                $retarray[$values[0]] = @$values[1];
+            $lines = file($filename,
+                          FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+            foreach ($lines as $line) {
+                if (substr($line,0,1) != '#') { // Skip '#' comment lines
+                    $values = preg_split('/\s+/',$line,2);
+                    $retarray[$values[0]] = @$values[1];
+                }
             }
         }
 
