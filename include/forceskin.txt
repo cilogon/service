@@ -1,5 +1,21 @@
-https://login.ligo.org/idp/shibboleth LIGO
-https://login2.ligo.org/idp/shibboleth LIGO
-https://login3.ligo.org/idp/shibboleth LIGO
-https://login4.ligo.org/idp/shibboleth LIGO
-https://dev.seedme.org/cilogon/response SeedMe
+# This file contains IdPs and Portals that should have a skin 
+# applied by force. Each line of the file has the following format:
+#
+#    URI skinname
+#
+# Blank lines and lines beginning with '#' (no leading spaces) are skipped.
+#
+# The URI must be a PHP PCRE (Perl-Compatible Regular Expression). See
+# http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
+# Note that '#' should not be used as a delimiter since lines beginning with 
+# '#' (pound/hash) are skipped as comments. '%' (percent) is a good choice 
+# for delimiter so that slashes do not need to be escaped.
+#
+# The URI regex should match either an IdP entityID or a portal callbackURL.
+# In the case that both an IdP entityID and a portal callbackURL match, the
+# skinname for the IdP entityID takes precedence. Skinname is case-insensitive.
+
+%^https://login\d?\.ligo\.org/idp/shibboleth% LIGO
+%^https://.*\.?seedme.org% SeedMe
+
+# %:uiuc\.edu% OOI
