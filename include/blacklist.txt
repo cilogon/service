@@ -1,1 +1,7 @@
+# This file contains IdPs that are globally blacklisted for the 
+# CILogon service. Each line contains an IdP's entityId (as shown 
+# in the InCommon metadata).
+#
+# Blank lines and lines beginning with '#' (no leading spaces) are skipped.
+
 https://shibboleth.csupomona.edu/idp/shibboleth
