@@ -52,6 +52,9 @@ if (verifyOAuthToken(util::getGetVar('oauth_token'))) {
                 if (strlen($failureuri) > 0) {
                     $location = $failureuri . "?reason=cancel";
                 }
+                unsetGetUserSessionVars();
+                unsetPortalSessionVars();
+                util::unsetSessionVar('cilogon_skin');
                 header('Location: ' . $location);
             } else { // 'Cancel' button on certificate delegate page clicked
                 printCancelPage();
@@ -655,6 +658,7 @@ function handleAllowDelegation($always=false) {
             (util::getSessionVar($success ? 'successuri' : 'failureuri')));
         unsetGetUserSessionVars();
         unsetPortalSessionVars();
+        util::unsetSessionVar('cilogon_skin');
         header($location);
     } else {
         printHeader('Delegation ' . ($success ? 'Successful' : 'Failed'));
@@ -737,6 +741,7 @@ function handleAllowDelegation($always=false) {
         printFooter();
         unsetGetUserSessionVars();
         unsetPortalSessionVars();
+        util::unsetSessionVar('cilogon_skin');
     }
 }
 
@@ -774,6 +779,8 @@ function setPortalCookie($remember,$lifetime) {
  * populates the PHP session with the associated values.                *
  ************************************************************************/
 function verifyOAuthToken($token='') {
+    global $skin;
+
     $retval = false; // Assume OAuth session info is not valid
 
     // If passing in the OAuth $token, try to get the associated info
@@ -802,9 +809,9 @@ function verifyOAuthToken($token='') {
         $retval = true;
     }
 
-    // As a final check, see if this portal requires a certain skin
+    // As a final check, see if this portal requires a forced skin
     if ($retval) {
-        checkForceSkin(util::getSessionVar('callbackuri'));
+        $skin->init();
     }
 
     return $retval;
