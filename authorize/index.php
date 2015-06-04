@@ -446,11 +446,11 @@ function verifyOIDCParams() {
                 $info = curl_getinfo($ch);
                 if ($info !== false) {
                     if ((isset($info['http_code'])) &&
-                        ($info['http_code'] == 302)) {
-                        // The OA4MP OIDC server responded with a redirect to
-                        // the OIDC client. We need to check if the response
-                        // contains a "code" or an "error". If "code" then save
-                        // to session and authenticate the user. If "error",
+                        ($info['http_code'] == 200)) {
+                        // The OA4MP OIDC init endpoint responded with 200
+                        // success. We need to check if the response contains
+                        // a "code" or an "error". If "code" then save to
+                        // session and authenticate the user. If "error",
                         // then simply redirect error to OIDC client.
                         $redirect_url = '';
                         if (isset($info['redirect_url'])) {
@@ -515,10 +515,10 @@ function verifyOIDCParams() {
                                     }
                                 }
                             } else { // Weird params - Should never get here!
-                                util::sendErrorAlert('OA4MP OIDC 302 Error',
+                                util::sendErrorAlert('OA4MP OIDC 200 Error',
                                     'The OA4MP OIDC authorization endpoint '.
-                                    'returned a 302 redirect, but there ' .
-                                    'was no "code" or "error" query ' .
+                                    'returned a 200 success response, but ' .
+                                    'there was no "code" or "error" query ' .
                                     "parameter.\n\n" .
                                     "redirect_url = $redirect_url\n\n" .
                                     'clientparams = ' .
@@ -537,14 +537,14 @@ function verifyOIDCParams() {
                             $clientparams = array();
                         }
                     } else {
-                        // An HTTP return code other than 302 (redirect) means
-                        // that the OA4MP OIDC server tried to handle an
+                        // An HTTP return code other than 200 (success) means
+                        // that the OA4MP OIDC init endpoint tried to handle an
                         // unrecoverable error, possibly by outputting HTML.
                         // If so, then we ignore it and output our own error
                         // message to the user.
                         util::sendErrorAlert('OA4MP OIDC authz endpoint error',
                             'The OA4MP OIDC authorization endpoint returned ' . 
-                            'an HTTP response other than 302. ' .
+                            'an HTTP response other than 200. ' .
                             ((strlen($output) > 0) ? 
                                 "\n\nReturned output =\n$output" : '') .
                             "\n\n" .
