@@ -1,10 +1,12 @@
 https://idp.clemson.edu/idp/profile/SAML2/SOAP/ECP Clemson University
 https://login.ligo.org/idp/profile/SAML2/SOAP/ECP LIGO Scientific Collaboration
 https://shib.lternet.edu/idp/profile/SAML2/SOAP/ECP LTER Network
+https://as1.fim.psu.edu/idp/profile/SAML2/SOAP/ECP Penn State University
 https://idp.protectnetwork.org/protectnetwork-idp/profile/SAML2/SOAP/ECP ProtectNetwork
 https://shibboleth2.uchicago.edu/idp/profile/SAML2/SOAP/ECP University of Chicago
 https://shibboleth.illinois.edu/idp/profile/SAML2/SOAP/ECP University of Illinois at Urbana-Champaign
 https://shibboleth.umich.edu/idp/profile/SAML2/SOAP/ECP University of Michigan
+https://idp.utk.edu/idp/profile/SAML2/SOAP/ECP University of Tennessee
 https://incommon2.sso.utah.edu/idp/profile/SAML2/SOAP/ECP University of Utah
 https://idp.u.washington.edu/idp/profile/SAML2/SOAP/ECP University of Washington
 https://login.wisc.edu/idp/profile/SAML2/SOAP/ECP University of Wisconsin-Madison
