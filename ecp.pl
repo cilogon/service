@@ -42,6 +42,16 @@
 # * GET_CERT_URL is the CILogon endpoint for fetching a certificate or  #
 #   PKCS12 credential.                                                  #
 #                                                                       #
+# * The ECP_MAPFILE is the location on disk of a file that can map      #
+#   PAM_USER names to IDPUSER names. This is used when the "--pam"      #
+#   command line option is specified. The file consists of lines where  #
+#   the first entry is the PAM_USER username, and the rest of the line  #
+#   consists of command line options that should override the default   #
+#   options. For example, to map PAM_USER username of jsmith to         #
+#   the ProtectNetwork IdP username joesmith, add the following line    #
+#   to the ecp-mapfile:                                                 #
+#       jsmith --idpuser joesmith --idpname ProtectNetwork              #
+#                                                                       #
 #########################################################################
 
 use constant { 
@@ -49,6 +59,7 @@ use constant {
     ECP_IDPS_URL =>'https://cilogon.org/include/ecpidps.txt' ,
     DEFAULT_IDP  =>'University of Illinois at Urbana-Champaign' ,
     GET_CERT_URL =>'https://ecp.cilogon.org/secure/getcert/' ,
+    ECP_MAPFILE  =>'/etc/ecp-mapfile' ,
     HEADER_ACCEPT=>'text/html; application/vnd.paos+xml' ,
     HEADER_PAOS  =>'ver="urn:liberty:paos:2003-08";"urn:oasis:names:tc:SAML:2.0:profiles:SSO:ecp"' ,
 };
@@ -57,7 +68,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.024";
+our $VERSION = "0.025";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -112,27 +123,8 @@ my $relaystate = '';
 my $responseConsumerURL = '';
 my $assertionConsumerServiceURL = '';
 
-GetOptions(\%opts, 'help|h|?',
-                   'verbose|debug|v|d',
-                   'version|V',
-                   'quiet|q',
-                   'skipssl|s',
-                   'listidps|l',
-                   'idpname|n=s',
-                   'idpurl|e=s',
-                   'idpuser|u=s',
-                   'idppass|p=s',
-                   'get|g=s',
-                   'certreq|c=s',
-                   'lifetime|t=i',
-                   'inkey|i=s',
-                   'outkey|k=s',
-                   'vo|O=s',
-                   'out|o=s',
-                   'password|P=s',
-                   'twofactor|T=s',
-                   'proxyfile|1',
-                   'url|U=s') or pod2usage(-verbose=>1) && exit;
+# Scan @ARGV for valid command line options
+%opts = getCmdLineOpts();
 
 # If the user asked for help, print it and then exit.
 if (exists $opts{help}) {
@@ -167,6 +159,37 @@ if (exists $opts{listidps}) {
 }
 
 # If we made it this far, then we want to get something (like a cert).
+
+# If the user entered --pam, then check we are doing pam_exec. Make sure
+# that the PAM_TYPE is "auth". Check for the existence of the ECP_MAPFILE.
+# If found, check for the PAM_USER username. If found, manipulate @ARGV with
+# the configured command line options and call GetOptions again.
+if ((exists $opts{pam}) && ($ENV{PAM_TYPE} eq 'auth')) {
+    my $res = open(MAP,ECP_MAPFILE);
+    if (defined $res) {
+        my %ecphash = map { split(/\s+/,$_,2); } <MAP>;
+        close MAP;
+        if (defined $ecphash{$ENV{PAM_USER}}) {
+            @ARGV = ();
+            @ARGV = split(/\s+/,$ecphash{$ENV{PAM_USER}});
+            %opts = ();
+            %opts = getCmdLineOpts();
+        }
+    }
+    $opts{proxyfile} = 1;
+    $opts{certreq} = "create";
+    if (!exists $opts{lifetime}) {
+        $opts{lifetime} = 277;
+    }
+    if (!exists $opts{idpuser}) {
+        $opts{idpuser} = $ENV{PAM_USER};
+    }
+    if (!exists $opts{idppass}) {
+        my $passwd = <STDIN>;
+        chop $passwd;
+        $opts{idppass} = $passwd;
+    }
+}
 
 # Figure out if we should be verbose or quiet; verbose trumps quiet.
 if (exists $opts{quiet}) {
@@ -818,7 +841,41 @@ exit 0;
 
 
 
-
+#########################################################################
+# Subroutine: getCmdLineOpts()                                          #
+# Returns   : A hash of command line options read from @ARGV using      #
+#             GetOptions() (from Getopt::Long).                         #
+# This subroutine scans the @ARGV array for command line options and    #
+# return any found in a hash. This is a function since GetOptions       #
+# needs to be called more than once in the main program.                #
+#########################################################################
+sub getCmdLineOpts
+{
+    my %options = ();
+    GetOptions(\%options, 'help|h|?',
+                          'verbose|debug|v|d',
+                          'version|V',
+                          'quiet|q',
+                          'skipssl|s',
+                          'listidps|l',
+                          'idpname|n=s',
+                          'idpurl|e=s',
+                          'idpuser|u=s',
+                          'idppass|p=s',
+                          'get|g=s',
+                          'certreq|c=s',
+                          'lifetime|t=i',
+                          'inkey|i=s',
+                          'outkey|k=s',
+                          'vo|O=s',
+                          'out|o=s',
+                          'password|P=s',
+                          'twofactor|T=s',
+                          'proxyfile|1',
+                          'pam|m',
+                          'url|U=s') or pod2usage(-verbose=>1) && exit;
+    return %options;
+}
 
 #########################################################################
 # Subroutine: fetchIdps()                                               #
@@ -1249,6 +1306,49 @@ environment variable X509_USER_PROXY is set, that value will be used
 instead. Specifying this option overrides the B<--out> option, and sets the
 B<--get cert> option. Note that the program does not prompt for the
 B<--proxyfile> option, so you must specify it on the command line.
+
+=item B<-m>, B<--pam>
+
+This option can be used by the PAM (Pluggable Authentication Module)
+system's B<pam_exec> module to authenticate a user using ECP. Using the
+B<--pam> command line option automatically enables the B<--proxyfile>,
+B<--certreq> C<create>, and B<--lifetime> C<277> command line options. The
+B<--idpuser> I<username> value is set by the B<PAM_USER> environment
+variable. The B<--idppass> I<password> value is read from STDIN (i.e., the
+user is prompted for the IdP password).  One of B<--idpname> or B<--idpurl>
+option MUST be specified in the pam.d configuration file. An example PAM
+configuration line:
+
+=over
+
+auth sufficient pam_exec.so expose_authtok /usr/local/bin/ecp.pl --pam --idpurl https://shibboleth.illinois.edu/idp/profile/SAML2/SOAP/ECP
+
+=back
+
+C<auth> is the only supported PAM_TYPE. The C<expose_authtok> option is
+mandatory to prompt the user for a password and give the ecp.pl script
+access to that password. In this example, an ECP endpoint is specified using
+the B<--idpurl> command line option. 
+
+The B<--pam> option also supports an optional C<ecp-mapfile> (defaults to 
+I</etc/ecp-mapfile>) which can override the command line options specified in
+the pam.d configuration file on a user-by-user basis. This can be used to
+map the local B<PAM_USER> username to a different IdP URL and IdP username,
+for example. This file contains lines where the first entry of the line is
+the B<PAM_USER> username, and the rest of the line contains command line
+options for that user. For example, to map the local username jsmith to the
+ProtectNetwork IdP username joesmith, add the following line to
+I</etc/ecp-mapfile>:
+
+=over
+
+jsmith --idpname ProtectNetwork --idpuser joesmith
+
+=back
+
+Note that if the B<PAM_USER> name is found in the ecp-mapfile, one of
+B<--idpname> or B<--idpurl> MUST be specified since all options from the
+pam.d configuration file are ignored.
 
 =back
 
