@@ -74,7 +74,7 @@ $VERSION = eval $VERSION;
 use strict;
 use Term::ReadLine;
 use Term::UI;
-use Getopt::Long qw(:config bundling);
+use Getopt::Long qw(GetOptionsFromString :config bundling);
 use Pod::Usage;
 use LWP;
 use Crypt::SSLeay;
@@ -128,13 +128,13 @@ my $assertionConsumerServiceURL = '';
 
 # If the user asked for help, print it and then exit.
 if (exists $opts{help}) {
-    pod2usage(-verbose=>2) && exit;
+    pod2usage(-verbose=>2) && exit 1;
 }
 
 # If the user requested version number, print it and then exit.
 if (exists $opts{version}) {
     print "ecp.pl version '" . main->VERSION . "'\n";
-    exit;
+    exit 1;
 }
  
 # Check if the user wants to bypass SSL hostname verification
@@ -155,7 +155,7 @@ if (exists $opts{listidps}) {
     foreach my $key (sort keys %idps) {
         print "\e[1m$key\e[0m :\n    $idps{$key}\n";
     }
-    exit;
+    exit 1;
 }
 
 # If we made it this far, then we want to get something (like a cert).
@@ -170,10 +170,8 @@ if ((exists $opts{pam}) && ($ENV{PAM_TYPE} eq 'auth')) {
         my %ecphash = map { split(/\s+/,$_,2); } <MAP>;
         close MAP;
         if (defined $ecphash{$ENV{PAM_USER}}) {
-            @ARGV = ();
-            @ARGV = split(/\s+/,$ecphash{$ENV{PAM_USER}});
             %opts = ();
-            %opts = getCmdLineOpts();
+            %opts = getCmdLineOpts($ecphash{$ENV{PAM_USER}});
         }
     }
     $opts{proxyfile} = 1;
@@ -843,37 +841,51 @@ exit 0;
 
 #########################################################################
 # Subroutine: getCmdLineOpts()                                          #
-# Returns   : A hash of command line options read from @ARGV using      #
-#             GetOptions() (from Getopt::Long).                         #
-# This subroutine scans the @ARGV array for command line options and    #
-# return any found in a hash. This is a function since GetOptions       #
-# needs to be called more than once in the main program.                #
+# Parameter : (Optional) A string to scan for command line options.     #
+# Returns   : A hash of command line options read from @ARGV (or the    #
+#             passed-in string) using Getopt::Long.                     #
+# This subroutine scans either the @ARGV array or the passed-in string  #
+# for command line options and returns any found in a hash. This is a   #
+# function since GetOptions needs to be called more than once in the    #
+# main program.                                                         #
 #########################################################################
 sub getCmdLineOpts
 {
-    my %options = ();
-    GetOptions(\%options, 'help|h|?',
-                          'verbose|debug|v|d',
-                          'version|V',
-                          'quiet|q',
-                          'skipssl|s',
-                          'listidps|l',
-                          'idpname|n=s',
-                          'idpurl|e=s',
-                          'idpuser|u=s',
-                          'idppass|p=s',
-                          'get|g=s',
-                          'certreq|c=s',
-                          'lifetime|t=i',
-                          'inkey|i=s',
-                          'outkey|k=s',
-                          'vo|O=s',
-                          'out|o=s',
-                          'password|P=s',
-                          'twofactor|T=s',
-                          'proxyfile|1',
-                          'pam|m',
-                          'url|U=s') or pod2usage(-verbose=>1) && exit;
+    my $cmdline = shift;
+    my $ret;
+    my %options;
+    my @optdesc = ( 'help|h|?',
+                    'verbose|debug|v|d',
+                    'version|V',
+                    'quiet|q',
+                    'skipssl|s',
+                    'listidps|l',
+                    'idpname|n=s',
+                    'idpurl|e=s',
+                    'idpuser|u=s',
+                    'idppass|p=s',
+                    'get|g=s',
+                    'certreq|c=s',
+                    'lifetime|t=i',
+                    'inkey|i=s',
+                    'outkey|k=s',
+                    'vo|O=s',
+                    'out|o=s',
+                    'password|P=s',
+                    'twofactor|T=s',
+                    'proxyfile|1',
+                    'pam|m',
+                    'url|U=s' );
+    if (length($cmdline) > 0) {
+        $ret = GetOptionsFromString($cmdline,\%options,@optdesc);
+    } else {
+        $ret = GetOptions(\%options,@optdesc)
+    }
+    if (!$ret) {
+        pod2usage(-verbose=>1);
+        exit 1;
+    }
+
     return %options;
 }
 
