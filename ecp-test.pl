@@ -68,7 +68,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.025";
+our $VERSION = "0.026";
 $VERSION = eval $VERSION;
 
 use strict;
