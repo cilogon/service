@@ -11,7 +11,6 @@
   <portallist>
     <portal>#^https://.*\.nics\.tennessee\.edu.*/#</portal>
     <portal>#^https://.*\.nics\.utk\.edu.*/#</portal>
-    <portal>#^https://.*\.ncsa\.illinois\.edu.*/#</portal>
   </portallist>
 
   <portallistaction>
