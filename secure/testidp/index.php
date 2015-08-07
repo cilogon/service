@@ -25,10 +25,11 @@ if ($submit == ADD_SUBMIT_TEXT) {
     $whitelist = new whitelist();
     $entityID = $shibarray['Identity Provider'];
     if (($idplist->exists($entityID)) && ($whitelist->add($entityID))) {
-        $whitelist->write();  // Save new entityID to database
-        $idplist->create();   // Update the list of IdPs
-        $idplist->write();    // Save new IdP list to file
-        sendNotificationEmail();
+        $whitelist->write();     // Save new entityID to database
+        $idplist->create();      // Update the list of IdPs
+        $idplist->write();       // Save new IdP list to file
+        sendNotificationEmail(); // Send email to 'alerts@cilogon.org'
+        sendNotificationEmail('idp-updates@cilogon.org',false);
     }
 }
 printTestPage();
@@ -348,14 +349,17 @@ function printTestPage() {
 
 /************************************************************************
  * Function   : sendNotificationEmail                                   *
- * This function sends a notification email to the 'alerts@cilogon.org' *
- * mailing list when a new IdP has been added to the whitelist.         *
+ * Parameters : (1) (Optional) The destination email address; defaults  *
+ *                  to 'alerts@cilogon.org'.                            *
+ *              (2) (Optional) 'true' to include info about person      *
+ *                  who added the new IdP. Defaults to 'true'.          *
+ * This function sends a notification email to the specified email      *
+ * address when a new IdP has been added to the whitelist.              *
  ************************************************************************/
-function sendNotificationEmail() {
+function sendNotificationEmail($mailto='alerts@cilogon.org',$submitter=true) {
     global $shibarray;
 
     $entityID = $shibarray['Identity Provider'];
-    $mailto   = 'alerts@cilogon.org';
     $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
     $mailsubj = 'CILogon Service on ' . HOSTNAME . ' - ' .
@@ -365,31 +369,36 @@ CILogon Service - New Identity Provider Added
 ---------------------------------------------
 Organization = " . $shibarray['Organization Name'] . "
 (EntityId    = " . $shibarray['Identity Provider'] . ")
+";
 
+    if ($submitter) {
+        $mailmsg .= "
 Submitted by:
 ------------
 Name  = ";
 
-    if ((strlen($shibarray['First Name']) > 0) && 
-        (strlen($shibarray['Last Name']) > 0)) {
-        $mailmsg .= $shibarray['First Name'] . ' ' . $shibarray['Last Name'];
-    } else {
-        $mailmsg .= $shibarray['Display Name'];
-    }
+        if ((strlen($shibarray['First Name']) > 0) && 
+            (strlen($shibarray['Last Name']) > 0)) {
+            $mailmsg .= $shibarray['First Name'] . ' ' . 
+                        $shibarray['Last Name'];
+        } else {
+            $mailmsg .= $shibarray['Display Name'];
+        }
 
-    if (strlen($shibarray['Email Address']) > 0) {
-        $mailmsg .= "
+        if (strlen($shibarray['Email Address']) > 0) {
+            $mailmsg .= "
 Email = " . $shibarray['Email Address'];
-    }
+        }
 
-    if (strlen($shibarray['User Identifier']) > 0) {
-        $mailmsg .= "
+        if (strlen($shibarray['User Identifier']) > 0) {
+            $mailmsg .= "
 UID   = " . $shibarray['User Identifier'];
-    }
+        }
 
-    if (strlen($shibarray['Level of Assurance']) > 0) {
-        $mailmsg .= "
+        if (strlen($shibarray['Level of Assurance']) > 0) {
+            $mailmsg .= "
 LOA   = " . $shibarray['Level of Assurance'];
+        }
     }
 
     $mailmsg .= "\n";

@@ -52,7 +52,7 @@ function printUsage() {
 
 function sendNotificationEmail($rands) {
     $plural = (count($rands) > 1);
-    $mailto   = 'alerts@cilogon.org';
+    $mailto   = 'alerts@cilogon.org,idp-updates@cilogon.org';
     $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
     $mailsubj = 'CILogon Service on ' . php_uname('n') . ' - ' .
