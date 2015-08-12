@@ -665,6 +665,11 @@ Remote Address= ' . $remoteaddr . '
 
         // If 'status' is not STATUS_OK*, then send an error email
         if (util::getSessionVar('status') & 1) { // Bad status codes are odd
+            $mailto = 'alerts@cilogon.org';
+            // Fixes CIL-205 - Notify LIGO about IdP login errors
+            if (preg_match('/ligo\.org/',$databaseProviderId)) {
+                $mailto .= ',rt-auth@ligo.org';
+            }
             util::sendErrorAlert('Failure in ' . 
                                  (($loa == 'openid') ? '' : '/secure') .
                                  '/getuser/',
@@ -693,7 +698,8 @@ Remote Address= ' . $remoteaddr . '
                         $i : '<MISSING>') . "\n" .
                 'Status Code   = ' . ((strlen($i = array_search(
                     util::getSessionVar('status'),dbservice::$STATUS)) > 0) ? 
-                        $i : '<MISSING>')
+                        $i : '<MISSING>') ,
+                $mailto
             );
             util::unsetSessionVar('firstname');
             util::unsetSessionVar('lastname');
