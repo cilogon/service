@@ -447,11 +447,82 @@ function verifyOIDCParams() {
                 if ($info !== false) {
                     if ((isset($info['http_code'])) &&
                         ($info['http_code'] == 200)) {
-                        // The OA4MP OIDC init endpoint responded with 200
-                        // success. We need to check if the response contains
-                        // a "code" or an "error". If "code" then save to
-                        // session and authenticate the user. If "error",
-                        // then simply redirect error to OIDC client.
+                        // The OA4MP OIDC authz endpoint responded with 200
+                        // (success). The body of the message should be a
+                        // JSON token containing the appropriate parameters
+                        // such as the "code".
+                        $json = json_decode($output,true);
+                        if (isset($json['code'])) {
+                            // Got "code" - save to session and call 
+                            // dbService "getClient" to get info about
+                            // OIDC client to display to user
+                            $clientparams['redirect_url'] = 
+                                $clientparams['redirect_uri'] . '?' .
+                                    http_build_query($json);
+                            $clientparams['code'] = $json['code'];
+                            $dbs = new dbservice();
+                            if (($dbs->getClient(
+                                $clientparams['client_id'])) &&
+                                (!($dbs->status &1))) { // STATUS_OK is even
+                                $status = $dbs->status;
+                                $clientparams['clientstatus'] = $status;
+                                // STATUS_OK* codes are even-numbered
+                                if (!($status & 1)) {
+                                    $clientparams['client_name'] = 
+                                        $dbs->client_name;
+                                    $clientparams['client_home_uri'] = 
+                                        $dbs->client_home_uri;
+                                    $clientparams['client_callback_uris'] = 
+                                        $dbs->client_callback_uris;
+                                } else { // dbservice error 
+                                    $errstr = 'Unknown error.';
+                                    if (!is_null($dbs->status)) {
+                                        $errstr = array_search(
+                                            $dbs->status,
+                                            dbservice::$STATUS);
+                                    }
+                                    util::sendErrorAlert('dbService Error',
+                                        'Error calling dbservice ' . 
+                                        'action "getClient" in ' . 
+                                        'verifyOIDCParams() method. ' . 
+                                        $errstr);
+                                    $clientparams = array();
+                                }
+                            } else {
+                                util::sendErrorAlert('dbService Error',
+                                    'Error calling dbservice ' . 
+                                    'action "getClient" in ' . 
+                                    'verifyOIDCParams() method.');
+                                $clientparams = array();
+                            }
+                        } else {
+                            // Either the output returned was not a valid
+                            // JSON token, or there was no "code" found in
+                            // the returned JSON token. 
+                            util::sendErrorAlert('OA4MP OIDC authz endpoint error',
+                                'The OA4MP OIDC authorization endpoint ' . 
+                                'returned an HTTP response 200, but either ' .
+                                'the output was not a valid JSON token, or ' . 
+                                'there was no "code" in the JSON token. ' .
+                                ((strlen($output) > 0) ? 
+                                    "\n\nReturned output =\n$output" : '') .
+                                "\n\n" .
+                                'curl_getinfo = ' . print_r($info,true) . "\n\n" .
+                                'clientparams = ' . print_r($clientparams,true) . 
+                                "\n");
+                            util::setSessionVar('client_error_msg',
+                                'There was an unrecoverable error during the ' .
+                                'OpenID Connect transaction. This may be a ' .
+                                'temporary issue. CILogon system ' .
+                                'administrators have been notified.');
+                            $clientparams = array();
+                        }
+                    } elseif ((isset($info['http_code'])) &&
+                        ($info['http_code'] == 302)) {
+                        // The OA4MP OIDC authz endpoint responded with 302
+                        // (redirect) which indicates an OIDC error was 
+                        // detected. We need to check the response for an
+                        // "error" and simply redirect error to OIDC client.
                         $redirect_url = '';
                         if (isset($info['redirect_url'])) {
                             $redirect_url = $info['redirect_url'];
@@ -460,7 +531,7 @@ function verifyOIDCParams() {
                         // Get components of redirect_url - need "query"
                         $comps = parse_url($redirect_url);
                         if ($comps !== false) {
-                            // Look for "code" or "error" in query
+                            // Look for "error" in query
                             $query = '';
                             if (isset($comps['query'])) {
                                 $query = $comps['query'];
@@ -480,46 +551,12 @@ function verifyOIDCParams() {
                                 unsetGetUserSessionVars();
                                 header("Location: $redirect_url");
                                 exit; // No further processing necessary
-                            } elseif (isset($params['code'])) {
-                                // Got "code" - save to session and call 
-                                // dbService "getClient" to get info about
-                                // OIDC client to display to user
-                                $clientparams['code'] = $params['code'];
-                                $dbs = new dbservice();
-                                if (($dbs->getClient(
-                                    $clientparams['client_id'])) &&
-                                    (!($dbs->status &1))){ // STATUS_OK is even
-                                    $status = $dbs->status;
-                                    $clientparams['clientstatus'] = $status;
-                                    // STATUS_OK* codes are even-numbered
-                                    if (!($status & 1)) {
-                                        $clientparams['client_name'] = 
-                                            $dbs->client_name;
-                                        $clientparams['client_home_uri'] = 
-                                            $dbs->client_home_uri;
-                                        $clientparams['client_callback_uris'] = 
-                                            $dbs->client_callback_uris;
-                                    } else { // dbservice error 
-                                        $errstr = '';
-                                        if (!is_null($dbs->status)) {
-                                            $errstr = array_search(
-                                                $dbs->status,
-                                                dbservice::$STATUS);
-                                        }
-                                        util::sendErrorAlert('dbService Error',
-                                            'Error calling dbservice ' . 
-                                            ' action "getClient" in ' . 
-                                            'verifyOIDCParams() method. ' . 
-                                            $errstr);
-                                        $clientparams = array();
-                                    }
-                                }
                             } else { // Weird params - Should never get here!
-                                util::sendErrorAlert('OA4MP OIDC 200 Error',
-                                    'The OA4MP OIDC authorization endpoint '.
-                                    'returned a 200 success response, but ' .
-                                    'there was no "code" or "error" query ' .
-                                    "parameter.\n\n" .
+                                util::sendErrorAlert('OA4MP OIDC 302 Error',
+                                    'The OA4MP OIDC authz endpoint '.
+                                    'returned a 302 redirect (error) ' .
+                                    'response, but there was no "error" ' .
+                                    "query parameter.\n\n" .
                                     "redirect_url = $redirect_url\n\n" .
                                     'clientparams = ' .
                                     print_r($clientparams,true) . 
@@ -537,14 +574,15 @@ function verifyOIDCParams() {
                             $clientparams = array();
                         }
                     } else {
-                        // An HTTP return code other than 200 (success) means
-                        // that the OA4MP OIDC init endpoint tried to handle an
-                        // unrecoverable error, possibly by outputting HTML.
-                        // If so, then we ignore it and output our own error
-                        // message to the user.
+                        // An HTTP return code than 200 (success) or 302
+                        // (redirect) means that the OA4MP OIDC authz
+                        // endpoint tried to handle an unrecoverable error,
+                        // possibly by outputting HTML. If so, then we
+                        // ignore it and output our own error message to the
+                        // user.
                         util::sendErrorAlert('OA4MP OIDC authz endpoint error',
                             'The OA4MP OIDC authorization endpoint returned ' . 
-                            'an HTTP response other than 200. ' .
+                            'an HTTP response other than 200 or 302. ' .
                             ((strlen($output) > 0) ? 
                                 "\n\nReturned output =\n$output" : '') .
                             "\n\n" .
