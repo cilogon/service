@@ -295,8 +295,8 @@ function printWAYF($showremember=true,$incommonidps=false) {
                 preg_replace('/(University of California)\s*[,-]\s*/',
                              '$1, ',$idpName);
         }
-        uasort($idps,'strcasecmp');
     }
+    uasort($idps,'strcasecmp');
 
     foreach ($idps as $entityId => $idpName) {
         echo '    <option value="' , $entityId , '"';
