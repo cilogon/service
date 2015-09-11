@@ -289,8 +289,8 @@ function printWAYF($showremember=true,$incommonidps=false) {
 
     // Fix for CIL-174 - As suggested by Keith Hazelton, replace commas and
     // hypens with just commas. Resort list for correct alphabetization.
+    $regex = '/(University of California)\s*[,-]\s*/';
     foreach ($idps as $entityId => $idpName) {
-        $regex = '/(University of California)\s*[,-]\s*/';
         if (preg_match($regex,$idpName)) {
             $idps[$entityId] = preg_replace($regex,'$1, ',$idpName);
         }
