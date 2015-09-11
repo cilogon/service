@@ -290,10 +290,9 @@ function printWAYF($showremember=true,$incommonidps=false) {
     // Fix for CIL-174 - As suggested by Keith Hazelton, replace commas and
     // hypens with just commas. Resort list for correct alphabetization.
     foreach ($idps as $entityId => $idpName) {
-        if (preg_match('/(University of California)\s*[,-]\s*/',$idpName)) {
-            $idps[$entityId] = 
-                preg_replace('/(University of California)\s*[,-]\s*/',
-                             '$1, ',$idpName);
+        $regex = '/(University of California)\s*[,-]\s*/';
+        if (preg_match($regex,$idpName)) {
+            $idps[$entityId] = preg_replace($regex,'$1, ',$idpName);
         }
     }
     uasort($idps,'strcasecmp');
