@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 
+  <initialidp>https://idp.utk.edu/idp/shibboleth</initialidp>
+
+  <forceinitialidp>1</forceinitialidp>
+
   <delegate>
     <forcelifetime>12</forcelifetime>
     <forceremember>1</forceremember>
   </delegate>
 
-  <logonbuttontext>Continue</logonbuttontext>
-
   <portallist>
-    <portal>#^https://.*\.nics\.tennessee\.edu.*/#</portal>
-    <portal>#^https://.*\.nics\.utk\.edu.*/#</portal>
+    <portal>#^https://.*\.nics\.(tennessee|utk)\.edu.*/#</portal>
   </portallist>
 
   <portallistaction>
-    <hideportalinfo>1</hideportalinfo>
+    <allowforceinitialidp>1</allowforceinitialidp>
   </portallistaction>
 
 </config>
