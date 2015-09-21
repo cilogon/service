@@ -298,7 +298,9 @@ function printMainPage() {
 
     $dbs = new dbservice();
     if (($dbs->setTransactionState($clientparams['code'],
-        util::getSessionVar('uid'),util::getSessionVar('authntime'))) &&
+        util::getSessionVar('uid'),
+        util::getSessionVar('authntime'),
+        util::getSessionVar('loa'))) &&
         (!($dbs->status & 1))) { // STATUS_OK codes are even
         $redirect = 'Location: ' . $clientparams['redirect_url'];
         $log->info('setTransactionState succeeded, redirect to ' . $redirect);

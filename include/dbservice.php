@@ -459,6 +459,10 @@ class dbservice {
      * Parameters: (1) The 'code' as returned by the OAuth 2.0 server.  *
      *             (2) The database user UID.                           *
      *             (3) The Unix timestamp of the user authentication.   *
+     *             (4) The Level of Assurance: "" = basic (default),    *
+     *                 "openid" =  OpenID Connect (e.g., Google),       *
+     *                 "http://incommonfederation.org/assurance/silver" *
+     *                 = silver                                         *
      * Returns   : True if the servlet returned correctly. Else false.  *
      * This method calls the 'setTransactionState' action of the Oauth  *
      * 2.0 servlet to associate the Oauth 2.0 'code' with the database  *
@@ -469,12 +473,13 @@ class dbservice {
      * returns true. Check the "status" return value to verify that     *
      * the transaction state was set successfully.                      *
      ********************************************************************/
-    function setTransactionState($code,$uid,$authntime) {
+    function setTransactionState($code,$uid,$authntime,$loa='') {
         $this->setDBServiceURL(self::oauth2DBServiceURL);
         return $this->call('action=setTransactionState' .
             '&code=' . urlencode($code) .
             '&user_uid=' . urlencode($uid) .
-            '&auth_time=' . urlencode($authntime));
+            '&auth_time=' . urlencode($authntime) .
+            '&loa=' . urlencode($loa));
     }
 
     /********************************************************************
