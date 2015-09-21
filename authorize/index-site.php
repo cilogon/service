@@ -63,7 +63,8 @@ if (verifyOIDCParams()) {
             // If user clicked the 'Cancel' button, return to the
             // OIDC client with an error message.
             $redirect = 'Location: ' . $clientparams['redirect_uri'] .
-                '?error=access_denied&error_description=' . 
+                (preg_match('/\?/',$clientparams['redirect_uri'])?'&':'?') .
+                'error=access_denied&error_description=' . 
                 'User%20denied%20authorization%20request' .
                 ((isset($clientparams['state'])) ? 
                     '&state='.$clientparams['state'] : '');
@@ -154,18 +155,23 @@ function printLogonPage() {
         // (which gives a certificate containing first/last name AND email).
         $attrs = array();
         $scope = $clientparams['scope'];
+        if (preg_match('/openid/',$scope)){
+            $attrs['openid'] = true;
+        }
         if (preg_match('/email/',$scope)){
             $attrs['email'] = true;
         }
         if (preg_match('/profile/',$scope)) {
             $attrs['name'] = true;
         }
+        if (preg_match('/org.cilogon.userinfo/',$scope)) {
+            $attrs['cilogon'] = true;
+        }
         if (preg_match('/edu.uiuc.ncsa.myproxy.getcert/',$scope)) {
             $attrs['email'] = true;
             $attrs['name'] = true;
             $attrs['cert'] = true;
         }
-        $attrscount = count($attrs);
 
         echo '
           <br/>
@@ -177,33 +183,65 @@ function printLogonPage() {
           </p>
           ';
 
-        if ($attrscount > 0) {
-            echo '<p><em>By proceeding you agree to share your ';
-            if ($attrs['name']) {
-                echo 'name';
-                if ($attrscount == 2) {
-                    echo ' and ';
-                } elseif ($attrscount == 3) {
-                    echo ', ';
-                }
-                $attrscount--;
-            }
-            if ($attrs['email']) {
-                echo 'email address';
-                if ($attrscount == 2) {
-                    echo ' and ';
-                }
-            }
-            if ($attrs['cert']) {
-                echo 'X.509 certificate';
-            }
-            echo ' with "' , 
-              htmlspecialchars($clientparams['client_name']) ,
-              '"</em>.</p>
-            ';
-        }
+        echo '
+        <div>
+        <div id="details1" style="display:inline' , 
+        '"><span class="expander"><a 
+        href="javascript:showHideDiv(\'details\',-1)"><img 
+        src="/images/triright.gif" alt="&rArr;" width="14" height="14" /> 
+        Details</a></span>
+        </div>
+        <div id="details2" style="display:none' , 
+        '"><span class="expander"><a 
+        href="javascript:showHideDiv(\'details\',-1)"><img 
+        src="/images/tridown.gif" alt="&dArr;" width="14" height="14" /> 
+        Details</a></span>
+        </div>
+        <br class="clear" />
+        <div id="details3" style="display:none' , 
+        '">
+        ';
 
         printPortalInfo('1');
+
+        echo '
+          <p><em>By proceeding you agree to share the 
+          following information with "' , 
+          htmlspecialchars($clientparams['client_name']) ,
+          '"</em>:</p>
+          <ul>
+          ';
+        if ($attrs['openid']) {
+            echo '<li>Your CILogon username</li>';
+        }
+        if ($attrs['name']) {
+            echo '<li>Your name</li>';
+        }
+        if ($attrs['email']) {
+            echo '<li>Your email address</li>';
+        }
+        if ($attrs['cilogon']) {
+            echo '<li>Your username and affiliation from your identity provider</li>';
+        }
+        if ($attrs['cert']) {
+            echo '<li>A certificate that allows "' , 
+            htmlspecialchars($clientparams['client_name']) , 
+            '" to act on your behalf</li>';
+        }
+        echo '</ul>
+        ';
+
+        echo '</div>  <!-- meta3 -->
+        </div>  <!-- summary -->
+
+        <noscript>
+        <div class="nojs">
+        Javascript is disabled.  In order to expand the Details section,
+        please enable Javascript in your browser.
+        </div>
+        </noscript>
+        ';
+
     }
 
     printWAYF();
@@ -309,7 +347,8 @@ function printMainPage() {
         if (!is_null($dbs->status)) {
             $errstr = array_search($dbs->status,dbservice::$STATUS);
         }
-        $redirect = 'Location: ' . $clientparams['redirect_uri'] . '?' .
+        $redirect = 'Location: ' . $clientparams['redirect_uri'] . 
+            (preg_match('/\?/',$clientparams['redirect_uri'])?'&':'?') .
             'error=server_error&error_description=' . 
             'Unable%20to%20associate%20user%20UID%20with%20OIDC%20code' .
             ((isset($clientparams['state'])) ? 
@@ -459,8 +498,9 @@ function verifyOIDCParams() {
                             // dbService "getClient" to get info about
                             // OIDC client to display to user
                             $clientparams['redirect_url'] = 
-                                $clientparams['redirect_uri'] . '?' .
-                                    http_build_query($json);
+                                $clientparams['redirect_uri'] . 
+                                (preg_match('/\?/',$clientparams['redirect_uri'])?'&':'?') .
+                                http_build_query($json);
                             $clientparams['code'] = $json['code'];
                             $dbs = new dbservice();
                             if (($dbs->getClient(
