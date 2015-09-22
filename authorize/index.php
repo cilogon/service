@@ -134,12 +134,6 @@ function printLogonPage() {
     <div class="boxed">
     ';
 
-    printHelpButton();
-
-    echo '
-      <br />
-    ';
-
     // If the <hideportalinfo> option is set, do not show the portal info if
     // the OIDC redirect_uri is in the portal list.
     $showportalinfo = true;
@@ -175,41 +169,15 @@ function printLogonPage() {
 
         echo '
           <br/>
-          <p>"' , 
-          htmlspecialchars($clientparams['client_name']) , 
-          '" requests that you select an Identity Provider and click "' ,
-          getLogOnButtonText() ,
-          '". If you do not approve this request, do not proceed.
+          <p style="text-align:center"> <a target="_blank" href="' , 
+          htmlspecialchars($clientparams['client_home_uri']) , '">', 
+          htmlspecialchars($clientparams['client_name']) , '</a>' ,
+          ' requests access to the following information. 
+          If you do not approve this request, do not proceed.
           </p>
           ';
 
-        echo '
-        <div>
-        <div id="details1" style="display:inline' , 
-        '"><span class="expander"><a 
-        href="javascript:showHideDiv(\'details\',-1)"><img 
-        src="/images/triright.gif" alt="&rArr;" width="14" height="14" /> 
-        Details</a></span>
-        </div>
-        <div id="details2" style="display:none' , 
-        '"><span class="expander"><a 
-        href="javascript:showHideDiv(\'details\',-1)"><img 
-        src="/images/tridown.gif" alt="&dArr;" width="14" height="14" /> 
-        Details</a></span>
-        </div>
-        <br class="clear" />
-        <div id="details3" style="display:none' , 
-        '">
-        ';
-
-        printPortalInfo('1');
-
-        echo '
-          <p><em>By proceeding you agree to share the 
-          following information with "' , 
-          htmlspecialchars($clientparams['client_name']) ,
-          '"</em>:</p>
-          <ul>
+        echo '<ul style="max-width:660px;margin:0 auto">
           ';
         if ($attrs['openid']) {
             echo '<li>Your CILogon username</li>';
@@ -230,21 +198,9 @@ function printLogonPage() {
         }
         echo '</ul>
         ';
-
-        echo '</div>  <!-- meta3 -->
-        </div>  <!-- summary -->
-
-        <noscript>
-        <div class="nojs">
-        Javascript is disabled.  In order to expand the Details section,
-        please enable Javascript in your browser.
-        </div>
-        </noscript>
-        ';
-
     }
 
-    printWAYF();
+    printWAYF(true,false,$clientparams['selected_idp']);
 
     echo '
     </div> <!-- End boxed -->
