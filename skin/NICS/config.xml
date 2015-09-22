@@ -11,7 +11,7 @@
   </delegate>
 
   <portallist>
-    <portal>#^https://.*\.nics\.(tennessee|utk)\.edu/#</portal>
+    <portal>#^https?://.*\.nics\.(tennessee|utk)\.edu.*/#</portal>
   </portallist>
 
   <portallistaction>
