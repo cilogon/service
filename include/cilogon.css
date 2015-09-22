@@ -125,10 +125,10 @@ div.logoheader {
   font-family: Arial,sans-serif;
 }
 div.logoheader h1 {
-  background: transparent url("/images/cilogon-service-header.png") no-repeat top left;
+  background: transparent url("/images/cilogon-header.png") no-repeat top left;
   margin-top: 8px;
   margin-left: 5px;
-  width: 458px;
+  width: 273px;
   height: 64px;
   float: left;
 }
