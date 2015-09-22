@@ -219,13 +219,15 @@ function printFormHead($action='',$gsca=false) {
  *              (2) Show all InCommon IdPs in selection list?           *
  *                  True or false. Defaults to false, which means show  *
  *                  only whitelisted IdPs.                              *
+ *              (3) A client-side selected IdP (to be used by portals). *
+ *                  Defautls to no pre-selected IdP (empty string).     *
  * This function prints the list of IdPs in a <select> form element     *
  * which can be printed on the main login page to allow the user to     *
  * select "Where Are You From?".  This function checks to see if a      *
  * cookie for the 'providerId' had been set previously, so that the     *
  * last used IdP is selected in the list.                               *
  ************************************************************************/
-function printWAYF($showremember=true,$incommonidps=false) {
+function printWAYF($showremember=true,$incommonidps=false,$selected_idp='') {
     global $csrf;
     global $skin;
 
@@ -255,6 +257,16 @@ function printWAYF($showremember=true,$incommonidps=false) {
         }
     }
 
+    /* Check if a client selected an IdP for the transaction. If so, *
+     * verify that the IdP is in the list of available IdPs.         */
+    $useselectedidp = false;
+    if ((strlen($selected_idp) > 0) && (isset($idps[$selected_idp]))) {
+        $useselectedidp = true;
+        $providerId = $selected_idp;
+        /* Update the IdP selection list to show only this one IdP */
+        $idps = array($selected_idp => $idps[$selected_idp]);
+    }
+
     echo '
     <br />
     <div class="actionbox"';
@@ -271,7 +283,8 @@ function printWAYF($showremember=true,$incommonidps=false) {
       <form action="' , util::getScriptDir() , '" method="post">
       <fieldset>
 
-      <p>Select An Identity Provider:</p>
+      <p>' , ($useselectedidp ? 'Selected' : 'Select An') , 
+      ' Identity Provider:</p>
       ';
 
       // See if the skin has set a size for the IdP <select> list
@@ -281,10 +294,19 @@ function printWAYF($showremember=true,$incommonidps=false) {
           $selectsize = (int)$ils;
       }
 
+      // When selected_idp is used, list size should always be 1.
+      if ($useselectedidp) {
+          $selectsize = 1;
+      }
+
       echo '
       <p>
       <select name="providerId" id="providerId" size="' , $selectsize , '"
-       onkeypress="enterKeySubmit(event)" ondblclick="doubleClickSubmit()">
+       onkeypress="enterKeySubmit(event)" ondblclick="doubleClickSubmit()"' ,
+       /* Hide the drop-down arrow in Firefox and Chrome */
+      ($useselectedidp ?
+          'style="-moz-appearance:none;-webkit-appearance:none"' : '') ,
+       '>
     ';
 
     // Fix for CIL-174 - As suggested by Keith Hazelton, replace commas and
