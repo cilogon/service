@@ -95,6 +95,22 @@ class dbprops {
     }
 
     /********************************************************************
+     * Function  : getHostspec                                          *
+     * Returns   : The hostspec type for the selected database type.    *
+     *             Defaults to 'localhost'.                             *
+     * This is a convenience method which calls queryAttribute to get   *
+     * the hostspec, i.e., "host:port" to connect to. If the hostspec   *
+     * has not been configured in cilogon_ini_file, return 'localhost'. *
+     ********************************************************************/
+    function getHostspec() {
+        $hostspec = $this->queryAttribute('hostspec');
+        if (strlen($hostspec) == 0) {
+            $hostspec = 'localhost';
+        }
+        return $hostspec;
+    }
+
+    /********************************************************************
      * Function  : getDBConnect                                         *
      * Returns   : A PEAR DB object connected to a database, or null    *
      *             on error connecting to database.                     *
@@ -112,7 +128,7 @@ class dbprops {
             'username' => $this->getUsername(),
             'password' => $this->getPassword(),
             'database' => $this->getDatabase(),
-            'hostspec' => 'localhost'
+            'hostspec' => $this->getHostspec()
         );
 
         $opts = array(
