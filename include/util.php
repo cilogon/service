@@ -668,7 +668,7 @@ Remote Address= ' . $remoteaddr . '
             $mailto = 'alerts@cilogon.org';
             // Fixes CIL-205 - Notify LIGO about IdP login errors
             if (preg_match('/ligo\.org/',$databaseProviderId)) {
-                $mailto .= ',auth@ligo.org';
+                $mailto .= ',cilogon-alerts@ligo.org';
             }
             util::sendErrorAlert('Failure in ' . 
                                  (($loa == 'openid') ? '' : '/secure') .
