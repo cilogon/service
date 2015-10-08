@@ -900,7 +900,7 @@ function handleHelpButtonClicked() {
             printLogonPage();
         }
     } else {
-        printLogonPage(true);
+        printLogonPage();
     }
 }
 
