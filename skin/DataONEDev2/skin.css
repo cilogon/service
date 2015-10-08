@@ -1,0 +1,198 @@
+/***** Begin basic elements *****/
+body {
+  font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+  color: #666;
+}
+a,
+a:link,
+a:visited {
+  color: #27638C;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+} 
+a:hover,
+a:active {
+  text-decoration: underline;
+}
+/***** End basic elements *****/
+
+/***** Begin a few misc elements *****/
+div.boxed {
+  border: 1px solid #D6DDB9;
+}
+input.submit {
+  position: relative;
+  top: 0;
+  background: transparent url('/skin/DataONEDev2/blue-button.png') no-repeat left center;
+  border: 1px solid #fff;
+  color: #fff;
+  cursor: pointer;
+  font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+  font-size: 1.0em;
+  font-weight: bold;
+  margin: 0 4px;
+  padding: 2px 12px;
+  text-transform: uppercase;
+  outline: 1px solid #9BABB0;
+  -moz-border-radius: 4px;
+  -moz-outline-radius: 4px;
+  -webkit-border-radius: 4px;
+  
+  font-size: 0.8em;
+}
+input.submit:hover {
+  background-position: right center;
+  cursor: pointer;
+}
+/***** End a few misc element *****/
+
+/***** Begin the "CILogon Service" header at the top of each page *****/
+div.logoheader {
+  background: transparent url("/skin/DataONEDev2/preface-wrapper-bg.png") repeat-x top left;
+  height: 101px;
+}
+div.logoheader h1 {
+  background: transparent url("/skin/DataONEDev2/logo.png") no-repeat top left;
+  margin: 10px 9px;
+  width: 333px;
+  height: 77px;
+  float: left;
+}
+/***** End the "CILogon Service" header at the top of each page *****/
+
+/***** Begin certinfo table *****/
+table.certinfo,
+table.portalinfo1,
+table.portalinfo2 {
+  margin: 1em;
+  width: 96%;
+  border: 1px solid #D6DDB9;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+table.certinfo th,
+table.portalinfo1 th,
+table.portalinfo2 th {
+  text-align: right;
+  padding-right: 1em;
+}
+table.certinfo a,
+table.portalinfo1 a,
+table.portalinfo2 a,
+table.certinfo a:link,
+table.portalinfo1 a:link,
+table.portalinfo2 a:link,
+table.certinfo a:visited,
+table.portalinfo1 a:visited,
+table.portalinfo2 a:visited {
+  color: #27638C;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+} 
+table.certinfo a:hover,
+table.portalinfo1 a:hover,
+table.portalinfo2 a:hover,
+table.certinfo a:active,
+table.portalinfo1 a:active,
+table.portalinfo2 a:active {
+  text-decoration: underline;
+}
+
+/***** Begin PageHeader titlebox *****/
+div.titlebox {
+  border: 3px ridge #369;
+  background-color: #f0f5ff;
+}
+/***** End PageHeader titlebox *****/
+
+/***** Begin page footer *****/
+div.footer {
+  border: 1px solid #D6DDB9;
+}
+div.footer p {
+  font-size: small;
+}
+div.footer a,
+div.footer a:link,
+div.footer a:visited {
+  color: #27638C;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+} 
+div.footer a:hover,
+div.footer a:active {
+  text-decoration: underline;
+}
+/***** End page footer *****/
+
+/***** Begin actionbox containing action buttons and WAYF *****/
+div.actionbox,
+div.certactionbox,
+div.logofftextbox {
+  display: block;
+  border: 1px solid #D6DDB9;
+}
+div.p12actionbox,
+div.logoffactionbox {
+  display: none;
+  border: none;
+}
+p.privacypolicy {
+  font-size: small;
+}
+p.jwscertificatelifetime {
+  display: none;
+}
+/***** End actionbox *****/
+
+/***** Begin summary div on testidp page *****/
+div.summary {
+  background-color: #def;
+}
+/***** End summary div on testidp page *****/
+
+/***** Begin userchanged div and table *****/
+div.userchanged table {
+  border: 1px solid #369;
+}
+div.userchanged table tr th {
+  border: 1px solid #369;
+  background-color: #def;
+}
+div.userchanged table tr.headings th {
+  border: 1px solid #369;
+  background-color: #def;
+}
+div.userchanged table tr td {
+  border: 1px solid #369;
+  background-color: #def;
+}
+div.userchanged table tr.odd th {
+  border: 1px solid #369;
+  background-color: #f0faff;
+}
+div.userchanged table tr.odd td {
+  border: 1px solid #369;
+  background-color: #f0faff;
+}
+/***** End userchanged div and table *****/
+
+/***** Begin skincilogonlogo *****/
+div.skincilogonlogo {
+  display: inline;
+}
+/***** End skincilogonlogo *****/
+
+/***** Begin Help-related stuff *****/
+table.helptable td.helpcell div {
+  background-color: #def;
+  margin-right: 1em;
+}
+tr.inforow td.helpcell {
+  background-color: #def;
+}
+/***** End Help-related stuff *****/
+
