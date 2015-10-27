@@ -18,6 +18,4 @@
     <allowforceinitialidp>1</allowforceinitialidp>
   </portallistaction>
 
-  <forceauthn>1</forceauthn>
-
 </config>
