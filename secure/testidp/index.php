@@ -225,6 +225,7 @@ function printTestPage() {
     echo '
             </td>
           </tr>
+
           <tr class="odd">
             <th>Last Name (sn):</th>
             <td>' , $shibarray['Last Name'] , '</td>
@@ -238,6 +239,7 @@ function printTestPage() {
     echo '
             </td>
           </tr>
+
           <tr>
             <th>Display Name (displayName):</th>
             <td>' , $shibarray['Display Name'] , '</td>
@@ -252,6 +254,7 @@ function printTestPage() {
     echo '
             </td>
           </tr>
+
           <tr class="odd">
             <th>Email Address (email):</th>
             <td>' , $shibarray['Email Address'] , '</td>
@@ -264,9 +267,22 @@ function printTestPage() {
     echo '
             </td>
           </tr>
+
           <tr>
             <th>Level of Assurance (assurance):</th>
             <td>' , $shibarray['Level of Assurance'] , '</td>
+            <td> </td>
+          </tr>
+
+          <tr class="odd">
+            <th>Affiliation (affiliation):</th>
+            <td>' , $shibarray['Affiliation'] , '</td>
+            <td> </td>
+          </tr>
+
+          <tr>
+            <th>Organizational Unit (ou):</th>
+            <td>' , $shibarray['ou'] , '</td>
             <td> </td>
           </tr>
 
@@ -375,7 +391,7 @@ Organization = " . $shibarray['Organization Name'] . "
         $mailmsg .= "
 Submitted by:
 ------------
-Name  = ";
+Name        = ";
 
         if ((strlen($shibarray['First Name']) > 0) && 
             (strlen($shibarray['Last Name']) > 0)) {
@@ -387,17 +403,27 @@ Name  = ";
 
         if (strlen($shibarray['Email Address']) > 0) {
             $mailmsg .= "
-Email = " . $shibarray['Email Address'];
+Email       = " . $shibarray['Email Address'];
         }
 
         if (strlen($shibarray['User Identifier']) > 0) {
             $mailmsg .= "
-UID   = " . $shibarray['User Identifier'];
+UID         = " . $shibarray['User Identifier'];
         }
 
         if (strlen($shibarray['Level of Assurance']) > 0) {
             $mailmsg .= "
-LOA   = " . $shibarray['Level of Assurance'];
+LOA         = " . $shibarray['Level of Assurance'];
+        }
+
+        if (strlen($shibarray['Affiliation']) > 0) {
+            $mailmsg .= "
+Affiliation = " . $shibarray['Affiliation'];
+        }
+
+        if (strlen($shibarray['OU']) > 0) {
+            $mailmsg .= "
+OU          = " . $shibarray['OU'];
         }
     }
 

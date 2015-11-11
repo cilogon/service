@@ -1291,6 +1291,7 @@ function unsetGetUserSessionVars() {
     util::unsetSessionVar('idpname');
     util::unsetSessionVar('firstname');
     util::unsetSessionVar('lastname');
+    util::unsetSessionVar('displayname');
     util::unsetSessionVar('dn');
     util::unsetSessionVar('twofactor');
     util::unsetSessionVar('activation');
@@ -1301,6 +1302,8 @@ function unsetGetUserSessionVars() {
     util::unsetSessionVar('ePTID');
     util::unsetSessionVar('openidID');
     util::unsetSessionVar('oidcID');
+    util::unsetSessionVar('affiliation');
+    util::unsetSessionVar('ou');
     util::unsetSessionVar('authntime');
 }
 

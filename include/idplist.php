@@ -550,6 +550,8 @@ EOT;
         $shibarray['Display Name'] = util::getServerVar('HTTP_DISPLAYNAME');
         $shibarray['Email Address'] = util::getServerVar('HTTP_MAIL');
         $shibarray['Level of Assurance'] = util::getServerVar('HTTP_ASSURANCE');
+        $shibarray['Affiliation'] = util::getServerVar('HTTP_AFFILIATION');
+        $shibarray['OU'] = util::getServerVar('HTTP_OU');
         
         /* Make sure to use only the first of multiple values. */
         $attrs = array('ePPN','ePTID','First Name','Last Name',

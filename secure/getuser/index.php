@@ -77,10 +77,15 @@ function getUID() {
         $shibarray['Organization Name'],
         $firstname,
         $lastname,
+        $shibarray['Display Name'],
         $shibarray['Email Address'],
         $shibarray['Level of Assurance'],
         $shibarray['ePPN'],
-        $shibarray['ePTID']
+        $shibarray['ePTID'],
+        '', // OpenID 2.0 ID
+        '', // OpenID Connect ID
+        $shibarray['Affiliation'],
+        $shibarray['OU']
     );
 }
 

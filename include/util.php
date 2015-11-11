@@ -488,11 +488,14 @@ class util {
             'dn'           => 'Cert DN',
             'firstname'    => 'First Name',
             'lastname'     => 'Last Name',
+            'displayname'  => 'Display Name',
             'ePPN'         => 'ePPN',
             'ePTID'        => 'ePTID',
             'openID'       => 'OpenID ID',
             'oidcID'       => 'OIDC ID',
             'loa'          => 'LOA',
+            'affiliation'  => 'Affiliation',
+            'ou'           => 'OU',
             'cilogon_skin' => 'Skin Name',
             'twofactor'    => 'Two-Factor',
             'authntime'    => 'Authn Time'
@@ -579,12 +582,15 @@ Remote Address= ' . $remoteaddr . '
      *             (3) pretty print provider IdP name                   *
      *             (4) user's first name                                *
      *             (5) user's last name                                 *
-     *             (6) user's email address                             *
-     *             (7) level of assurance (e.g., openid/basic/silver)   *
-     *             (8) (optional) ePPN (for SAML IdPs)                  *
-     *             (9) (optional) ePTID (for SAML IdPs)                 *
-     *             (10) (optional) OpenID 2.0 Identifier                *
-     *             (11) OpenID Connect Identifier                       *
+     *             (6) user's display name                              *
+     *             (7) user's email address                             *
+     *             (8) level of assurance (e.g., openid/basic/silver)   *
+     *             (9) (optional) ePPN (for SAML IdPs)                  *
+     *             (10) (optional) ePTID (for SAML IdPs)                *
+     *             (11) (optional) OpenID 2.0 Identifier                *
+     *             (12) (optional) OpenID Connect Identifier            *
+     *             (13) (optional) user's affiliation                   *
+     *             (14) (optional) uesr's organizational unit (OU)      *
      * This function is called when a user logs on to save identity     *
      * information to the datastore. As it is used by both Shibboleth   *
      * and OpenID Identity Providers, some parameters passed in may     *
@@ -595,8 +601,9 @@ Remote Address= ' . $remoteaddr . '
      * alert is sent showing the missing parameters.                    *
     /********************************************************************/
     public static function saveUserToDataStore($remoteuser,$providerId,
-        $providerName,$firstname,$lastname,$emailaddr,$loa,
-        $eppn='',$eptid='',$openidid='',$oidcid='') {
+        $providerName,$firstname,$lastname,$displayname,$emailaddr,$loa,
+        $eppn='',$eptid='',$openidid='',$oidcid='',
+        $affiliation='',$ou='') {
 
         global $csrf;
 
@@ -641,11 +648,14 @@ Remote Address= ' . $remoteaddr . '
                                     $databaseProviderName,
                                     $firstname,
                                     $lastname,
+                                    $displayname,
                                     $emailaddr,
                                     $eppn,
                                     $eptid,
                                     $openidid,
-                                    $oidcid); 
+                                    $oidcid,
+                                    $affiliation,
+                                    $ou); 
             util::setSessionVar('uid',$dbs->user_uid);
             util::setSessionVar('dn',$dbs->distinguished_name);
             util::setSessionVar('twofactor',$dbs->two_factor);
@@ -683,6 +693,8 @@ Remote Address= ' . $remoteaddr . '
                     $firstname : '<MISSING>') . "\n" .
                 'Last Name     = ' . ((strlen($lastname) > 0) ? 
                     $lastname : '<MISSING>') . "\n" .
+                'Display Name  = ' . ((strlen($displayname) > 0) ? 
+                    $displayname : '<MISSING>') . "\n" .
                 'Email Address = ' . ((strlen($emailaddr) > 0) ? 
                     $emailaddr : '<MISSING>') . "\n" .
                 'ePPN          = ' . ((strlen($eppn) > 0) ? 
@@ -693,6 +705,10 @@ Remote Address= ' . $remoteaddr . '
                     $openidid : '<MISSING>') . "\n" .
                 'OIDC ID       = ' . ((strlen($oidcid) > 0) ? 
                     $oidcid : '<MISSING>') . "\n" .
+                'Affiliation   = ' . ((strlen($affiliation) > 0) ? 
+                    $affiliation : '<MISSING>') . "\n" .
+                'OU            = ' . ((strlen($ou) > 0) ? 
+                    $ou : '<MISSING>') . "\n" .
                 'Database UID  = ' . ((strlen(
                     $i=util::getSessionVar('uid')) > 0) ? 
                         $i : '<MISSING>') . "\n" .
@@ -703,22 +719,28 @@ Remote Address= ' . $remoteaddr . '
             );
             util::unsetSessionVar('firstname');
             util::unsetSessionVar('lastname');
+            util::unsetSessionVar('displayname');
             util::unsetSessionVar('loa');
             util::unsetSessionVar('idp');
             util::unsetSessionVar('ePPN');
             util::unsetSessionVar('ePTID');
             util::unsetSessionVar('openidID');
             util::unsetSessionVar('oidcID');
+            util::unsetSessionVar('affiliation');
+            util::unsetSessionVar('ou');
             util::unsetSessionVar('authntime');
         } else {
             util::setSessionVar('firstname',$firstname);
             util::setSessionVar('lastname',$lastname);
+            util::setSessionVar('displayname',$displayname);
             util::setSessionVar('loa',$loa);
             util::setSessionVar('idp',$providerId);
             util::setSessionVar('ePPN',$eppn);
             util::setSessionVar('ePTID',$eptid);
             util::setSessionVar('openidID',$openidid);
             util::setSessionVar('oidcID',$oidcid);
+            util::setSessionVar('affiliation',$affiliation);
+            util::setSessionVar('ou',$ou);
             util::setSessionVar('authntime',time());
         }
 

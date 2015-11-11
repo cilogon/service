@@ -429,11 +429,13 @@ function getTitleText($cookie) {
      * "p12 error" appears before "p12".                                */
     $explain = array(
         "activation" => "The expiration time and activation code for use by CILogon-enabled applications." ,
-        "authntime" => "The Unix timestamp of the last successful user authentication.",
+        "affiliation" => "A list of attributes describing your affiliations at your Identity Provider." ,
+        "authntime" => "The Unix timestamp of the last successful user authentication." ,
         "callbackuri" => "The URL of the callback servlet used by portals connecting to the CILogon Delegate service." ,
         "certlifetime" => "This multiplied by the certmultipler gives the lifetime of the GridShib-CA certificate in seconds." ,
         "certmultiplier" => "This multiplied by the certlifetime gives the lifetime of the GridShib-CA certificate in seconds." ,
         "cilogon_skin" => "The skin affects the look-and-feel and functionality of the CILogon Service. It is typically specified by a portal." ,
+        "displayname" => "Your full name set by your Identity Provider." ,
         "dn" => "A quasi distinguished name for the certificate issued by a MyProxy server to the CILogon Service." ,
         "ePPN" => "'eduPerson Principal Name' - a SAML attribute set by your Identity Provider." ,
         "ePTID" => "'eduPerson Targeted Identifier' - a SAML attribute set by your Identity Provider" ,
@@ -447,6 +449,7 @@ function getTitleText($cookie) {
         "logonerror" => "A text message of the reason for the last authentication error." ,
         "oidcID" => "Your user identifier set by the OpenID Connect Identity Provider." ,
         "openidID" => "Your user identifier set by the OpenID Identity Provider." ,
+        "ou" => "Your organizational unit set by your Identity Provider." ,
         "p12error" => "A text message of the reason why the PKCS12 certificate could not be created." ,
         "p12lifetime" => "This multiplied by the p12multipler gives the lifetime of the PKCS12 certificate in hours." ,
         "p12multiplier" => "This multiplied by the p12lifetime gives the lifetime of the PKCS12 certificate in hours." ,
@@ -466,7 +469,7 @@ function getTitleText($cookie) {
         "submit" => "The name of the 'submit' button clicked." ,
         "successuri" => "A URL used by portals for redirection after successful issuance of a certificate." ,
         "tempcred" => "An OAUTH identifier used to track portal sessions." ,
-        "twofactor" => "The types of two-factor authentication configured for your account, ga for Google Authenticator, duo for Duo Security.",
+        "twofactor" => "The types of two-factor authentication configured for your account, ga for Google Authenticator, duo for Duo Security." ,
         "uid" => "The datastore user identifier." ,
     );
 

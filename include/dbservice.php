@@ -12,24 +12,16 @@ require_once("util.php");
  *              class is a rework of the old store.php class.           *
  *                                                                      *
  * Example usage:                                                       *
- *     // For InCommon authn, we have a bunch of SAML attributes from   *
- *     // a Shibboleth session. Thus get the database uid for the user  *
- *     // by using the 6-parameter version of getUser().                *
+ *     // For authentcation, we have a bunch of attributes from an      *
+ *     // identity provider. Thus get the database uid for the user     *
+ *     // by using the multi-parameter version of getUser().            *
  *     $uid = '';                                                       *
  *     $dbservice = new dbservice();                                    *
  *     $dbservice->getUser('jsmith@illinois.edu',                       *
  *                         'urn:mace:incommon:uiuc.edu',                *
  *                         'University of Illinois at Urbana-Champaign',*
- *                         'John','Smith','jsmith@illinois.edu');       *
- *     if (!($dbservice->status & 1)) { // OK status codes are even     *
- *         $uid = $dbservice->user_uid;                                 *
- *     }                                                                *
- *                                                                      *
- *     // For OpenID authn, we have only the OpenID provider name and   *
- *     // the OpenID identity.  Thus get the database uid for the user  *
- *     // by using the 2-parameter version of getUser().                *
- *     $uid = '';                                                       *
- *     $dbservice->getUser('https://me.yahoo.com/jsmith', 'Yahoo');     *
+ *                         'John','Smith','John Smith,                  *
+ *                          'jsmith@illinois.edu');                     *
  *     if (!($dbservice->status & 1)) { // OK status codes are even     *
  *         $uid = $dbservice->user_uid;                                 *
  *     }                                                                *
@@ -108,12 +100,15 @@ class dbservice {
     public $idp_display_name;
     public $first_name;
     public $last_name;
+    public $display_name;
     public $email;
     public $distinguished_name;
     public $eppn;
     public $eptid;
     public $open_id;
     public $oidc;
+    public $affiliation;
+    public $ou;
     public $serial_string;
     public $create_time;
     public $oauth_token;
@@ -186,11 +181,14 @@ class dbservice {
         $this->idp_display_name = null;
         $this->first_name = null;
         $this->last_name = null;
+        $this->display_name = null;
         $this->email = null;
         $this->distinguished_name = null;
         $this->serial_string = null;
         $this->create_time = null;
         $this->two_factor = null;
+        $this->affiliation = null;
+        $this->ou = null;
     }
 
     /********************************************************************
@@ -231,16 +229,12 @@ class dbservice {
 
     /********************************************************************
      * Function  : getUser                                              *
-     * Parameters: Variable number of parameters: 1, 6, or 10.          *
+     * Parameters: Variable number of parameters: 1, or more.           *
      *             For 1 parameter : $uid (database user identifier)    *
-     *             For 6 parameters: $remote_user, $idp,                *
-     *                 $idp_display_name, $first_name, $last_name,      *
-     *                 $email - common to both Shibboleth & OIDC        *
-     *             For 10 parameters: same as 6 plus                    *
-     *                 $eppn - eduPersonPrincipalName SAML attribute    *
-     *                 $eptid - eduPersonTargetedID SAML attribute      *
-     *                 $openid - ID returned by OpenID authn            *
-     *                 $oidc - Google OIDC identifier "sub" field       *
+     *             For more than 1 parameter, parameters can include:   *
+     *                 $remote_user, $idp, $idp_display_name,           *
+     *                 $first_name, $last_name, $display_name, $email,  *
+     *                 $eppn, $eptid, $openid, $oidc, $affiliation, $ou *
      * Returns   : True if the servlet returned correctly. Else false.  *
      * This method calls the 'getUser' action of the servlet and sets   *
      * the class member variables associated with user info             *
@@ -255,10 +249,10 @@ class dbservice {
         if ($numargs == 1) {
             $retval = $this->call('action=getUser&user_uid=' . 
                 urlencode(func_get_arg(0)));
-        } elseif ($numargs >= 6) {
+        } elseif ($numargs > 1) {
             $params = array('remote_user','idp','idp_display_name',
-                            'first_name','last_name','email',
-                            'eppn','eptid','open_id','oidc');
+                            'first_name','last_name','display_name','email',
+                            'eppn','eptid','open_id','oidc','affiliation','ou');
             $cmd = 'action=getUser';
             for ($i = 0; $i < $numargs; $i++) {
                 $arg = func_get_arg($i);
@@ -536,6 +530,9 @@ class dbservice {
                     if (preg_match('/last_name=([^\r\n]+)/',$output,$match)) {
                         $this->last_name = urldecode($match[1]);
                     }
+                    if (preg_match('/display_name=([^\r\n]+)/',$output,$match)) {
+                        $this->display_name = urldecode($match[1]);
+                    }
                     if (preg_match('/email=([^\r\n]+)/',$output,$match)) {
                         $this->email = urldecode($match[1]);
                     }
@@ -553,6 +550,12 @@ class dbservice {
                     }
                     if (preg_match('/oidc=([^\r\n]+)/',$output,$match)) {
                         $this->oidc = urldecode($match[1]);
+                    }
+                    if (preg_match('/affiliation=([^\r\n]+)/',$output,$match)) {
+                        $this->affiliation = urldecode($match[1]);
+                    }
+                    if (preg_match('/ou=([^\r\n]+)/',$output,$match)) {
+                        $this->ou = urldecode($match[1]);
                     }
                     if (preg_match('/serial_string=([^\r\n]+)/',$output,$match)) {
                         $this->serial_string = urldecode($match[1]);
@@ -629,11 +632,32 @@ class dbservice {
         if (!is_null($this->last_name)) {
             echo "last_name=$this->last_name\n";
         }
+        if (!is_null($this->display_name)) {
+            echo "display_name=$this->display_name\n";
+        }
         if (!is_null($this->email)) {
             echo "email=$this->email\n";
         }
         if (!is_null($this->distinguished_name)) {
             echo "distinguished_name=$this->distinguished_name\n";
+        }
+        if (!is_null($this->eppn)) {
+            echo "eppn=$this->eppn\n";
+        }
+        if (!is_null($this->eptid)) {
+            echo "eptid=$this->eptid\n";
+        }
+        if (!is_null($this->open_id)) {
+            echo "open_id=$this->open_id\n";
+        }
+        if (!is_null($this->oidc)) {
+            echo "oidc=$this->oidc\n";
+        }
+        if (!is_null($this->affiliation)) {
+            echo "affiliation=$this->affiliation\n";
+        }
+        if (!is_null($this->ou)) {
+            echo "ou=$this->ou\n";
         }
         if (!is_null($this->serial_string)) {
             echo "serial_string=$this->serial_string\n";

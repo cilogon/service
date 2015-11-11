@@ -43,6 +43,7 @@ function getUserAndRespond2() {
 
     $firstname = '';
     $lastname = '';
+    $displayname = '';
     $fullname = '';
     $emailaddr = '';
     $openidid = '';
@@ -115,8 +116,9 @@ function getUserAndRespond2() {
                     if (strlen($emailaddr) == 0) {
                         $emailaddr = @$me->getEmails()[0]->getValue();
                     }
+                    $displayname = @$me['displayName'];
                     list($firstname,$lastname) = util::getFirstAndLastName(
-                        @$me['displayName'],
+                        $displayname,
                         @$me['name']['givenName'],
                         @$me['name']['familyName']);
                 }
@@ -130,8 +132,8 @@ function getUserAndRespond2() {
         $providerId = util::getCookieVar('providerId');
         $providerName = 'Google';
         util::saveUserToDataStore($openidid,$providerId,$providerName,
-                                  $firstname,$lastname,$emailaddr,'openid',
-                                  '','',$openidid,$oidcid);
+                                  $firstname,$lastname,$displayname,
+                                  $emailaddr,'openid','','',$openidid,$oidcid);
     } else {
         util::unsetSessionVar('submit');
     }
