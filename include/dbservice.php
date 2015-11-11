@@ -12,7 +12,7 @@ require_once("util.php");
  *              class is a rework of the old store.php class.           *
  *                                                                      *
  * Example usage:                                                       *
- *     // For authentcation, we have a bunch of attributes from an      *
+ *     // For authentication, we have a bunch of attributes from an     *
  *     // identity provider. Thus get the database uid for the user     *
  *     // by using the multi-parameter version of getUser().            *
  *     $uid = '';                                                       *
