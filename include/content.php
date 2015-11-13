@@ -906,6 +906,8 @@ function handleHelpButtonClicked() {
 
 /************************************************************************
  * Function  : handleNoSubmitButtonClicked                              *
+ * Parameter : (Optional) The passed in "selected_idp" value used in    *
+ *             the OIDC authorize case.                                 *
  * This function is the "default" case when no "submit" button has been *
  * clicked, or if the submit session variable is not set. It checks     *
  * to see if either the <forceinitialidp> option is set, or if the      *
@@ -913,7 +915,7 @@ function handleHelpButtonClicked() {
  * then rediret to the appropriate IdP. Otherwise, print the main       *
  * Log On page.                                                         *
  ************************************************************************/
-function handleNoSubmitButtonClicked() {
+function handleNoSubmitButtonClicked($selected_idp='') {
     global $skin;
 
     // Read in the whitelist of currently available InCommon IdPs
@@ -950,12 +952,19 @@ function handleNoSubmitButtonClicked() {
      * then skip the Logon page and proceed to the appropriate      *
      * getuser script.                                              */
     if ((strlen($providerId) > 0) && (strlen($keepIdp) > 0)) {
-        if ($providerId == GOOGLE_OIDC) { // Use Google
-            redirectToGetGoogleOAuth2User();
-        } elseif ($idplist->exists($providerId)) { // Use InCommon
-            redirectToGetShibUser($providerId);
-        } else { // $providerId not in whitelist
-            util::unsetCookieVar('providerId');
+        /* If $selected_idp was specified (at the authorize endpoint), *
+         * make sure that it matches the saved providerId. If not,     *
+         * then do not skip the Logon page.                            */
+        if ((strlen($selected_idp) == 0) || ($selected_idp == $providerId)) {
+            if ($providerId == GOOGLE_OIDC) { // Use Google
+                redirectToGetGoogleOAuth2User();
+            } elseif ($idplist->exists($providerId)) { // Use InCommon
+                redirectToGetShibUser($providerId);
+            } else { // $providerId not in whitelist
+                util::unsetCookieVar('providerId');
+                printLogonPage();
+            }
+        } else { // selected_idp does not match saved providerId
             printLogonPage();
         }
     } else { // One of providerId or keepidp was not set

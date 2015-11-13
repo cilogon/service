@@ -104,7 +104,7 @@ if (verifyOIDCParams()) {
         break; // End case 'Show Help' / 'Hide Help'
 
         default: // No submit button clicked nor PHP session submit variable set
-            handleNoSubmitButtonClicked();
+            handleNoSubmitButtonClicked($clientparams['selected_idp']);
         break; // End default case
 
     } // End switch ($submit)
@@ -294,7 +294,8 @@ function printMainPage() {
     if (($dbs->setTransactionState($clientparams['code'],
         util::getSessionVar('uid'),
         util::getSessionVar('authntime'),
-        util::getSessionVar('loa'))) &&
+        util::getSessionVar('loa'),
+        util::getSessionVar('myproxyinfo'))) &&
         (!($dbs->status & 1))) { // STATUS_OK codes are even
         $redirect = 'Location: ' . $clientparams['redirect_url'];
         $log->info('setTransactionState succeeded, redirect to ' . $redirect);
