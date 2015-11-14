@@ -954,7 +954,7 @@ function handleNoSubmitButtonClicked($selected_idp='') {
     if ((strlen($providerId) > 0) && (strlen($keepIdp) > 0)) {
         /* If $selected_idp was specified (at the authorize endpoint), *
          * make sure that it matches the saved providerId. If not,     *
-         * then do not skip the Logon page.                            */
+         * then show the Logon page and uncheck the keepidp checkbox.  */
         if ((strlen($selected_idp) == 0) || ($selected_idp == $providerId)) {
             if ($providerId == GOOGLE_OIDC) { // Use Google
                 redirectToGetGoogleOAuth2User();
@@ -965,6 +965,7 @@ function handleNoSubmitButtonClicked($selected_idp='') {
                 printLogonPage();
             }
         } else { // selected_idp does not match saved providerId
+            util::unsetCookieVar('keepidp');
             printLogonPage();
         }
     } else { // One of providerId or keepidp was not set
