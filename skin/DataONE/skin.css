@@ -1,198 +1,147 @@
-/***** Begin basic elements *****/
+/***** Basic elements *****/
 body {
-  font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
-  color: #666;
+  font-family: Helvetica, Arial, Helvetica, sans-serif;
+  color: #333;
+  cursor: default;
 }
 a,
 a:link,
 a:visited {
-  color: #27638C;
-  margin: 0;
-  padding: 0;
+  color: #1C6E84;
   text-decoration: none;
 } 
 a:hover,
 a:active {
-  text-decoration: underline;
+  color: #10424F;
+  text-decoration: none;
 }
-/***** End basic elements *****/
 
-/***** Begin a few misc elements *****/
+/***** A few misc elements *****/
 div.boxed {
-  border: 1px solid #D6DDB9;
+  border: 0px;
+}
+table.certinfo, table.portalinfo1, table.portalinfo2{
+	color: #666;
+    border: 0px;
+    display: block;
+    font-size: .9em;
+}
+
+/***** The Header and Footer*****/
+div.logoheader {
+    background: #FFFFFF url("/skin/DataONE/logo.png");
+    background-repeat: no-repeat;
+    background-position-x: 20px;
+    background-position-y: 20px;
+    border-bottom: 2px solid #660033;
+    background-size: 150px;
+    height: 72px;
+}
+div.logoheader h1{
+	display: none;
+}
+div.footer{
+	border: 0px;
+    border-top: 2px solid #660033;
+    padding-top: 20px;
+}
+div.footer a:link,
+div.footer a:visited{
+	  color: #1C6E84;
+  text-decoration: none;
+}
+div.footer a:hover{
+	  color: #10424F;
+  text-decoration: none;
+}
+
+
+/***** The Form *****/
+input[type="text"]{
+  background-color: #ffffff;
+    border: 1px solid #cccccc;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+    -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+    -o-transition: border linear 0.2s, box-shadow linear 0.2s;
+    transition: border linear 0.2s, box-shadow linear 0.2s;
+    min-height: 20px;
+    padding: 4px 6px;
+    font-size: 1em;
+    line-height: 20px;
+    color: #555;
+    border-radius: 4px; 
 }
 input.submit {
-  position: relative;
-  top: 0;
-  background: transparent url('/skin/DataONE/blue-button.png') no-repeat left center;
-  border: 1px solid #fff;
+  transition: background-color .7s;
+  font-size: 1em;
   color: #fff;
-  cursor: pointer;
-  font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
-  font-size: 1.0em;
-  font-weight: bold;
-  margin: 0 4px;
-  padding: 2px 12px;
-  text-transform: uppercase;
-  outline: 1px solid #9BABB0;
-  -moz-border-radius: 4px;
-  -moz-outline-radius: 4px;
-  -webkit-border-radius: 4px;
-  
-  font-size: 0.8em;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+    background-color: rgba(99, 28, 63, 1);
+    background-image: none;
+    border-color: #04c #04c #002a80;
+    border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc',endColorstr='#ff0044cc',GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+   -webkit-appearance: button;
+   padding: 4px 12px;
+   border-radius: 4px;
+   -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+   font-weight: normal;
 }
+
 input.submit:hover {
-  background-position: right center;
   cursor: pointer;
+  background-color: rgb(157, 3, 80);
+  background-color: rgba(157, 3, 80, 1);
 }
-/***** End a few misc element *****/
-
-/***** Begin the "CILogon Service" header at the top of each page *****/
-div.logoheader {
-  background: transparent url("/skin/DataONE/preface-wrapper-bg.png") repeat-x top left;
-  height: 101px;
+select{
+	 display: inline-block;
+  padding: 4px 6px;
+  margin-bottom: 10px;
+  line-height: 20px;
+  color: #555555;
+  vertical-align: middle;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
 }
-div.logoheader h1 {
-  background: transparent url("/skin/DataONE/logo.png") no-repeat top left;
-  margin: 10px 9px;
-  width: 333px;
-  height: 77px;
-  float: left;
+select:focus,
+input[type="file"]:focus,
+input[type="radio"]:focus,
+input[type="checkbox"]:focus {
+  outline: thin dotted #333;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
 }
-/***** End the "CILogon Service" header at the top of each page *****/
-
-/***** Begin certinfo table *****/
-table.certinfo,
-table.portalinfo1,
-table.portalinfo2 {
-  margin: 1em;
-  width: 96%;
-  border: 1px solid #D6DDB9;
-  border-spacing: 0;
-  border-collapse: collapse;
+select#providerId{
+	font-size: .9em;
+	height: 250px;
+	width: 357px;
+	margin-left: 22px;
 }
-table.certinfo th,
-table.portalinfo1 th,
-table.portalinfo2 th {
-  text-align: right;
-  padding-right: 1em;
+#listsearch {
+    margin-bottom: 20px;
 }
-table.certinfo a,
-table.portalinfo1 a,
-table.portalinfo2 a,
-table.certinfo a:link,
-table.portalinfo1 a:link,
-table.portalinfo2 a:link,
-table.certinfo a:visited,
-table.portalinfo1 a:visited,
-table.portalinfo2 a:visited {
-  color: #27638C;
-  margin: 0;
-  padding: 0;
-  text-decoration: none;
-} 
-table.certinfo a:hover,
-table.portalinfo1 a:hover,
-table.portalinfo2 a:hover,
-table.certinfo a:active,
-table.portalinfo1 a:active,
-table.portalinfo2 a:active {
-  text-decoration: underline;
+input#searchlist{
+	font-size: 1em;
 }
-
-/***** Begin PageHeader titlebox *****/
-div.titlebox {
-  border: 3px ridge #369;
-  background-color: #f0f5ff;
+input[type="checkbox"]{
+	cursor: pointer;
 }
-/***** End PageHeader titlebox *****/
-
-/***** Begin page footer *****/
-div.footer {
-  border: 1px solid #D6DDB9;
+.actionbox > table form > fieldset > p:first-child{
+	    font-size: 1.6em;
+    font-weight: lighter;
 }
-div.footer p {
-  font-size: small;
+div.actionbox {
+    border: 1px solid #CCC;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    width: 400px;
 }
-div.footer a,
-div.footer a:link,
-div.footer a:visited {
-  color: #27638C;
-  margin: 0;
-  padding: 0;
-  text-decoration: none;
-} 
-div.footer a:hover,
-div.footer a:active {
-  text-decoration: underline;
-}
-/***** End page footer *****/
-
-/***** Begin actionbox containing action buttons and WAYF *****/
-div.actionbox,
-div.certactionbox,
-div.logofftextbox {
-  display: block;
-  border: 1px solid #D6DDB9;
-}
-div.p12actionbox,
-div.logoffactionbox {
-  display: none;
-  border: none;
-}
-p.privacypolicy {
-  font-size: small;
-}
-p.jwscertificatelifetime {
-  display: none;
-}
-/***** End actionbox *****/
-
-/***** Begin summary div on testidp page *****/
-div.summary {
-  background-color: #def;
-}
-/***** End summary div on testidp page *****/
-
-/***** Begin userchanged div and table *****/
-div.userchanged table {
-  border: 1px solid #369;
-}
-div.userchanged table tr th {
-  border: 1px solid #369;
-  background-color: #def;
-}
-div.userchanged table tr.headings th {
-  border: 1px solid #369;
-  background-color: #def;
-}
-div.userchanged table tr td {
-  border: 1px solid #369;
-  background-color: #def;
-}
-div.userchanged table tr.odd th {
-  border: 1px solid #369;
-  background-color: #f0faff;
-}
-div.userchanged table tr.odd td {
-  border: 1px solid #369;
-  background-color: #f0faff;
-}
-/***** End userchanged div and table *****/
-
-/***** Begin skincilogonlogo *****/
-div.skincilogonlogo {
-  display: inline;
-}
-/***** End skincilogonlogo *****/
-
-/***** Begin Help-related stuff *****/
-table.helptable td.helpcell div {
-  background-color: #def;
-  margin-right: 1em;
-}
-tr.inforow td.helpcell {
-  background-color: #def;
-}
-/***** End Help-related stuff *****/
-
