@@ -11,14 +11,20 @@ if ($argc >= 7) {
     $firstname = $argv[4];
     $lastname = $argv[5];
     $emailaddr = $argv[6];
+    $displayname = '';
     $eppn = '';
     $eptid = '';
     $open_id = '';
     $oidc = '';
-    if ($argc >= 8) { $eppn = $argv[7]; }
-    if ($argc >= 9) { $eptid = $argv[8]; }
-    if ($argc >= 10) { $open_id = $argv[9]; }
-    if ($argc >= 11) { $oidc = $argv[10]; }
+    $affiliation = '';
+    $ou = '';
+    if ($argc >= 8) { $displayname = $argv[7]; }
+    if ($argc >= 9) { $eppn = $argv[8]; }
+    if ($argc >= 10) { $eptid = $argv[9]; }
+    if ($argc >= 11) { $open_id = $argv[10]; }
+    if ($argc >= 12) { $oidc = $argv[11]; }
+    if ($argc >= 13) { $affiliation = $argv[12]; }
+    if ($argc >= 14) { $ou = $argv[13]; }
 
     if ((strlen($remoteuser) > 0) &&
         (strlen($idp) > 0) &&
@@ -29,8 +35,8 @@ if ($argc >= 7) {
 
         $dbs = new dbservice();
         $dbs->getUser($remoteuser, $idp, $idpname, 
-                      $firstname, $lastname, $emailaddr,
-                      $eppn, $eptid, $open_id, $oidc);
+                      $firstname, $lastname, $displayname, $emailaddr,
+                      $eppn, $eptid, $open_id, $oidc,$affiliation,$ou);
 
         printInfo($dbs);
 
@@ -50,9 +56,9 @@ if ($argc >= 7) {
 }
 
 function printUsage() {
-    echo "Usage: adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME EMAIL EPPN EPTID OPENID OIDC\n";
+    echo "Usage: adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME EMAIL DISPLAYNAME EPPN EPTID OPENID OIDC AFFILIATION OU\n";
     echo "Note: The first six parameters must be specified for both InCommon and OpenID.\n";
-    echo "      The last four parameters are optional.\n";
+    echo "      The rest are optional.\n";
 }
 
 function printInfo($dbs) {

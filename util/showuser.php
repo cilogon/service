@@ -40,6 +40,7 @@ function printUser($dbs) {
     echo "uid = $dbs->user_uid\n";
     echo "first_name = $dbs->first_name\n";
     echo "last_name = $dbs->last_name\n";
+    echo "display_name = $dbs->display_name\n";
     echo "remote_user = $dbs->remote_user\n";
     echo "idp = $dbs->idp\n";
     echo "idp_display_name = $dbs->idp_display_name\n";
@@ -51,6 +52,8 @@ function printUser($dbs) {
     echo "distinguished_name = $dbs->distinguished_name\n";
     echo "serial_string = $dbs->serial_string\n";
     echo "two_factor = $dbs->two_factor\n";
+    echo "affiliation = $dbs->affiliation\n";
+    echo "ou = $dbs->ou\n";
 }
 
 ?>
