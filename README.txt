@@ -105,6 +105,21 @@ echo 'chgrp apache pkcs12'
 chgrp apache pkcs12
 echo 'mkdir -p /var/www/virthosts/crl'
 mkdir -p /var/www/virthosts/crl
+for d in /var/www/html/skin/DataONE* ; do
+  if [ "$d" = "/var/www/html/skin/DataONE" ] ; then
+    continue
+  fi
+  echo "cd $d"
+  cd $d
+  echo 'rm -f config.xml'
+  rm -f config.xml
+  echo 'rm -f skin.css'
+  rm -f skin.css
+  echo 'ln -sf /var/www/html/skin/DataONE/config.xml .'
+  ln -sf /var/www/html/skin/DataONE/config.xml .
+  echo 'ln -sf /var/www/html/skin/DataONE/skin.css .'
+  ln -sf /var/www/html/skin/DataONE/skin.css .
+done
 
 filename=`basename $0`
 
