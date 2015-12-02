@@ -27,6 +27,26 @@ table.certinfo, table.portalinfo1, table.portalinfo2{
     font-size: .9em;
 }
 
+/***** Begin actionbox containing action buttons and WAYF *****/
+div.actionbox,
+div.certactionbox,
+div.logofftextbox {
+  display: block;
+  border: 1px solid #D6DDB9;
+}
+div.p12actionbox,
+div.logoffactionbox {
+  display: none;
+  border: none;
+}
+p.privacypolicy {
+  font-size: small;
+}
+p.jwscertificatelifetime {
+  display: none;
+}
+/***** End actionbox *****/
+
 /***** The Header and Footer*****/
 div.logoheader {
     background: #FFFFFF url("/skin/DataONE/logo.png");
