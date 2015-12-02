@@ -618,7 +618,8 @@ class dbservice {
      ********************************************************************/
     function dump() {
         if (!is_null($this->status)) {
-            echo "status=$this->status\n";
+            echo "status=$this->status (" . 
+            array_search($this->status,dbservice::$STATUS) . ")\n";
         }
         if (!is_null($this->user_uid)) {
             echo "user_uid=$this->user_uid\n";
