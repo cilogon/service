@@ -135,6 +135,7 @@ class util {
             $exp += time();
         }
         setcookie($cookie,$value,$exp,'/','.'.DOMAINNAME,true);
+        $_COOKIE[$cookie] = $value;
     }
 
     /********************************************************************
@@ -145,7 +146,7 @@ class util {
      * time.                                                            *
      ********************************************************************/
     public static function unsetCookieVar($cookie) {
-        setcookie($cookie,'',time()-3600,'/','.'.DOMAINNAME,true);
+        setcookie($cookie,'',1,'/','.'.DOMAINNAME,true);
         unset($_COOKIE[$cookie]);
     }
 
