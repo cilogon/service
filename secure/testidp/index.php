@@ -282,7 +282,7 @@ function printTestPage() {
 
           <tr>
             <th>Organizational Unit (ou):</th>
-            <td>' , $shibarray['ou'] , '</td>
+            <td>' , $shibarray['OU'] , '</td>
             <td> </td>
           </tr>
 
