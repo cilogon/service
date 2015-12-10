@@ -121,9 +121,8 @@ function printLogonPage() {
      * values set the portal cookie, which needs to be done before we go
      * to the next page (where the cookie is actually read).
      */
-    $portal = new portalcookie();
-    $portallifetime = 
-        $portal->getPortalLifetime(util::getSessionVar('callbackuri'));
+    $pc = new portalcookie();
+    $portallifetime = $pc->get('lifetime');
     if ((strlen($portallifetime) == 0) || ($portallifetime == 0)) {
         $needtosetcookie = 0;
 
@@ -156,7 +155,9 @@ function printLogonPage() {
         }
 
         if ($needtosetcookie) {
-            setPortalCookie($initialremember,$initiallifetime);
+            $pc->set('remember',$initialremember);
+            $pc->set('lifetime',$initiallifetime);
+            $pc->write();
         }
     }
 
@@ -290,11 +291,9 @@ function printMainPage() {
     }
 
     // Try to read the portal coookie for the remember and lifetime values.
-    $portal = new portalcookie();
-    $portalremember = 
-        $portal->getPortalRemember(util::getSessionVar('callbackuri'));
-    $portallifetime = 
-        $portal->getPortalLifetime(util::getSessionVar('callbackuri'));
+    $pc = new portalcookie();
+    $portalremember = $pc->get('remember');
+    $portallifetime = $pc->get('lifetime');
 
     // If skin's forceremember or portal cookie's remember is set,
     // then we bypass the Allow/Deny delegate page.
@@ -561,10 +560,9 @@ function handleAllowDelegation($always=false) {
     }
 
     // If we couldn't get lifetime from the <form>, try the cookie
+    $pc = new portalcookie();
     if ($lifetime == 0) {
-        $portal = new portalcookie();
-        $lifetime = (int)($portal->getPortalLifetime(
-            util::getSessionVar('callbackuri')));
+        $lifetime = (int)($pc->get('lifetime'));
     }
 
     // Default lifetime to 12 hours. And then make sure lifetime is in
@@ -579,7 +577,9 @@ function handleAllowDelegation($always=false) {
         $lifetime = $maxlifetime;
     }
 
-    setPortalCookie((int)$always,$lifetime);
+    $pc->set('remember',(int)$always);
+    $pc->set('lifetime',$lifetime);
+    $pc->write();
 
     $success = false;  // Assume delegation of certificate failed
     $certtext = '';    // Output of 'openssl x509 -noout -text -in cert.pem'
@@ -743,25 +743,6 @@ function handleAllowDelegation($always=false) {
         unsetPortalSessionVars();
         util::unsetSessionVar('cilogon_skin');
     }
-}
-
-/************************************************************************
- * Function   : setPortalCookie                                         *
- * Parameters : (1) 1 if the "Remember my OK for this portal" checkbox  *
- *                  has been checked.  0 otherwise.                     *
- *              (2) The lifetime (in hours) entered in the "Certificate *
- *                  Lifetime input box.                                 *
- * This function is a convenience funtion to set the cookie for the     *
- * current portal (using the callbackuri) to remember the certificate   *
- * lifetime value and if the user checked the "Remember my OK for this  *
- * portal" checkbox.                                                    *
- ************************************************************************/
-function setPortalCookie($remember,$lifetime) {
-    $portal = new portalcookie();
-    $portal->setPortalRemember(util::getSessionVar('callbackuri'),
-                               (int)$remember);
-    $portal->setPortalLifetime(util::getSessionVar('callbackuri'),$lifetime);
-    $portal->write();  // Save the cookie with the updated values
 }
 
 /************************************************************************

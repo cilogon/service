@@ -5,29 +5,31 @@ require_once('util.php');
 /************************************************************************
  * Class name : portalcookie                                            *
  * Description: This class is used by the "CILogon Delegate Service"    *
- * to keep track of the user-selected lifetime (in hours) of the        *
+ * and the CILogon OIDC "authorize" endpoint to keep track of           *
+ * user-selected  attributes such as lifetime (in hours) of the         *
  * delegated certificate and if the user clicked the "Always Allow"     *
  * button to remember the allowed delegation upon future accesses.      *
  * The information related to certificate "lifetime" and "remember" the *
  * delegation settings is stored in a single cookie.  Since the data    *
  * is actually a two dimensional array (first element is the name of    *
- * the portal to delegate the certificate to, the second element is     *
- * the "lifetime" and "remember" settings), the stored cookie is        *
- * actually a base64 encoded serialization of the 2D array.  This class *
- * provides methods to read/write the cookie, and to get/set the values *
- * of "lifetime" and "remember" for a given portal.                     *
+ * the portal, the second element is an array of the various            *
+ * attributes), the stored cookie is actually a base64-encoded          *
+ * serialization of the 2D array.  This class provides methods to       *
+ * read/write the cookie, and to get/set the values for a given portal. *
  *                                                                      *
  * Example usage:                                                       *
  *    require_once('portalcookie.php');                                 *
- *    $portal = new portalcookie();  // Automatically reads the cookie  *
- *    $lifetime = $portal->getPortalLifetime('http://portal.org/');     *
+ *    $pc = new portalcookie();  // Automatically reads the cookie      *
+ *    // Assume the callbackuri or redirect_uri for the portal has      *
+ *    // been set in the PHP session.                                   *
+ *    $lifetime = $pc->get('lifetime');                                 *
  *    if ($lifetime < 1) {                                              *
  *        $lifetime = 1;                                                *
  *    } elseif ($lifetime > 240) {                                      *
  *        $lifetime = 240;                                              *
  *    }                                                                 *
- *    $portal->setPortalRemember('http://portal.org/',1);               *
- *    $portal->write();  // Must be done before any HTML output         *
+ *    $pc->set('remember',1);                                           *
+ *    $pc->write();  // Must be done before any HTML output             *
  ************************************************************************/
 
 class portalcookie {
@@ -76,8 +78,32 @@ class portalcookie {
     function write() {
         if (!empty($this->portalarray)) {
             util::setCookieVar(self::cookiename,
-                         base64_encode(serialize($this->portalarray)));
+                base64_encode(serialize($this->portalarray)));
         }
+    }
+
+    /********************************************************************
+     * Function  : getPortalName                                        *
+     * Returns   : The name of the portal, which is either the          *
+     *             OAuth 1.0a 'callbackuri' or the OIDC 'redirect_uri'. *
+     * This method looks in the PHP session for one of 'callbackuri'    *
+     * (in the OAuth 1.0a "delegate" case) or                           *
+     * $clientparams['redirect_uri'] (in the OIDC "authorize" case).    *
+     * This is used as the key for the $portalarray. If neither of      *
+     * these session variables is set, return empty string.             *
+     ********************************************************************/
+    function getPortalName() {
+        // Check the OAuth 1.0a 'delegate' 'callbackuri'
+        $retval = util::getSessionVar('callbackuri');
+        if (strlen($retval) == 0) {
+            // Next, check the OAuth 2.0 'authorize' 'redirect_uri'
+            $clientparams = json_decode(
+                util::getSessionVar('clientparams'),true);
+            if (isset($clientparams['redirect_uri'])) {
+                $retval = $clientparams['redirect_uri'];
+            }
+        }
+        return $retval;
     }
 
     /********************************************************************
@@ -90,19 +116,22 @@ class portalcookie {
     }
 
     /********************************************************************
-     * Function  : getPortalParam                                       *
-     * Parameters: (1) The name of the portal in question.              *
-     *             (2) The parameter of the portal to get.  Should be   *
-     *                 either 'lifetime' or 'remember'.                 *
-     * Returns   : The value of the $param for the portal $name.        *
+     * Function  : get                                                  *
+     * Parameter : The attribute of the portal to get.  Should be       *
+     *             something like 'lifetime' or 'remember'.             *
+     * Returns   : The value of the $param for the portal.              *
      * This method is a generalized getter to fetch the value of a      *
-     * parameter for a given portal.  In otherwords, this method        *
-     * $this->portalarray[$name][$param], where $param is one of        *
-     * 'lifetime' or 'remember'.                                        *
+     * parameter for a given portal.  In other words, this method       *
+     * returns $this->portalarray[$param], where $param is something    *
+     * like 'lifetime' or 'remember'. If the portal name is not set,    *
+     * or the requested parameter is missing from the cookie, return    *
+     * empty string.                                                    *
      ********************************************************************/
-    function getPortalParam($name,$param) {
+    function get($param) {
         $retval = '';
-        if ((isset($this->portalarray[$name])) &&
+        $name = $this->getPortalName();
+        if ((strlen($name) > 0) &&
+            (isset($this->portalarray[$name])) &&
             (isset($this->portalarray[$name][$param]))) {
             $retval = $this->portalarray[$name][$param];
         }
@@ -110,63 +139,18 @@ class portalcookie {
     }
 
     /********************************************************************
-     * Function  : setPortalParam                                       *
-     * Parameters: (1) The name of the portal in question.              *
-     *             (2) The parameter of the portal to set.  Should be   *
-     *                 either 'lifetime' or 'remember'.                 *
-     *             (3) The value to set for the parameter.              *
+     * Function  : set                                                  *
+     * Parameter : (1) The parameter of the portal to set.  Should be   *
+     *                 something like 'lifetime' or 'remember'.         *
+     *             (2) The value to set for the parameter.              *
      * This method sets a portal's parameter to a given value.  Note    *
      * that $value should be an integer or character value.             *
      ********************************************************************/
-    function setPortalParam($name,$param,$value) {
-        $this->portalarray[$name][$param] = $value;
-    }
-
-    /********************************************************************
-     * Function  : getPortalLifetime                                    *
-     * Parameter : The name of the portal in question.                  *
-     * Return    : The lifetime of the delegated certificate for the    *
-     *             given portal.                                        *
-     * This is a convenience function for                               *
-     * getPortalParameter($name,'lifetime').                            *
-     ********************************************************************/
-    function getPortalLifetime($name) {
-        return $this->getPortalParam($name,'lifetime');
-    }
-    
-    /********************************************************************
-     * Function  : setPortalLifetime                                    *
-     * Parameters: (1) The name of the portal in question.              *
-     *             (2) The 'lifetime' of the certificate delegated to   *
-     *                 the portal.                                      *
-     * This is a convenience function for                               *
-     * setPortalParameter($name,'lifetime',$life).                      *
-     ********************************************************************/
-    function setPortalLifetime($name,$life) {
-        $this->setPortalParam($name,'lifetime',$life);
-    }
-
-    /********************************************************************
-     * Function  : getPortalRemember                                    *
-     * Parameter : The name of the portal in question.                  *
-     * Return    : The 'remember' value for the given portal.           *
-     * This is a convenience function for                               *
-     * getPortalParameter($name,'remember').                            *
-     ********************************************************************/
-    function getPortalRemember($name) {
-        return $this->getPortalParam($name,'remember');
-    }
-    
-    /********************************************************************
-     * Function  : setPortalRemember                                    *
-     * Parameters: (1) The name of the portal in question.              *
-     *             (2) The 'remember' value of the portal, should be    *
-     *                 an integer value (0 or 1).                       *
-     * This is a convenience function for                               *
-     * setPortalParameter($name,'remember',$remem).                     *
-     ********************************************************************/
-    function setPortalRemember($name,$remem) {
-        $this->setPortalParam($name,'remember',$remem);
+    function set($param,$value) {
+        $name = $this->getPortalName();
+        if (strlen($name) > 0) {
+            $this->portalarray[$name][$param] = $value;
+        }
     }
 
     /********************************************************************
@@ -185,9 +169,11 @@ class portalcookie {
                 $retval .= "\n";
             }
             $first = false;
-            $retval .= 'portal=' . $key . 
-                       ',lifetime=' . $this->getPortalLifetime($key) .
-                       ',remember='.  $this->getPortalRemember($key);
+            $retval .= 'portal=' . $key; 
+            ksort($value);
+            foreach ($value as $key2 => $value2) {
+                $retval .= ",$key2=$value2";
+            }
         }
         return $retval;
     }

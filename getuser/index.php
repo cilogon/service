@@ -129,7 +129,15 @@ function getUserAndRespond2() {
 
     /* If no error reported, save user data to datastore */
     if (strlen(util::getSessionVar('logonerror')) == 0) {
-        $providerId = util::getCookieVar('providerId');
+        // If using OAuth 1.0a or OIDC, check portalcookie for providerId
+        $providerId = '';
+        $pc = new portalcookie();
+        $pn = $pc->getPortalName();
+        if (strlen($pn) > 0) {
+            $providerId = $pc->get('providerId');
+        } else {
+            $providerId = util::getCookieVar('providerId');
+        }
         $providerName = 'Google';
         util::saveUserToDataStore($openidid,$providerId,$providerName,
                                   $firstname,$lastname,$displayname,

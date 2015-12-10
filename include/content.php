@@ -239,8 +239,18 @@ function printWAYF($showremember=true,$incommonidps=false,$selected_idp='') {
     $idps = getCompositeIdPList($incommonidps);
 
     /* Check if the user had previously selected an IdP from the list. */
-    $keepidp    = util::getCookieVar('keepidp');
-    $providerId = util::getCookieVar('providerId');
+    /* First, check the portalcookie, then the 'normal' cookie.        */
+    $keepidp = '';
+    $providerId = '';
+    $pc = new portalcookie();
+    $pn = $pc->getPortalName();
+    if (strlen($pn) > 0) {
+        $keepidp    = $pc->get('keepidp');
+        $providerId = $pc->get('providerId');
+    } else {
+        $keepidp    = util::getCookieVar('keepidp');
+        $providerId = util::getCookieVar('providerId');
+    }
 
     /* Make sure previously selected IdP is in list of available IdPs. */
     if ((strlen($providerId) > 0) && (!isset($idps[$providerId]))) {
@@ -346,7 +356,7 @@ function printWAYF($showremember=true,$incommonidps=false,$selected_idp='') {
         <label for="keepidp" title="' , $helptext , 
         '" class="helpcursor">Remember this selection:</label>
         <input type="checkbox" name="keepidp" id="keepidp" ' , 
-        (($keepidp == 'checked') ? 'checked="checked" ' : '') ,
+        ((strlen($keepidp) > 0) ? 'checked="checked" ' : '') ,
         'title="' , $helptext , '" class="helpcursor" />
         </p>
         ';
@@ -854,23 +864,51 @@ function handleLogOnButtonClicked() {
     $idps = getCompositeIdPList();
 
     // Set the cookie for keepidp if the checkbox was checked
+    $pc = new portalcookie();
+    $pn = $pc->getPortalName();
     if (strlen(util::getPostVar('keepidp')) > 0) {
-        util::setCookieVar('keepidp','checked');
+        if (strlen($pn) > 0) {
+            $pc->set('keepidp','checked');
+        } else {
+            util::setCookieVar('keepidp','checked');
+        }
     } else {
-        util::unsetCookieVar('keepidp');
+        if (strlen($pn) > 0) {
+            $pc->set('keepidp','');
+        } else {
+            util::unsetCookieVar('keepidp');
+        }
     }
+    
+    // For OIDC case, save the "scope" to the portalcookie so we can check
+    // if it changes, forcing the user to re-consent next time.
+    $clientparams = json_decode(util::getSessionVar('clientparams'),true);
+    if (isset($clientparams['scope'])) {
+        $pc->set('scope',$clientparams['scope']);
+    }
+
 
     // Set the cookie for the last chosen IdP and redirect to it if in list
     $providerIdPost = util::getPostVar('providerId');
     if ((strlen($providerIdPost) > 0) && (isset($idps[$providerIdPost]))) {
-        util::setCookieVar('providerId',$providerIdPost);
+        if (strlen($pn) > 0) {
+            $pc->set('providerId',$providerIdPost);
+            $pc->write();
+        } else {
+            util::setCookieVar('providerId',$providerIdPost);
+        }
         if ($providerIdPost == GOOGLE_OIDC) { // Log in with Google
             redirectToGetGoogleOAuth2User();
         } else { // Use InCommon authn
             redirectToGetShibUser($providerIdPost);
         }
     } else { // IdP not in list, or no IdP selected
-        util::unsetCookieVar('providerId');
+        if (strlen($pn) > 0) {
+            $pc->set('providerId','');
+            $pc->write();
+        } else {
+            util::unsetCookieVar('providerId');
+        }
         util::setSessionVar('logonerror','Please select a valid IdP.');
         printLogonPage();
     }
@@ -924,6 +962,8 @@ function handleNoSubmitButtonClicked($selected_idp='') {
     /* If the <forceinitialidp> option is set, use the <initialidp> *
      * as the providerId and <forceinitialidp> as keepIdp.          *
      * Otherwise, read the cookies 'providerId' and 'keepidp'.      */
+    $providerId = '';
+    $keepidp = '';
     $readidpcookies = true;  // Assume config options are not set
     $forceinitialidp = (int)$skin->getConfigOption('forceinitialidp');
     $initialidp = (string)$skin->getConfigOption('initialidp');
@@ -935,23 +975,49 @@ function handleNoSubmitButtonClicked($selected_idp='') {
             (((int)$afii == 1) && 
               ($skin->inPortalList(util::getSessionVar('callbackuri'))))) {
             $providerId = $initialidp;
-            $keepIdp = $forceinitialidp;
+            $keepidp = $forceinitialidp;
             $readidpcookies = false; // Don't read in the IdP cookies
         }
     }
     
     /* <initialidp> options not set, or portal not in portal list?  *
      * Get idp and "Remember this selection" from cookies instead.  */
+    $pc = new portalcookie();
+    $pn = $pc->getPortalName();
     if ($readidpcookies) {
-        $providerId = util::getCookieVar('providerId');
-        $keepIdp = util::getCookieVar('keepidp');
+        // Check the portalcookie first, then the 'normal' cookies
+        if (strlen($pn) > 0) {
+            $keepidp    = $pc->get('keepidp');
+            $providerId = $pc->get('providerId');
+            // Special check for OIDC case: If keepidp was set for this 
+            // portal, verify that the current 'scope' matches the 
+            // previously saved 'scope' (f any). If not, then unset keepidp
+            // so as to force the user to re-consent.
+            if (strlen($keepidp) > 0) {
+                $oldscope = $pc->get('scope');
+                $clientparams = json_decode(
+                    util::getSessionVar('clientparams'),true);
+                $newscope = '';
+                if (isset($clientparams['scope'])) {
+                    $newscope = $clientparams['scope'];
+                }
+                if ((strlen($oldscope) > 0) &&
+                    (strlen($newscope) > 0) &&
+                    (strcmp($oldscope,$newscope) != 0)) {
+                    $keepidp = '';
+                }
+            }
+        } else {
+            $keepidp    = util::getCookieVar('keepidp');
+            $providerId = util::getCookieVar('providerId');
+        }
     }
 
     /* If both "keepidp" and "providerId" were set (and the         *
      * providerId is a whitelisted IdP or valid OpenID provider),   *
      * then skip the Logon page and proceed to the appropriate      *
      * getuser script.                                              */
-    if ((strlen($providerId) > 0) && (strlen($keepIdp) > 0)) {
+    if ((strlen($providerId) > 0) && (strlen($keepidp) > 0)) {
         /* If $selected_idp was specified (at the authorize endpoint), *
          * make sure that it matches the saved providerId. If not,     *
          * then show the Logon page and uncheck the keepidp checkbox.  */
@@ -961,11 +1027,21 @@ function handleNoSubmitButtonClicked($selected_idp='') {
             } elseif ($idplist->exists($providerId)) { // Use InCommon
                 redirectToGetShibUser($providerId);
             } else { // $providerId not in whitelist
-                util::unsetCookieVar('providerId');
+                if (strlen($pn) > 0) {
+                    $pc->set('providerId','');
+                    $pc->write();
+                } else {
+                    util::unsetCookieVar('providerId');
+                }
                 printLogonPage();
             }
         } else { // selected_idp does not match saved providerId
-            util::unsetCookieVar('keepidp');
+            if (strlen($pn) > 0) {
+                $pc->set('keepidp','');
+                $pc->write();
+            } else {
+                util::unsetCookieVar('keepidp');
+            }
             printLogonPage();
         }
     } else { // One of providerId or keepidp was not set
@@ -1124,9 +1200,16 @@ function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
     global $log;
     global $skin;
 
-    // If providerId not set, try the session and cookie values
+    // If providerId not set, try the cookie value
     if (strlen($providerId) == 0) {
-        $providerId = util::getCookieVar('providerId');
+        // If using OAuth 1.0a or OIDC, check portalcookie for providerId
+        $pc = new portalcookie();
+        $pn = $pc->getPortalName();
+        if (strlen($pn) > 0) {
+            $providerId = $pc->get('providerId');
+        } else {
+            $providerId = util::getCookieVar('providerId');
+        }
     }
     
     // If the user has a valid 'uid' in the PHP session, and the
@@ -1524,8 +1607,8 @@ function gotUserSuccess() {
                 $initialremember = 
                     $skin->getConfigOption('delegate','initialremember');
                 if ((!is_null($initialremember)) && ((int)$initialremember==1)){
-                    $portal = new portalcookie();
-                    $portallifetime = $portal->getPortalLifetime($callbackuri);
+                    $pc = new portalcookie();
+                    $portallifetime = $pc->get('lifetime');
                     if ((strlen($portallifetime)==0) || ($portallifetime==0)) {
                         $status = dbservice::$STATUS['STATUS_OK'];
                     }
