@@ -1,4 +1,6 @@
 https://idp.clemson.edu/idp/profile/SAML2/SOAP/ECP Clemson University
+https://ecp-prod.fnal.gov/idp/profile/SAML2/SOAP/ECP Fermi National Accelerator Laboratory
+https://ecp-prod.fnal.gov/idp-krb/profile/SAML2/SOAP/ECP Fermi National Accelerator Laboratory (Kerberos)
 https://login.ligo.org/idp/profile/SAML2/SOAP/ECP LIGO Scientific Collaboration
 https://shib.lternet.edu/idp/profile/SAML2/SOAP/ECP LTER Network
 https://as1.fim.psu.edu/idp/profile/SAML2/SOAP/ECP Penn State University
