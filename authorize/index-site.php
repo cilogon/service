@@ -104,8 +104,7 @@ if (verifyOIDCParams()) {
         break; // End case 'Show Help' / 'Hide Help'
 
         default: // No submit button clicked nor PHP session submit variable set
-            handleNoSubmitButtonClicked(isset($clientparams['selected_idp']) ?
-                $clientparams['selected_idp'] : '');
+            handleNoSubmitButtonClicked();
             
         break; // End default case
 
@@ -202,8 +201,7 @@ function printLogonPage() {
         ';
     }
 
-    printWAYF(true,false,(isset($clientparams['selected_idp']) ?
-                          $clientparams['selected_idp'] : ''));
+    printWAYF(true,false);
 
     echo '
     </div> <!-- End boxed -->
