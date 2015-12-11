@@ -85,22 +85,28 @@ class portalcookie {
     /********************************************************************
      * Function  : getPortalName                                        *
      * Returns   : The name of the portal, which is either the          *
-     *             OAuth 1.0a 'callbackuri' or the OIDC 'redirect_uri'. *
+     *             OAuth 1.0a 'callbackuri' or the OIDC client info.    *
      * This method looks in the PHP session for one of 'callbackuri'    *
-     * (in the OAuth 1.0a "delegate" case) or                           *
-     * $clientparams['redirect_uri'] (in the OIDC "authorize" case).    *
-     * This is used as the key for the $portalarray. If neither of      *
-     * these session variables is set, return empty string.             *
+     * (in the OAuth 1.0a "delegate" case) or various $clientparams     *
+     * (in the OIDC "authorize" case).This is used as the key for the   *
+     * $portalarray. If neither of these session variables is set,      *
+     * return empty string.                                             *
      ********************************************************************/
     function getPortalName() {
         // Check the OAuth 1.0a 'delegate' 'callbackuri'
         $retval = util::getSessionVar('callbackuri');
         if (strlen($retval) == 0) {
-            // Next, check the OAuth 2.0 'authorize' 'redirect_uri'
+            // Next, check the OAuth 2.0 'authorize' $clientparams[] 
             $clientparams = json_decode(
                 util::getSessionVar('clientparams'),true);
-            if (isset($clientparams['redirect_uri'])) {
-                $retval = $clientparams['redirect_uri'];
+            if ((isset($clientparams['client_id'])) &&
+                (isset($clientparams['redirect_uri'])) &&
+                (isset($clientparams['scope']))) {
+                $retval = $clientparams['client_id'] . ';' .
+                          $clientparams['redirect_uri'] . ';' .
+                          $clientparams['scope'] . 
+                          (isset($clientparams['selected_idp']) ?  ';' . 
+                                 $clientparams['selected_idp'] : '');
             }
         }
         return $retval;
