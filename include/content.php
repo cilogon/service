@@ -219,15 +219,13 @@ function printFormHead($action='',$gsca=false) {
  *              (2) Show all InCommon IdPs in selection list?           *
  *                  True or false. Defaults to false, which means show  *
  *                  only whitelisted IdPs.                              *
- *              (3) A client-side selected IdP (to be used by portals). *
- *                  Defautls to no pre-selected IdP (empty string).     *
  * This function prints the list of IdPs in a <select> form element     *
  * which can be printed on the main login page to allow the user to     *
  * select "Where Are You From?".  This function checks to see if a      *
  * cookie for the 'providerId' had been set previously, so that the     *
  * last used IdP is selected in the list.                               *
  ************************************************************************/
-function printWAYF($showremember=true,$incommonidps=false,$selected_idp='') {
+function printWAYF($showremember=true,$incommonidps=false) {
     global $csrf;
     global $skin;
 
@@ -267,14 +265,18 @@ function printWAYF($showremember=true,$incommonidps=false,$selected_idp='') {
         }
     }
 
-    /* Check if a client selected an IdP for the transaction. If so, *
-     * verify that the IdP is in the list of available IdPs.         */
+    /* Check if an OIDC client selected an IdP for the transaction.  *
+     * If so, verify that the IdP is in the list of available IdPs.  */
     $useselectedidp = false;
-    if ((strlen($selected_idp) > 0) && (isset($idps[$selected_idp]))) {
-        $useselectedidp = true;
-        $providerId = $selected_idp;
-        /* Update the IdP selection list to show only this one IdP */
-        $idps = array($selected_idp => $idps[$selected_idp]);
+    $clientparams = json_decode(util::getSessionVar('clientparams'),true);
+    if (isset($clientparams['selected_idp'])) {
+        $selected_idp = $clientparams['selected_idp'];
+        if ((strlen($selected_idp) > 0) && (isset($idps[$selected_idp]))) {
+            $useselectedidp = true;
+            $providerId = $selected_idp;
+            /* Update the IdP selection list to show only this one IdP */
+            $idps = array($selected_idp => $idps[$selected_idp]);
+        }
     }
 
     echo '
@@ -880,14 +882,6 @@ function handleLogOnButtonClicked() {
         }
     }
     
-    // For OIDC case, save the "scope" to the portalcookie so we can check
-    // if it changes, forcing the user to re-consent next time.
-    $clientparams = json_decode(util::getSessionVar('clientparams'),true);
-    if (isset($clientparams['scope'])) {
-        $pc->set('scope',$clientparams['scope']);
-    }
-
-
     // Set the cookie for the last chosen IdP and redirect to it if in list
     $providerIdPost = util::getPostVar('providerId');
     if ((strlen($providerIdPost) > 0) && (isset($idps[$providerIdPost]))) {
@@ -944,8 +938,6 @@ function handleHelpButtonClicked() {
 
 /************************************************************************
  * Function  : handleNoSubmitButtonClicked                              *
- * Parameter : (Optional) The passed in "selected_idp" value used in    *
- *             the OIDC authorize case.                                 *
  * This function is the "default" case when no "submit" button has been *
  * clicked, or if the submit session variable is not set. It checks     *
  * to see if either the <forceinitialidp> option is set, or if the      *
@@ -953,7 +945,7 @@ function handleHelpButtonClicked() {
  * then rediret to the appropriate IdP. Otherwise, print the main       *
  * Log On page.                                                         *
  ************************************************************************/
-function handleNoSubmitButtonClicked($selected_idp='') {
+function handleNoSubmitButtonClicked() {
     global $skin;
 
     // Read in the whitelist of currently available InCommon IdPs
@@ -989,24 +981,6 @@ function handleNoSubmitButtonClicked($selected_idp='') {
         if (strlen($pn) > 0) {
             $keepidp    = $pc->get('keepidp');
             $providerId = $pc->get('providerId');
-            // Special check for OIDC case: If keepidp was set for this 
-            // portal, verify that the current 'scope' matches the 
-            // previously saved 'scope' (f any). If not, then unset keepidp
-            // so as to force the user to re-consent.
-            if (strlen($keepidp) > 0) {
-                $oldscope = $pc->get('scope');
-                $clientparams = json_decode(
-                    util::getSessionVar('clientparams'),true);
-                $newscope = '';
-                if (isset($clientparams['scope'])) {
-                    $newscope = $clientparams['scope'];
-                }
-                if ((strlen($oldscope) > 0) &&
-                    (strlen($newscope) > 0) &&
-                    (strcmp($oldscope,$newscope) != 0)) {
-                    $keepidp = '';
-                }
-            }
         } else {
             $keepidp    = util::getCookieVar('keepidp');
             $providerId = util::getCookieVar('providerId');
@@ -1018,9 +992,14 @@ function handleNoSubmitButtonClicked($selected_idp='') {
      * then skip the Logon page and proceed to the appropriate      *
      * getuser script.                                              */
     if ((strlen($providerId) > 0) && (strlen($keepidp) > 0)) {
-        /* If $selected_idp was specified (at the authorize endpoint), *
-         * make sure that it matches the saved providerId. If not,     *
-         * then show the Logon page and uncheck the keepidp checkbox.  */
+        /* If selected_idp was specified at the OIDC authorize endpoint, *
+         * make sure that it matches the saved providerId. If not,       *
+         * then show the Logon page and uncheck the keepidp checkbox.    */
+        $selected_idp = '';
+        $clientparams = json_decode(util::getSessionVar('clientparams'),true);
+        if (isset($clientparams['selected_idp'])) {
+            $selected_idp = $clientparams['selected_idp'];
+        }
         if ((strlen($selected_idp) == 0) || ($selected_idp == $providerId)) {
             if ($providerId == GOOGLE_OIDC) { // Use Google
                 redirectToGetGoogleOAuth2User();
