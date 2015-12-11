@@ -595,7 +595,9 @@ function verifyOIDCParams() {
                             'There was an unrecoverable error during the ' .
                             'OpenID Connect transaction. This may be a ' .
                             'temporary issue. CILogon system ' .
-                            'administrators have been notified.');
+                            'administrators have been notified.' .
+                            ((strlen($output) > 0) ? 
+                            '<br/><pre>' . $output . '</pre>' : ''));
                         $clientparams = array();
                     }
                 } else { // curl_getinfo() returned false - should not happen
