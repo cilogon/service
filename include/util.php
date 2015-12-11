@@ -151,6 +151,35 @@ class util {
     }
 
     /********************************************************************
+     * Function  : getPortalOrNormalCookieVar                           *
+     * Parameter : The name of the cookie to get.                       *
+     * Returns   : The cookie value from either the portalcookie        *
+     *             (in the case of an active OAuth session) or the      *
+     *             'normal' cookie. Return empty string if no matching  *
+     *             cookie in either place.                              *
+     * This is a convenience function which first checks if there is a  *
+     * OAuth 1.0a ('delegate') or OIDC ('authorize') session active.    *
+     * If so, it attempts to get the requested cookie from the          *
+     * associated portalcookie. If there is not an OAuth/OIDC session   *
+     * active, it looks for a 'normal' cookie. If you need a            *
+     * portalcookie object to do multiple get/set method calls from     *
+     * one function, it is probably better NOT to use this method since *
+     * creating the portalcookie object is potentially expensive.       *
+     ********************************************************************/
+    public static function getPortalOrNormalCookieVar($cookie) {
+        $retval = '';
+        require_once('portalcookie.php');
+        $pc = new portalcookie();
+        $pn = $pc->getPortalName();
+        if (strlen($pn) > 0) {
+            $retval = $pc->get($cookie);
+        } else {
+            $retval = util::getCookieVar($cookie);
+        }
+        return $retval;
+    }
+
+    /********************************************************************
      * Function  : getSessionVar                                        *
      * Parameter : The $_SESSION variable to query.                     *
      * Returns   : The value of the $_SESSION variable or empty string  *

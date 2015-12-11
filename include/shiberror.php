@@ -78,15 +78,7 @@ class shiberror {
                 if (strlen(util::getSessionVar('responseurl')) > 0) {
                     $responseurl = util::getSessionVar('responseurl');
                 }
-                // If using OAuth 1.0a or OIDC, check portalcookie
-                $providerId = '';
-                $pc = new portalcookie();
-                $pn = $pc->getPortalName();
-                if (strlen($pn) > 0) {
-                    $providerId = $pc->get('providerId');
-                } else {
-                    $providerId = util::getCookieVar('providerId');
-                }
+                $providerId = util::getPortalOrNormalCookieVar('providerId');
                 redirectToGetShibUser($providerId,'gotuser',$responseurl,false);
             } else {
                 $this->printError();

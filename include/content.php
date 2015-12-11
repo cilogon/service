@@ -1202,14 +1202,7 @@ function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
 
     // If providerId not set, try the cookie value
     if (strlen($providerId) == 0) {
-        // If using OAuth 1.0a or OIDC, check portalcookie for providerId
-        $pc = new portalcookie();
-        $pn = $pc->getPortalName();
-        if (strlen($pn) > 0) {
-            $providerId = $pc->get('providerId');
-        } else {
-            $providerId = util::getCookieVar('providerId');
-        }
+        $providerId = util::getPortalOrNormalCookieVar('providerId');
     }
     
     // If the user has a valid 'uid' in the PHP session, and the
