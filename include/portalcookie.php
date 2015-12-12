@@ -227,7 +227,7 @@ class portalcookie {
             $retval .= 'portal=' . $key; 
             ksort($value);
             foreach ($value as $key2 => $value2) {
-                $retval .= ",$key2=$value2";
+                $retval .= ", $key2=$value2";
             }
         }
         return $retval;
