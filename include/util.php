@@ -48,6 +48,29 @@ class util {
     }
 
     /********************************************************************
+     * Function  : getConfigVar                                         *
+     * Parameter : The config parameter to read from the cilogon.ini    *
+     *             file.                                                *
+     * Returns   : The value of the config parameter, or empty string   *
+     *             if no such parameter found in config.ini.            *
+     * This function returns a sinle configuration vale from the        *
+     * CILOGON_INI_FILE, or empty string if no such configuration       *
+     * value is found in the file.                                      *
+     ********************************************************************/
+    public static function getConfigVar($config) {
+        $retval = '';
+        // Read in the config file into an array
+        if (is_null(self::$ini_array)) {
+            self::$ini_array = @parse_ini_file(CILOGON_INI_FILE);
+        }
+        if ((is_array(self::$ini_array)) &&
+            (array_key_exists($config,self::$ini_array))) {
+            $retval = self::$ini_array[$config];
+        }
+        return $retval;
+    }
+
+    /********************************************************************
      * Function  : startTiming                                          *
      * This function initializes the class variable $timeit which is    *
      * used for timing/benchmarking purposes.                           *
@@ -174,7 +197,7 @@ class util {
         if (strlen($pn) > 0) {
             $retval = $pc->get($cookie);
         } else {
-            $retval = util::getCookieVar($cookie);
+            $retval = self::getCookieVar($cookie);
         }
         return $retval;
     }
@@ -270,15 +293,7 @@ class util {
     public static function startPHPSession($storetype=null) {
         // No parameter given? Use the value read in from cilogon.ini file.
         // If storage.phpsessions == 'mysql', create a sessionmgr().
-        if (is_null($storetype)) {
-            if (is_null(self::$ini_array)) {
-                self::$ini_array = @parse_ini_file(CILOGON_INI_FILE);
-            }
-            if ((is_array(self::$ini_array)) &&
-                (array_key_exists('storage.phpsessions',self::$ini_array))) {
-                $storetype = self::$ini_array['storage.phpsessions'];
-            }
-        }
+        $storetype = self::getConfigVar('storage.phpsessions');
 
         if ($storetype == 'mysql') {
             require_once('sessionmgr.php');

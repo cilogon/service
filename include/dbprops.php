@@ -1,45 +1,30 @@
 <?php
 
 require_once('DB.php');
+require_once('util.php');
 
 /************************************************************************
  * Class name : dbprops                                                 *
- * Description: This class reads the config file (as specified by the   *
- *              class constant cilogon_ini_file) for the username,      *
+ * Description: This class reads the config.ini file for the username,  *
  *              password, and database name used for storage.           *
  *              You specify which database type to use when calling     *
  *              the constructor, either 'mysql' or 'pgsql'. There is    *
  *              also a method getDBConnect to open a PEAR DB database   *
  *              connection using the parameters in the config file.     *
- *                                                                      *
- *              There is a constant in the class that you should set    *
- *              for your particular set up:                             *
- *                                                                      *
- *              cilogon_ini_file - this is the full path and name       *
- *                  of the cilogon.ini file containing the database     *
- *                  parameters (such as username and password). The     *
- *                  designated database is used by the OpenID consumer  *
- *                  to store temporary tokens.                          *
  ************************************************************************/
 
 class dbprops {
 
-    /* Set the constant to correspond to your particular set up.       */
-    const cilogon_ini_file = '/var/www/config/cilogon.ini';
-
-    private $ini_array; // Read .ini file into an array
     private $dbtype;    // Either 'mysql' or 'pgsql'
 
     /********************************************************************
      * Function  : __construct                                          *
      * Parameter : Database type, either 'mysql' or 'pgsql'. Defaults   *
      *             to 'mysql'.                                          *
-     * The constuctor sets several class variables and reads the        *
-     * cilogon_ini_file config file into the array $ini_array.          *
+     * The constuctor sets the $dbtype class variable.                  *
      ********************************************************************/
     function __construct($db='mysql') {
         $this->dbtype = $db;
-        $this->ini_array = @parse_ini_file(self::cilogon_ini_file);
     }
 
     /********************************************************************
@@ -48,20 +33,11 @@ class dbprops {
      *             'password', or 'database'.                           *
      * Returns   : The value of the desired attribute, or empty string  *
      *             on error.                                            *
-     * This is a general method looks in the $ini_array for the named   *
-     * attribute to return the username, password, or database value.   *
+     * This is a general method looks in the cilogon.ini file for the   *
+     * named  database configuration attribute.                         *
      ********************************************************************/
     function queryAttribute($attr) {
-        $retstr = '';
-
-        if (is_array($this->ini_array)) {
-            $query = $this->dbtype . '.' . $attr;
-            if (array_key_exists($query,$this->ini_array)) {
-                $retstr = $this->ini_array[$query];
-            }
-        }
-
-        return $retstr;
+        return util::getConfigVar($this->dbtype . '.' . $attr);
     }
 
     /********************************************************************
