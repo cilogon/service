@@ -114,6 +114,8 @@ class portalcookie {
                     }
                     if (strlen($smallportal) > 0) {
                         unset($this->portalarray[$smallportal]);
+                    } else
+                        break; // Should never get here, but just in case
                     }
                     $serial = serialize($this->portalarray);
                 }
