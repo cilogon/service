@@ -53,17 +53,28 @@ class portalcookie {
     /********************************************************************
      * Function  : read                                                 *
      * This method reads the portal cookie, decodes the base64 string,  *
-     * and unserializes the 2D array.  This is stored in the class      *
-     * $portalarray array.                                              *
+     * decrypts the AES-128-CBC string, and unserializes the 2D array.  *
+     * This is stored in the class $portalarray array.                  *
      ********************************************************************/
     function read() {
         if (isset($_COOKIE[self::cookiename])) {
             $cookie = $_COOKIE[self::cookiename];
             $b64 = base64_decode($cookie);
             if ($b64 !== false) {
-                $unserial = unserialize($b64);
-                if ($unserial !== false) {
-                    $this->portalarray = $unserial;
+                $iv = substr($b64,0,16); // IV prepended to encrypted data
+                $b64a = substr($b64,16); // IV is 16 bytes, rest is data
+                if ((strlen($iv) > 0) && (strlen($b64a) > 0)) {
+                    $key = util::getConfigVar('openssl.key');
+                    if (strlen($key) > 0) {
+                        $data = openssl_decrypt($b64a,'AES-128-CBC',$key,
+                            OPENSSL_RAW_DATA,$iv);
+                        if (strlen($data) > 0) {
+                            $unserial = unserialize($data);
+                            if ($unserial !== false) {
+                                $this->portalarray = $unserial;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -73,12 +84,24 @@ class portalcookie {
      * Function  : write                                                *
      * This method writes the class $portalarray to a cookie.  In       *
      * order to store the 2D array as a cookie, the array is first      *
-     * serialized and then base64 encoded.                              *
+     * serialized, then encrypted with AES-128-CBC, and then base64-    *
+     * encoded.                                                         *
      ********************************************************************/
     function write() {
         if (!empty($this->portalarray)) {
-            util::setCookieVar(self::cookiename,
-                base64_encode(serialize($this->portalarray)));
+            $key = util::getConfigVar('openssl.key');
+            $iv = openssl_random_pseudo_bytes(16);  // IV is 16 bytes
+            if ((strlen($key) > 0) && (strlen($iv) > 0)) {
+                $serial = serialize($this->portalarray);
+                $data = openssl_encrypt($serial,'AES-128-CBC',$key,
+                    OPENSSL_RAW_DATA,$iv);
+                if (strlen($data) > 0) {
+                    $b64 = base64_encode($iv.$data); // Prepend IV to data
+                    if ($b64 !== false) {
+                        util::setCookieVar(self::cookiename,$b64);
+                    }
+                }
+            }
         }
     }
 
