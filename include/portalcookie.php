@@ -92,7 +92,31 @@ class portalcookie {
             $key = util::getConfigVar('openssl.key');
             $iv = openssl_random_pseudo_bytes(16);  // IV is 16 bytes
             if ((strlen($key) > 0) && (strlen($iv) > 0)) {
+                $this->set('ut',time()); // Save update time
                 $serial = serialize($this->portalarray);
+                // Special check: If the serialization of the cookie is
+                // more than 3000 bytes, the resulting base64 encoded string
+                // may be too big (>4K). So scan through all portal entries 
+                // and delete the oldest one until the size is small enough.
+                while (strlen($serial) > 3000) {
+                    $smallvalue = 5000000000; // Unix time = Jun 11, 2128
+                    $smallportal = '';
+                    foreach ($this->portalarray as $k => $v) {
+                        if (isset($v['ut'])) {
+                            if ($v['ut'] < $smallvalue) {
+                                $smallvalue = $v['ut'];
+                                $smallportal = $k;
+                            }
+                        } else { // 'ut' not set, delete it
+                            $smallportal = $k;
+                            break;
+                        }
+                    }
+                    if (strlen($smallportal) > 0) {
+                        unset($this->portalarray[$smallportal]);
+                    }
+                    $serial = serialize($this->portalarray);
+                }
                 $data = openssl_encrypt($serial,'AES-128-CBC',$key,
                     OPENSSL_RAW_DATA,$iv);
                 if (strlen($data) > 0) {
