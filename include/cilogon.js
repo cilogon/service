@@ -183,11 +183,11 @@ function handleLifetime() {
   expire.setTime(today.getTime() + 365*24*3600000);
   var cookiestr = "certlifetime=" + 
     encodeURIComponent(certlifetimefieldvalue) +
-    ";expires=" + expire.toGMTString() + ";path=/;secure";
+    ";expires=" + expire.toGMTString() + ";domain=.cilogon.org;path=/;secure";
   document.cookie = cookiestr;
   cookiestr = "certmultiplier=" + 
     encodeURIComponent(certmultiplierselectvalue) +
-    ";expires=" + expire.toGMTString() + ";path=/;secure";
+    ";expires=" + expire.toGMTString() + ";domain=.cilogon.org;path=/;secure";
   document.cookie = cookiestr;
 
   return true;
