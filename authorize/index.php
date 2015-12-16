@@ -180,19 +180,19 @@ function printLogonPage() {
 
         echo '<ul style="max-width:660px;margin:0 auto">
           ';
-        if ($attrs['openid']) {
+        if (isset($attrs['openid'])) {
             echo '<li>Your CILogon username</li>';
         }
-        if ($attrs['name']) {
+        if (isset($attrs['name'])) {
             echo '<li>Your name</li>';
         }
-        if ($attrs['email']) {
+        if (isset($attrs['email'])) {
             echo '<li>Your email address</li>';
         }
-        if ($attrs['cilogon']) {
+        if (isset($attrs['cilogon'])) {
             echo '<li>Your username and affiliation from your identity provider</li>';
         }
-        if ($attrs['cert']) {
+        if (isset($attrs['cert'])) {
             echo '<li>A certificate that allows "' , 
             htmlspecialchars($clientparams['client_name']) , 
             '" to act on your behalf</li>';
