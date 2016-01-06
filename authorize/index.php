@@ -595,7 +595,9 @@ function verifyOIDCParams() {
                             'temporary issue. CILogon system ' .
                             'administrators have been notified.' .
                             ((strlen($output) > 0) ? 
-                            '<br/><pre>' . $output . '</pre>' : ''));
+                            '<br/><pre>' . 
+                            preg_replace('/\+/',' ',$output) . 
+                            '</pre>' : ''));
                         $clientparams = array();
                     }
                 } else { // curl_getinfo() returned false - should not happen
