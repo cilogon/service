@@ -1404,6 +1404,7 @@ function handleGotUser() {
     if ((strlen($uid) == 0) || (strlen($status) == 0) || ($status & 1)) {
         $log->error('Failed to getuser.');
 
+        $idp     = util::getSessionVar('idp');
         $idpname = util::getSessionVar('idpname');
         unsetGetUserSessionVars();
         printHeader('Error Logging On');
@@ -1425,8 +1426,8 @@ function handleGotUser() {
                 name or email address was missing. This may be a temporary
                 issue.  To rectify this problem, go to the <a
                 target="_blank"
-                href="https://security.google.com/settings/security/contactinfo">Google
-                Account Edit Personal Information page</a>, enter your First
+                href="https://myaccount.google.com/privacy#personalinfo">Google
+                Account Personal Information page</a>, enter your First
                 Name, Last Name, and email address, and click the "Save"
                 button.  (All other Google account information is optional
                 and not required by the CILogon Service.)
@@ -1456,10 +1457,16 @@ function handleGotUser() {
             } else {
                 printErrorBox('There was a problem logging on. Your identity
                 provider has not provided CILogon with required information
-                about you (i.e., your full name and email address). This may
-                be a temporary error. Please try again later, or contact us
-                at the email address at the bottom of the page.');
-
+                about you (i.e., your full name and email address). You can
+                <a target="_blank" href="/secure/testidp/">test your identity 
+                provider</a> to see which attributes are missing, and then
+                <a target="_blank"
+                href="https://ds.incommon.org/FEH/sp-error.html?sp_entityID=https%3A%2F%2Fcilogon.org%2Fshibboleth&idp_entityID='.
+                urlencode($idp).'">contact 
+                your identity provider</a> to let them know you are having 
+                a problem logging on to CILogon. Alternatively, you can 
+                contact us at the email address at the bottom of the page.');
+                
                 echo '
                 <div>
                 ';

@@ -766,7 +766,6 @@ Remote Address= ' . $remoteaddr . '
             util::unsetSessionVar('lastname');
             util::unsetSessionVar('displayname');
             util::unsetSessionVar('loa');
-            util::unsetSessionVar('idp');
             util::unsetSessionVar('ePPN');
             util::unsetSessionVar('ePTID');
             util::unsetSessionVar('openidID');
@@ -779,7 +778,6 @@ Remote Address= ' . $remoteaddr . '
             util::setSessionVar('lastname',$lastname);
             util::setSessionVar('displayname',$displayname);
             util::setSessionVar('loa',$loa);
-            util::setSessionVar('idp',$providerId);
             util::setSessionVar('ePPN',$eppn);
             util::setSessionVar('ePTID',$eptid);
             util::setSessionVar('openidID',$openidid);
@@ -789,6 +787,7 @@ Remote Address= ' . $remoteaddr . '
             util::setSessionVar('authntime',time());
         }
 
+        util::setSessionVar('idp',$providerId); // Enable error message
         util::setSessionVar('idpname',$providerName); // Enable check for Google
         util::setSessionVar('submit',util::getSessionVar('responsesubmit'));
         util::unsetSessionVar('responsesubmit');
