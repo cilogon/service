@@ -4,7 +4,7 @@ require_once('include/util.php');
 require_once('include/autoloader.php');
 require_once('include/content.php');
 
-// $timeit->printTime("MAIN Program START...");
+// util::$timeit->printTime("MAIN Program START...");
 
 // Check for a Shibboleth error and handle it
 $shiberror = new shiberror();
