@@ -321,16 +321,6 @@ function printWAYF($showremember=true,$incommonidps=false) {
        '>
     ';
 
-    // Fix for CIL-174 - As suggested by Keith Hazelton, replace commas and
-    // hypens with just commas. Resort list for correct alphabetization.
-    $regex = '/(University of California)\s*[,-]\s*/';
-    foreach ($idps as $entityId => $idpName) {
-        if (preg_match($regex,$idpName)) {
-            $idps[$entityId] = preg_replace($regex,'$1, ',$idpName);
-        }
-    }
-    uasort($idps,'strcasecmp');
-
     foreach ($idps as $entityId => $idpName) {
         echo '    <option value="' , $entityId , '"';
         if ($entityId == $providerId) {
@@ -2221,7 +2211,16 @@ function getCompositeIdPList($incommonidps=false) {
         }
     }
 
+    // Fix for CIL-174 - As suggested by Keith Hazelton, replace commas and
+    // hyphens with just commas. Resort list for correct alphabetization.
+    $regex = '/(University of California)\s*[,-]\s*/';
+    foreach ($retarray as $entityId => $idpName) {
+        if (preg_match($regex,$idpName)) {
+            $retarray[$entityId] = preg_replace($regex,'$1, ',$idpName);
+        }
+    }
     uasort($retarray,'strcasecmp');
+
     return $retarray;
 }
 
