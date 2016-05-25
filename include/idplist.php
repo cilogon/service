@@ -471,22 +471,26 @@ EOT;
      * Parameter : null => all InCommonIdPs                             *
      *             0    => non-whitelisted InCommon IdPs                *
      *             1    => whitelisted InCommon IdPs                    *
+     *             2    => R&S InCommon IdPs                            *
      * Returns   : An array of InCommon IdPs, possibly filtered by      *
-     *             whitelisted / non-whitelisted.                       *
+     *             whitelisted / non-whitelisted / R&S.                 *
      * This method returns an array of InCommon IdPs where the keys     *
      * of the array are the entityIDs and the values are the pretty     *
      * print Organization Names. If a non-null parameter is passed in   *
      * it returns a subset of the InCommon IdPs. 0 means list only      *
-     * non-whitelisted IdPs, 1 means list only whitelisted IdPs.        *
+     * non-whitelisted IdPs, 1 means list only whitelisted IdPs,        *
+     * 2 means list only R&S IdPs.                                      *
      ********************************************************************/
-    function getInCommonIdPs($whitelisted=null) {
+    function getInCommonIdPs($filter=null) {
         $retarray = array();
         $idpsearch = 'idp';
-        if (!is_null($whitelisted)) {
-            if ($whitelisted === 0) {
+        if (!is_null($filter)) {
+            if ($filter === 0) {
                 $idpsearch = 'idp[not(Whitelisted=1)]';
-            } elseif ($whitelisted === 1) {
+            } elseif ($filter === 1) {
                 $idpsearch = 'idp[Whitelisted=1]';
+            } elseif ($filter === 2) {
+                $idpsearch = 'idp[RandS=1]';
             }
         }
         $xpath = new DOMXpath($this->idpdom);
@@ -496,6 +500,17 @@ EOT;
             $retarray[$nl->item($i)->nodeValue] = $nl->item($i+1)->nodeValue;
         }
         return $retarray;
+    }
+
+    /********************************************************************
+     * Function  : getNonWhitelistedIdPs                                *
+     * Returns   : An array of non-whitelisted IdPs.                    *
+     * This method returns an array of non-whitelisted IdPs where the   *
+     * keys of the array are the entityIDs and the values are the       *
+     * pretty print Organization Names.                                 *
+     ********************************************************************/
+    function getNonWhitelistedIdPs() {
+        return $this->getInCommonIdPs(0);
     }
 
     /********************************************************************
@@ -510,14 +525,14 @@ EOT;
     }
 
     /********************************************************************
-     * Function  : getNonWhitelistedIdPs                                *
-     * Returns   : An array of non-whitelisted IdPs.                    *
-     * This method returns an array of non-whitelisted IdPs where the   *
-     * keys of the array are the entityIDs and the values are the       *
+     * Function  : getRandSIdPs                                         *
+     * Returns   : An array of Research and Scholarship (R&S) IdPs.     *
+     * This method returns an array of R&S IdPs where the keys          *
+     * of the array are the entityIDs and the values are the            *
      * pretty print Organization Names.                                 *
      ********************************************************************/
-    function getNonWhitelistedIdPs() {
-        return $this->getInCommonIdPs(0);
+    function getRandSIdPs() {
+        return $this->getInCommonIdPs(2);
     }
 
     /********************************************************************

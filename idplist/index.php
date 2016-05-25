@@ -12,6 +12,7 @@ require_once('../include/util.php');
 require_once('../include/autoloader.php');
 require_once('../include/content.php');
 
+
 /************************************************************************
  * The IdP class is used internally by getIdPListAsJSON(). It simply    *
  * stores the IdP attributes in an object.                              *
@@ -41,10 +42,11 @@ function getIdPListAsJSON() {
     $idplist = new idplist(); // Needed for checking R&S status
     if ($idplist !== false) { // Verify we read in the idplist.xml file
         $idps = getCompositeIdPList(); // Take into consideration the 'skin'
+        $randsidps = $idplist->getRandSIdPs();
 
         foreach ($idps as $entityId => $idpName) {
             $idparray[] = new IdP($entityId,$idpName,
-                                  $idplist->isRandS($entityId));
+                                  array_key_exists($entityId,$randsidps));
         }
     }
 
