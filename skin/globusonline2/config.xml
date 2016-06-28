@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 
+  <!-- Here, forceinitialidp is used in conjunction with OIDC's "selected_idp" -->
+  <forceinitialidp>1</forceinitialidp>
+
   <idpblacklist>
     <idp>https://accounts.google.com/o/oauth2/auth</idp>
   </idpblacklist>
@@ -9,6 +12,30 @@
     <forcelifetime>240</forcelifetime>
     <forceremember>1</forceremember>
   </delegate>
+
+  <!-- The list of callback_uris for the Globus OIDC client registration -->
+  <portallist>
+    <portal>#https://auth\.api\.beta\.globus\.org/callback#</portal>
+    <portal>#https://auth\.api\.globusauthsandbox\.globuscs\.info/callback#</portal>
+    <portal>#https://globusauthsandbox\.globuscs\.info/callback#</portal>
+    <portal>#https://globusauthtest\.globuscs\.info/callback#</portal>
+    <portal>#https://localhost/callback#</portal>
+    <portal>#https://auth\.api\.globusauthtest\.globuscs\.info/callback#</portal>
+    <portal>#https://auth\.globus\.org/p/authenticate/callback#</portal>
+    <portal>#https://auth\.beta\.globus\.org/p/authenticate/callback#</portal>
+    <portal>#https://auth\.globusauthsandbox\.globuscs\.info/p/authenticate/callback#</portal>
+    <portal>#https://auth\.globusauthtest\.globuscs\.info/p/authenticate/callback#</portal>
+    <portal>#https://auth\.sandbox\.globuscs\.info/p/authenticate/callback#</portal>
+    <portal>#https://auth\.test\.globuscs\.info/p/authenticate/callback#</portal>
+    <portal>#https://auth\.staging\.globuscs\.info/p/authenticate/callback#</portal>
+    <portal>#https://auth\.api\.beta\.globus\.org/p/authenticate/callback#</portal>
+    <portal>#https://auth\.api\.globusauthtest\.globuscs\.info/p/authenticate/callback#</portal>
+    <portal>#https://auth\.api\.globusauthsandbox\.globuscs\.info/p/authenticate/callback#</portal>
+  </portallist>
+
+  <portallistaction>
+    <allowforceinitialidp>1</allowforceinitialidp>
+  </portallistaction>
 
   <forceauthn>1</forceauthn>
 

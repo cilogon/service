@@ -19,16 +19,19 @@
 
 
   <!-- <forceinitialidp>
-       This option can be used in conjunction with <initialidp>. This
+       This option can be used in conjunction with <initialidp> or 
+       "selected_idp" (an OIDC optional URL query parameter). This
        option is functionally equivalent to having the "Remember this
        selection" checkbox checked on the IdP selection page. When set to 1,
        <forceinitialidp> bypasses the IdP selection page and immediately
-       redirects the user to the <initialidp>. Note that it does NOT
-       actually check the "Remember this selection" checkbox (as the
-       checkbox sets the 'keepidp' cookie), but rather forces a redirect to
-       the <initialidp> every time. See also the <allowforceinitialidp>
-       option in the <portallistaction> section below to restrict this
-       behavior to a certain set of portal callback URIs.
+       redirects the user to either the "selected_idp" (if present) or the
+       <initialidp>. Note that it does NOT actually check the "Remember this
+       selection" checkbox (as the checkbox sets the 'keepidp' cookie), but
+       rather forces a redirect to the "selected_idp" or the <initialidp>
+       every time. In the case that both "selected_idp" and <initialidp> are
+       set, "selected_idp" takes precedence. See also the
+       <allowforceinitialidp> option in the <portallistaction> section below
+       to restrict this behavior to a certain set of portal callback URIs.
   -->
   <!--
   <forceinitialidp>1</forceinitialidp>
@@ -284,12 +287,13 @@
        in the <portallist> (rather than hiding it for the entire skin, as is
        currently possible via CSS).
        <allowforceinitialidp> If present, set to 1. This option is used in
-       conjunction with <forceinitialidp> (and <initialidp>). If set, then
-       <forceinitialidp> is valid only for portals in the <portallist>. This
-       prevents a malicious portal sysadmin from specifying a skin that has
-       <forceinitialidp> (and <initialidp>) set, but using it for their
-       portal when they have no business doing so. Basically, it limits
-       the <forceinitialidp> behavior to a specific set of portals.
+       conjunction with <forceinitialidp> (and <initialidp> or
+       "selected_idp"). If set, then <forceinitialidp> is valid only for
+       portals in the <portallist>. This prevents a malicious portal
+       sysadmin from specifying a skin that has <forceinitialidp> (and
+       <initialidp>/"selected_idp") set, but using it for their portal when
+       they have no business doing so. Basically, it limits the
+       <forceinitialidp> behavior to a specific set of portals.
   -->
   <!--
   <portallistaction>

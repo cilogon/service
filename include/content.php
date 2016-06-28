@@ -941,22 +941,42 @@ function handleNoSubmitButtonClicked() {
     // Read in the whitelist of currently available InCommon IdPs
     $idplist = new idplist();
 
-    /* If the <forceinitialidp> option is set, use the <initialidp> *
-     * as the providerId and <forceinitialidp> as keepIdp.          *
-     * Otherwise, read the cookies 'providerId' and 'keepidp'.      */
+    /* If this is a OIDC transaction, get the selected_idp and   *
+     * redirect_uri parameters from the session var clientparams.*/
+    $selected_idp = '';
+    $redirect_uri = '';
+    $clientparams = json_decode(util::getSessionVar('clientparams'),true);
+    if (isset($clientparams['selected_idp'])) {
+        $selected_idp = $clientparams['selected_idp'];
+    }
+    if (isset($clientparams['redirect_uri'])) {
+        $redirect_uri = $clientparams['redirect_uri'];
+    }
+
+    /* If the <forceinitialidp> option is set, use either the    *
+     * <initialidp> or the "selected_idp" as the providerId, and *
+     * use <forceinitialidp> as keepIdp. Otherwise, read the     *
+     * cookies 'providerId' and 'keepidp'.                       */
     $providerId = '';
     $keepidp = '';
     $readidpcookies = true;  // Assume config options are not set
     $forceinitialidp = (int)$skin->getConfigOption('forceinitialidp');
     $initialidp = (string)$skin->getConfigOption('initialidp');
-    if (($forceinitialidp == 1) && (strlen($initialidp) > 0)) {
+    if (($forceinitialidp == 1) && 
+        ((strlen($initialidp) > 0) || (strlen($selected_idp) > 0))) {
         // If the <allowforceinitialidp> option is set, then make sure
-        // the callback uri is in the portal list.
+        // the callback / redirect uri is in the portal list.
         $afii=$skin->getConfigOption('portallistaction','allowforceinitialidp');
         if ((is_null($afii)) || // Option not set, no need to check portal list
             (((int)$afii == 1) && 
-              ($skin->inPortalList(util::getSessionVar('callbackuri'))))) {
-            $providerId = $initialidp;
+              (($skin->inPortalList(util::getSessionVar('callbackuri'))) ||
+               ($skin->inPortalList($redirect_uri))))) {
+            // "selected_idp" takes precedence over <initialidp>
+            if (strlen($selected_idp) > 0) {
+                $providerId = $selected_idp;
+            } else {
+                $providerId = $initialidp;
+            }
             $keepidp = $forceinitialidp;
             $readidpcookies = false; // Don't read in the IdP cookies
         }
@@ -985,11 +1005,6 @@ function handleNoSubmitButtonClicked() {
         /* If selected_idp was specified at the OIDC authorize endpoint, *
          * make sure that it matches the saved providerId. If not,       *
          * then show the Logon page and uncheck the keepidp checkbox.    */
-        $selected_idp = '';
-        $clientparams = json_decode(util::getSessionVar('clientparams'),true);
-        if (isset($clientparams['selected_idp'])) {
-            $selected_idp = $clientparams['selected_idp'];
-        }
         if ((strlen($selected_idp) == 0) || ($selected_idp == $providerId)) {
             if ($providerId == GOOGLE_OIDC) { // Use Google
                 redirectToGetGoogleOAuth2User();
