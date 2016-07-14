@@ -5,7 +5,7 @@
 # Script      : ecp.pl                                                  #
 # Authors     : Terry Fleury <tfleury@illinois.edu>                     #
 # Create Date : July 06, 2011                                           #
-# Last Update : December 12, 2014                                       #
+# Last Update : July 12, 2016                                           #
 #                                                                       #
 # This PERL script allows a user to get an end-user X.509 certificate   #
 # or PKCS12 credential from the CILogon Service. It can also get the    #
@@ -68,7 +68,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.026";
+our $VERSION = "0.027";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -668,6 +668,20 @@ if ($response->is_success) {
     exit 1;
 }
 
+# Verify StatusCode is Success
+my @statusCodes = ($idpresp =~ m#StatusCode Value=\"([^\"]*)\"#gi);
+my $foundsuccess = 0;
+foreach my $code (@statusCodes) {
+    print "StatusCode: $code\n" if ($verbose);
+    $foundsuccess = 1 if ($code =~ m#Success#i);
+}
+
+if (!$foundsuccess) {
+    warn "Error: '$idpurl' did not respond with successful authentication." if
+        (!$quiet);
+    exit 1;
+}
+
 # Find the AssertionConsumerServiceURL from the IdP's response
 ($idpresp=~m#AssertionConsumerServiceURL=\"([^\"]*)\"#i) && 
     ($assertionConsumerServiceURL=$1);
@@ -713,13 +727,14 @@ $response = $ua->post($assertionConsumerServiceURL,
 print "Done!\n" if ($verbose);
 # No need to check for response. We only want the (shibboleth) cookie.
 
-# Add a random CSRF cookie for the certificate or PKCs12 credential request.
+# Add a random CSRF cookie for the certificate or PKCS12 credential request.
 # This random CSRF value must also be posted to the CILogon service (as a
 # <form> value) to pass the CILogon Service's CSRF check.
 my $cookiejar = $ua->cookie_jar;
 my $uri = URI->new($urltoget);
 my $randstr = join('',map { ('a'..'z', 0..9)[rand 36] } (1..10));
 $cookiejar->set_cookie(1,'CSRF',$randstr,'/',$uri->host,$uri->port,1,1);
+print "Cookie Jar:\n" . $cookiejar->as_string . "\n" if ($verbose);
 
 # Final communication with the original $urltoget. Should return a
 # certificate, a PKCS12 credential, or the HTML of a particular URL.
