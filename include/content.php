@@ -1370,6 +1370,7 @@ function handleGotUser() {
         $emailaddr    = util::getSessionVar('emailaddr');
         $idp          = util::getSessionVar('idp');
         $idpname      = util::getSessionVar('idpname');
+        $affiliation  = util::getSessionVar('affiliation');
         $clientparams = json_decode(util::getSessionVar('clientparams'),true);
         $failureuri   = util::getSessionVar('failureuri');
         util::unsetAllUserSessionVars();
@@ -1468,6 +1469,13 @@ function handleGotUser() {
                     ((strlen($emailaddr) == 0) ? 'MISSING' : 'INVALID') .
                     '</td></tr>';
                 }
+                $errorboxstr .= '</table></blockquote>';
+                if ((strlen($emailaddr) == 0 ) && 
+                    (preg_match('/student@/',$affiliation))) {
+                    $errorboxstr .= '<p><b>If you are a student</b>, ' . 
+                    'you may need to ask your identity provider ' . 
+                    'to release your email address.</p>';
+                }
 
                 // Get contacts from metadata for email addresses
                 $idplist = new idplist();
@@ -1480,11 +1488,9 @@ function handleGotUser() {
                 'not releasing all required attributes as ' .
                 'described at http://www.cilogon.org/service/addidp. ' .
                 'Thank you for any help you can provide.';
-                $errorboxstr .= '
-                </table></blockquote>
-                <p> Contact your identity provider to let them know
-                you are having having a problem logging on to CILogon.</p>
-                <blockquote><ul>';
+                $errorboxstr .= '<p>Contact your identity provider to ' . 
+                'let them know you are having having a problem logging on ' . 
+                'to CILogon.</p><blockquote><ul>';
 
                 if ((strlen($shibarray['Technical Name']) > 0) &&
                     (strlen($shibarray['Technical Address']) > 0)) {
