@@ -40,7 +40,9 @@ class loggit {
     /*********************************************************************
      * Function  : info                                                  *
      * Parameters: (1) The message string to be logged.                  *
-     *             (2) The PHP Pear-Log level for the message, which     *
+     *             (2) If true, print some missing user session          *
+     *                 variables. Defaults to false.                     *
+     *             (3) The PHP Pear-Log level for the message, which     *
      *                 defaults to PEAR_LOG_INFO.                        *
      * This function writes a message to a "log" using the PHP Pear Log  *
      * module. Several server variables and cookies (if they are set)    *
@@ -48,7 +50,7 @@ class loggit {
      * are found in the $envs and $cookies array in the code below.      *
      * Also, all PHP session variables are logged.                       *
      *********************************************************************/
-    function info($message,$level=PEAR_LOG_INFO)
+    function info($message,$missing=false,$level=PEAR_LOG_INFO)
     {
         $envs    = array('REMOTE_ADDR',
                          'REMOTE_USER',
@@ -79,34 +81,52 @@ class loggit {
             }
         }
 
+        if ($missing) { // Output any important missing user session vars
+            $uservars =
+            array('ePPN','ePTID','openidID','oidcID','firstname','lastname',
+                  'displayname','emailaddr','affiliation');
+            foreach ($uservars as $uv) {
+                if (!isset($_SESSION[$uv])) {
+                    $envstr .= $uv . '="MISSING" ';
+                }
+            }
+
+        }
+
         $this->logger->log($message . ' ' . $envstr, $level);
     }
 
     /*********************************************************************
      * Function  : warn                                                  *
+     * Parameter : (Optional) If true, print some missing user session   *
+     *             variables. Defaults to false.                         *
      * Parameter : The message string to be logged.                      *
      * This function writes a warning message message to the log.        *
      *********************************************************************/
-    function warn($message) {
-        $this->info($message,PEAR_LOG_WARNING);
+    function warn($message,$missing=false) {
+        $this->info($message,$missing,PEAR_LOG_WARNING);
     }
 
     /*********************************************************************
      * Function  : error                                                 *
+     * Parameter : (Optional) If true, print some missing user session   *
+     *             variables. Defaults to false.                         *
      * Parameter : The message string to be logged.                      *
      * This function writes an error message message to the log.         *
      *********************************************************************/
-    function error($message) {
-        $this->info($message,PEAR_LOG_ERR);
+    function error($message,$missing=false) {
+        $this->info($message,$missing,PEAR_LOG_ERR);
     }
 
     /*********************************************************************
      * Function  : alert                                                 *
+     * Parameter : (Optional) If true, print some missing user session   *
+     *             variables. Defaults to false.                         *
      * Parameter : The message string to be logged.                      *
      * This function writes an alert message message to the log.         *
      *********************************************************************/
-    function alert($message) {
-        $this->info($message,PEAR_LOG_ALERT);
+    function alert($message,$missing=false) {
+        $this->info($message,$missing,PEAR_LOG_ALERT);
     }
 }
 

@@ -767,7 +767,7 @@ Remote Address= ' . $remoteaddr . '
             
             // For missing parameter errors, log an error message
             if ($status==dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']) {
-                $log->error('STATUS_MISSING_PARAMETER_ERROR');
+                $log->error('STATUS_MISSING_PARAMETER_ERROR',true);
             }
 
             // For other dbservice errors OR for any error involving 
