@@ -78,7 +78,7 @@ function getUID() {
         $firstname,
         $lastname,
         $shibarray['Display Name'],
-        (in_array($shibarray['Email Address'],['tfleury@illinois.edu','jbasney@illinois.edu']) ? '' : $shibarray['Email Address']),
+        $shibarray['Email Address']),
         $shibarray['Level of Assurance'],
         $shibarray['ePPN'],
         $shibarray['ePTID'],
