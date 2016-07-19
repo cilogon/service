@@ -82,9 +82,8 @@ class loggit {
         }
 
         if ($missing) { // Output any important missing user session vars
-            $uservars =
-            array('ePPN','ePTID','openidID','oidcID','firstname','lastname',
-                  'displayname','emailaddr','affiliation');
+            $uservars = array('ePPN','ePTID','openidID','oidcID','firstname',
+                'lastname','displayname','emailaddr','affiliation');
             foreach ($uservars as $uv) {
                 if (!isset($_SESSION[$uv])) {
                     $envstr .= $uv . '="MISSING" ';
