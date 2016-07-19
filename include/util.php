@@ -779,7 +779,14 @@ Remote Address= ' . $remoteaddr . '
                 $mailto = 'alerts@cilogon.org';
                 // Fixes CIL-205 - Notify LIGO about IdP login errors
                 if (preg_match('/ligo\.org/',$databaseProviderId)) {
-                    $mailto .= ',cilogon-alerts@ligo.org';
+                    if ($status == 
+                        dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']) {
+                      // For missing paramters, send mail ONLY to LIGO
+                        $mailto = 'cilogon-alerts@ligo.org';
+                    } else {
+                      // For all other errors, send to alerts@cilogon AND LIGO
+                        $mailto .= ',cilogon-alerts@ligo.org';
+                    }
                 }
                 util::sendErrorAlert('Failure in ' . 
                                      (($loa == 'openid') ? '' : '/secure') .
