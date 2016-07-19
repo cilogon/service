@@ -52,9 +52,7 @@ if (verifyOAuthToken(util::getGetVar('oauth_token'))) {
                 if (strlen($failureuri) > 0) {
                     $location = $failureuri . "?reason=cancel";
                 }
-                unsetGetUserSessionVars();
-                unsetPortalSessionVars();
-                util::unsetSessionVar('cilogon_skin');
+                util::unsetAllUserSessionVars();
                 header('Location: ' . $location);
             } else { // 'Cancel' button on certificate delegate page clicked
                 printCancelPage();
@@ -656,9 +654,7 @@ function handleAllowDelegation($always=false) {
                    ($success ? 'success' : 'failure') . ' url.');
         $location = 'Location: ' . ((strlen($responseurl) > 0) ? $responseurl :
             (util::getSessionVar($success ? 'successuri' : 'failureuri')));
-        unsetGetUserSessionVars();
-        unsetPortalSessionVars();
-        util::unsetSessionVar('cilogon_skin');
+        util::unsetAllUserSessionVars();
         header($location);
     } else {
         printHeader('Delegation ' . ($success ? 'Successful' : 'Failed'));
@@ -739,9 +735,7 @@ function handleAllowDelegation($always=false) {
         </div>
         ';
         printFooter();
-        unsetGetUserSessionVars();
-        unsetPortalSessionVars();
-        util::unsetSessionVar('cilogon_skin');
+        util::unsetAllUserSessionVars();
     }
 }
 

@@ -68,9 +68,7 @@ if (verifyOIDCParams()) {
                 'User%20denied%20authorization%20request' .
                 ((isset($clientparams['state'])) ? 
                     '&state='.$clientparams['state'] : '');
-            util::unsetSessionVar('clientparams');
-            util::unsetSessionVar('cilogon_skin');
-            unsetGetUserSessionVars();
+            util::unsetAllUserSessionVars();
             header($redirect);
         break; // End case 'Cancel'
 
@@ -318,9 +316,7 @@ function printMainPage() {
             $errstr . ' Redirected to ' . $redirect);
     }
 
-    util::unsetSessionVar('clientparams');
-    util::unsetSessionVar('cilogon_skin');
-    unsetGetUserSessionVars();
+    util::unsetAllUserSessionVars();
     header($redirect);
 }
 
@@ -546,9 +542,7 @@ function verifyOIDCParams() {
                             if (isset($params['error'])) {
                                 // Got "error" - simply return to OIDC client
                                 $clientparams = array();
-                                util::unsetSessionVar('clientparams');
-                                util::unsetSessionVar('cilogon_skin');
-                                unsetGetUserSessionVars();
+                                util::unsetAllUserSessionVars();
                                 header("Location: $redirect_url");
                                 exit; // No further processing necessary
                             } else { // Weird params - Should never get here!

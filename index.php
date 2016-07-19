@@ -109,7 +109,7 @@ function printLogonPage($clearcookies=false) {
 
     if ($clearcookies) {
         util::removeShibCookies();
-        unsetGetUserSessionVars();
+        Util::unsetAllUserSessionVars();
         $skin->init(true);  // Clear cilogon_skin var; check for forced skin
     }
 

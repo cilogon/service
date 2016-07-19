@@ -78,7 +78,7 @@ function getUID() {
         $firstname,
         $lastname,
         $shibarray['Display Name'],
-        $shibarray['Email Address'],
+        (in_array($shibarray['Email Address'],['tfleury@illinois.edu','jbasney@illinois.edu']) ? '' : $shibarray['Email Address']),
         $shibarray['Level of Assurance'],
         $shibarray['ePPN'],
         $shibarray['ePTID'],
@@ -128,6 +128,7 @@ function getPKCS12() {
         $errstr=array_search(util::getSessionVar('status'),dbservice::$STATUS);
         $log->info("ECP PKCS12 error: $errstr.");
         outputError($errstr);
+        util::unsetAllUserSessionVars();
         return; // ERROR means no further processing is necessary
     }
 
@@ -200,6 +201,7 @@ function getCert() {
         $errstr=array_search(util::getSessionVar('status'),dbservice::$STATUS);
         $log->info("ECP certreq error: $errstr.");
         outputError($errstr);
+        util::unsetAllUserSessionVars();
         return; // ERROR means no further processing is necessary
     }
 

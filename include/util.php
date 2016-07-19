@@ -1,5 +1,7 @@
 <?php
 
+require_once 'autoloader.php';
+
 /* Define a bunch of named constants */
 util::setDefines();
 
@@ -7,6 +9,9 @@ util::setDefines();
 util::startPHPSession();
 
 // util::startTiming();
+
+/* Loggit object for logging info to syslog. */
+$log = new loggit();
 
 /************************************************************************
  * Class name : util                                                    *
@@ -651,6 +656,7 @@ Remote Address= ' . $remoteaddr . '
         $affiliation='',$ou='') {
 
         global $csrf;
+        global $log;
 
         $dbs = new dbservice();
 
@@ -658,7 +664,47 @@ Remote Address= ' . $remoteaddr . '
         $databaseProviderName = $providerName;
         $databaseProviderId   = $providerId;
 
+        // Save the passed-in variables to the session for later use
+        // (e.g., by the error handler in handleGotUser).
+        if (strlen($firstname) > 0) {
+            util::setSessionVar('firstname',$firstname);
+        }
+        if (strlen($lastname) > 0) {
+            util::setSessionVar('lastname',$lastname);
+        }
+        if (strlen($displayname) > 0) {
+            util::setSessionVar('displayname',$displayname);
+        }
+        if (strlen($emailaddr) > 0) {
+            util::setSessionvar('emailaddr',$emailaddr);
+        }
+        if (strlen($loa) > 0) {
+            util::setSessionVar('loa',$loa);
+        }
+        if (strlen($eppn) > 0) {
+            util::setSessionVar('ePPN',$eppn);
+        }
+        if (strlen($eptid) > 0) {
+            util::setSessionVar('ePTID',$eptid);
+        }
+        if (strlen($openidid) > 0) {
+            util::setSessionVar('openidID',$openidid);
+        }
+        if (strlen($oidcid) > 0) {
+            util::setSessionVar('oidcID',$oidcid);
+        }
+        if (strlen($affiliation) > 0) {
+            util::setSessionVar('affiliation',$affiliation);
+        }
+        if (strlen($ou) > 0) {
+            util::setSessionVar('ou',$ou);
+        }
+        util::setSessionVar('idp',$providerId); // Enable error message
+        util::setSessionVar('idpname',$providerName); // Enable check for Google
+        util::setSessionVar('submit',util::getSessionVar('responsesubmit'));
+
         // Make sure parameters are not empty strings, and email is valid
+        // Must have at least one of remoteuser/eppn/eptid/openidid/oidcid
         if (  ((strlen($remoteuser) > 0) ||
                (strlen($eppn) > 0) ||
                (strlen($eptid) > 0) ||
@@ -711,104 +757,117 @@ Remote Address= ' . $remoteaddr . '
                     'saveUserToDatastore() method.');
             }
         } else { // Missing one or more required attributes
-            util::unsetSessionVar('uid');
-            util::unsetSessionVar('dn');
-            util::unsetSessionVar('twofactor');
             util::setSessionVar('status',
                 dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']);
         }
 
         // If 'status' is not STATUS_OK*, then send an error email
-        if (util::getSessionVar('status') & 1) { // Bad status codes are odd
-            $mailto = 'alerts@cilogon.org';
-            // Fixes CIL-205 - Notify LIGO about IdP login errors
-            if (preg_match('/ligo\.org/',$databaseProviderId)) {
-                $mailto .= ',cilogon-alerts@ligo.org';
+        $status = util::getSessionVar('status');
+        if ($status & 1) { // Bad status codes are odd
+            
+            // For missing parameter errors, log an error message
+            if ($status==dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']) {
+                $log->error('STATUS_MISSING_PARAMETER_ERROR');
             }
-            util::sendErrorAlert('Failure in ' . 
-                                 (($loa == 'openid') ? '' : '/secure') .
-                                 '/getuser/',
-                'Remote_User   = ' . ((strlen($remoteuser) > 0) ? 
-                    $remoteuser : '<MISSING>') . "\n" .
-                'IdP ID        = ' . ((strlen($databaseProviderId) > 0) ? 
-                    $databaseProviderId : '<MISSING>') . "\n" .
-                'IdP Name      = ' . ((strlen($databaseProviderName) > 0) ? 
-                    $databaseProviderName : '<MISSING>') . "\n" .
-                'First Name    = ' . ((strlen($firstname) > 0) ? 
-                    $firstname : '<MISSING>') . "\n" .
-                'Last Name     = ' . ((strlen($lastname) > 0) ? 
-                    $lastname : '<MISSING>') . "\n" .
-                'Display Name  = ' . ((strlen($displayname) > 0) ? 
-                    $displayname : '<MISSING>') . "\n" .
-                'Email Address = ' . ((strlen($emailaddr) > 0) ? 
-                    $emailaddr : '<MISSING>') . "\n" .
-                'ePPN          = ' . ((strlen($eppn) > 0) ? 
-                    $eppn : '<MISSING>') . "\n" .
-                'ePTID         = ' . ((strlen($eptid) > 0) ? 
-                    $eptid : '<MISSING>') . "\n" .
-                'OpenID ID     = ' . ((strlen($openidid) > 0) ? 
-                    $openidid : '<MISSING>') . "\n" .
-                'OIDC ID       = ' . ((strlen($oidcid) > 0) ? 
-                    $oidcid : '<MISSING>') . "\n" .
-                'Affiliation   = ' . ((strlen($affiliation) > 0) ? 
-                    $affiliation : '<MISSING>') . "\n" .
-                'OU            = ' . ((strlen($ou) > 0) ? 
-                    $ou : '<MISSING>') . "\n" .
-                'Database UID  = ' . ((strlen(
-                    $i=util::getSessionVar('uid')) > 0) ? 
-                        $i : '<MISSING>') . "\n" .
-                'Status Code   = ' . ((strlen($i = array_search(
-                    util::getSessionVar('status'),dbservice::$STATUS)) > 0) ? 
-                        $i : '<MISSING>') ,
-                $mailto
-            );
-            util::unsetSessionVar('firstname');
-            util::unsetSessionVar('lastname');
-            util::unsetSessionVar('displayname');
-            util::unsetSessionVar('loa');
-            util::unsetSessionVar('ePPN');
-            util::unsetSessionVar('ePTID');
-            util::unsetSessionVar('openidID');
-            util::unsetSessionVar('oidcID');
-            util::unsetSessionVar('affiliation');
-            util::unsetSessionVar('ou');
-            util::unsetSessionVar('authntime');
-        } else {
-            util::setSessionVar('firstname',$firstname);
-            util::setSessionVar('lastname',$lastname);
-            util::setSessionVar('displayname',$displayname);
-            util::setSessionVar('loa',$loa);
-            util::setSessionVar('ePPN',$eppn);
-            util::setSessionVar('ePTID',$eptid);
-            util::setSessionVar('openidID',$openidid);
-            util::setSessionVar('oidcID',$oidcid);
-            util::setSessionVar('affiliation',$affiliation);
-            util::setSessionVar('ou',$ou);
+
+            // For other dbservice errors OR for any error involving 
+            // LIGO (e.g., missing parameter error), send email alert.
+            if (($status != 
+                    dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']) || 
+                (preg_match('/ligo\.org/',$databaseProviderId))) {
+
+                $mailto = 'alerts@cilogon.org';
+                // Fixes CIL-205 - Notify LIGO about IdP login errors
+                if (preg_match('/ligo\.org/',$databaseProviderId)) {
+                    $mailto .= ',cilogon-alerts@ligo.org';
+                }
+                util::sendErrorAlert('Failure in ' . 
+                                     (($loa == 'openid') ? '' : '/secure') .
+                                     '/getuser/',
+                    'Remote_User   = ' . ((strlen($remoteuser) > 0) ? 
+                        $remoteuser : '<MISSING>') . "\n" .
+                    'IdP ID        = ' . ((strlen($databaseProviderId) > 0) ? 
+                        $databaseProviderId : '<MISSING>') . "\n" .
+                    'IdP Name      = ' . ((strlen($databaseProviderName) > 0) ? 
+                        $databaseProviderName : '<MISSING>') . "\n" .
+                    'First Name    = ' . ((strlen($firstname) > 0) ? 
+                        $firstname : '<MISSING>') . "\n" .
+                    'Last Name     = ' . ((strlen($lastname) > 0) ? 
+                        $lastname : '<MISSING>') . "\n" .
+                    'Display Name  = ' . ((strlen($displayname) > 0) ? 
+                        $displayname : '<MISSING>') . "\n" .
+                    'Email Address = ' . ((strlen($emailaddr) > 0) ? 
+                        $emailaddr : '<MISSING>') . "\n" .
+                    'ePPN          = ' . ((strlen($eppn) > 0) ? 
+                        $eppn : '<MISSING>') . "\n" .
+                    'ePTID         = ' . ((strlen($eptid) > 0) ? 
+                        $eptid : '<MISSING>') . "\n" .
+                    'OpenID ID     = ' . ((strlen($openidid) > 0) ? 
+                        $openidid : '<MISSING>') . "\n" .
+                    'OIDC ID       = ' . ((strlen($oidcid) > 0) ? 
+                        $oidcid : '<MISSING>') . "\n" .
+                    'Affiliation   = ' . ((strlen($affiliation) > 0) ? 
+                        $affiliation : '<MISSING>') . "\n" .
+                    'OU            = ' . ((strlen($ou) > 0) ? 
+                        $ou : '<MISSING>') . "\n" .
+                    'Database UID  = ' . ((strlen(
+                        $i=util::getSessionVar('uid')) > 0) ? 
+                            $i : '<MISSING>') . "\n" .
+                    'Status Code   = ' . ((strlen($i = array_search(
+                        $status,dbservice::$STATUS)) > 0)
+                            ?  $i : '<MISSING>') ,
+                    $mailto
+                );
+            }
+        } else { // status is okay, set authntime
             util::setSessionVar('authntime',time());
         }
 
-        util::setSessionVar('idp',$providerId); // Enable error message
-        util::setSessionVar('idpname',$providerName); // Enable check for Google
-        util::setSessionVar('submit',util::getSessionVar('responsesubmit'));
         util::unsetSessionVar('responsesubmit');
         util::unsetSessionVar('requestsilver');
 
         $csrf->setCookieAndSession();
+    }
 
-
-        if (strlen($eppn) == 0) {
-            util::unsetSessionVar('ePPN');
-        }
-        if (strlen($eptid) == 0) {
-            util::unsetSessionVar('ePTID');
-        }
-        if (strlen($openidid) == 0) {
-            util::unsetSessionVar('openidID');
-        }
-        if (strlen($oidcid) == 0) {
-            util::unsetSessionVar('oidcID');
-        }
-
+    /************************************************************************
+     * Function   : unsetAllUserSessionVars                                 *
+     * This function removes all of the PHP session variables related to    *
+     * the user's session.  This will force the user to log on (again)      *
+     * with their IdP and call the 'getuser' script to repopulate the PHP   *
+     * session.                                                             *
+     ************************************************************************/
+    public static function unsetAllUserSessionVars() {
+        util::unsetSessionVar('submit');
+        util::unsetSessionVar('status');
+        util::unsetSessionVar('idp');
+        util::unsetSessionVar('idpname');
+        util::unsetSessionVar('activation');
+        util::unsetSessionVar('p12');
+        util::unsetSessionVar('p12lifetime');
+        util::unsetSessionVar('p12multiplier');
+        util::unsetSessionVar('uid');
+        util::unsetSessionVar('dn');
+        util::unsetSessionVar('twofactor');
+        util::unsetSessionVar('firstname');
+        util::unsetSessionVar('lastname');
+        util::unsetSessionVar('displayname');
+        util::unsetSessionVar('emailaddr');
+        util::unsetSessionVar('loa');
+        util::unsetSessionVar('ePPN');
+        util::unsetSessionVar('ePTID');
+        util::unsetSessionVar('openidID');
+        util::unsetSessionVar('oidcID');
+        util::unsetSessionVar('affiliation');
+        util::unsetSessionVar('ou');
+        util::unsetSessionVar('authntime');
+        util::unsetSessionVar('clientparams');
+        util::unsetSessionVar('cilogon_skin');
+        util::unsetSessionVar('portalstatus');
+        util::unsetSessionVar('callbackuri');
+        util::unsetSessionVar('successuri');
+        util::unsetSessionVar('failureuri');
+        util::unsetSessionVar('portalname');
+        util::unsetSessionVar('tempcred');
     }
 
 }

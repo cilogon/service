@@ -537,6 +537,9 @@ EOT;
 
     /********************************************************************
      * Function  : getShibInfo                                          *
+     * Parameter : (Optional) The entityID to search for in the         *
+     *             InCommon metadata. Defaults to the HTTP header       *
+     *             HTTP_SHIB_IDENTITY_PROVIDER.                         *
      * Returns   : An array containing the various shibboleth           *
      *             attributes for the current Shibboleth session. The   *
      *             keys of the array are "pretty print" names of the    *
@@ -550,12 +553,14 @@ EOT;
      * of info reads info from the passed-in metadata file specific to  *
      * the IdP, such as the pretty-print name of the IdP.               *
      ********************************************************************/
-    function getShibInfo() {
+    function getShibInfo($entityID='') {
         $shibarray = array();  /* Array to be returned */
 
         /* Set the blob set of info, namely those shib attributes which *
          * were given by the IdP when the user authenticated.           */
-        $entityID = util::getServerVar('HTTP_SHIB_IDENTITY_PROVIDER');
+        if (strlen($entityID) == 0) {
+            $entityID = util::getServerVar('HTTP_SHIB_IDENTITY_PROVIDER');
+        }
         $shibarray['Identity Provider'] = $entityID;
         $shibarray['User Identifier'] = util::getServerVar('HTTP_REMOTE_USER');
         $shibarray['ePPN'] = util::getServerVar('HTTP_EPPN');

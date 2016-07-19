@@ -17,9 +17,6 @@ define('BANNER_TEXT',
 define('GETUSER_URL','https://' . getMachineHostname() . '/secure/getuser/');
 define('GETOIDCUSER_URL','https://' . HOSTNAME . '/getuser/');
 
-/* Loggit object for logging info to syslog. */
-$log = new loggit();
-
 /* The csrf token object to set the CSRF cookie and print the hidden */
 /* CSRF form element.  Be sure to do "global $csrf" to use it.       */
 $csrf = new csrf();
@@ -1346,53 +1343,6 @@ function printErrorBox($errortext) {
 }
 
 /************************************************************************
- * Function   : unsetGetUserSessionVars                                 *
- * This function removes all of the PHP session variables related to    *
- * the getuser scripts.  This will force the user to log on (again)     *
- * with their IdP and call the 'getuser' script to repopulate the PHP   *
- * session.                                                             *
- ************************************************************************/
-function unsetGetUserSessionVars() {
-    util::unsetSessionVar('submit');
-    util::unsetSessionVar('uid');
-    util::unsetSessionVar('status');
-    util::unsetSessionVar('loa');
-    util::unsetSessionVar('idp');
-    util::unsetSessionVar('idpname');
-    util::unsetSessionVar('firstname');
-    util::unsetSessionVar('lastname');
-    util::unsetSessionVar('displayname');
-    util::unsetSessionVar('dn');
-    util::unsetSessionVar('twofactor');
-    util::unsetSessionVar('activation');
-    util::unsetSessionVar('p12');
-    util::unsetSessionVar('p12lifetime');
-    util::unsetSessionVar('p12multiplier');
-    util::unsetSessionVar('ePPN');
-    util::unsetSessionVar('ePTID');
-    util::unsetSessionVar('openidID');
-    util::unsetSessionVar('oidcID');
-    util::unsetSessionVar('affiliation');
-    util::unsetSessionVar('ou');
-    util::unsetSessionVar('authntime');
-}
-
-/************************************************************************
- * Function   : unsetPortalSessionVars                                  *
- * This function removes all of the PHP session variables related to    *
- * portal delegation.                                                   *
- ************************************************************************/
-function unsetPortalSessionVars() {
-    util::unsetSessionVar('portalstatus');
-    util::unsetSessionVar('callbackuri');
-    util::unsetSessionVar('successuri');
-    util::unsetSessionVar('failureuri');
-    util::unsetSessionVar('portalname');
-    util::unsetSessionVar('tempcred');
-    util::unsetSessionVar('dn');
-}
-
-/************************************************************************
  * Function   : handleGotUser                                           *
  * This function is called upon return from one of the getuser scripts  *
  * which should have set the 'uid' and 'status' PHP session variables.  *
@@ -1409,73 +1359,164 @@ function handleGotUser() {
     if ((strlen($uid) == 0) || (strlen($status) == 0) || ($status & 1)) {
         $log->error('Failed to getuser.');
 
-        $idp     = util::getSessionVar('idp');
-        $idpname = util::getSessionVar('idpname');
-        unsetGetUserSessionVars();
+        // We must get and unset session vars BEFORE any HTML output since
+        // a redirect may go to another site, meaning we need to update
+        // the session cookie before we leave the cilogon.org domain.
+        $ePPN         = util::getSessionVar('ePPN');
+        $ePTID        = util::getSessionVar('ePTID');
+        $firstname    = util::getSessionVar('firstname');
+        $lastname     = util::getSessionVar('lastname');
+        $displayname  = util::getSessionVar('displayname');
+        $emailaddr    = util::getSessionVar('emailaddr');
+        $idp          = util::getSessionVar('idp');
+        $idpname      = util::getSessionVar('idpname');
+        $clientparams = json_decode(util::getSessionVar('clientparams'),true);
+        $failureuri   = util::getSessionVar('failureuri');
+        util::unsetAllUserSessionVars();
+
+        // Check for OIDC redirect_uri or OAuth 1.0a failureuri.
+        // If found, set "Proceed" button redirect appropriately.
+        $redirect = '';
+        // First, check for OIDC redirect_uri
+        if (isset($clientparams['redirect_uri'])) {
+            $redirect = $clientparams['redirect_uri'] .
+                (preg_match('/\?/',$clientparams['redirect_uri']) ? '&' : '?') .
+                'error=access_denied&error_description=' . 
+                'Missing%20user%20attributes' .
+                ((isset($clientparams['state'])) ? 
+                    '&state='.$clientparams['state'] : '');
+        }
+        // Next, check for OAuth 1.0a 
+        if ((strlen($redirect) == 0) && (strlen($failureuri) > 0)) {
+            $redirect = $failureuri. "?reason=missing_attributes";
+        }
+
         printHeader('Error Logging On');
 
         echo '
         <div class="boxed">
         ';
 
-        $lobtext = getLogOnButtonText();
-
         if ($status == dbservice::$STATUS['STATUS_MISSING_PARAMETER_ERROR']) {
 
-            // Check if the problem IdP was Google - probably no first/last name
+            // Check if the problem IdP was Google: probably no first/last name
             if ($idpname == 'Google') {
                 printErrorBox('
                 <p>
-                There was a problem logging on.  It appears that you have
+                There was a problem logging on. It appears that you have
                 attempted to use Google as your identity provider, but your
-                name or email address was missing. This may be a temporary
-                issue.  To rectify this problem, go to the <a
-                target="_blank"
+                name or email address was missing. To rectify this problem,
+                go to the <a target="_blank"
                 href="https://myaccount.google.com/privacy#personalinfo">Google
                 Account Personal Information page</a>, enter your First
                 Name, Last Name, and email address, and click the "Save"
-                button.  (All other Google account information is optional
+                button. (All other Google account information is optional
                 and not required by the CILogon Service.)
                 </p>
                 <p>
                 After you have updated your Google account profile, click
-                the "' . $lobtext . '" button below to attempt to log on
-                with your Google account again.  If you have any questions,
+                the "Proceed" button below and attempt to log on
+                with your Google account again. If you have any questions,
                 please contact us at the email address at the bottom of the
-                page.  </p>
+                page.</p>
                 ');
 
                 echo '
                 <div>
                 ';
-                printFormHead();
+                printFormHead($redirect);
                 echo '
                 <p class="centered">
                 <input type="hidden" name="providerId" value="' ,
                 GOOGLE_OIDC , '" />
-                <input type="submit" name="submit" class="submit" 
-                value="' , $lobtext , '" />
+                <input type="submit" name="submit" class="submit"
+                value="Proceed" />
                 </p>
                 </form>
                 </div>
                 ';
-            } else {
-                printErrorBox('There was a problem logging on. Your identity
+            } else { // Problem was missing SAML attribute from Shib IdP
+                $errorboxstr = 
+                '<p>There was a problem logging on. Your identity
                 provider has not provided CILogon with required information
-                about you (i.e., your full name and email address). You can
-                <a target="_blank" href="/secure/testidp/">test your identity 
-                provider</a> to see which attributes are missing, and then
-                <a target="_blank"
-                href="https://ds.incommon.org/FEH/sp-error.html?sp_entityID=https%3A%2F%2Fcilogon.org%2Fshibboleth&idp_entityID='.
-                urlencode($idp).'">contact 
-                your identity provider</a> to let them know you are having 
-                a problem logging on to CILogon. Alternatively, you can 
-                contact us at the email address at the bottom of the page.');
+                about you.</p>
+                <blockquote><table cellpadding="5">';
+
+                // Show user which attributes are missing
+                if ((strlen($ePPN) == 0) && (strlen($ePTID) == 0)) {
+                    $errorboxstr .= 
+                    '<tr><th>ePTID:</th><td>MISSING</td></tr>
+                    <tr><th>ePPN:</th><td>MISSING</td></tr>';
+                }
+                if ((strlen($firstname) == 0) && (strlen($displayname) == 0)) {
+                    $errorboxstr .= 
+                    '<tr><th>First Name:</th><td>MISSING</td></tr>';
+                }
+                if ((strlen($lastname) == 0) && (strlen($displayname) == 0)) {
+                    $errroboxstr .= 
+                    '<tr><th>Last Name:</th><td>MISSING</td></tr>';
+                }
+                if ((strlen($displayname) == 0) &&
+                    ((strlen($firstname) == 0) || (strlen($lastname) == 0))) {
+                    $errorboxstr .= 
+                    '<tr><th>Display Name:</th><td>MISSING</td></tr>';
+                }
+                $emailvalid = filter_var($emailaddr,FILTER_VALIDATE_EMAIL);
+                if ((strlen($emailaddr) == 0) || (!$emailvalid)) {
+                    $errorboxstr .= 
+                    '<tr><th>Email Address:</th><td>' . 
+                    ((strlen($emailaddr) == 0) ? 'MISSING' : 'INVALID') .
+                    '</td></tr>';
+                }
+
+                // Get contacts from metadata for email addresses
+                $idplist = new idplist();
+                $shibarray = $idplist->getShibInfo($idp);
+                $emailmsg = '?subject=Attribute Release Problem for CILogon' .
+                '&cc=help@cilogon.org' .
+                '&body=Hello, I am having trouble logging on to ' .
+                'https://cilogon.org/ due to the ' . $idpname .
+                ' Identity Provider (IdP) ' .
+                'not releasing all required attributes as ' .
+                'described at http://www.cilogon.org/service/addidp. ' .
+                'Thank you for any help you can provide.';
+                $errorboxstr .= '
+                </table></blockquote>
+                <p> Contact your identity provider to let them know
+                you are having having a problem logging on to CILogon.</p>
+                <blockquote><ul>';
+
+                if ((strlen($shibarray['Technical Name']) > 0) &&
+                    (strlen($shibarray['Technical Address']) > 0)) {
+                    $errorboxstr .= '<li> Technical Contact: ' .
+                        $shibarray['Technical Name'] . ' &lt;' .
+                        '<a href="mailto:' . 
+                        $shibarray['Technical Address'] . $emailmsg . '">' . 
+                        $shibarray['Technical Address'] . '</a>&gt;</li>';
+                }
+
+                if ((strlen($shibarray['Administrative Name']) > 0) &&
+                    (strlen($shibarray['Administrative Address']) > 0)) {
+                    $errorboxstr .= '<li>Administrative Contact: ' .
+                        $shibarray['Administrative Name'] . ' &lt;' .
+                        '<a href="mailto:' . 
+                        $shibarray['Administrative Address'].$emailmsg.'">' . 
+                        $shibarray['Administrative Address'] . '</a>&gt</li>';
+                }
+
+                $errorboxstr .= '</ul></blockquote>
+                
+                <p> Alternatively, you can contact us at the email address
+                at the bottom of the page.</p>
+                ';
+
+                printErrorBox($errorboxstr);
                 
                 echo '
                 <div>
                 ';
-                printFormHead();
+
+                printFormHead($redirect);
                 echo '
                 <input type="submit" name="submit" class="submit"
                 value="Proceed" />
@@ -1484,15 +1525,15 @@ function handleGotUser() {
                 ';
             }
         } else {
-            printErrorBox('An internal error has occurred.  System
-                administrators have been notified.  This may be a temporary
-                error.  Please try again later, or contact us at the the email
+            printErrorBox('An internal error has occurred. System
+                administrators have been notified. This may be a temporary
+                error. Please try again later, or contact us at the the email
                 address at the bottom of the page.');
 
             echo '
             <div>
             ';
-            printFormHead();
+            printFormHead($redirect);
             echo '
             <input type="submit" name="submit" class="submit" value="Proceed" />
             </form>
@@ -1522,7 +1563,7 @@ by the current skin. This might indicate the user attempted to
 circumvent the security check in "handleGotUser()" for valid 
 IdPs for the skin.');
             util::unsetCookieVar('providerId');
-            unsetGetUserSessionVars();
+            util::unsetAllUserSessionVars();
             printLogonPage();
         } else { // Check if two-factor authn is enabled and proceed accordingly
             if (twofactor::getEnabled() == 'none') {
@@ -1642,7 +1683,7 @@ function printNewUserPage() {
     </p>
     <p>
     You will not see this page again unless the CILogon Service assigns you
-    a new certificate subject.  This may occur in the following situations:
+    a new certificate subject. This may occur in the following situations:
     </p>
     <ul>
     <li>You log on to the CILogon Service using an identity provider other
@@ -1655,7 +1696,7 @@ function printNewUserPage() {
     </li>
     </ul>
     <p>
-    Click the "Proceed" button to continue.  If you have any questions,
+    Click the "Proceed" button to continue. If you have any questions,
     please contact us at the email address at the bottom of the page.
     </p>
     <div>
@@ -1719,7 +1760,7 @@ function printUserChangedPage() {
             <p>
             One or more of the attributes released by your organization has
             changed since the last time you logged on to the CILogon
-            Service.  This will affect your certificates as described below.
+            Service. This will affect your certificates as described below.
             </p>
 
             <div class="userchanged">
@@ -1786,7 +1827,7 @@ function printUserChangedPage() {
                 echo '
                 <p>
                 The above changes to your attributes will cause your
-                <strong>certificate subject</strong> to change.  You may be
+                <strong>certificate subject</strong> to change. You may be
                 required to re-register with relying parties using this new
                 certificate subject.
                 </p>
@@ -1813,7 +1854,7 @@ function printUserChangedPage() {
                 Your new certificate will contain your <strong>updated email
                 address</strong>.
                 This may change how your certificate may be used in email
-                clients.  Possible problems which may occur include:
+                clients. Possible problems which may occur include:
                 </p>
                 <ul>
                 <li>If your "from" address does not match what is
@@ -1855,7 +1896,7 @@ function printUserChangedPage() {
             util::sendErrorAlert('dbService Error',
                 'Error calling dbservice action "getLastArchivedUser" in ' .
                 'printUserChangedPaged() method. ' . $errstr);
-            unsetGetUserSessionVars();
+            util::unsetAllUserSessionVars();
             printLogonPage();
         }
     } else {  // Database error, should never happen
@@ -1867,7 +1908,7 @@ function printUserChangedPage() {
         util::sendErrorAlert('dbService Error',
             'Error calling dbservice action "getUser" in ' .
             'printUserChangedPaged() method. ' . $errstr);
-        unsetGetUserSessionVars();
+        util::unsetAllUserSessionVars();
         printLogonPage();
     }
 }
@@ -1992,7 +2033,7 @@ function generateP12() {
             $size = @filesize($p12file);
             if (($size !== false) && ($size > 0)) {
                 $p12link = 'https://' . getMachineHostname() . 
-                           '/pkcs12/' .  $p12dir . '/usercred.p12';
+                           '/pkcs12/' . $p12dir . '/usercred.p12';
                 $p12 = (time()+300) . " " . $p12link;
                 util::setSessionVar('p12',$p12);
                 $log->info('Generated New User Certificate="'.$p12link.'"');

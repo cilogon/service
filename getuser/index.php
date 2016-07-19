@@ -31,7 +31,7 @@ header('Location: ' . $responseurl);
 
 
 /************************************************************************
- * Function   : getUserAndRespond                                       *
+ * Function   : getUserAndRespond2                                      *
  * This function specifically handles the new Google OIDC login API.    *
  * The function reads developer and client keys from a local            *
  * configuration file, and then uses the Google OIDC PHP API            *
