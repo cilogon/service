@@ -52,15 +52,15 @@ function getUID() {
     $idplist = new idplist();
     $shibarray = $idplist->getShibInfo();
 
-    $firstname = $shibarray['First Name'];
-    $lastname = $shibarray['Last Name'];
+    $firstname = @$shibarray['First Name'];
+    $lastname = @$shibarray['Last Name'];
     if ((strlen($firstname) == 0) || (strlen($lastname) == 0)) {
         list($firstname,$lastname) = util::getFirstAndLastName(
-            $shibarray['Display Name'],$firstname,$lastname);
+            @$shibarray['Display Name'],$firstname,$lastname);
     }
 
     /* Hack for test IdP at boingo.ncsa.uiuc.edu */
-    if (strlen($shibarray['Organization Name']) == 0) {
+    if (strlen(@$shibarray['Organization Name']) == 0) {
         $shibarray['Organization Name'] = 'Unspecified';
     }
 
@@ -72,20 +72,20 @@ function getUID() {
     }
 
     util::saveUserToDataStore(
-        $shibarray['User Identifier'],
-        $shibarray['Identity Provider'],
+        @$shibarray['User Identifier'],
+        @$shibarray['Identity Provider'],
         $shibarray['Organization Name'],
         $firstname,
         $lastname,
-        $shibarray['Display Name'],
-        $shibarray['Email Address'],
-        $shibarray['Level of Assurance'],
-        $shibarray['ePPN'],
-        $shibarray['ePTID'],
+        @$shibarray['Display Name'],
+        @$shibarray['Email Address'],
+        @$shibarray['Level of Assurance'],
+        @$shibarray['ePPN'],
+        @$shibarray['ePTID'],
         '', // OpenID 2.0 ID
         '', // OpenID Connect ID
-        $shibarray['Affiliation'],
-        $shibarray['OU']
+        @$shibarray['Affiliation'],
+        @$shibarray['OU']
     );
 }
 

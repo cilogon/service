@@ -23,7 +23,7 @@ $shibarray = $idplist->getShibInfo();
 if ($submit == ADD_SUBMIT_TEXT) {
     /* Add the current IdP entityID to the WAYF whitelist and reload */
     $whitelist = new whitelist();
-    $entityID = $shibarray['Identity Provider'];
+    $entityID = @$shibarray['Identity Provider'];
     if (($idplist->exists($entityID)) && ($whitelist->add($entityID))) {
         $whitelist->write();     // Save new entityID to database
         $idplist->create();      // Update the list of IdPs
