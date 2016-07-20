@@ -1454,7 +1454,7 @@ function handleGotUser() {
                     '<tr><th>First Name:</th><td>MISSING</td></tr>';
                 }
                 if ((strlen($lastname) == 0) && (strlen($displayname) == 0)) {
-                    $errroboxstr .= 
+                    $errorboxstr .= 
                     '<tr><th>Last Name:</th><td>MISSING</td></tr>';
                 }
                 if ((strlen($displayname) == 0) &&
