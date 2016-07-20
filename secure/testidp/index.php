@@ -77,15 +77,15 @@ function printTestPage() {
     <h2>Summary</h2>
     ';
 
-    $emailvalid = filter_var($shibarray['Email Address'],FILTER_VALIDATE_EMAIL);
+    $emailvalid=filter_var(@$shibarray['Email Address'],FILTER_VALIDATE_EMAIL);
 
-    if ((strlen($shibarray['Identity Provider']) > 0) &&
-        (strlen($shibarray['User Identifier']) > 0) &&
-        (strlen($shibarray['Email Address']) > 0) && ($emailvalid) &&
-        (strlen($shibarray['Organization Name']) > 0) &&
-            ((strlen($shibarray['Display Name']) > 0) ||
-                 ((strlen($shibarray['First Name']) > 0) &&
-                  (strlen($shibarray['Last Name']) > 0)))) {
+    if ((strlen(@$shibarray['Identity Provider']) > 0) &&
+        (strlen(@$shibarray['User Identifier']) > 0) &&
+        (strlen(@$shibarray['Email Address']) > 0) && ($emailvalid) &&
+        (strlen(@$shibarray['Organization Name']) > 0) &&
+            ((strlen(@$shibarray['Display Name']) > 0) ||
+                 ((strlen(@$shibarray['First Name']) > 0) &&
+                  (strlen(@$shibarray['Last Name']) > 0)))) {
         $gotattrs = true;
     }
 
@@ -102,8 +102,8 @@ function printTestPage() {
         see the sections below.
         </p>
         ';
-        if ((!$idplist->isWhitelisted($shibarray['Identity Provider'])) &&
-            ($idplist->exists($shibarray['Identity Provider']))) {
+        if ((!$idplist->isWhitelisted(@$shibarray['Identity Provider'])) &&
+            ($idplist->exists(@$shibarray['Identity Provider']))) {
             echo '
             <p class="addsubmit">
             <form action="' , util::getScriptDir() , '" method="post">
@@ -173,10 +173,10 @@ function printTestPage() {
         <table cellpadding="5">
           <tr class="odd">
             <th>Identity Provider (entityID):</th>
-            <td>' , $shibarray['Identity Provider'] , '</td>
+            <td>' , @$shibarray['Identity Provider'] , '</td>
             <td>';
 
-    if (strlen($shibarray['Identity Provider']) == 0) {
+    if (strlen(@$shibarray['Identity Provider']) == 0) {
         printIcon('error','Missing the entityID of the IdP.');
     }
 
@@ -186,11 +186,11 @@ function printTestPage() {
 
           <tr>
             <th>ePTID:</th>
-            <td>' , $shibarray['ePTID'] , '</td>
+            <td>' , @$shibarray['ePTID'] , '</td>
             <td>';
             
-    if ((strlen($shibarray['ePPN']) == 0) &&
-        (strlen($shibarray['ePTID']) == 0)) {
+    if ((strlen(@$shibarray['ePPN']) == 0) &&
+        (strlen(@$shibarray['ePTID']) == 0)) {
         printIcon('error','Must have either ePPN -OR- ePTID.');
     }
             
@@ -200,11 +200,11 @@ function printTestPage() {
 
           <tr class="odd">
             <th>ePPN:</th>
-            <td>' , $shibarray['ePPN'] , '</td>
+            <td>' , @$shibarray['ePPN'] , '</td>
             <td>';
             
-    if ((strlen($shibarray['ePPN']) == 0) &&
-        (strlen($shibarray['ePTID']) == 0)) {
+    if ((strlen(@$shibarray['ePPN']) == 0) &&
+        (strlen(@$shibarray['ePTID']) == 0)) {
         printIcon('error','Must have either ePPN -OR- ePTID.');
     }
             
@@ -214,11 +214,11 @@ function printTestPage() {
 
           <tr>
             <th>First Name (givenName):</th>
-            <td>' , $shibarray['First Name'] , '</td>
+            <td>' , @$shibarray['First Name'] , '</td>
             <td>';
 
-    if ((strlen($shibarray['First Name']) == 0) &&
-        (strlen($shibarray['Display Name']) == 0)) {
+    if ((strlen(@$shibarray['First Name']) == 0) &&
+        (strlen(@$shibarray['Display Name']) == 0)) {
         printIcon('error','Must have either givenName + sn -OR- displayName.');
     }
 
@@ -228,11 +228,11 @@ function printTestPage() {
 
           <tr class="odd">
             <th>Last Name (sn):</th>
-            <td>' , $shibarray['Last Name'] , '</td>
+            <td>' , @$shibarray['Last Name'] , '</td>
             <td>';
 
-    if ((strlen($shibarray['Last Name']) == 0) &&
-        (strlen($shibarray['Display Name']) == 0)) {
+    if ((strlen(@$shibarray['Last Name']) == 0) &&
+        (strlen(@$shibarray['Display Name']) == 0)) {
         printIcon('error','Must have either givenName + sn -OR- displayName.');
     }
 
@@ -242,12 +242,12 @@ function printTestPage() {
 
           <tr>
             <th>Display Name (displayName):</th>
-            <td>' , $shibarray['Display Name'] , '</td>
+            <td>' , @$shibarray['Display Name'] , '</td>
             <td>';
 
-    if ((strlen($shibarray['Display Name']) == 0) &&
-            ((strlen($shibarray['First Name']) == 0) ||
-             (strlen($shibarray['Last Name']) == 0))) {
+    if ((strlen(@$shibarray['Display Name']) == 0) &&
+            ((strlen(@$shibarray['First Name']) == 0) ||
+             (strlen(@$shibarray['Last Name']) == 0))) {
         printIcon('error','Must have either displayName -OR- givenName + sn.');
     }
 
@@ -257,10 +257,10 @@ function printTestPage() {
 
           <tr class="odd">
             <th>Email Address (email):</th>
-            <td>' , $shibarray['Email Address'] , '</td>
+            <td>' , @$shibarray['Email Address'] , '</td>
             <td>';
 
-    if ((strlen($shibarray['Email Address']) == 0) || (!$emailvalid)) {
+    if ((strlen(@$shibarray['Email Address']) == 0) || (!$emailvalid)) {
         printIcon('error','Missing valid email address.');
     }
 
@@ -270,19 +270,19 @@ function printTestPage() {
 
           <tr>
             <th>Level of Assurance (assurance):</th>
-            <td>' , $shibarray['Level of Assurance'] , '</td>
+            <td>' , @$shibarray['Level of Assurance'] , '</td>
             <td> </td>
           </tr>
 
           <tr class="odd">
             <th>Affiliation (affiliation):</th>
-            <td>' , $shibarray['Affiliation'] , '</td>
+            <td>' , @$shibarray['Affiliation'] , '</td>
             <td> </td>
           </tr>
 
           <tr>
             <th>Organizational Unit (ou):</th>
-            <td>' , $shibarray['OU'] , '</td>
+            <td>' , @$shibarray['OU'] , '</td>
             <td> </td>
           </tr>
 
@@ -313,10 +313,10 @@ function printTestPage() {
         <table cellpadding="5">
           <tr class="odd">
             <th>Organization Name:</th>
-            <td>' , $shibarray['Organization Name'] , '</td>
+            <td>' , @$shibarray['Organization Name'] , '</td>
             <td>';
 
-    if (strlen($shibarray['Organization Name']) == 0) {
+    if (strlen(@$shibarray['Organization Name']) == 0) {
         printIcon('error','Could not find &lt;OrganizationDisplayName&gt;'. 
                           ' in InCommon metadata.');
     }
@@ -326,30 +326,30 @@ function printTestPage() {
           </tr>
           <tr>
             <th>Home Page:</th>
-            <td><a target="_blank" href="' , $shibarray['Home Page'] , '">' ,
-            $shibarray['Home Page'] , '</a></td>
+            <td><a target="_blank" href="' , @$shibarray['Home Page'] , '">' ,
+            @$shibarray['Home Page'] , '</a></td>
             <td> </td>
           </tr>
     ';
 
-    if ((strlen($shibarray['Technical Name']) > 0) &&
-        (strlen($shibarray['Technical Address']) > 0)) {
+    if ((strlen(@$shibarray['Technical Name']) > 0) &&
+        (strlen(@$shibarray['Technical Address']) > 0)) {
         echo '
           <tr class="odd">
             <th>Technical Contact:</th>
-            <td>' , $shibarray['Technical Name'] , ' &lt;' ,
-                    $shibarray['Technical Address'] , '&gt;</td>
+            <td>' , @$shibarray['Technical Name'] , ' &lt;' ,
+                    @$shibarray['Technical Address'] , '&gt;</td>
             <td> </td>
           </tr>';
     }
 
-    if ((strlen($shibarray['Administrative Name']) > 0) &&
-        (strlen($shibarray['Administrative Address']) > 0)) {
+    if ((strlen(@$shibarray['Administrative Name']) > 0) &&
+        (strlen(@$shibarray['Administrative Address']) > 0)) {
         echo '
           <tr>
             <th>Administrative Contact:</th>
-            <td>' , $shibarray['Administrative Name'] , ' &lt;' ,
-                    $shibarray['Administrative Address'] , '&gt;</td>
+            <td>' , @$shibarray['Administrative Name'] , ' &lt;' ,
+                    @$shibarray['Administrative Address'] , '&gt;</td>
             <td> </td>
           </tr>';
     }
@@ -375,7 +375,7 @@ function printTestPage() {
 function sendNotificationEmail($mailto='alerts@cilogon.org',$submitter=true) {
     global $shibarray;
 
-    $entityID = $shibarray['Identity Provider'];
+    $entityID = @$shibarray['Identity Provider'];
     $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
     $mailsubj = 'CILogon Service on ' . HOSTNAME . ' - ' .
@@ -383,8 +383,8 @@ function sendNotificationEmail($mailto='alerts@cilogon.org',$submitter=true) {
     $mailmsg  = "
 CILogon Service - New Identity Provider Added
 ---------------------------------------------
-Organization = " . $shibarray['Organization Name'] . "
-(EntityId    = " . $shibarray['Identity Provider'] . ")
+Organization = " . @$shibarray['Organization Name'] . "
+(EntityId    = " . @$shibarray['Identity Provider'] . ")
 ";
 
     if ($submitter) {
@@ -393,37 +393,37 @@ Submitted by:
 ------------
 Name        = ";
 
-        if ((strlen($shibarray['First Name']) > 0) && 
-            (strlen($shibarray['Last Name']) > 0)) {
-            $mailmsg .= $shibarray['First Name'] . ' ' . 
-                        $shibarray['Last Name'];
+        if ((strlen(@$shibarray['First Name']) > 0) && 
+            (strlen(@$shibarray['Last Name']) > 0)) {
+            $mailmsg .= @$shibarray['First Name'] . ' ' . 
+                        @$shibarray['Last Name'];
         } else {
-            $mailmsg .= $shibarray['Display Name'];
+            $mailmsg .= @$shibarray['Display Name'];
         }
 
-        if (strlen($shibarray['Email Address']) > 0) {
+        if (strlen(@$shibarray['Email Address']) > 0) {
             $mailmsg .= "
-Email       = " . $shibarray['Email Address'];
+Email       = " . @$shibarray['Email Address'];
         }
 
-        if (strlen($shibarray['User Identifier']) > 0) {
+        if (strlen(@$shibarray['User Identifier']) > 0) {
             $mailmsg .= "
-UID         = " . $shibarray['User Identifier'];
+UID         = " . @$shibarray['User Identifier'];
         }
 
-        if (strlen($shibarray['Level of Assurance']) > 0) {
+        if (strlen(@$shibarray['Level of Assurance']) > 0) {
             $mailmsg .= "
-LOA         = " . $shibarray['Level of Assurance'];
+LOA         = " . @$shibarray['Level of Assurance'];
         }
 
-        if (strlen($shibarray['Affiliation']) > 0) {
+        if (strlen(@$shibarray['Affiliation']) > 0) {
             $mailmsg .= "
-Affiliation = " . $shibarray['Affiliation'];
+Affiliation = " . @$shibarray['Affiliation'];
         }
 
-        if (strlen($shibarray['OU']) > 0) {
+        if (strlen(@$shibarray['OU']) > 0) {
             $mailmsg .= "
-OU          = " . $shibarray['OU'];
+OU          = " . @$shibarray['OU'];
         }
     }
 
