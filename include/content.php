@@ -1492,22 +1492,22 @@ function handleGotUser() {
                 'let them know you are having having a problem logging on ' . 
                 'to CILogon.</p><blockquote><ul>';
 
-                if ((strlen($shibarray['Technical Name']) > 0) &&
-                    (strlen($shibarray['Technical Address']) > 0)) {
+                if ((strlen(@$shibarray['Technical Name']) > 0) &&
+                    (strlen(@$shibarray['Technical Address']) > 0)) {
                     $errorboxstr .= '<li> Technical Contact: ' .
-                        $shibarray['Technical Name'] . ' &lt;' .
+                        @$shibarray['Technical Name'] . ' &lt;' .
                         '<a href="mailto:' . 
-                        $shibarray['Technical Address'] . $emailmsg . '">' . 
-                        $shibarray['Technical Address'] . '</a>&gt;</li>';
+                        @$shibarray['Technical Address'] . $emailmsg . '">' . 
+                        @$shibarray['Technical Address'] . '</a>&gt;</li>';
                 }
 
-                if ((strlen($shibarray['Administrative Name']) > 0) &&
-                    (strlen($shibarray['Administrative Address']) > 0)) {
+                if ((strlen(@$shibarray['Administrative Name']) > 0) &&
+                    (strlen(@$shibarray['Administrative Address']) > 0)) {
                     $errorboxstr .= '<li>Administrative Contact: ' .
-                        $shibarray['Administrative Name'] . ' &lt;' .
+                        @$shibarray['Administrative Name'] . ' &lt;' .
                         '<a href="mailto:' . 
-                        $shibarray['Administrative Address'].$emailmsg.'">' . 
-                        $shibarray['Administrative Address'] . '</a>&gt</li>';
+                        @$shibarray['Administrative Address'].$emailmsg.'">' . 
+                        @$shibarray['Administrative Address'] . '</a>&gt</li>';
                 }
 
                 $errorboxstr .= '</ul></blockquote>
