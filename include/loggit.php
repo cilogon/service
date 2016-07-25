@@ -52,14 +52,29 @@ class loggit {
      *********************************************************************/
     function info($message,$missing=false,$level=PEAR_LOG_INFO)
     {
+        // Don't log messages from monit/nagios hosts, the
+        // same ones configured in /etc/httpd/conf.httpd.conf
+        $dontlog = array('141.142.148.8',   // nagios-sec
+                         '141.142.148.108', // nagios2-sec
+                         '141.142.234.38',  // falco
+                         '192.249.7.62'     // fozzie
+                        );
+        if ((isset($_SERVER['REMOTE_ADDR'])) && 
+            (in_array($_SERVER['REMOTE_ADDR'],$dontlog))) {
+            return;
+        }
+
+        // Always print out certain HTTP headers, if available
         $envs    = array('REMOTE_ADDR',
                          'REMOTE_USER',
                          'HTTP_SHIB_IDENTITY_PROVIDER',
                          'HTTP_SHIB_SESSION_ID'
                         );
+        // Always print out certain cookies, if available
         $cookies = array('providerId',
                          'CSRFProtection'
                         );
+
         $envstr = ' ';
         foreach ($envs as $value) {
             if ((isset($_SERVER[$value])) && (strlen($_SERVER[$value]) > 0)) {
