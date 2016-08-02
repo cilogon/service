@@ -1,0 +1,113 @@
+/***** Begin basic elements *****/
+body {
+  font-family: "TradeGothicBold", sans-serif;
+  background-color: #F7F7F7;
+  color: #58585B;
+}
+a,
+a:link,
+a:visited {
+  color: #BFA452;
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+} 
+/***** End basic elements *****/
+
+/***** Begin a few misc elements *****/
+div.boxed {
+  background-color: #FFFFFF;
+  border: 1px solid #B38342;
+}
+div.actionbox {
+  background-color: #E7E7E7;
+}
+input.submit {
+  color: #FFF;
+  background-color: transparent;
+  background-image: -moz-linear-gradient(50% 0%, rgb(229, 197, 99), rgb(191, 164, 82));
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border: 0px;
+  margin: 5px;
+  padding: 6px 12px;
+}
+input.submit:hover {
+  color: #FFF;
+  background-color: transparent;
+  background-image: -moz-linear-gradient(50% 0%, rgb(153, 131, 66), rgb(191, 164, 82));
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border: 0px;
+  margin: 5px;
+  padding: 6px 12px;
+}
+/***** End a few misc element *****/
+
+/***** Begin the "CILogon Service" header at the top of each page *****/
+div.logoheader {
+  background: #222222;
+  height: 84px;
+}
+div.logoheader h1 {
+  background: #222222 url("/skin/SWAMP/swamp-logo-small.png") no-repeat top left;
+  margin: 1px 5px;
+  width: 250px;
+  height: 80px;
+  float: left;
+}
+/***** End the "CILogon Service" header at the top of each page *****/
+
+/***** Begin PageHeader titlebox *****/
+div.titlebox {
+  border: 3px solid #2F5999;
+  background-color: #f0f5ff;
+}
+div.boxheader {
+  background-color: #c0d5ff;
+}
+/***** End PageHeader titlebox *****/
+
+/***** Begin page footer *****/
+div.footer {
+  border: 1px solid #BFA452;
+  background-color: #E7E7E7;
+  color: #58585B;
+}
+div.footer a,
+div.footer a:link,
+div.footer a:visited {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  color: #BFA452;
+} 
+/***** End page footer *****/
+
+/***** Begin summary div on testidp page *****/
+div.summary {
+  background-color: #F2F5F8;
+}
+/***** End summary div on testidp page *****/
+
+/***** Begin skincilogonlogo *****/
+div.skincilogonlogo {
+  display: inline;
+  margin: 10px 5px;
+}
+/***** End skincilogonlogo *****/
+
+/***** Begin Help-related stuff *****/
+table.helptable td.helpcell div {
+  background-color: #F2F5F8;
+  margin-right: 1em;
+}
+tr.inforow td.helpcell {
+  background-color: #F2F5F8;
+}
+/***** End Help-related stuff *****/
+
