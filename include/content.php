@@ -1492,22 +1492,24 @@ function handleGotUser() {
                 'let them know you are having having a problem logging on ' . 
                 'to CILogon.</p><blockquote><ul>';
 
-                if ((strlen(@$shibarray['Technical Name']) > 0) &&
-                    (strlen(@$shibarray['Technical Address']) > 0)) {
+                $techname = @$shibarray['Technical Name'];
+                $techaddr = @$shibarray['Technical Address'];
+                $techaddr = preg_replace('/^mailto:/','',$techaddr);
+                if ((strlen($techname) > 0) && (strlen($techaddr) > 0)) {
                     $errorboxstr .= '<li> Technical Contact: ' .
-                        @$shibarray['Technical Name'] . ' &lt;' .
-                        '<a href="mailto:' . 
-                        @$shibarray['Technical Address'] . $emailmsg . '">' . 
-                        @$shibarray['Technical Address'] . '</a>&gt;</li>';
+                        $techname . ' &lt;<a href="mailto:' . 
+                        $techaddr . $emailmsg . '">' . 
+                        $techaddr . '</a>&gt;</li>';
                 }
 
-                if ((strlen(@$shibarray['Administrative Name']) > 0) &&
-                    (strlen(@$shibarray['Administrative Address']) > 0)) {
+                $adminname = @$shibarray['Administrative Name'];
+                $adminaddr = @$shibarray['Administrative Address'];
+                $adminaddr = preg_replace('/^mailto:/','',$adminaddr);
+                if ((strlen($adminname) > 0) && (strlen($adminaddr) > 0)) {
                     $errorboxstr .= '<li>Administrative Contact: ' .
-                        @$shibarray['Administrative Name'] . ' &lt;' .
-                        '<a href="mailto:' . 
-                        @$shibarray['Administrative Address'].$emailmsg.'">' . 
-                        @$shibarray['Administrative Address'] . '</a>&gt</li>';
+                        $adminname . ' &lt;<a href="mailto:' . 
+                        $adminaddr . $emailmsg.'">' . 
+                        $adminaddr . '</a>&gt</li>';
                 }
 
                 $errorboxstr .= '</ul></blockquote>

@@ -1,3 +1,4 @@
+https://boingo.ncsa.uiuc.edu/idp/profile/SAML2/SOAP/ECP Boingo
 https://idp.clemson.edu/idp/profile/SAML2/SOAP/ECP Clemson University
 https://ecp-prod.fnal.gov/idp/profile/SAML2/SOAP/ECP Fermi National Accelerator Laboratory
 https://ecp-prod.fnal.gov/idp-krb/profile/SAML2/SOAP/ECP Fermi National Accelerator Laboratory (Kerberos)
@@ -6,6 +7,7 @@ https://shib.lternet.edu/idp/profile/SAML2/SOAP/ECP LTER Network
 https://idp.ncsa.illinois.edu/idp/profile/SAML2/SOAP/ECP National Center for Supercomputing Applications
 https://as1.fim.psu.edu/idp/profile/SAML2/SOAP/ECP Penn State University
 https://idp.protectnetwork.org/protectnetwork-idp/profile/SAML2/SOAP/ECP ProtectNetwork
+https://shibboleth-test.techservices.illinois.edu/idp/profile/SAML2/SOAP/ECP UIUC Test
 https://shibboleth2.uchicago.edu/idp/profile/SAML2/SOAP/ECP University of Chicago
 https://shibboleth.illinois.edu/idp/profile/SAML2/SOAP/ECP University of Illinois at Urbana-Champaign
 https://shibboleth.umich.edu/idp/profile/SAML2/SOAP/ECP University of Michigan
