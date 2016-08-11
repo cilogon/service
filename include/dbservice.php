@@ -1,6 +1,6 @@
 <?php
 
-require_once 'util.php';
+require_once("util.php");
 
 /************************************************************************
  * Class name : dbservice                                               *
@@ -266,11 +266,6 @@ class dbservice {
                     }
                 }
             }
-            // Add "registered_by_incommon" parameter
-            $idplist = new idplist();
-            $cmd .= '&registered_by_incommon=' .
-                ($idplist->isRegisteredByInCommon(func_get_arg(1)) ? '1':'0');
-
             $retval = $this->call($cmd);
         }
         return $retval;

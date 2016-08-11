@@ -17,34 +17,20 @@ if ($argc == 2) {
         $idps = $idplist->getInCommonIdPs(); // List of all IdPs from idplist.xml
         foreach ($idps as $entityId => $displayName) {
             // Find any R&S IdPs which are not whitelisted
-            if (!$idplist->isWhitelisted($entityId)) {
-                // IdPs with satisfy one of the following pairs of conditions
-                // should be marked as whitelisted:
-                // (1) Registered_By_InCommon + InCommon_RandS
-                // (2) Registered_By_InCommon + REFEDS_RandS
-                // (3) SIRTFI + REFEDS_RandS
-                $regincommon   = $idplist->isRegisteredByInCommon($entityId);
-                $incommonrands = $idplist->isInCommonRandS($entityId);
-                $refedsrands   = $idplist->isREFEDSRandS($entityId);
-                $sirtfi        = $idplist->isSIRTFI($entityId);
-                if (($regincommon && $incommonrands) ||
-                    ($regincommon && $refedsrands) ||
-                    ($sirtfi && $refedsrands)) {
-                    if ($whitelist->add($entityId)) { // Add to whitelist? Need to save
-                        $newrands[$entityId] = $displayName;  // Keep track for email alert
-                    }
+            if (($idplist->isRandS($entityId)) && 
+                (!$idplist->isWhitelisted($entityId))) {
+                if ($whitelist->add($entityId)) { // Add to whitelist? Need to save
+                    $newrands[$entityId] = $displayName;  // Keep track for email alert
                 }
             }
         }
 
         // Found new R&S IdPs? Save whitelist, regenerate idplist.xml, email alert
         if (count($newrands) > 0) {
-echo "Found new rands " . print_r($newrands,true) . "\n";
-            // $whitelist->write();
+            $whitelist->write();
             $idplist->create();
-$idplist->setFilename('/tmp/happy.xml');
             $idplist->write();
-            // sendNotificationEmail($newrands);
+            sendNotificationEmail($newrands);
         }
     }
 
