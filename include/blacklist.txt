@@ -5,3 +5,4 @@
 # Blank lines and lines beginning with '#' (no leading spaces) are skipped.
 
 https://shibboleth.csupomona.edu/idp/shibboleth
+https://idp.pitt.edu/idp/shibboleth
