@@ -777,10 +777,21 @@ Remote Address= ' . $remoteaddr . '
                 (preg_match('/ligo\.org/',$databaseProviderId))) {
 
                 $mailto = 'alerts@cilogon.org';
+
+                // Set $disableligoalerts = true to stop LIGO failures
+                // from being sent to 'alerts@cilogon.org', but still 
+                // sent to 'cilogon-alerts@ligo.org'.
+                $disableligoalerts = false;
+
                 // Fixes CIL-205 - Notify LIGO about IdP login errors
                 if (preg_match('/ligo\.org/',$databaseProviderId)) {
-                    $mailto .= ',cilogon-alerts@ligo.org';
+                    if ($disableligoalerts) {
+                        $mailto = '';
+                    }
+                    $mailto .= ((strlen($mailto) > 0) ? ',' : '') .
+                        'cilogon-alerts@ligo.org';
                 }
+
                 util::sendErrorAlert('Failure in ' . 
                                      (($loa == 'openid') ? '' : '/secure') .
                                      '/getuser/',
