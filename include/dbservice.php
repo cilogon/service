@@ -396,12 +396,28 @@ class dbservice {
      * returns true.                                                    *
      ********************************************************************/
     function setIdps() {
+        $retval = false;
         $this->setDBServiceURL(self::defaultDBServiceURL);
-        $cmdstr = 'action=setAllIdps';
-        foreach ($this->idp_uids as $value) {
-            $cmdstr .=  '&idp_uid=' . urlencode($value);
+        $idpcount = count($this->idp_uids);
+        $idpidx = 0;
+        if ($idpcount > 0) {
+            // Loop through the idp_uids in chunks of 50 to deal
+            // with query parameter limit of http browsers/servers.
+            while ($idpidx < $idpcount) { // Loop through all IdPs
+                $fiftyidx = 0;
+                $idplist = '';
+                while (($fiftyidx < 50) && // Send 50 IdPs at a time
+                       ($idpidx < $idpcount)) { 
+                    $idplist .=  '&idp_uid=' . 
+                                 urlencode($this->idp_uids[$idpidx]);
+                    $fiftyidx++;
+                    $idpidx++;
+                }
+                $cmd = 'action=setAllIdps' . $idplist;
+                $retval = $this->call($cmd);
+            }
         }
-        return $this->call($cmdstr);
+        return $retval;
     }
 
     /********************************************************************
