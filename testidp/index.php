@@ -7,8 +7,7 @@ require_once('../include/content.php');
 // Check for a Shibboleth error and handle it
 $shiberror = new shiberror();
 
-/* Read in the list of currently available IdPs. */
-$idplist = new idplist();
+// $idplist initialized in util.php
 
 /* Check the csrf cookie against either a hidden <form> element or a *
  * PHP session variable, and get the value of the "submit" element.  *

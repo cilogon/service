@@ -13,6 +13,9 @@ util::startPHPSession();
 /* Loggit object for logging info to syslog. */
 $log = new loggit();
 
+/* Global idplist object since dplist.xml is large */
+$idplist = new idplist();
+
 /************************************************************************
  * Class name : util                                                    *
  * Description: This class contains a bunch of static (class) utility   *

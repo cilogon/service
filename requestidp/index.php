@@ -63,10 +63,10 @@ if ($submit == 'Submit') {
 function printRequestForm($verify=false,$yourName='',$emailAddr='',
                           $providerId='',$otherIdP='',$comments='') {
     global $csrf;  // Initialized in content.php
+    global $idplist;
 
     $goterror = false;  /* Did we find any errors in the form? */
 
-    $idplist = new idplist();
     $idps = $idplist->getNonWhitelistedIdPs();
 
     printHeader('Request Home Organization');

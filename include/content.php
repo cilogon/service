@@ -934,9 +934,7 @@ function handleHelpButtonClicked() {
  ************************************************************************/
 function handleNoSubmitButtonClicked() {
     global $skin;
-
-    // Read in the whitelist of currently available InCommon IdPs
-    $idplist = new idplist();
+    global $idplist;
 
     /* If this is a OIDC transaction, get the selected_idp and   *
      * redirect_uri parameters from the session var clientparams.*/
@@ -1180,6 +1178,7 @@ function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
     global $csrf;
     global $log;
     global $skin;
+    global $idplist;
 
     // If providerId not set, try the cookie value
     if (strlen($providerId) == 0) {
@@ -1230,7 +1229,6 @@ function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
 
             // If Silver IdP or "Request Silver" checked, send extra parameter
             if ($allowsilver) {
-                $idplist = new idplist();
                 if (($idplist->isSilver($providerId)) ||
                     (strlen(util::getPostVar('silveridp')) > 0)) {
                     util::setSessionVar('requestsilver','1');
@@ -1352,6 +1350,7 @@ function printErrorBox($errortext) {
 function handleGotUser() {
     global $skin;
     global $log;
+    global $idplist;
 
     $uid = util::getSessionVar('uid');
     $status = util::getSessionVar('status');
@@ -1409,10 +1408,9 @@ function handleGotUser() {
                 name or email address was missing. To rectify this problem,
                 go to the <a target="_blank"
                 href="https://myaccount.google.com/privacy#personalinfo">Google
-                Account Personal Information page</a>, enter your First
-                Name, Last Name, and email address, and click the "Save"
-                button. (All other Google account information is optional
-                and not required by the CILogon Service.)
+                Account Personal Information page</a>, and enter your First
+                Name, Last Name, and email address. (All other Google
+                account information is not required by the CILogon Service.)
                 </p>
                 <p>
                 After you have updated your Google account profile, click
@@ -1439,28 +1437,33 @@ function handleGotUser() {
             } else { // Problem was missing SAML attribute from Shib IdP
                 $errorboxstr = 
                 '<p>There was a problem logging on. Your identity
-                provider has not provided CILogon with required information
-                about you.</p>
+                provider has not provided CILogon with required information.</p>
                 <blockquote><table cellpadding="5">';
 
+                $missingattrs = '';
                 // Show user which attributes are missing
                 if ((strlen($ePPN) == 0) && (strlen($ePTID) == 0)) {
                     $errorboxstr .= 
                     '<tr><th>ePTID:</th><td>MISSING</td></tr>
                     <tr><th>ePPN:</th><td>MISSING</td></tr>';
+                    $missingattrs .= '%0D%0A    eduPersonPrincipalName'. 
+                                     '%0D%0A    eduPersonTargetedID ';
                 }
                 if ((strlen($firstname) == 0) && (strlen($displayname) == 0)) {
                     $errorboxstr .= 
                     '<tr><th>First Name:</th><td>MISSING</td></tr>';
+                    $missingattrs .= '%0D%0A    givenName (first name)'; 
                 }
                 if ((strlen($lastname) == 0) && (strlen($displayname) == 0)) {
                     $errorboxstr .= 
                     '<tr><th>Last Name:</th><td>MISSING</td></tr>';
+                    $missingattrs .= '%0D%0A    sn (last name)'; 
                 }
                 if ((strlen($displayname) == 0) &&
                     ((strlen($firstname) == 0) || (strlen($lastname) == 0))) {
                     $errorboxstr .= 
                     '<tr><th>Display Name:</th><td>MISSING</td></tr>';
+                    $missingattrs .= '%0D%0A    displayName'; 
                 }
                 $emailvalid = filter_var($emailaddr,FILTER_VALIDATE_EMAIL);
                 if ((strlen($emailaddr) == 0) || (!$emailvalid)) {
@@ -1468,48 +1471,89 @@ function handleGotUser() {
                     '<tr><th>Email Address:</th><td>' . 
                     ((strlen($emailaddr) == 0) ? 'MISSING' : 'INVALID') .
                     '</td></tr>';
+                    $missingattrs .= '%0D%0A    mail (email address)'; 
                 }
+                // CIL-326 - For eduGAIN IdPs, check for R&S and SIRTFI
+                if (!$idplist->isRegisteredByInCommon($idp)) {
+                    if (!$idplist->isREFEDSRandS($idp)) {
+                        $errorboxstr .= 
+                        '<tr><th><a target="_blank"
+                        href="http://refeds.org/category/research-and-scholarship">Research and Scholarship</a>:</th><td>MISSING</td></tr>';
+                        $missingattrs .= '%0D%0A    http://refeds.org/category/research-and-scholarship'; 
+                    }
+                    if (!$idplist->isSIRTFI($idp)) {
+                        $errorboxstr .= 
+                        '<tr><th><a target="_blank"
+                        href="https://refeds.org/sirtfi">SIRTFI</a>:</th><td>MISSING</td></tr>';
+                        $missingattrs .= '%0D%0A    http://refeds.org/sirtfi'; 
+                    }
+                }
+                $student = false;
                 $errorboxstr .= '</table></blockquote>';
                 if ((strlen($emailaddr) == 0 ) && 
                     (preg_match('/student@/',$affiliation))) {
+                    $student = true;
                     $errorboxstr .= '<p><b>If you are a student</b>, ' . 
                     'you may need to ask your identity provider ' . 
                     'to release your email address.</p>';
                 }
 
                 // Get contacts from metadata for email addresses
-                $idplist = new idplist();
                 $shibarray = $idplist->getShibInfo($idp);
                 $emailmsg = '?subject=Attribute Release Problem for CILogon' .
                 '&cc=help@cilogon.org' .
                 '&body=Hello, I am having trouble logging on to ' .
-                'https://cilogon.org/ due to the ' . $idpname .
+                'https://cilogon.org/ using the ' . $idpname .
                 ' Identity Provider (IdP) ' .
-                'not releasing all required attributes as ' .
-                'described at http://www.cilogon.org/service/addidp. ' .
-                'Thank you for any help you can provide.';
+                'due to the following missing attributes:%0D%0A' . 
+                $missingattrs;
+                if ($student) {
+                    $emailmsg .= '%0D%0A%0D%0ANote that my account is ' . 
+                    'marked "student" and thus my email address may need ' .
+                    'to be released.';
+                }
+                $emailmsg .= '%0D%0A%0D%0APlease see ' .
+                    'http://www.cilogon.org/service/addidp for more ' .
+                    'details. Thank you for any help you can provide.';
                 $errorboxstr .= '<p>Contact your identity provider to ' . 
                 'let them know you are having having a problem logging on ' . 
                 'to CILogon.</p><blockquote><ul>';
 
-                $techname = @$shibarray['Technical Name'];
-                $techaddr = @$shibarray['Technical Address'];
-                $techaddr = preg_replace('/^mailto:/','',$techaddr);
-                if ((strlen($techname) > 0) && (strlen($techaddr) > 0)) {
-                    $errorboxstr .= '<li> Technical Contact: ' .
-                        $techname . ' &lt;<a href="mailto:' . 
-                        $techaddr . $emailmsg . '">' . 
-                        $techaddr . '</a>&gt;</li>';
+                $namefound = false;
+                $name = @$shibarray['Support Name'];
+                $addr = @$shibarray['Support Address'];
+                $addr = preg_replace('/^mailto:/','',$addr);
+                if ((strlen($name) > 0) && (strlen($addr) > 0)) {
+                    $namefound = true;
+                    $errorboxstr .= '<li> Support Contact: ' .
+                        $name . ' &lt;<a href="mailto:' . 
+                        $addr . $emailmsg . '">' . 
+                        $addr . '</a>&gt;</li>';
                 }
 
-                $adminname = @$shibarray['Administrative Name'];
-                $adminaddr = @$shibarray['Administrative Address'];
-                $adminaddr = preg_replace('/^mailto:/','',$adminaddr);
-                if ((strlen($adminname) > 0) && (strlen($adminaddr) > 0)) {
-                    $errorboxstr .= '<li>Administrative Contact: ' .
-                        $adminname . ' &lt;<a href="mailto:' . 
-                        $adminaddr . $emailmsg.'">' . 
-                        $adminaddr . '</a>&gt</li>';
+                if (!$namefound) {
+                    $name = @$shibarray['Technical Name'];
+                    $addr = @$shibarray['Technical Address'];
+                    $addr = preg_replace('/^mailto:/','',$addr);
+                    if ((strlen($name) > 0) && (strlen($addr) > 0)) {
+                        $namefound = true;
+                        $errorboxstr .= '<li> Technical Contact: ' .
+                            $name . ' &lt;<a href="mailto:' . 
+                            $addr . $emailmsg . '">' . 
+                            $addr . '</a>&gt;</li>';
+                    }
+                }
+
+                if (!$namefound) {
+                    $name = @$shibarray['Administrative Name'];
+                    $addr = @$shibarray['Administrative Address'];
+                    $addr = preg_replace('/^mailto:/','',$addr);
+                    if ((strlen($name) > 0) && (strlen($addr) > 0)) {
+                        $errorboxstr .= '<li>Administrative Contact: ' .
+                            $name . ' &lt;<a href="mailto:' . 
+                            $addr . $emailmsg.'">' . 
+                            $addr . '</a>&gt</li>';
+                    }
                 }
 
                 $errorboxstr .= '</ul></blockquote>
@@ -2236,9 +2280,9 @@ function getMachineHostname() {
  ************************************************************************/
 function getCompositeIdPList($incommonidps=false) {
     global $skin;
+    global $idplist;
 
     $retarray = array();
-    $idplist = new idplist();
 
     if ($incommonidps) { /* Get all InCommon IdPs only */
         $retarray = $idplist->getInCommonIdPs();

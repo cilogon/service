@@ -1,6 +1,6 @@
 <?php
 
-require_once("util.php");
+require_once 'util.php';
 
 /************************************************************************
  * Class name : dbservice                                               *
@@ -242,6 +242,8 @@ class dbservice {
      * status code of 200), this method returns true.                   *
      ********************************************************************/
     function getUser() {
+        global $idplist;
+
         $retval = false;
         $this->clearUser();
         $this->setDBServiceURL(self::defaultDBServiceURL);
@@ -266,6 +268,16 @@ class dbservice {
                     }
                 }
             }
+            // Add "us_idp" parameter for InCommon/Google (1) or eduGAIN (0)
+            $us_idp = 0;
+            $idp = func_get_arg(1);
+            $idp_display_name = func_get_arg(2);
+            if (($idplist->isRegisteredByInCommon($idp)) ||
+                ($idp_display_name == 'Google')) {
+                $us_idp = 1;
+            }
+            $cmd .= "&us_idp=$us_idp";
+
             $retval = $this->call($cmd);
         }
         return $retval;

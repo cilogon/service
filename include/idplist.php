@@ -221,6 +221,33 @@ EOT;
                 // Loop through the IdPs searching for desired attributes
                 foreach ($result as $idx) {
 
+                    // Need to set namespace prefixes for xpath queries to work
+                    $sxe = $idx[0];
+                    $sxe->registerXPathNamespace('mdattr',
+                        'urn:oasis:names:tc:SAML:metadata:attribute');
+                    $sxe->registerXPathNamespace('saml',
+                        'urn:oasis:names:tc:SAML:2.0:assertion');
+                    $sxe->registerXPathNamespace('mdrpi',
+                        'urn:oasis:names:tc:SAML:metadata:rpi');
+                    $sxe->registerXPathNamespace('mdui',
+                        'urn:oasis:names:tc:SAML:metadata:ui');
+
+                    // Skip any hide-from-discovery entries
+                    $xp = $sxe->xpath(
+                        "Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='http://macedir.org/entity-category']/saml:AttributeValue");
+                    if (($xp !== false) && (count($xp)>0)) {
+                        $hide = false;
+                        foreach ($xp as $value) {
+                            if ($value == 'http://refeds.org/category/hide-from-discovery') {
+                                $hide = true;
+                                break;
+                            }
+                        }
+                        if ($hide) {
+                            continue;
+                        }
+                    }
+
                     // Get the entityID of the IdP. Save it for later.
                     // The entityID will be the keys of the class idpdom.
                     $entityID = '';
@@ -231,44 +258,70 @@ EOT;
                         continue;
                     }
 
-                    // Check for RegistrationInfo == https://incommon.org
-                    // Need to set namespace prefixes for xpath queries to work.
-                    $sxe = $idx[0];
-                    $sxe->registerXPathNamespace('mdattr',
-                        'urn:oasis:names:tc:SAML:metadata:attribute');
-                    $sxe->registerXPathNamespace('saml',
-                        'urn:oasis:names:tc:SAML:2.0:assertion');
-                    $sxe->registerXPathNamespace('mdrpi',
-                        'urn:oasis:names:tc:SAML:metadata:rpi');
-                    $xp = $sxe->xpath(
-                        "Extensions/mdrpi:RegistrationInfo[@registrationAuthority='https://incommon.org']");
-                    if (($xp === false) || (count($xp) == 0)) {
-                        continue;
-                    }
-
                     // Create an <idp> element to hold sub elements
                     $idp = $dom->createElement('idp');
                     $idp->setAttribute('entityID',$entityID);
                     $idps->appendChild($idp);
-           
+
                     // Search for the desired <idp> attribute sub-blocks
                     $xp = $idx[0]->xpath(
                         'Organization/OrganizationDisplayName');
                     if (($xp !== false) && (count($xp)>0)) {
                         $this->addNode($dom,$idp,
                             'Organization_Name',(string)$xp[0]);
+                    } else {
+                        // If we didn't find the OrganzationName, look for
+                        // a DisplayName in the Extensions section
+                        $xp = $sxe->xpath(
+                            "IDPSSODescriptor/Extensions/mdui:UIInfo/mdui:DisplayName[@xml:lang='en']");
+                        if (($xp !== false) && (count($xp)>0)) {
+                            $this->addNode($dom,$idp,
+                                'Organization_Name',(string)$xp[0]);
+                        }
                     }
-
+                    
                     $xp = $idx[0]->xpath('Organization/OrganizationURL');
                     if (($xp !== false) && (count($xp)>0)) {
                         $this->addNode($dom,$idp,'Home_Page',(string)$xp[0]);
                     }
 
+                    $name = '';
+                    $xp = $idx[0]->xpath(
+                        "ContactPerson[@contactType='support']/GivenName");
+                    if (($xp !== false) && (count($xp)>0)) {
+                        $name = (string)$xp[0];
+                    }
+                    $xp = $idx[0]->xpath(
+                        "ContactPerson[@contactType='support']/SurName");
+                    if (($xp !== false) && (count($xp)>0)) {
+                        $name .= ((strlen($name) > 0) ? ' ' : '') . 
+                            (string)($xp[0]);
+                    }
+                    if (strlen($name) > 0) {
+                        $this->addNode($dom,$idp,'Support_Name',$name);
+                    }
+
+                    $xp = $idx[0]->xpath(
+                        "ContactPerson[@contactType='support']/EmailAddress");
+                    if (($xp !== false) && (count($xp)>0)) {
+                        $this->addNode($dom,$idp,
+                            'Support_Address',(string)$xp[0]);
+                    }
+
+                    $name = '';
                     $xp = $idx[0]->xpath(
                         "ContactPerson[@contactType='technical']/GivenName");
                     if (($xp !== false) && (count($xp)>0)) {
-                        $this->addNode($dom,$idp,
-                            'Technical_Name',(string)$xp[0]);
+                        $name = (string)$xp[0];
+                    }
+                    $xp = $idx[0]->xpath(
+                        "ContactPerson[@contactType='technical']/SurName");
+                    if (($xp !== false) && (count($xp)>0)) {
+                        $name .= ((strlen($name) > 0) ? ' ' : '') . 
+                            (string)($xp[0]);
+                    }
+                    if (strlen($name) > 0) {
+                        $this->addNode($dom,$idp,'Technical_Name',$name);
                     }
 
                     $xp = $idx[0]->xpath(
@@ -278,11 +331,20 @@ EOT;
                             'Technical_Address',(string)$xp[0]);
                     }
 
+                    $name = '';
                     $xp = $idx[0]->xpath(
                         "ContactPerson[@contactType='administrative']/GivenName");
                     if (($xp !== false) && (count($xp)>0)) {
-                        $this->addNode($dom,$idp,
-                            'Administrative_Name',(string)$xp[0]);
+                        $name = (string)$xp[0];
+                    }
+                    $xp = $idx[0]->xpath(
+                        "ContactPerson[@contactType='administrative']/SurName");
+                    if (($xp !== false) && (count($xp)>0)) {
+                        $name .= ((strlen($name) > 0) ? ' ' : '') . 
+                            (string)($xp[0]);
+                    }
+                    if (strlen($name) > 0) {
+                        $this->addNode($dom,$idp,'Administrative_Name',$name);
                     }
 
                     $xp = $idx[0]->xpath(
@@ -292,13 +354,31 @@ EOT;
                             'Administrative_Address',(string)$xp[0]);
                     }
 
-                    // Check for assurance-certification = silver.
+                    // Check for assurance-certification = silver, bronze, or SIRTFI
+                    $sirtfiadded = false;
                     $xp = $sxe->xpath(
                         "Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:oasis:names:tc:SAML:attribute:assurance-certification']/saml:AttributeValue");
                     if (($xp !== false) && (count($xp)>0)) {
                         foreach ($xp as $value) {
                             if ($value == 'http://id.incommon.org/assurance/silver') {
                                 $this->addNode($dom,$idp,'Silver','1');
+                            } elseif ($value == 'http://id.incommon.org/assurance/bronze') {
+                                $this->addNode($dom,$idp,'Bronze','1');
+                            } elseif ($value == 'https://refeds.org/sirtfi') {
+                                $this->addNode($dom,$idp,'SIRTFI','1');
+                                $sirtfiadded = true;
+                            }
+                        }
+                    }
+
+                    // Check for registered-by-incommon
+                    $xp = $sxe->xpath(
+                        "Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='http://macedir.org/entity-category']/saml:AttributeValue");
+                    if (($xp !== false) && (count($xp)>0)) {
+                        foreach ($xp as $value) {
+                            if ($value == 'http://id.incommon.org/category/registered-by-incommon') {
+                                $this->addNode($dom,$idp,
+                                    'Registered_By_InCommon','1');
                                 break;
                             }
                         }
@@ -308,11 +388,22 @@ EOT;
                     $xp = $sxe->xpath(
                         "Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='http://macedir.org/entity-category-support']/saml:AttributeValue");
                     if (($xp !== false) && (count($xp)>0)) {
+                        $addedrands = false;
+                        $incommonrands = false;
+                        $refedsrands = false;
                         foreach ($xp as $value) {
-                            if (($value == 'http://id.incommon.org/category/research-and-scholarship') ||
-                                ($value == 'http://refeds.org/category/research-and-scholarship')) {
+                            if ($value == 'http://id.incommon.org/category/research-and-scholarship') {
+                                $incommonrands = true;
+                                $this->addNode($dom,$idp,'InCommon_RandS','1');
+                            }
+                            if ($value == 'http://refeds.org/category/research-and-scholarship') {
+                                $refedsrands = true;
+                                $this->addNode($dom,$idp,'REFEDS_RandS','1');
+                            }
+                            if ((!$addedrands) &&
+                                ($incommonrands || $refedsrands)) {
+                                $addedrands = true;
                                 $this->addNode($dom,$idp,'RandS','1');
-                                break;
                             }
                         }
                     }
@@ -404,7 +495,6 @@ EOT;
         $query = "idp[@entityID='$entityID']" . 
             ((strlen($attrq) > 0) ? "[$attrq]" : '');
         return ($xpath->query($query)->length > 0);
-
     }
 
     /********************************************************************
@@ -455,6 +545,18 @@ EOT;
     }
 
     /********************************************************************
+     * Function  : isBronze                                             *
+     * Parameter : The enityID to search for in the idpdom.             *
+     * Returns   : True if the given entityID is certified 'Bronze'.    *
+     *             False otherwise.                                     *
+     * This method searches for the given entityID and checks if the    *
+     *'Bronze' entry has been set to '1'.                               *
+     ********************************************************************/
+    function isBronze($entityID) {
+        return $this->queryAttribute($entityID,'Bronze=1');
+    }
+
+    /********************************************************************
      * Function  : isRandS                                              *
      * Parameter : The enityID to search for in the idpdom.             *
      * Returns   : True if the given entityID is listed as 'RandS'      *
@@ -464,6 +566,54 @@ EOT;
      ********************************************************************/
     function isRandS($entityID) {
         return $this->queryAttribute($entityID,'RandS=1');
+    }
+
+    /********************************************************************
+     * Function  : isInCommonRandS                                      *
+     * Parameter : The enityID to search for in the idpdom.             *
+     * Returns   : True if the given entityID is listed as              *
+     *             'InCommon_RandS'. False otherwise.                   *
+     * This method searches for the given entityID and checks if the    *
+     *'InCommon_RandS' entry has been set to '1'.                       *
+     ********************************************************************/
+    function isInCommonRandS($entityID) {
+        return $this->queryAttribute($entityID,'InCommon_RandS=1');
+    }
+
+    /********************************************************************
+     * Function  : isREFEDSRandS                                        *
+     * Parameter : The enityID to search for in the idpdom.             *
+     * Returns   : True if the given entityID is listed as              *
+     *             'REFEDS_RandS'. False otherwise.                     *
+     * This method searches for the given entityID and checks if the    *
+     *'REFEDS_RandS' entry has been set to '1'.                         *
+     ********************************************************************/
+    function isREFEDSRandS($entityID) {
+        return $this->queryAttribute($entityID,'REFEDS_RandS=1');
+    }
+
+    /********************************************************************
+     * Function  : isRegisteredByInCommon                               *
+     * Parameter : The enityID to search for in the idpdom.             *
+     * Returns   : True if the given entityID is listed as              *
+     *             'Registered_By_InCommon'. False otherwise.           *
+     * This method searches for the given entityID and checks if the    *
+     *'Registered_By_InCommon' entry has been set to '1'.               *
+     ********************************************************************/
+    function isRegisteredByInCommon($entityID) {
+        return $this->queryAttribute($entityID,'Registered_By_InCommon=1');
+    }
+
+    /********************************************************************
+     * Function  : isSIRTFI                                             *
+     * Parameter : The enityID to search for in the idpdom.             *
+     * Returns   : True if the given entityID is listed as              *
+     *             SIRTFI. False otherwise.                             *
+     * This method searches for the given entityID and checks if the    *
+     *'SIRTFI' entry has been set to '1'.                               *
+     ********************************************************************/
+    function isSIRTFI($entityID) {
+        return $this->queryAttribute($entityID,'SIRTFI=1');
     }
 
     /********************************************************************
@@ -572,6 +722,7 @@ EOT;
         $shibarray['Level of Assurance'] = util::getServerVar('HTTP_ASSURANCE');
         $shibarray['Affiliation'] = util::getServerVar('HTTP_AFFILIATION');
         $shibarray['OU'] = util::getServerVar('HTTP_OU');
+        $shibarray['Authn Context'] = util::getServerVar('HTTP_SHIB_AUTHNCONTEXT_CLASS');
         
         /* Make sure to use only the first of multiple values. */
         $attrs = array('ePPN','ePTID','First Name','Last Name',
@@ -588,6 +739,8 @@ EOT;
         $attrarray = array(
             'Organization_Name',
             'Home_Page',
+            'Support_Name',
+            'Support_Address',
             'Technical_Name',
             'Technical_Address',
             'Administrative_Name',

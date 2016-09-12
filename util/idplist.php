@@ -1,7 +1,7 @@
 <?php
 
-require_once('../include/util.php');
 require_once('../include/idplist.php');
+require_once('../include/util.php');
 require_once('../include/whitelist.php');
 
 if ($argc == 2) {

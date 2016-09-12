@@ -38,8 +38,9 @@ class IdP {
  *            added here to set the the additional attributes.          *
  ************************************************************************/
 function getIdPListAsJSON() {
+    global $idplist;
+
     $idparray = array(); // Array of IdP objects to be converted to JSON
-    $idplist = new idplist(); // Needed for checking R&S status
     if ($idplist !== false) { // Verify we read in the idplist.xml file
         $idps = getCompositeIdPList(); // Take into consideration the 'skin'
         $randsidps = $idplist->getRandSIdPs();

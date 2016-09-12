@@ -10,12 +10,12 @@ define('ADD_SUBMIT_TEXT','Add Your IdP to the CILogon Service');
  * PHP session variable, and get the value of the "submit" element.    */
 $submit = $csrf->verifyCookieAndGetSubmit();
 
-/* Get the full list of InCommon IdPs and the whitelist of *
- * IdPs available to the CILogon Service.                  */
-$idplist = new idplist();
+// $idplist initialilzed in util.php
 
 /* Get the Shibboleth information for the current session. */
 $shibarray = $idplist->getShibInfo();
+
+$entityID = @$shibarray['Identity Provider'];
 
 /* If the CSRF cookie was good and the user clicked a "Submit" *
  * button then do the appropriate action before displaying     *
@@ -23,7 +23,6 @@ $shibarray = $idplist->getShibInfo();
 if ($submit == ADD_SUBMIT_TEXT) {
     /* Add the current IdP entityID to the WAYF whitelist and reload */
     $whitelist = new whitelist();
-    $entityID = @$shibarray['Identity Provider'];
     if (($idplist->exists($entityID)) && ($whitelist->add($entityID))) {
         $whitelist->write();     // Save new entityID to database
         $idplist->create();      // Update the list of IdPs
@@ -45,9 +44,10 @@ printTestPage();
  * error message is printed out.                                        *
  ************************************************************************/
 function printTestPage() {
-    global $idplist;
     global $shibarray;
     global $csrf;
+    global $idplist;
+    global $entityID;
 
     $gotattrs = false;  // Did we get all shib attributes?
 
@@ -79,7 +79,7 @@ function printTestPage() {
 
     $emailvalid=filter_var(@$shibarray['Email Address'],FILTER_VALIDATE_EMAIL);
 
-    if ((strlen(@$shibarray['Identity Provider']) > 0) &&
+    if ((strlen($entityID) > 0) &&
         (strlen(@$shibarray['User Identifier']) > 0) &&
         (strlen(@$shibarray['Email Address']) > 0) && ($emailvalid) &&
         (strlen(@$shibarray['Organization Name']) > 0) &&
@@ -102,8 +102,8 @@ function printTestPage() {
         see the sections below.
         </p>
         ';
-        if ((!$idplist->isWhitelisted(@$shibarray['Identity Provider'])) &&
-            ($idplist->exists(@$shibarray['Identity Provider']))) {
+        if ((!$idplist->isWhitelisted($entityID)) &&
+            ($idplist->exists($entityID))) {
             echo '
             <p class="addsubmit">
             <form action="' , util::getScriptDir() , '" method="post">
@@ -173,10 +173,10 @@ function printTestPage() {
         <table cellpadding="5">
           <tr class="odd">
             <th>Identity Provider (entityID):</th>
-            <td>' , @$shibarray['Identity Provider'] , '</td>
+            <td>' , $entityID , '</td>
             <td>';
 
-    if (strlen(@$shibarray['Identity Provider']) == 0) {
+    if (strlen($entityID) == 0) {
         printIcon('error','Missing the entityID of the IdP.');
     }
 
@@ -275,12 +275,18 @@ function printTestPage() {
           </tr>
 
           <tr class="odd">
+            <th>AuthnContextClassRef:</th>
+            <td>' , @$shibarray['Authn Context'] , '</td>
+            <td> </td>
+          </tr>
+
+          <tr>
             <th>Affiliation (affiliation):</th>
             <td>' , @$shibarray['Affiliation'] , '</td>
             <td> </td>
           </tr>
 
-          <tr>
+          <tr class="odd">
             <th>Organizational Unit (ou):</th>
             <td>' , @$shibarray['OU'] , '</td>
             <td> </td>
@@ -330,29 +336,82 @@ function printTestPage() {
             @$shibarray['Home Page'] , '</a></td>
             <td> </td>
           </tr>
-    ';
 
+          <tr class="odd">
+            <th>Support Contact:</th>
+    ';
+    if ((strlen(@$shibarray['Support Name']) > 0) &&
+        (strlen(@$shibarray['Support Address']) > 0)) {
+        echo '
+            <td>' , @$shibarray['Support Name'] , ' &lt;' ,
+                    @$shibarray['Support Address'] , '&gt;</td>
+            <td> </td>';
+    }
+    echo '
+          </tr>
+
+          <tr>
+            <th>Technical Contact:</th>
+    ';
     if ((strlen(@$shibarray['Technical Name']) > 0) &&
         (strlen(@$shibarray['Technical Address']) > 0)) {
         echo '
-          <tr class="odd">
-            <th>Technical Contact:</th>
             <td>' , @$shibarray['Technical Name'] , ' &lt;' ,
                     @$shibarray['Technical Address'] , '&gt;</td>
-            <td> </td>
-          </tr>';
+            <td> </td>';
     }
+    echo '
+          </tr>
 
+          <tr class="odd">
+            <th>Administrative Contact:</th>
+    ';
     if ((strlen(@$shibarray['Administrative Name']) > 0) &&
         (strlen(@$shibarray['Administrative Address']) > 0)) {
         echo '
-          <tr>
-            <th>Administrative Contact:</th>
             <td>' , @$shibarray['Administrative Name'] , ' &lt;' ,
                     @$shibarray['Administrative Address'] , '&gt;</td>
-            <td> </td>
-          </tr>';
+            <td> </td>';
     }
+    echo '
+          </tr>
+
+          <tr>
+            <th>Registered by InCommon:</th>
+            <td>' , ($idplist->isRegisteredByInCommon($entityID) ? 'Yes' : 'No') , '</td>
+            <td> </td>
+          </tr>
+
+          <tr class="odd">
+            <th><a style="text-decoration:underline" target="_blank" href="http://id.incommon.org/category/research-and-scholarship">InCommon R &amp; S</a>:</th>
+            <td>' , ($idplist->isInCommonRandS($entityID) ? 'Yes' : 'No') , '</td>
+            <td> </td>
+          </tr>
+
+          <tr>
+            <th><a style="text-decoration:underline" target="_blank" href="http://refeds.org/category/research-and-scholarship">REFEDS R &amp; S</a>:</th>
+            <td>' , ($idplist->isREFEDSRandS($entityID) ? 'Yes' : 'No') , '</td>
+            <td> </td>
+          </tr>
+
+          <tr class="odd">
+            <th><a style="text-decoration:underline" target="_blank" href="https://refeds.org/sirtfi">SIRTFI</a>:</th>
+            <td>' , ($idplist->isSIRTFI($entityID) ? 'Yes' : 'No') , '</td>
+            <td> </td>
+          </tr>
+
+          <tr>
+            <th><a style="text-decoration:underline" target="_blank" href="http://id.incommon.org/assurance/bronze">InCommon Bronze</a>:</th>
+            <td>' , ($idplist->isBronze($entityID) ? 'Yes' : 'No') , '</td>
+            <td> </td>
+          </tr>
+
+          <tr class="odd">
+            <th><a style="text-decoration:underline" target="_blank" href="http://id.incommon.org/assurance/silver">InCommon Silver</a>:</th>
+            <td>' , ($idplist->isSilver($entityID) ? 'Yes' : 'No') , '</td>
+            <td> </td>
+          </tr>
+    ';
 
     echo '</table>
         </div>  <!-- meta3 -->
@@ -374,8 +433,8 @@ function printTestPage() {
  ************************************************************************/
 function sendNotificationEmail($mailto='alerts@cilogon.org',$submitter=true) {
     global $shibarray;
+    global $entityID;
 
-    $entityID = @$shibarray['Identity Provider'];
     $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
     $mailsubj = 'CILogon Service on ' . HOSTNAME . ' - ' .
@@ -414,6 +473,11 @@ UID         = " . @$shibarray['User Identifier'];
         if (strlen(@$shibarray['Level of Assurance']) > 0) {
             $mailmsg .= "
 LOA         = " . @$shibarray['Level of Assurance'];
+        }
+
+        if (strlen(@$shibarray['Authn Context']) > 0) {
+            $mailmsg .= "
+AuthnContext= " . @$shibarray['Authn Context'];
         }
 
         if (strlen(@$shibarray['Affiliation']) > 0) {
