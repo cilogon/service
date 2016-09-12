@@ -1,7 +1,8 @@
 <?php
 
-require_once('../include/whitelist.php');
-require_once('../include/util.php');
+require_once '../include/idplist.php';
+require_once '../include/util.php';
+require_once '../include/whitelist.php';
 
 if (($argc == 2) || ($argc == 3)) {
     $command = $argv[1];
