@@ -56,7 +56,7 @@ function getIdPListAsJSON() {
            JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
 }
 
-header('Content-type:application/json;charset=utf-8');
+header('Content-Type:application/json;charset=utf-8');
 echo getIdPListAsJSON();
 
 ?>
