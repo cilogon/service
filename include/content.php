@@ -1985,7 +1985,7 @@ function generateP12() {
             if (preg_match('/(\d+)\./',php_uname('n'),$polomatch)) {
                 $polonum = $polomatch[1];
             }
-            $tdir = util::tempDir($tdirparent,$polonum);
+            $tdir = util::tempDir($tdirparent,$polonum,0770);
             $p12dir = str_replace($tdirparent,'',$tdir);
             $p12file = $tdir . '/usercred.p12';
 
