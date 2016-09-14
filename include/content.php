@@ -1477,9 +1477,6 @@ function handleGotUser() {
         ';
         printFooter();
     } elseif (
-        // Got all session vars by now, so okay to unset.
-        util::unsetAllUserSessionVars();
-
         // Here, the dbservice did not return an error, so check to see
         // if the IdP was an eduGAIN IdP which does not have the
         // REFEDS R&S and SIRTFI metadata attributes, AND the 
@@ -1498,6 +1495,9 @@ function handleGotUser() {
                 ($oidcscopegetcert || !$oidctrans)
             )
         ) {
+        // Got all session vars by now, so okay to unset.
+        util::unsetAllUserSessionVars();
+
         $log->error('Failed to getuser due to eduGAIN IdP restriction.');
 
         printHeader('Error Logging On');
