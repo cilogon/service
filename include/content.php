@@ -1481,7 +1481,8 @@ function handleGotUser() {
         // if the IdP was an eduGAIN IdP which does not have the
         // REFEDS R&S and SIRTFI metadata attributes, AND the 
         // transaction could be used to fetch an X509 certificate.
-        (strlen($idp) > 0) &&  // First, make sure $idp was set
+        // First, make sure $idp was set and is not Google.
+        ((strlen($idp)>0) && (strlen($idpname)>0) && ($idpname!='Google')) &&
             (
                 // Next, check for eduGAIN without REFEDS R&S and SIRTFI
                 ((!$idplist->isRegisteredByInCommon($idp)) &&
