@@ -1400,11 +1400,11 @@ function handleGotUser() {
         }
     }
 
-    // Got all session vars by now, so okay to unset.
-    util::unsetAllUserSessionVars();
-
     // If empty 'uid' or 'status' or odd-numbered status code, error!
     if ((strlen($uid) == 0) || (strlen($status) == 0) || ($status & 1)) {
+        // Got all session vars by now, so okay to unset.
+        util::unsetAllUserSessionVars();
+
         $log->error('Failed to getuser.');
 
         printHeader('Error Logging On');
@@ -1477,6 +1477,9 @@ function handleGotUser() {
         ';
         printFooter();
     } elseif (
+        // Got all session vars by now, so okay to unset.
+        util::unsetAllUserSessionVars();
+
         // Here, the dbservice did not return an error, so check to see
         // if the IdP was an eduGAIN IdP which does not have the
         // REFEDS R&S and SIRTFI metadata attributes, AND the 
