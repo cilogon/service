@@ -498,6 +498,25 @@ EOT;
     }
 
     /********************************************************************
+     * Function  : getOrganizationName                                  *
+     * Parameter : The entityID to search for in the idpdom.            *
+     * Returns   : The Organization_Name for the $entityID. Return      *
+     *             string is empty if no matching $entityID found.      *
+     * This function runs an xpath query in the idpdom to return the    *
+     * Organization_Name of the selected $entityID.                     *
+     ********************************************************************/
+    function getOrganizationName($entityID) {
+        $retstr = '';
+        $xpath = new DOMXpath($this->idpdom);
+        $xp = $xpath->query(
+            "idp[@entityID='$entityID']/Organization_Name");
+        if (($xp !== false) && (count($xp)>0)) {
+            $retstr = (string)$xp->item(0)->nodeValue;
+        }
+        return $retstr;
+    }
+
+    /********************************************************************
      * Function  : entityIDExists                                       *
      * Parameter : The entityID to search for in the idpdom.            *
      * Returns   : True if the given entityID is in the idpdom.         *
