@@ -1354,42 +1354,58 @@ function handleGotUser() {
 
     $uid = util::getSessionVar('uid');
     $status = util::getSessionVar('status');
+
+    // We must get and unset session vars BEFORE any HTML output since
+    // a redirect may go to another site, meaning we need to update
+    // the session cookie before we leave the cilogon.org domain.
+    $ePPN         = util::getSessionVar('ePPN');
+    $ePTID        = util::getSessionVar('ePTID');
+    $firstname    = util::getSessionVar('firstname');
+    $lastname     = util::getSessionVar('lastname');
+    $displayname  = util::getSessionVar('displayname');
+    $emailaddr    = util::getSessionVar('emailaddr');
+    $idp          = util::getSessionVar('idp');
+    $idpname      = util::getSessionVar('idpname');
+    $affiliation  = util::getSessionVar('affiliation');
+    $clientparams = json_decode(util::getSessionVar('clientparams'),true);
+    $failureuri   = util::getSessionVar('failureuri');
+
+    // Check for OIDC redirect_uri or OAuth 1.0a failureuri.
+    // If found, set "Proceed" button redirect appropriately.
+    $redirect = '';
+    // First, check for OIDC redirect_uri
+    if (isset($clientparams['redirect_uri'])) {
+        $redirect = $clientparams['redirect_uri'] .
+            (preg_match('/\?/',$clientparams['redirect_uri']) ? '&' : '?') .
+            'error=access_denied&error_description=' . 
+            'Missing%20attributes' .
+            ((isset($clientparams['state'])) ? 
+                '&state='.$clientparams['state'] : '');
+    }
+    // Next, check for OAuth 1.0a 
+    if ((strlen($redirect) == 0) && (strlen($failureuri) > 0)) {
+        $redirect = $failureuri. "?reason=missing_attributes";
+    }
+
+    // Check if this was an OIDC transaction, and if the 
+    // 'getcert' scope was requested. Utilized to print error message 
+    // to eduGAIN users without REFEDS R&S and SIRTFI.
+    $oidcscopegetcert = false;
+    $oidctrans = false;
+    if (isset($clientparams['scope'])) {
+        $oidctrans = true;
+        if (preg_match('/edu\.uiuc\.ncsa\.myproxy\.getcert/',
+            $clientparams['scope'])) {
+            $oidcscopegetcert = true;
+        }
+    }
+
+    // Got all session vars by now, so okay to unset.
+    util::unsetAllUserSessionVars();
+
     // If empty 'uid' or 'status' or odd-numbered status code, error!
     if ((strlen($uid) == 0) || (strlen($status) == 0) || ($status & 1)) {
         $log->error('Failed to getuser.');
-
-        // We must get and unset session vars BEFORE any HTML output since
-        // a redirect may go to another site, meaning we need to update
-        // the session cookie before we leave the cilogon.org domain.
-        $ePPN         = util::getSessionVar('ePPN');
-        $ePTID        = util::getSessionVar('ePTID');
-        $firstname    = util::getSessionVar('firstname');
-        $lastname     = util::getSessionVar('lastname');
-        $displayname  = util::getSessionVar('displayname');
-        $emailaddr    = util::getSessionVar('emailaddr');
-        $idp          = util::getSessionVar('idp');
-        $idpname      = util::getSessionVar('idpname');
-        $affiliation  = util::getSessionVar('affiliation');
-        $clientparams = json_decode(util::getSessionVar('clientparams'),true);
-        $failureuri   = util::getSessionVar('failureuri');
-        util::unsetAllUserSessionVars();
-
-        // Check for OIDC redirect_uri or OAuth 1.0a failureuri.
-        // If found, set "Proceed" button redirect appropriately.
-        $redirect = '';
-        // First, check for OIDC redirect_uri
-        if (isset($clientparams['redirect_uri'])) {
-            $redirect = $clientparams['redirect_uri'] .
-                (preg_match('/\?/',$clientparams['redirect_uri']) ? '&' : '?') .
-                'error=access_denied&error_description=' . 
-                'Missing%20user%20attributes' .
-                ((isset($clientparams['state'])) ? 
-                    '&state='.$clientparams['state'] : '');
-        }
-        // Next, check for OAuth 1.0a 
-        if ((strlen($redirect) == 0) && (strlen($failureuri) > 0)) {
-            $redirect = $failureuri. "?reason=missing_attributes";
-        }
 
         printHeader('Error Logging On');
 
@@ -1435,146 +1451,9 @@ function handleGotUser() {
                 </div>
                 ';
             } else { // Problem was missing SAML attribute from Shib IdP
-                $errorboxstr = 
-                '<p>There was a problem logging on. Your identity
-                provider has not provided CILogon with required information.</p>
-                <blockquote><table cellpadding="5">';
-
-                $missingattrs = '';
-                // Show user which attributes are missing
-                if ((strlen($ePPN) == 0) && (strlen($ePTID) == 0)) {
-                    $errorboxstr .= 
-                    '<tr><th>ePTID:</th><td>MISSING</td></tr>
-                    <tr><th>ePPN:</th><td>MISSING</td></tr>';
-                    $missingattrs .= '%0D%0A    eduPersonPrincipalName'. 
-                                     '%0D%0A    eduPersonTargetedID ';
-                }
-                if ((strlen($firstname) == 0) && (strlen($displayname) == 0)) {
-                    $errorboxstr .= 
-                    '<tr><th>First Name:</th><td>MISSING</td></tr>';
-                    $missingattrs .= '%0D%0A    givenName (first name)'; 
-                }
-                if ((strlen($lastname) == 0) && (strlen($displayname) == 0)) {
-                    $errorboxstr .= 
-                    '<tr><th>Last Name:</th><td>MISSING</td></tr>';
-                    $missingattrs .= '%0D%0A    sn (last name)'; 
-                }
-                if ((strlen($displayname) == 0) &&
-                    ((strlen($firstname) == 0) || (strlen($lastname) == 0))) {
-                    $errorboxstr .= 
-                    '<tr><th>Display Name:</th><td>MISSING</td></tr>';
-                    $missingattrs .= '%0D%0A    displayName'; 
-                }
-                $emailvalid = filter_var($emailaddr,FILTER_VALIDATE_EMAIL);
-                if ((strlen($emailaddr) == 0) || (!$emailvalid)) {
-                    $errorboxstr .= 
-                    '<tr><th>Email Address:</th><td>' . 
-                    ((strlen($emailaddr) == 0) ? 'MISSING' : 'INVALID') .
-                    '</td></tr>';
-                    $missingattrs .= '%0D%0A    mail (email address)'; 
-                }
-                // CIL-326 - For eduGAIN IdPs, check for R&S and SIRTFI
-                if (!$idplist->isRegisteredByInCommon($idp)) {
-                    if (!$idplist->isREFEDSRandS($idp)) {
-                        $errorboxstr .= 
-                        '<tr><th><a target="_blank"
-                        href="http://refeds.org/category/research-and-scholarship">Research and Scholarship</a>:</th><td>MISSING</td></tr>';
-                        $missingattrs .= '%0D%0A    http://refeds.org/category/research-and-scholarship'; 
-                    }
-                    if (!$idplist->isSIRTFI($idp)) {
-                        $errorboxstr .= 
-                        '<tr><th><a target="_blank"
-                        href="https://refeds.org/sirtfi">SIRTFI</a>:</th><td>MISSING</td></tr>';
-                        $missingattrs .= '%0D%0A    http://refeds.org/sirtfi'; 
-                    }
-                }
-                $student = false;
-                $errorboxstr .= '</table></blockquote>';
-                if ((strlen($emailaddr) == 0 ) && 
-                    (preg_match('/student@/',$affiliation))) {
-                    $student = true;
-                    $errorboxstr .= '<p><b>If you are a student</b>, ' . 
-                    'you may need to ask your identity provider ' . 
-                    'to release your email address.</p>';
-                }
-
-                // Get contacts from metadata for email addresses
-                $shibarray = $idplist->getShibInfo($idp);
-                $emailmsg = '?subject=Attribute Release Problem for CILogon' .
-                '&cc=help@cilogon.org' .
-                '&body=Hello, I am having trouble logging on to ' .
-                'https://cilogon.org/ using the ' . $idpname .
-                ' Identity Provider (IdP) ' .
-                'due to the following missing attributes:%0D%0A' . 
-                $missingattrs;
-                if ($student) {
-                    $emailmsg .= '%0D%0A%0D%0ANote that my account is ' . 
-                    'marked "student" and thus my email address may need ' .
-                    'to be released.';
-                }
-                $emailmsg .= '%0D%0A%0D%0APlease see ' .
-                    'http://www.cilogon.org/service/addidp for more ' .
-                    'details. Thank you for any help you can provide.';
-                $errorboxstr .= '<p>Contact your identity provider to ' . 
-                'let them know you are having having a problem logging on ' . 
-                'to CILogon.</p><blockquote><ul>';
-
-                $namefound = false;
-                $name = @$shibarray['Support Name'];
-                $addr = @$shibarray['Support Address'];
-                $addr = preg_replace('/^mailto:/','',$addr);
-                if ((strlen($name) > 0) && (strlen($addr) > 0)) {
-                    $namefound = true;
-                    $errorboxstr .= '<li> Support Contact: ' .
-                        $name . ' &lt;<a href="mailto:' . 
-                        $addr . $emailmsg . '">' . 
-                        $addr . '</a>&gt;</li>';
-                }
-
-                if (!$namefound) {
-                    $name = @$shibarray['Technical Name'];
-                    $addr = @$shibarray['Technical Address'];
-                    $addr = preg_replace('/^mailto:/','',$addr);
-                    if ((strlen($name) > 0) && (strlen($addr) > 0)) {
-                        $namefound = true;
-                        $errorboxstr .= '<li> Technical Contact: ' .
-                            $name . ' &lt;<a href="mailto:' . 
-                            $addr . $emailmsg . '">' . 
-                            $addr . '</a>&gt;</li>';
-                    }
-                }
-
-                if (!$namefound) {
-                    $name = @$shibarray['Administrative Name'];
-                    $addr = @$shibarray['Administrative Address'];
-                    $addr = preg_replace('/^mailto:/','',$addr);
-                    if ((strlen($name) > 0) && (strlen($addr) > 0)) {
-                        $errorboxstr .= '<li>Administrative Contact: ' .
-                            $name . ' &lt;<a href="mailto:' . 
-                            $addr . $emailmsg.'">' . 
-                            $addr . '</a>&gt</li>';
-                    }
-                }
-
-                $errorboxstr .= '</ul></blockquote>
-                
-                <p> Alternatively, you can contact us at the email address
-                at the bottom of the page.</p>
-                ';
-
-                printErrorBox($errorboxstr);
-                
-                echo '
-                <div>
-                ';
-
-                printFormHead($redirect);
-                echo '
-                <input type="submit" name="submit" class="submit"
-                value="Proceed" />
-                </form>
-                </div>
-                ';
+                printAttributeReleaseErrorMessage(
+                    $ePPN,$ePTID,$firstname,$lastname,$displayname,$emailaddr,
+                    $idp,$idpname,$affiliation,$clientparams,$redirect);
             }
         } else {
             printErrorBox('An internal error has occurred. System
@@ -1592,6 +1471,40 @@ function handleGotUser() {
             </div>
             ';
         }
+
+        echo '
+        </div>
+        ';
+        printFooter();
+    } elseif (
+        // Here, the dbservice did not return an error, so check to see
+        // if the IdP was an eduGAIN IdP which does not have the
+        // REFEDS R&S and SIRTFI metadata attributes, AND the 
+        // transaction could be used to fetch an X509 certificate.
+        (strlen($idp) > 0) &&  // First, make sure $idp was set
+            (
+                // Next, check for eduGAIN without REFEDS R&S and SIRTFI
+                ((!$idplist->isRegisteredByInCommon($idp)) &&
+                       ((!$idplist->isREFEDSRandS($idp)) ||
+                        (!$idplist->isSIRTFI($idp))
+                       )
+                ) &&
+                // Next, check if user could get X509 cert,
+                // i.e., OIDC getcert scope, or a non-OIDC
+                // transaction such as PKCS12, JWS, or OAuth 1.0a
+                ($oidcscopegetcert || !$oidctrans)
+            )
+        ) {
+        $log->error('Failed to getuser due to eduGAIN IdP restriction.');
+
+        printHeader('Error Logging On');
+
+        echo '
+        <div class="boxed">
+        ';
+        printAttributeReleaseErrorMessage(
+            $ePPN,$ePTID,$firstname,$lastname,$displayname,$emailaddr,
+            $idp,$idpname,$affiliation,$clientparams,$redirect);
 
         echo '
         </div>
@@ -2330,6 +2243,161 @@ function getCompositeIdPList($incommonidps=false) {
     uasort($retarray,'strcasecmp');
 
     return $retarray;
+}
+
+/************************************************************************
+ * Function   : printAttributeReleaseErrorMessage                       *
+ * Parameters : The various parameters for the user set by the getuser  *
+ *              endpoints.                                              *
+ * This is a convenience method called by handleGotUser to print out    *
+ * the attribute release error page to the user.                        *
+ ************************************************************************/
+function printAttributeReleaseErrorMessage(
+    $ePPN,$ePTID,$firstname,$lastname,$displayname,$emailaddr,
+    $idp,$idpname,$affiliation,$clientparams,$redirect) {
+
+    global $idplist;
+
+    $errorboxstr = 
+    '<p>There was a problem logging on. Your identity
+    provider has not provided CILogon with required information.</p>
+    <blockquote><table cellpadding="5">';
+
+    $missingattrs = '';
+    // Show user which attributes are missing
+    if ((strlen($ePPN) == 0) && (strlen($ePTID) == 0)) {
+        $errorboxstr .= 
+        '<tr><th>ePTID:</th><td>MISSING</td></tr>
+        <tr><th>ePPN:</th><td>MISSING</td></tr>';
+        $missingattrs .= '%0D%0A    eduPersonPrincipalName'. 
+                         '%0D%0A    eduPersonTargetedID ';
+    }
+    if ((strlen($firstname) == 0) && (strlen($displayname) == 0)) {
+        $errorboxstr .= 
+        '<tr><th>First Name:</th><td>MISSING</td></tr>';
+        $missingattrs .= '%0D%0A    givenName (first name)'; 
+    }
+    if ((strlen($lastname) == 0) && (strlen($displayname) == 0)) {
+        $errorboxstr .= 
+        '<tr><th>Last Name:</th><td>MISSING</td></tr>';
+        $missingattrs .= '%0D%0A    sn (last name)'; 
+    }
+    if ((strlen($displayname) == 0) &&
+        ((strlen($firstname) == 0) || (strlen($lastname) == 0))) {
+        $errorboxstr .= 
+        '<tr><th>Display Name:</th><td>MISSING</td></tr>';
+        $missingattrs .= '%0D%0A    displayName'; 
+    }
+    $emailvalid = filter_var($emailaddr,FILTER_VALIDATE_EMAIL);
+    if ((strlen($emailaddr) == 0) || (!$emailvalid)) {
+        $errorboxstr .= 
+        '<tr><th>Email Address:</th><td>' . 
+        ((strlen($emailaddr) == 0) ? 'MISSING' : 'INVALID') .
+        '</td></tr>';
+        $missingattrs .= '%0D%0A    mail (email address)'; 
+    }
+    // CIL-326 - For eduGAIN IdPs, check for R&S and SIRTFI
+    if (!$idplist->isRegisteredByInCommon($idp)) {
+        if (!$idplist->isREFEDSRandS($idp)) {
+            $errorboxstr .= 
+            '<tr><th><a target="_blank"
+            href="http://refeds.org/category/research-and-scholarship">Research and Scholarship</a>:</th><td>MISSING</td></tr>';
+            $missingattrs .= '%0D%0A    http://refeds.org/category/research-and-scholarship'; 
+        }
+        if (!$idplist->isSIRTFI($idp)) {
+            $errorboxstr .= 
+            '<tr><th><a target="_blank"
+            href="https://refeds.org/sirtfi">SIRTFI</a>:</th><td>MISSING</td></tr>';
+            $missingattrs .= '%0D%0A    http://refeds.org/sirtfi'; 
+        }
+    }
+    $student = false;
+    $errorboxstr .= '</table></blockquote>';
+    if ((strlen($emailaddr) == 0 ) && 
+        (preg_match('/student@/',$affiliation))) {
+        $student = true;
+        $errorboxstr .= '<p><b>If you are a student</b>, ' . 
+        'you may need to ask your identity provider ' . 
+        'to release your email address.</p>';
+    }
+
+    // Get contacts from metadata for email addresses
+    $shibarray = $idplist->getShibInfo($idp);
+    $emailmsg = '?subject=Attribute Release Problem for CILogon' .
+    '&cc=help@cilogon.org' .
+    '&body=Hello, I am having trouble logging on to ' .
+    'https://cilogon.org/ using the ' . $idpname .
+    ' Identity Provider (IdP) ' .
+    'due to the following missing attributes:%0D%0A' . 
+    $missingattrs;
+    if ($student) {
+        $emailmsg .= '%0D%0A%0D%0ANote that my account is ' . 
+        'marked "student" and thus my email address may need ' .
+        'to be released.';
+    }
+    $emailmsg .= '%0D%0A%0D%0APlease see ' .
+        'http://www.cilogon.org/service/addidp for more ' .
+        'details. Thank you for any help you can provide.';
+    $errorboxstr .= '<p>Contact your identity provider to ' . 
+    'let them know you are having having a problem logging on ' . 
+    'to CILogon.</p><blockquote><ul>';
+
+    $namefound = false;
+    $name = @$shibarray['Support Name'];
+    $addr = @$shibarray['Support Address'];
+    $addr = preg_replace('/^mailto:/','',$addr);
+    if ((strlen($name) > 0) && (strlen($addr) > 0)) {
+        $namefound = true;
+        $errorboxstr .= '<li> Support Contact: ' .
+            $name . ' &lt;<a href="mailto:' . 
+            $addr . $emailmsg . '">' . 
+            $addr . '</a>&gt;</li>';
+    }
+
+    if (!$namefound) {
+        $name = @$shibarray['Technical Name'];
+        $addr = @$shibarray['Technical Address'];
+        $addr = preg_replace('/^mailto:/','',$addr);
+        if ((strlen($name) > 0) && (strlen($addr) > 0)) {
+            $namefound = true;
+            $errorboxstr .= '<li> Technical Contact: ' .
+                $name . ' &lt;<a href="mailto:' . 
+                $addr . $emailmsg . '">' . 
+                $addr . '</a>&gt;</li>';
+        }
+    }
+
+    if (!$namefound) {
+        $name = @$shibarray['Administrative Name'];
+        $addr = @$shibarray['Administrative Address'];
+        $addr = preg_replace('/^mailto:/','',$addr);
+        if ((strlen($name) > 0) && (strlen($addr) > 0)) {
+            $errorboxstr .= '<li>Administrative Contact: ' .
+                $name . ' &lt;<a href="mailto:' . 
+                $addr . $emailmsg.'">' . 
+                $addr . '</a>&gt</li>';
+        }
+    }
+
+    $errorboxstr .= '</ul></blockquote>
+    
+    <p> Alternatively, you can contact us at the email address
+    at the bottom of the page.</p>
+    ';
+
+    printErrorBox($errorboxstr);
+    
+    echo '
+    <div>
+    ';
+
+    printFormHead($redirect);
+    echo '
+    <input type="submit" name="submit" class="submit"
+    value="Proceed" />
+    </form>
+    </div>
+    ';
 }
 
 ?>
