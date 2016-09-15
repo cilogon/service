@@ -6,3 +6,4 @@
 
 https://shibboleth.csupomona.edu/idp/shibboleth
 https://idp.pitt.edu/idp/shibboleth
+https://shib.mdanderson.org/idp/shibboleth
