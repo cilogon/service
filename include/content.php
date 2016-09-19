@@ -2443,10 +2443,6 @@ function isEduGAINAndGetCert($idp='',$idpname='') {
     $clientparams = json_decode(util::getSessionVar('clientparams'),true);
     if (isset($clientparams['scope'])) {
         $oidctrans = true;
-// TEMPORARY HACK to allow testing with United ID
-if ($idp == 'https://idp.unitedid.org/idp/shibboleth') {
-    return false;
-}
         if (preg_match('/edu\.uiuc\.ncsa\.myproxy\.getcert/',
             $clientparams['scope'])) {
             $oidcscopegetcert = true;
