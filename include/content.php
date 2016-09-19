@@ -868,20 +868,31 @@ function handleLogOnButtonClicked() {
             util::unsetCookieVar('keepidp');
         }
     }
+
+    // Get the user-chosen IdP from the posted form
+    $providerId = util::getPostVar('providerId');
+
+    // If this is an OIDC transaction, save the user-chosen IdP for
+    // possible reuse on future OIDC transactions.
+    /*
+    $clientparams = json_decode(util::getSessionVar('clientparams'),true);
+    if (isset($clientparams['redirect_uri'])) {
+        util::setSessionVar('prev_selected_idp',$providerId);
+    }
+    */
     
     // Set the cookie for the last chosen IdP and redirect to it if in list
-    $providerIdPost = util::getPostVar('providerId');
-    if ((strlen($providerIdPost) > 0) && (isset($idps[$providerIdPost]))) {
+    if ((strlen($providerId) > 0) && (isset($idps[$providerId]))) {
         if (strlen($pn) > 0) {
-            $pc->set('providerId',$providerIdPost);
+            $pc->set('providerId',$providerId);
             $pc->write();
         } else {
-            util::setCookieVar('providerId',$providerIdPost);
+            util::setCookieVar('providerId',$providerId);
         }
-        if ($providerIdPost == GOOGLE_OIDC) { // Log in with Google
+        if ($providerId == GOOGLE_OIDC) { // Log in with Google
             redirectToGetGoogleOAuth2User();
         } else { // Use InCommon authn
-            redirectToGetShibUser($providerIdPost);
+            redirectToGetShibUser($providerId);
         }
     } else { // IdP not in list, or no IdP selected
         if (strlen($pn) > 0) {
@@ -936,27 +947,43 @@ function handleNoSubmitButtonClicked() {
     global $skin;
     global $idplist;
 
-    /* If this is a OIDC transaction, get the selected_idp and   *
-     * redirect_uri parameters from the session var clientparams.*/
+    $providerId = '';
+    $keepidp = '';
     $selected_idp = '';
     $redirect_uri = '';
+    $readidpcookies = true;  // Assume config options are not set
+    $forceinitialidp = (int)$skin->getConfigOption('forceinitialidp');
+    $initialidp = (string)$skin->getConfigOption('initialidp');
+
+    /* If this is a OIDC transaction, get the selected_idp and   *
+     * redirect_uri parameters from the session var clientparams.*/
     $clientparams = json_decode(util::getSessionVar('clientparams'),true);
     if (isset($clientparams['selected_idp'])) {
         $selected_idp = $clientparams['selected_idp'];
     }
     if (isset($clientparams['redirect_uri'])) {
         $redirect_uri = $clientparams['redirect_uri'];
+        // If there was a previous OIDC session (at which point the
+        // user-chosen IdP was saved in the prev_selected_idp session
+        // variable) AND this matches the current selected_idp passed
+        // in by the OIDC client, OR the OIDC client didn't pass in
+        // a selected_idp, then use the prev_selected_idp as the 
+        // user-chosen IdP by setting forceinitialidp.
+        /*
+        $prev_selected_idp = util::getSessionVar('prev_selected_idp');
+        if ((strlen($prev_selected_idp) > 0) &&
+            (($selected_idp == $prev_selected_idp) || 
+             (strlen($selected_idp) == 0))) {
+             $selected_idp = $prev_selected_idp;
+             $forceinitialidp = 1;
+        }
+        */
     }
 
     /* If the <forceinitialidp> option is set, use either the    *
      * <initialidp> or the "selected_idp" as the providerId, and *
      * use <forceinitialidp> as keepIdp. Otherwise, read the     *
      * cookies 'providerId' and 'keepidp'.                       */
-    $providerId = '';
-    $keepidp = '';
-    $readidpcookies = true;  // Assume config options are not set
-    $forceinitialidp = (int)$skin->getConfigOption('forceinitialidp');
-    $initialidp = (string)$skin->getConfigOption('initialidp');
     if (($forceinitialidp == 1) && 
         ((strlen($initialidp) > 0) || (strlen($selected_idp) > 0))) {
         // If the <allowforceinitialidp> option is set, then make sure
@@ -1089,12 +1116,19 @@ function verifyCurrentSession($providerId='') {
 
     $retval = false;
 
-    $uid       = util::getSessionVar('uid');
+    // Check for eduGAIN IdP and possible get cert context
+    if (isEduGAINAndGetCert()) {
+        util::unsetUserSessionVars();
+    }
+
     $idp       = util::getSessionVar('idp');
     $idpname   = util::getSessionVar('idpname');
+    $uid       = util::getSessionVar('uid');
     $status    = util::getSessionVar('status');
     $dn        = util::getSessionVar('dn');
     $authntime = util::getSessionVar('authntime');
+
+
     if ((strlen($uid) > 0) && (strlen($idp) > 0) && 
         (strlen($idpname) > 0) && (strlen($status) > 0) &&
         (strlen($dn) > 0) && (strlen($authntime) > 0) &&
@@ -1350,7 +1384,6 @@ function printErrorBox($errortext) {
 function handleGotUser() {
     global $skin;
     global $log;
-    global $idplist;
 
     $uid = util::getSessionVar('uid');
     $status = util::getSessionVar('status');
@@ -1385,19 +1418,6 @@ function handleGotUser() {
     // Next, check for OAuth 1.0a 
     if ((strlen($redirect) == 0) && (strlen($failureuri) > 0)) {
         $redirect = $failureuri. "?reason=missing_attributes";
-    }
-
-    // Check if this was an OIDC transaction, and if the 
-    // 'getcert' scope was requested. Utilized to print error message 
-    // to eduGAIN users without REFEDS R&S and SIRTFI.
-    $oidcscopegetcert = false;
-    $oidctrans = false;
-    if (isset($clientparams['scope'])) {
-        $oidctrans = true;
-        if (preg_match('/edu\.uiuc\.ncsa\.myproxy\.getcert/',
-            $clientparams['scope'])) {
-            $oidcscopegetcert = true;
-        }
     }
 
     // If empty 'uid' or 'status' or odd-numbered status code, error!
@@ -1476,26 +1496,8 @@ function handleGotUser() {
         </div>
         ';
         printFooter();
-    } elseif (
-        // Here, the dbservice did not return an error, so check to see
-        // if the IdP was an eduGAIN IdP which does not have the
-        // REFEDS R&S and SIRTFI metadata attributes, AND the 
-        // transaction could be used to fetch an X509 certificate.
-        // First, make sure $idp was set and is not Google.
-        ((strlen($idp)>0) && (strlen($idpname)>0) && ($idpname!='Google')) &&
-            (
-                // Next, check for eduGAIN without REFEDS R&S and SIRTFI
-                ((!$idplist->isRegisteredByInCommon($idp)) &&
-                       ((!$idplist->isREFEDSRandS($idp)) ||
-                        (!$idplist->isSIRTFI($idp))
-                       )
-                ) &&
-                // Next, check if user could get X509 cert,
-                // i.e., OIDC getcert scope, or a non-OIDC
-                // transaction such as PKCS12, JWS, or OAuth 1.0a
-                ($oidcscopegetcert || !$oidctrans)
-            )
-        ) {
+    } elseif (isEduGAINAndGetCert($idp,$idpname)) {
+        // If eduGAIN IdP and session can get a cert, then error!
         // Got all session vars by now, so okay to unset.
         util::unsetAllUserSessionVars();
 
@@ -2402,6 +2404,74 @@ function printAttributeReleaseErrorMessage(
     </form>
     </div>
     ';
+}
+
+/************************************************************************
+ * Function   : isEduGAINAndGetCert                                     *
+ * Parameters : (1) (optional) The IdP entityID. If empty, read value   *
+ *              from PHP session.                                       *
+ *              (2) (optional) The IdP display name. If empty, read     *
+ *              value from PHP session.                                 *
+ * Returns    : True if the current IdP is an eduGAIN IdP without       *
+ *              both REFEDS R&S and SIRTFI, AND the session could be    *
+ *              used to get a certificate.                              *
+ * This function checks to see if the current session IdP is an         *
+ * eduGAIN IdP (i.e., not Registered By InCommon) and the IdP does not  *
+ * have both the REFEDS R&S and SIRTFI extensions in metadata. If so,   *
+ * check to see if the transaction could be used to fetch a             *
+ * certificate. (The only time the transaction is not used to fetch     *
+ * a cert is during OIDC without the 'getcert' scope.) If all that is   *
+ * true, then return true. Otherwise return false.                      *
+ ************************************************************************/
+function isEduGAINAndGetCert($idp='',$idpname='') {
+    global $idplist;
+
+    $retval = false; // Assume not eduGAIN IdP and getcert
+
+    // If $idp or $idpname not passed in, get from current session.
+    if (strlen($idp) == 0) {
+        $idp = util::getSessionVar('idp');
+    }
+    if (strlen($idpname) == 0) {
+        $idpname = util::getSessionVar('idpname');
+    }
+
+    // Check if this was an OIDC transaction, and if the 
+    // 'getcert' scope was requested.
+    $oidcscopegetcert = false;
+    $oidctrans = false;
+    $clientparams = json_decode(util::getSessionVar('clientparams'),true);
+    if (isset($clientparams['scope'])) {
+        $oidctrans = true;
+// TEMPORARY HACK to allow testing with United ID
+if ($idp == 'https://idp.unitedid.org/idp/shibboleth') {
+    return false;
+}
+        if (preg_match('/edu\.uiuc\.ncsa\.myproxy\.getcert/',
+            $clientparams['scope'])) {
+            $oidcscopegetcert = true;
+        }
+    }
+
+    if  ( // First, make sure $idp was set and is not Google.
+        ((strlen($idp)>0) && (strlen($idpname)>0) && ($idpname!='Google')) &&
+            (
+            // Next, check for eduGAIN without REFEDS R&S and SIRTFI
+            ((!$idplist->isRegisteredByInCommon($idp)) &&
+                   ((!$idplist->isREFEDSRandS($idp)) ||
+                    (!$idplist->isSIRTFI($idp))
+                   )
+            ) &&
+            // Next, check if user could get X509 cert,
+            // i.e., OIDC getcert scope, or a non-OIDC
+            // transaction such as PKCS12, JWS, or OAuth 1.0a
+            ($oidcscopegetcert || !$oidctrans)
+            )
+        ) {
+        $retval = true;
+    }
+
+    return $retval;
 }
 
 ?>
