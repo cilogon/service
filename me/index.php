@@ -476,7 +476,7 @@ function getTitleText($cookie) {
     );
 
     foreach ($explain as $key => $value) {
-        if (preg_match("/$key/",$cookie)) {
+        if (preg_match("/^$key$/",$cookie)) {
             $retval = $value;
             break;
         }
