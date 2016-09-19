@@ -314,9 +314,10 @@ function printMainPage() {
             'Error calling dbservice action "setTransactionState" in ' .
             'OIDC authorization endpoint\'s printMainPage() method. ' .
             $errstr . ' Redirected to ' . $redirect);
+        util::unsetUserSessionVars();
     }
 
-    util::unsetAllUserSessionVars();
+    util::unsetClientSessionVars();
     header($redirect);
 }
 

@@ -654,7 +654,11 @@ function handleAllowDelegation($always=false) {
                    ($success ? 'success' : 'failure') . ' url.');
         $location = 'Location: ' . ((strlen($responseurl) > 0) ? $responseurl :
             (util::getSessionVar($success ? 'successuri' : 'failureuri')));
-        util::unsetAllUserSessionVars();
+        if ($success) {
+            util::unsetClientSessionVars();
+        } else {
+            util::unsetAllUserSessionVars();
+        }
         header($location);
     } else {
         printHeader('Delegation ' . ($success ? 'Successful' : 'Failed'));
@@ -735,7 +739,11 @@ function handleAllowDelegation($always=false) {
         </div>
         ';
         printFooter();
-        util::unsetAllUserSessionVars();
+        if ($success) {
+            util::unsetClientSessionVars();
+        } else {
+            util::unsetAllUserSessionVars();
+        }
     }
 }
 
