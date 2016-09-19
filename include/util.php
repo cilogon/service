@@ -844,23 +844,16 @@ Remote Address= ' . $remoteaddr . '
     }
 
     /************************************************************************
-     * Function   : unsetAllUserSessionVars                                 *
+     * Function   : unsetClientSessionVars                                  *
      * This function removes all of the PHP session variables related to    *
-     * the user's session.  This will force the user to log on (again)      *
-     * with their IdP and call the 'getuser' script to repopulate the PHP   *
-     * session.                                                             *
+     * the client session.                                                  *
      ************************************************************************/
-    public static function unsetAllUserSessionVars() {
+    public static function unsetClientSessionVars() {
         util::unsetSessionVar('submit');
-        util::unsetSessionVar('status');
-        util::unsetSessionVar('idp');
-        util::unsetSessionVar('idpname');
         util::unsetSessionVar('activation');
         util::unsetSessionVar('p12');
         util::unsetSessionVar('p12lifetime');
         util::unsetSessionVar('p12multiplier');
-        util::unsetSessionVar('uid');
-        util::unsetSessionVar('dn');
         util::unsetSessionVar('twofactor');
         util::unsetSessionVar('firstname');
         util::unsetSessionVar('lastname');
@@ -873,7 +866,6 @@ Remote Address= ' . $remoteaddr . '
         util::unsetSessionVar('oidcID');
         util::unsetSessionVar('affiliation');
         util::unsetSessionVar('ou');
-        util::unsetSessionVar('authntime');
         util::unsetSessionVar('clientparams');
         util::unsetSessionVar('cilogon_skin');
         util::unsetSessionVar('portalstatus');
@@ -882,6 +874,32 @@ Remote Address= ' . $remoteaddr . '
         util::unsetSessionVar('failureuri');
         util::unsetSessionVar('portalname');
         util::unsetSessionVar('tempcred');
+    }
+
+    /************************************************************************
+     * Function   : unsetUserSessionVars                                    *
+     * This function removes all of the PHP session variables related to    *
+     * the user's session.  This will force the user to log on (again)      *
+     * with their IdP and call the 'getuser' script to repopulate the PHP   *
+     * session.                                                             *
+     ************************************************************************/
+    public static function unsetUserSessionVars() {
+        util::unsetSessionVar('status');
+        util::unsetSessionVar('idp');
+        util::unsetSessionVar('idpname');
+        util::unsetSessionVar('uid');
+        util::unsetSessionVar('dn');
+        util::unsetSessionVar('authntime');
+    }
+
+    /************************************************************************
+     * Function   : unsetAllUserSessionVars                                 *
+     * This is a convenience method to clear all session variables related  *
+     * to the client and the user.                                          *
+     ************************************************************************/
+    public static function unsetAllUserSessionVars() {
+        util::unsetClientSessionVars();
+        util::unsetUserSessionVars();
     }
 
 }
