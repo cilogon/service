@@ -100,9 +100,9 @@ ln -sf index-site.php index.php
 echo 'cd /var/www/html/'
 cd /var/www/html/
 echo 'chmod 775 pkcs12 include'
-chmod 775 pkcs12
+chmod 775 pkcs12 include
 echo 'chgrp apache pkcs12 include'
-chgrp apache pkcs12
+chgrp apache pkcs12 include
 echo 'mkdir -p /var/www/virthosts/crl'
 mkdir -p /var/www/virthosts/crl
 for d in /var/www/html/skin/DataONE* ; do
