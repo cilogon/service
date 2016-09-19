@@ -5,22 +5,20 @@
  * Description: This class manages the list of InCommon IdPs and their  *
  *              attributes of interest. Since the InCommon-metadata.xml *
  *              file is rather large and slow to parse using xpath      *
- *              queries, this class creates/reads/writes a smaller XML  *
+ *              queries, this class creates/reads/writes a smaller      *
  *              file containing only the IdPs and the few attributes    *
- *              needed by the CILogon Service. This file also marks the *
- *              "whitelisted" IdPs so that the datastore does not need  *
- *              to be queried all the time for that info.               *
+ *              needed by the CILogon Service.                          *
  *                                                                      *
  *              When you create a new instance of this class via        *
  *              "$idplist = new idplist();", the code first tries to    *
- *              read in a previously created idplist.xml file. If no    *
+ *              read in a previously created idplist file. If no        *
  *              such file can be read in successfully, the "new" method *
- *              then reads in the big InCommon metadata AND queries     *
- *              the datastore for whitelisted IdPs, in order to create  *
- *              the idpdom and write it to the idplist.xml file. You    *
- *              can (re)create the file at any time by calling          *
- *              create() (which simply updates the idpdom) and          *
- *              write() (which writes the idpdom to file).              *
+ *              then reads in the big InCommon metadata in order to     *
+ *              create the class idparray and idpdom and write the      *
+ *              idplist file. You can (re)create the file at any time   *
+ *              by calling create() (which re-reads the InCommon        *
+ *              metadata) followed by write() (which writes the idplist *
+ *              to file).                                               *
  *                                                                      *
  *              There are several constants in the class that you       *
  *              should set for your particular set up:                  *
@@ -41,97 +39,220 @@
  *                  list when create()/write() is called. This file     *
  *                  should have read/write permissions for apache.      *
  *                                                                      *
+ * Note that this class previously defaulted to writing the idplist     *
+ * as an XMl file and then reading that XML file back in. When all      *
+ * InCommon and eduGAIN IdPs were 'whitelisted', the xpath queries      *
+ * used on the read-in XML file were painfully slow. So now the default *
+ * is to read/write a JSON file and use a protected $idparray which is  *
+ * an order of magnitude faster than xpath queries. You can still       *
+ * read/write the XML file either by calling the associated read/write  *
+ * methods (readXML/writeXML) or by setting $filetype='xml' in the      *
+ * contructor. You will probably want to do this for the hourly cronjob *
+ * since the idplist.xml file is known to the world and should be       *
+ * updated regularly.                                                   *
+ *                                                                      *
  * Example usage:                                                       *
- *    require_once('idplist.php');                                      *
- *    // Read in extant idplist.xml file, or create one from scratch    *
+ *    require_once 'idplist.php';                                       *
+ *    // Read in extant idplist.json file, or create one from scratch   *
  *    $idplist = new idplist();                                         *
- *    // Get the whitelisted IdPs as entityID/OrganizationName pairs    *
- *    $whitelist = $idplist->getWhitelistedIdPs();                      *
  *    // Rescan InCommon metadata, update IdP list, and write to file   *
  *    $idplist->create();                                               *
- *    $idplist->setFilename('/tmp/newidplist.xml');                     *
+ *    $idplist->setFilename('/tmp/newidplist.json');                    *
  *    $idplist->write();                                                *
  ************************************************************************/
 
 class idplist {
 
     /* Set the constants to correspond to your particular set up.       */
-    const defaultIdPFilename      = '/var/www/html/include/idplist.xml';
+    const defaultIdPFilename      = '/var/www/html/include/idplist.json';
     const defaultInCommonFilename = '/var/cache/shibboleth/InCommon-metadata.xml';
     const testIdPFilename         = '/var/www/html/include/testidplist.xml';
 
     /* The $idpdom is a DOMDocument which holds the list of IdP         *
      * entityIDs and their corresponding attributes.                    */
-    protected $idpdom;
+    protected $idpdom = null;
+    /* The $idparray is the array version of $idpdom. It is used        *
+     * primarily since searching an array is faster than xpath query.   */
+    protected $idparray = null;
     protected $idpfilename;
     protected $incommonfilename;
 
     /********************************************************************
      * Function  : __construct - default constructor                    *
-     * Parameters: (1) The name of the IdP (XML) file to read/write.    *
+     * Parameters: (1) The name of the idplist file to read/write.      *
      *                 Defaults to defaultIdPFilename.                  *
      *             (2) The name of the InCommon metadata file to read.  *
      *                 Defaults to defaultInCommonFilename.             *
-     *             (3) Boolean to create IdP list file if it doesn't    *
+     *             (3) Boolean to create idplist file if it doesn't     *
      *                 exist. Defaults to true.                         *
+     *             (4) The type of file to read/write, one of           *
+     *                 'xml' or 'json'. Defaults to 'json'.             *
      * Returns   : A new idplist object.                                *
      * Default constructor. This method first attempts to read in an    *
-     * existing idplist from an XML file and store it in the idpdom.    *
-     * If a valid idplist file cannot be read and $createfile is true,  *
-     * a new idpdom is created and written to file.                     *
+     * existing idplist from a file and store it in the idparray /      *
+     * idpdom. If a valid idplist file cannot be read and               *
+     * $createfile is true, new idparray / idpdom is created and        *
+     * written to file.                                                 *
      ********************************************************************/
     function __construct($idpfilename=self::defaultIdPFilename,
                          $incommonfilename=self::defaultInCommonFilename,
-                         $createfile=true) {
+                         $createfile=true,
+                         $filetype='json') {
         $this->setFilename($idpfilename);
         $this->setInCommonFilename($incommonfilename);
-        $result = $this->read();
+        $result = $this->read($filetype);
         if (($result === false) && ($createfile)) {
             $this->create();
-            $this->write();
+            $this->write($filetype);
         }
     }
 
     /********************************************************************
      * Function  : read                                                 *
+     * Paramter  : Type type of file to read, either 'xml' or 'json'.   *
+     *             Defaults to 'json'.                                  *
+     * Returns   : True if the idplist was read from file. False        *
+     *             otherwise.                                           *
+     * This reads in the idplixt file based on the input filetype.      *
+     * Defaults to reading in a JSON file.                              *
+     ********************************************************************/
+    function read($filetype='json') {
+        if ($filetype == 'xml') {
+            return $this->readXML();
+        } elseif ($filetype == 'json') {
+            return $this->readJSON();
+        }
+    }
+
+    /********************************************************************
+     * Function  : readXML                                              *
      * Returns   : True if the idplist file was read in correctly.      *
      *             False otherwise.                                     *
      * This method attempts to read in an existing idplist XML file and *
-     * store its contents in the class $idpdom DOMDocument.             *
+     * store its contents in the class $idpdom DOMDocument. It also     *
+     * converts the $idpdom to the internal $idparray if not already    *
+     * set.                                                             *
      ********************************************************************/
-    function read() {
+    function readXML() {
         $retval = false;  // Assume read failed
-        if ((is_readable($this->getFilename())) &&
-            (($dom = DOMDocument::load($this->getFilename())) !== false)) {
+
+        $filename = $this->getFilename();
+        if ((is_readable($filename)) &&
+            (($dom = DOMDocument::load($filename,LIBXML_NOBLANKS)) !== false)) {
             $this->idpdom = $dom;
+            $this->idpdom->preserveWhiteSpace = false;
+            $this->idpdom->formatOutput = true;
+            // Convert the read-in DOM to idparray for later use
+            if (is_null($this->idparray)) {
+                $this->idparray = $this->DOM2Array($this->idpdom);
+            }
             $retval = true;
         } else {
             $this->idpdom = null;
+        }
+
+        return $retval;
+    }
+
+    /********************************************************************
+     * Function  : readJSON                                             *
+     * Returns   : True if the idplist file was read in correctly.      *
+     *             False otherwise.                                     *
+     * This method attempts to read in an existing idplist file         *
+     * (containing JSON) and store its contents in the class $idparray. *
+     * Note that this does not update the internal $idpdom.             *
+     ********************************************************************/
+    function readJSON() {
+        $retval = false;  // Assume read/json_decode failed
+
+        $filename = $this->getFilename();
+        if ((is_readable($filename)) &&
+            (($contents = file_get_contents($filename)) !== false) &&
+            (($tempjson = json_decode($contents,true)) !== null)) {
+            $this->idparray = $tempjson;
+            $retval = true;
+        } else {
+            $this->idparray = null;
         }
         return $retval;
     }
 
     /********************************************************************
      * Function  : write                                                *
+     * Paramter  : Type type of file to write, either 'xml' or 'json'.  *
+     *             Defaults to 'json'.                                  *
+     * Returns   : True if the idplist was written to file. False       *
+     *             otherwise.                                           *
+     * This writes out the idplixt file based on the input filetype.    *
+     * Defaults to writing a JSON file.                                 *
+     ********************************************************************/
+    function write($filetype='json') {
+        if ($filetype == 'xml') {
+            return $this->writeXML();
+        } elseif ($filetype == 'json') {
+            return $this->writeJSON();
+        }
+    }
+
+    /********************************************************************
+     * Function  : writeXML                                             *
      * Returns   : True if the idpdom was written to the idplist XML    *
      *             file. False otherwise.                               *
      * This method writes the class $idpdom to an XML file. It does     *
      * this by first writing to a temporary file in /tmp, then renaming *
-     * the temp file to the final idplist XML filename.                 *
+     * the temp file to the final idplist XML filename. Note that if    *
+     * the internal $idpdom does not exist, it attempts to first        *
+     * convert the internal $idparray to DOM and then write it.         *
      ********************************************************************/
-    function write() {
+    function writeXML() {
         $retval = false; // Assume write failed
+
+        // If no idpdom, convert idparray to DOM
+        if (is_null($this->idpdom)) {
+            $this->idpdom = $this->Array2DOM($this->idparray);
+        }
+
         if (!is_null($this->idpdom)) {
             $this->idpdom->preserveWhiteSpace = false;
             $this->idpdom->formatOutput = true;
+            $filename = $this->getFilename();
             $tmpfname = tempnam("/tmp","IDP");
             if (($this->idpdom->save($tmpfname) > 0) &&
-                (@rename($tmpfname,$this->getFilename()))) {
+                (@rename($tmpfname,$filename))) {
+                chmod($filename,0664);
                 $retval = true;
             } else {
                 @unlink($tmpfname);
             }
         }
+
+        return $retval;
+    }
+
+    /********************************************************************
+     * Function  : writeJSON                                            *
+     * Returns   : True if the idparray was written to the idplist      *
+     *             JSON file. False otherwise.                          *
+     * This method writes the class $idparray to a JSON file.           *
+     * It does this by first writing to a temporary file in /tmp,       *
+     * then renaming the temp file to the final idplist JSON filename.  *
+     ********************************************************************/
+    function writeJSON() {
+        $retval = false; // Assume write failed
+
+        if (!is_null($this->idparray)) {
+            $filename = $this->getFilename();
+            $tmpfname = tempnam("/tmp","JSON");
+            $json = json_encode($this->idparray,JSON_FORCE_OBJECT);
+            if (((file_put_contents($tmpfname,$json)) !== false) &&
+                (@rename($tmpfname,$filename))) {
+                chmod($filename,0664);
+                $retval = true;
+            } else {
+                @unlink($tmpfname);
+            }
+        }
+
         return $retval;
     }
 
@@ -143,12 +264,17 @@ class idplist {
      *             4. The value of the new child node DOMElement        *
      * This is a convenience method used by create() to add a new       *
      * child node (such as "Organization_Name") to a parent idp node.   *
+     * It also adds elements to the internal $idparray, thus creating   *
+     * the internal idparray at the same time as the idpdom.            *
      ********************************************************************/
     private function addNode($dom,$idpnode,$nodename,$nodevalue) {
         $elemnode = $dom->createElement($nodename);
         $textnode = $dom->createTextNode($nodevalue);
         $elemnode->appendChild($textnode);
         $idpnode->appendChild($elemnode);
+        // Also add element to the internal $idparray for later use
+        $this->idparray[$idpnode->getAttribute('entityID')][$nodename] =
+            $nodevalue;
     }
 
     /********************************************************************
@@ -190,9 +316,8 @@ EOT;
      *             from the InCommon metadata file into the class       *
      *             $idpdom DOMDocument. False otherwise.                *
      * This method is used to populate the class $idpdom DOMDocument    *
-     * using information from the InCommon metadata file. It also       *
-     * queries the datastore for whilelisted IdPs. Note that this       *
-     * method simply updates the $idpdom. If you want to save this      *
+     * using information from the InCommon metadata file. Note that     *
+     * method updates $idpdom and $idparray. If you want to save either *
      * to a file, be sure to call write() afterwards.                   *
      ********************************************************************/
     function create() {
@@ -204,9 +329,6 @@ EOT;
                 // Need to fix the namespace for Xpath queries to work
                 $xmlstr = str_replace('xmlns=','ns=',$xmlstr);
                 $xml = new SimpleXMLElement($xmlstr);
-
-                // Fetch the whitelisted IdPs from the datastore
-                $whitelist = new whitelist();
 
                 // Select only IdPs from the InCommon metadata
                 $result = $xml->xpath(
@@ -408,11 +530,8 @@ EOT;
                         }
                     }
 
-                    // Add a <Whitelisted> block if necessary 
-                    if ((strlen($entityID) > 0) && 
-                        ($whitelist->exists($entityID))) {
-                        $this->addNode($dom,$idp,'Whitelisted','1');
-                    }
+                    // Add a <Whitelisted> block for all IdPs
+                    $this->addNode($dom,$idp,'Whitelisted','1');
                 }
 
                 // Read in any test IdPs and add them to the list
@@ -423,11 +542,24 @@ EOT;
                     foreach ($idpnodes as $idpnode) {
                         $node = $dom->importNode($idpnode,true);
                         $idps->appendChild($node);
+
+                        // Add the testidplist nodes to the $idparray
+                        $entityID = $node->attributes->item(0)->value;
+                        foreach ($node->childNodes as $child) {
+                            if ($child->nodeName != '#text') {
+                                $this->idparray[$entityID][$child->nodeName] =
+                                    $child->nodeValue;
+                            }
+                        }
                     }
                 }
                 
-                // Sort the DOMDocument by Organization_Name
+                // Sort the DOMDocument and idparray by Organization_Name
                 $this->idpdom = $this->sortDOM($dom);
+                uasort($this->idparray,function($a,$b) {
+                    return strcasecmp($a['Organization_Name'],
+                                      $b['Organization_Name']);
+                });
 
                 $retval = true;
             }
@@ -477,62 +609,50 @@ EOT;
     }
 
     /********************************************************************
-     * Function  : queryAttribute                                       *
-     * Parameters: (1) The entityID to search for in the idpdom.        *
-     *             (2) (Optional) The attribute to query for the given  *
-     *                 entityID. Defaults to empty string.              *
-     * Returns   : True if the given attrribute query exists for the    *
-     *             given entityID is in the idpdom. False otherwise.    *
-     * This function runs an xpath query in the idpdom to search for    *
-     * the given idp entityID. If the second parameter is empty, then   *
-     * we are simply looking to see if the entityID exists. Otherwise,  *
-     * we are looking for a given attribute query for the entityID.     *
-     * In either case, we return true if the xpath query returns a      *
-     * non-zero length result.                                          *
+     * Function  : getEntityIDs                                         *
+     * Returns   : An array of the entityIDs                            *
+     * This method returns the entityIDs of the idplist as an array.    *
      ********************************************************************/
-    private function queryAttribute($entityID,$attrq='') {
-        $xpath = new DOMXpath($this->idpdom);
-        $query = "idp[@entityID='$entityID']" . 
-            ((strlen($attrq) > 0) ? "[$attrq]" : '');
-        return ($xpath->query($query)->length > 0);
+    function getEntityIDs() {
+        $retarr = array();
+        if (is_array($this->idparray)) {
+            $retarr = array_keys($this->idparray);
+        }
+        return $retarr;
     }
 
     /********************************************************************
      * Function  : getOrganizationName                                  *
-     * Parameter : The entityID to search for in the idpdom.            *
+     * Parameter : The entityID to search for                           *
      * Returns   : The Organization_Name for the $entityID. Return      *
      *             string is empty if no matching $entityID found.      *
-     * This function runs an xpath query in the idpdom to return the    *
-     * Organization_Name of the selected $entityID.                     *
+     * This function returns the Organization_Name of the selected      *
+     * $entityID.                                                       *
      ********************************************************************/
     function getOrganizationName($entityID) {
-        $retstr = '';
-        $xpath = new DOMXpath($this->idpdom);
-        $xp = $xpath->query(
-            "idp[@entityID='$entityID']/Organization_Name");
-        if (($xp !== false) && (count($xp)>0)) {
-            $retstr = (string)$xp->item(0)->nodeValue;
+        $retval = '';
+        if (isset($this->idparray[$entityID]['Organization_Name'])) {
+            $retval = $this->idparray[$entityID]['Organization_Name'];
         }
-        return $retstr;
+        return $retval;
     }
 
     /********************************************************************
      * Function  : entityIDExists                                       *
-     * Parameter : The entityID to search for in the idpdom.            *
-     * Returns   : True if the given entityID is in the idpdom.         *
-     *             False otherwise.                                     *
-     * This function runs an xpath query in the idpdom to search for    *
-     * the given idp entityID.                                          *
+     * Parameter : The entityID to search for                           *
+     * Returns   : True if the given entityID is found. False           *
+     *             otherwise.                                           *
+     * This function searchs for the given idp entityID.                *
      ********************************************************************/
     function entityIDExists($entityID) {
-        return $this->queryAttribute($entityID);
+        return (isset($this->idparray[$entityID]));
     }
 
     /********************************************************************
      * Function  : exists                                               *
-     * Parameter : The enityID to search for in the idpdom.             *
-     * Returns   : True if the given entityID is in the idpdom.         *
-     *             False otherwise.                                     *
+     * Parameter : The enityID to search for                            *
+     * Returns   : True if the given entityID is found. False           *
+     *             otherwise.                                           *
      * This is simply a convenience function for entityIDExists.        *
      ********************************************************************/
     function exists($entityID) {
@@ -540,99 +660,113 @@ EOT;
     }
 
     /********************************************************************
+     * Function  : isAttributeSet                                       *
+     * Parameters: (1) The enityID to search for.                       *
+     *             (2) The attribute in question.                       *
+     * Returns   : True if the given attribute is '1' for the entityID. *
+     *             False otherwise.                                     *
+     * This function checks if the passed-in $attr is set to '1' for    *
+     * the entityID, and returns true if so.                            *
+     ********************************************************************/
+    function isAttributeSet($entityID,$attr) {
+        return (isset($this->idparray[$entityID][$attr]) &&
+                     ($this->idparray[$entityID][$attr] == 1));
+    }
+
+    /********************************************************************
      * Function  : isWhitelisted                                        *
-     * Parameter : The enityID to search for in the idpdom.             *
-     * Returns   : True if the given entityID is 'whitelisted'.         *
+     * Parameter : The enityID to search for                            *
+     * Returns   : True if the given entityID is marked 'Whitelisted'.  *
      *             False otherwise.                                     *
      * This method searches for the given entityID and checks if the    *
      *'Whitelisted' entry has been set to '1'.                          *
      ********************************************************************/
     function isWhitelisted($entityID) {
-        return $this->queryAttribute($entityID,'Whitelisted=1');
+        return $this->isAttributeSet($entityID,'Whitelisted');
     }
 
     /********************************************************************
      * Function  : isSilver                                             *
-     * Parameter : The enityID to search for in the idpdom.             *
+     * Parameter : The enityID to search for                            *
      * Returns   : True if the given entityID is certified 'Silver'.    *
      *             False otherwise.                                     *
      * This method searches for the given entityID and checks if the    *
      *'Silver' entry has been set to '1'.                               *
      ********************************************************************/
     function isSilver($entityID) {
-        return $this->queryAttribute($entityID,'Silver=1');
+        return $this->isAttributeSet($entityID,'Silver');
     }
 
     /********************************************************************
      * Function  : isBronze                                             *
-     * Parameter : The enityID to search for in the idpdom.             *
+     * Parameter : The enityID to search for                            *
      * Returns   : True if the given entityID is certified 'Bronze'.    *
      *             False otherwise.                                     *
      * This method searches for the given entityID and checks if the    *
      *'Bronze' entry has been set to '1'.                               *
      ********************************************************************/
     function isBronze($entityID) {
-        return $this->queryAttribute($entityID,'Bronze=1');
+        return $this->isAttributeSet($entityID,'Bronze');
     }
 
     /********************************************************************
      * Function  : isRandS                                              *
-     * Parameter : The enityID to search for in the idpdom.             *
+     * Parameter : The enityID to search for                            *
      * Returns   : True if the given entityID is listed as 'RandS'      *
      *             (research-and-scholarship). False otherwise.         *
      * This method searches for the given entityID and checks if the    *
      *'RandS' entry has been set to '1'.                                *
      ********************************************************************/
     function isRandS($entityID) {
-        return $this->queryAttribute($entityID,'RandS=1');
+        return $this->isAttributeSet($entityID,'RandS');
     }
 
     /********************************************************************
      * Function  : isInCommonRandS                                      *
-     * Parameter : The enityID to search for in the idpdom.             *
+     * Parameter : The enityID to search for                            *
      * Returns   : True if the given entityID is listed as              *
      *             'InCommon_RandS'. False otherwise.                   *
      * This method searches for the given entityID and checks if the    *
      *'InCommon_RandS' entry has been set to '1'.                       *
      ********************************************************************/
     function isInCommonRandS($entityID) {
-        return $this->queryAttribute($entityID,'InCommon_RandS=1');
+        return $this->isAttributeSet($entityID,'InCommon_RandS');
     }
 
     /********************************************************************
      * Function  : isREFEDSRandS                                        *
-     * Parameter : The enityID to search for in the idpdom.             *
+     * Parameter : The enityID to search for                            *
      * Returns   : True if the given entityID is listed as              *
      *             'REFEDS_RandS'. False otherwise.                     *
      * This method searches for the given entityID and checks if the    *
      *'REFEDS_RandS' entry has been set to '1'.                         *
      ********************************************************************/
     function isREFEDSRandS($entityID) {
-        return $this->queryAttribute($entityID,'REFEDS_RandS=1');
+        return $this->isAttributeSet($entityID,'REFEDS_RandS');
     }
 
     /********************************************************************
      * Function  : isRegisteredByInCommon                               *
-     * Parameter : The enityID to search for in the idpdom.             *
+     * Parameter : The enityID to search for                            *
      * Returns   : True if the given entityID is listed as              *
      *             'Registered_By_InCommon'. False otherwise.           *
      * This method searches for the given entityID and checks if the    *
      *'Registered_By_InCommon' entry has been set to '1'.               *
      ********************************************************************/
     function isRegisteredByInCommon($entityID) {
-        return $this->queryAttribute($entityID,'Registered_By_InCommon=1');
+        return $this->isAttributeSet($entityID,'Registered_By_InCommon');
     }
 
     /********************************************************************
      * Function  : isSIRTFI                                             *
-     * Parameter : The enityID to search for in the idpdom.             *
+     * Parameter : The enityID to search for                            *
      * Returns   : True if the given entityID is listed as              *
      *             SIRTFI. False otherwise.                             *
      * This method searches for the given entityID and checks if the    *
      *'SIRTFI' entry has been set to '1'.                               *
      ********************************************************************/
     function isSIRTFI($entityID) {
-        return $this->queryAttribute($entityID,'SIRTFI=1');
+        return $this->isAttributeSet($entityID,'SIRTFI');
     }
 
     /********************************************************************
@@ -651,24 +785,22 @@ EOT;
      * 2 means list only R&S IdPs.                                      *
      ********************************************************************/
     function getInCommonIdPs($filter=null) {
-        $retarray = array();
-        $idpsearch = 'idp';
-        if (!is_null($filter)) {
-            if ($filter === 0) {
-                $idpsearch = 'idp[not(Whitelisted=1)]';
-            } elseif ($filter === 1) {
-                $idpsearch = 'idp[Whitelisted=1]';
-            } elseif ($filter === 2) {
-                $idpsearch = 'idp[RandS=1]';
+        $retarr = array();
+
+        foreach ($this->idparray as $key => $value) {
+            if ((!is_null($filter)) &&
+                (($filter === 0) && 
+                 ($this->isWhitelisted($key))) ||
+                (($filter === 1) &&
+                 (!$this->isWhitelisted($key))) ||
+                (($filter === 2) &&
+                 (!$this->isRandS($key)))) {
+                 continue;
             }
+            $retarr[$key] = $this->idparray[$key]['Organization_Name'];
         }
-        $xpath = new DOMXpath($this->idpdom);
-        $nl = $xpath->query("$idpsearch/attribute::entityID | " . 
-                            "$idpsearch/Organization_Name");
-        for ($i = 0; $i < $nl->length; $i += 2) {
-            $retarray[$nl->item($i)->nodeValue] = $nl->item($i+1)->nodeValue;
-        }
-        return $retarray;
+
+        return $retarr;
     }
 
     /********************************************************************
@@ -765,16 +897,75 @@ EOT;
             'Administrative_Name',
             'Administrative_Address'
         );
-        $xpath = new DOMXpath($this->idpdom);
+
         foreach ($attrarray as $attr) {
-            $nl = $xpath->query("idp[@entityID='$entityID']/$attr");
-            if ($nl->length > 0) {
+            if (isset($this->idparray[$entityID][$attr])) {
                 $shibarray[preg_replace('/_/',' ',$attr)] = 
-                    $nl->item(0)->nodeValue;
+                    $this->idparray[$entityID][$attr];
             }
         }
 
         return $shibarray;
+    }
+
+    /********************************************************************
+     * Function  : DOM2Array                                            *
+     * Parameter : The DOM containing the list of IdPs to convert to an *
+     *             array. Returns null on error.                        *
+     * Returns   : An array corresponding to the DOM of the IdPs.       *
+     * This function sorts the passed-in DOM corresponding to           *
+     * idplist.xml and returns a 2D array where the keys are entityIDs  *
+     * and the values are arrays of attributes for each IdP.            *
+     ********************************************************************/
+    function DOM2Array($dom) {
+        $retarr = null;
+
+        if (!is_null($dom)) {
+            foreach ($dom->childNodes as $idps) {
+               // Top-level DOM has "idps" only
+               foreach ($idps->childNodes as $idp) {
+                   // Loop through each <idp> element
+                   $entityID = $idp->attributes->item(0)->value;
+                   foreach ($idp->childNodes as $attr) {
+                       // Get all sub-attributes of the current <idp>
+                       if ($attr->nodeName != '#text') {
+                           $retarr[$entityID][$attr->nodeName]=$attr->nodeValue;
+                       }
+                   }
+               }
+            }
+        }
+
+        return $retarr;
+    }
+
+    /********************************************************************
+     * Function  : Array2DOM                                            *
+     * Parameter : An array corresponding to the idplist.               *
+     * Returns   : A DOM for the idplist which can be written to XML.   *
+     * This function takes an array of IdPs (such as idparray) and      *
+     * returns a corresponding DOM which can be written to XML.         *
+     ********************************************************************/
+    function Array2DOM($arr) {
+        $retdom = null;
+
+        if (!is_null($arr)) {
+            $dom = DOMImplementation::createDocument(null,'idps');
+            $idps = $dom->documentElement; // Top level <idps> element
+
+            foreach ($arr as $entityID => $attrs) {
+                // Create an <idp> element to hold sub elements
+                $idp = $dom->createElement('idp');
+                $idp->setAttribute('entityID',$entityID);
+                $idps->appendChild($idp);
+                foreach ($attrs as $attr => $value) {
+                    $this->addNode($dom,$idp,$attr,$value);
+                }
+            }
+            $retdom = $this->sortDOM($dom);
+        }
+
+        return $retdom;
     }
 
 }
