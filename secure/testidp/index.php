@@ -4,8 +4,6 @@ require_once('../../include/util.php');
 require_once('../../include/autoloader.php');
 require_once('../../include/content.php');
 
-define('ADD_SUBMIT_TEXT','Add Your IdP to the CILogon Service');
-
 /* Check the csrf cookie against either a hidden <form> element or a   *
  * PHP session variable, and get the value of the "submit" element.    */
 $submit = $csrf->verifyCookieAndGetSubmit();
@@ -17,20 +15,6 @@ $shibarray = $idplist->getShibInfo();
 
 $entityID = @$shibarray['Identity Provider'];
 
-/* If the CSRF cookie was good and the user clicked a "Submit" *
- * button then do the appropriate action before displaying     *
- * the main Shibboleth Attributes Test Page.                   */
-if ($submit == ADD_SUBMIT_TEXT) {
-    /* Add the current IdP entityID to the WAYF whitelist and reload */
-    $whitelist = new whitelist();
-    if (($idplist->exists($entityID)) && ($whitelist->add($entityID))) {
-        $whitelist->write();     // Save new entityID to database
-        $idplist->create();      // Update the list of IdPs
-        $idplist->write();       // Save new IdP list to file
-        sendNotificationEmail(); // Send email to 'alerts@cilogon.org'
-        sendNotificationEmail('idp-updates@cilogon.org',false);
-    }
-}
 printTestPage();
 
 /************************************************************************
@@ -101,27 +85,10 @@ function printTestPage() {
         attributes utilized by the CILogon Service and their current values,
         see the sections below.
         </p>
-        ';
-        if ((!$idplist->isWhitelisted($entityID)) &&
-            ($idplist->exists($entityID))) {
-            echo '
-            <p class="addsubmit">
-            <form action="' , util::getScriptDir() , '" method="post">
-              <input class="submit" type="submit" name="submit"
-                     value="' , ADD_SUBMIT_TEXT , '" />' ,
-            $csrf->hiddenFormElement() , '
-            </form>
-            </p>
-            ';
-        } else {
-            echo '
-            <p class="addsubmit">
-            <a href="/">Proceed to the CILogon
-            Service</a>.
-            </p>
-            ';
-        }
-        echo '
+        <p class="addsubmit">
+        <a href="/">Proceed to the CILogon
+        Service</a>.
+        </p>
         </div>
         ';
     } else {
@@ -420,80 +387,6 @@ function printTestPage() {
     ';
 
     printFooter();
-}
-
-/************************************************************************
- * Function   : sendNotificationEmail                                   *
- * Parameters : (1) (Optional) The destination email address; defaults  *
- *                  to 'alerts@cilogon.org'.                            *
- *              (2) (Optional) 'true' to include info about person      *
- *                  who added the new IdP. Defaults to 'true'.          *
- * This function sends a notification email to the specified email      *
- * address when a new IdP has been added to the whitelist.              *
- ************************************************************************/
-function sendNotificationEmail($mailto='alerts@cilogon.org',$submitter=true) {
-    global $shibarray;
-    global $entityID;
-
-    $mailfrom = 'From: alerts@cilogon.org' . "\r\n" .
-                'X-Mailer: PHP/' . phpversion();
-    $mailsubj = 'CILogon Service on ' . HOSTNAME . ' - ' .
-                'New IdP Added To Whitelist';
-    $mailmsg  = "
-CILogon Service - New Identity Provider Added
----------------------------------------------
-Organization = " . @$shibarray['Organization Name'] . "
-(EntityId    = " . @$shibarray['Identity Provider'] . ")
-";
-
-    if ($submitter) {
-        $mailmsg .= "
-Submitted by:
-------------
-Name        = ";
-
-        if ((strlen(@$shibarray['First Name']) > 0) && 
-            (strlen(@$shibarray['Last Name']) > 0)) {
-            $mailmsg .= @$shibarray['First Name'] . ' ' . 
-                        @$shibarray['Last Name'];
-        } else {
-            $mailmsg .= @$shibarray['Display Name'];
-        }
-
-        if (strlen(@$shibarray['Email Address']) > 0) {
-            $mailmsg .= "
-Email       = " . @$shibarray['Email Address'];
-        }
-
-        if (strlen(@$shibarray['User Identifier']) > 0) {
-            $mailmsg .= "
-UID         = " . @$shibarray['User Identifier'];
-        }
-
-        if (strlen(@$shibarray['Level of Assurance']) > 0) {
-            $mailmsg .= "
-LOA         = " . @$shibarray['Level of Assurance'];
-        }
-
-        if (strlen(@$shibarray['Authn Context']) > 0) {
-            $mailmsg .= "
-AuthnContext= " . @$shibarray['Authn Context'];
-        }
-
-        if (strlen(@$shibarray['Affiliation']) > 0) {
-            $mailmsg .= "
-Affiliation = " . @$shibarray['Affiliation'];
-        }
-
-        if (strlen(@$shibarray['OU']) > 0) {
-            $mailmsg .= "
-OU          = " . @$shibarray['OU'];
-        }
-    }
-
-    $mailmsg .= "\n";
-
-    mail($mailto,$mailsubj,$mailmsg,$mailfrom);
 }
 
 ?>
