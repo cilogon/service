@@ -99,9 +99,9 @@ echo 'ln -sf index-site.php index.php'
 ln -sf index-site.php index.php
 echo 'cd /var/www/html/'
 cd /var/www/html/
-echo 'chmod 775 pkcs12'
+echo 'chmod 775 pkcs12 include'
 chmod 775 pkcs12
-echo 'chgrp apache pkcs12'
+echo 'chgrp apache pkcs12 include'
 chgrp apache pkcs12
 echo 'mkdir -p /var/www/virthosts/crl'
 mkdir -p /var/www/virthosts/crl
