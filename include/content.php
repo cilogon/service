@@ -406,10 +406,9 @@ function printWAYF($showremember=true,$incommonidps=false) {
           CILogon facilitates secure access to CyberInfrastructure (<acronym
           title="CyberInfrastructure">CI</acronym>). In order to test your
           identity provider with the CILogon Service, you must first Log On.
-          If your preferred identity provider is not listed, please fill out
-          the <a target="_blank" href="https://' , HOSTNAME ,
-          '/requestidp/">"request a new organization" form</a>, and we will
-          try to add your identity provider in the future.
+          If your preferred identity provider is not listed, please contact
+          <a href="mailto:help@cilogon.org">help@cilogon.org</a>, and 
+          we will try to add your identity provider in the future.
           </p>
           ';
       } else { /* If not InCommon only, print help text for OpenID providers. */
@@ -423,12 +422,10 @@ function printWAYF($showremember=true,$incommonidps=false) {
           </p>
           <p>
           If you are a faculty, staff, or student member of a university or
-          college, please select it for your identity
-          provider.  If your school is not listed,
-          please fill out the <a target="_blank"
-          href="https://' , HOSTNAME , '/requestidp/">"request a new
-          organization" form</a>, and we will try to add your school in the
-          future.
+          college, please select it for your identity provider.
+          If your school is not listed, please contact <a
+          href="mailto:help@cilogon.org">help@cilogon.org</a>, and we will
+          try to add your school in the future.
           </p>
           ';
 

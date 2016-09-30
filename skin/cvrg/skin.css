@@ -109,13 +109,6 @@ table.portalinfo2 a:hover, table.portalinfo2 a:active {
 }
 /***** End certinfo / portalinfo table *****/
 
-/***** Begin contactform on the requestidp page *****/
-div.contactform {
-  border: 1px solid #c0c2c5;
-  background-color: #f4f6f8;
-}
-/***** End contactform on the requestidp page *****/
-
 /***** Begin summary div on testidp page *****/
 div.summary {
   border: 1px solid #c0c2c5;

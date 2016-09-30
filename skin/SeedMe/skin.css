@@ -55,9 +55,6 @@ input.submit:hover, input.submit:active {
   box-shadow: 0 0 2px 2px #2079D2;
 }
 
-div.contactform {
-  background: #fff;
-}
 div.noticebanner {
   color: #000;
 }

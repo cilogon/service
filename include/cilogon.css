@@ -282,34 +282,6 @@ table.portalinfo2 td {
 }
 /***** End certinfo / portalinfo table *****/
 
-/***** Begin contactform on the requestidp page *****/
-div.contactform {
-  border: 1px solid #888;
-  margin: 2em;
-  background-color: #efe;
-}
-div.contactform label {
-  float: left;
-  width: 12em;
-  margin-right: 1em;
-  text-align: right;
-}
-div.contactform fieldset {
-  border: none;
-}
-div.contactform fieldset legend {
-  font-size: 110%;
-  font-weight: bold;
-  margin-top: 0.5em;
-  padding: 0;
-}
-div.contactform span.fixerror {
-  color: #c00;
-  font-weight: bold;
-  margin-left: 2em;
-}
-/***** End contactform on the requestidp page *****/
-
 /***** Begin summary div on testidp page *****/
 div.summary {
   border: 1px solid #888;
