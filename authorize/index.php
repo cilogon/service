@@ -317,7 +317,8 @@ function printMainPage() {
         util::unsetUserSessionVars();
     }
 
-    util::unsetClientSessionVars();
+    //util::unsetClientSessionVars();
+    util::unsetAllUserSessionVars();
     header($redirect);
 }
 
