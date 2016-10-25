@@ -387,7 +387,7 @@ EOT;
 
                     // Search for the desired <idp> attribute sub-blocks
                     $xp = $idx[0]->xpath(
-                        'Organization/OrganizationDisplayName');
+                        "Organization/OrganizationDisplayName[@xml:lang='en']");
                     if (($xp !== false) && (count($xp)>0)) {
                         $this->addNode($dom,$idp,
                             'Organization_Name',(string)$xp[0]);
