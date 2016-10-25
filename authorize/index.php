@@ -70,6 +70,7 @@ if (verifyOIDCParams()) {
                     '&state='.$clientparams['state'] : '');
             util::unsetAllUserSessionVars();
             header($redirect);
+            exit; // No further processing necessary
         break; // End case 'Cancel'
 
         case 'Manage Two-Factor':
@@ -320,6 +321,7 @@ function printMainPage() {
     //util::unsetClientSessionVars();
     util::unsetAllUserSessionVars();
     header($redirect);
+    exit; // No further processing necessary
 }
 
 /************************************************************************

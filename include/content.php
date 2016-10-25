@@ -1271,6 +1271,7 @@ function redirectToGetShibUser($providerId='',$responsesubmit='gotuser',
 
         $log->info('Shibboleth Login="' . $redirect . '"');
         header($redirect);
+        exit; // No further processing necessary
     }
 }
 
@@ -1339,6 +1340,7 @@ function redirectToGetGoogleOAuth2User($responsesubmit='gotuser') {
                 (is_null($max_auth_age) ? '' : "max_auth_age=$max_auth_age&") .
                 'access_type=offline&prompt=select_account';
             header("Location: " . $redirect_url);
+            exit; // No further processing necessary
         } else {
             util::setSessionVar('logonerror','Unable to read config file.');
             printLogonPage();

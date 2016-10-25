@@ -32,6 +32,7 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
             $responseurl = 'https://' . HOSTNAME;
         }
         header('Location: ' . $responseurl);
+        exit; // No further processing necessary
     }
 }
 
@@ -105,6 +106,7 @@ function getUserAndRespond($responseurl) {
 
     /* Finally, redirect to the calling script. */
     header('Location: ' . $responseurl);
+    exit; // No further processing necessary
 }
 
 /************************************************************************

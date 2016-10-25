@@ -34,6 +34,7 @@ switch ($submit) {
 
     case 'Cancel': // Cancel button on WAYF page - go to Google
         header('Location: http://www.google.com/');
+        exit; // No further processing necessary
     break;
 
     case 'Show  Help ': // Toggle showing of help text on and off
@@ -114,6 +115,7 @@ function redirectToTestIdP($providerId='') {
     }
 
     header($redirect);
+    exit; // No further processing necessary
 }
 
 ?>

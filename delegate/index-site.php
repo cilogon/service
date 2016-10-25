@@ -54,6 +54,7 @@ if (verifyOAuthToken(util::getGetVar('oauth_token'))) {
                 }
                 util::unsetAllUserSessionVars();
                 header('Location: ' . $location);
+                exit; // No further processing necessary
             } else { // 'Cancel' button on certificate delegate page clicked
                 printCancelPage();
             }
@@ -661,6 +662,7 @@ function handleAllowDelegation($always=false) {
             util::unsetAllUserSessionVars();
         }
         header($location);
+        exit; // No further processing necessary
     } else {
         printHeader('Delegation ' . ($success ? 'Successful' : 'Failed'));
 

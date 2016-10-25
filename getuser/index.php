@@ -28,6 +28,7 @@ if (($submit == 'getuser') &&
 
 /* Finally, redirect to the calling script. */
 header('Location: ' . $responseurl);
+exit; // No further processing necessary
 
 
 /************************************************************************
