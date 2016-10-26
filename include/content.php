@@ -175,7 +175,9 @@ function printPageHeader($text) {
  * Function   : printFormHead                                           *
  * Parameters : (1) (Optional) The value of the form's "action"         *
  *                  parameter. Defaults to getScriptDir().              *
- *              (2) (Optional) True if extra hidden tags should be      *
+ *              (2) (Optionals) The <form> "method", one of 'get' or    *
+ *                  'post'. Defaults to 'post'.                         *
+ *              (3) (Optional) True if extra hidden tags should be      *
  *                  output for the GridShib-CA client application.      *
  *                  Defaults to false.                                  *
  * This function prints out the opening <form> tag for displaying       *
@@ -186,7 +188,7 @@ function printPageHeader($text) {
  * to true, then an additional hidden input element is output to be     *
  * utilized by the GridShib-CA client.                                  *
  ************************************************************************/
-function printFormHead($action='',$gsca=false) {
+function printFormHead($action='',$method='post',$gsca=false) {
     global $csrf;
     static $formnum = 0;
 
@@ -195,7 +197,7 @@ function printFormHead($action='',$gsca=false) {
     }
 
     echo '
-    <form action="' , $action , '" method="post" 
+    <form action="' , $action , '" method="' , $method , '" 
      autocomplete="off" id="form' , sprintf("%02d",++$formnum) , '">
     ';
     echo $csrf->hiddenFormElement();
@@ -1406,7 +1408,7 @@ function handleGotUser() {
     // If found, set "Proceed" button redirect appropriately.
     $redirect = '';
     $redirectform = '';
-    // First, check for OIDC redirect_uri, with parameters to be POSTed
+    // First, check for OIDC redirect_uri, with parameters in <form>
     if (isset($clientparams['redirect_uri'])) {
         $redirect = $clientparams['redirect_uri'];
         $redirectform = '<input type="hidden" name="error" value="access_denied" />' .
@@ -1457,12 +1459,12 @@ function handleGotUser() {
                 echo '
                 <div>
                 ';
-                printFormHead($redirect);
+                printFormHead($redirect,'get');
                 echo '
                 <p class="centered">
                 <input type="hidden" name="providerId" value="' ,
-                GOOGLE_OIDC , '" /> ' . $redirectform . 
-                '<input type="submit" name="submit" class="submit"
+                GOOGLE_OIDC , '" /> ' , $redirectform , '
+                <input type="submit" name="submit" class="submit"
                 value="Proceed" />
                 </p>
                 </form>
@@ -1482,8 +1484,8 @@ function handleGotUser() {
             echo '
             <div>
             ';
-            printFormHead($redirect);
-            echo $redirectform . '
+            printFormHead($redirect,'get');
+            echo $redirectform , '
             <input type="submit" name="submit" class="submit" value="Proceed" />
             </form>
             </div>
@@ -2395,8 +2397,8 @@ function printAttributeReleaseErrorMessage(
     <div>
     ';
 
-    printFormHead($redirect);
-    echo $redirectform . '
+    printFormHead($redirect,'get');
+    echo $redirectform , '
     <input type="submit" name="submit" class="submit"
     value="Proceed" />
     </form>
