@@ -1405,14 +1405,13 @@ function handleGotUser() {
     // Check for OIDC redirect_uri or OAuth 1.0a failureuri.
     // If found, set "Proceed" button redirect appropriately.
     $redirect = '';
-    // First, check for OIDC redirect_uri
+    $redirectform = '';
+    // First, check for OIDC redirect_uri, with parameters to be POSTed
     if (isset($clientparams['redirect_uri'])) {
-        $redirect = $clientparams['redirect_uri'] .
-            (preg_match('/\?/',$clientparams['redirect_uri']) ? '&' : '?') .
-            'error=access_denied&error_description=' . 
-            'Missing%20attributes' .
-            ((isset($clientparams['state'])) ? 
-                '&state='.$clientparams['state'] : '');
+        $redirect = $clientparams['redirect_uri'];
+        $redirectform = '<input type="hidden" name="error" value="access_denied" />' .
+            '<input type="hidden" name="error_description" value="Missing attributes" />' .
+            '<input type="hidden" name="state" value="'. $clientparams['state'] . '" />';
     }
     // Next, check for OAuth 1.0a 
     if ((strlen($redirect) == 0) && (strlen($failureuri) > 0)) {
@@ -1462,8 +1461,8 @@ function handleGotUser() {
                 echo '
                 <p class="centered">
                 <input type="hidden" name="providerId" value="' ,
-                GOOGLE_OIDC , '" />
-                <input type="submit" name="submit" class="submit"
+                GOOGLE_OIDC , '" /> ' . $redirectform . 
+                '<input type="submit" name="submit" class="submit"
                 value="Proceed" />
                 </p>
                 </form>
@@ -1472,7 +1471,7 @@ function handleGotUser() {
             } else { // Problem was missing SAML attribute from Shib IdP
                 printAttributeReleaseErrorMessage(
                     $ePPN,$ePTID,$firstname,$lastname,$displayname,$emailaddr,
-                    $idp,$idpname,$affiliation,$clientparams,$redirect);
+                    $idp,$idpname,$affiliation,$clientparams,$redirect,$redirectform);
             }
         } else {
             printErrorBox('An internal error has occurred. System
@@ -1484,7 +1483,7 @@ function handleGotUser() {
             <div>
             ';
             printFormHead($redirect);
-            echo '
+            echo $redirectform . '
             <input type="submit" name="submit" class="submit" value="Proceed" />
             </form>
             </div>
@@ -1509,7 +1508,7 @@ function handleGotUser() {
         ';
         printAttributeReleaseErrorMessage(
             $ePPN,$ePTID,$firstname,$lastname,$displayname,$emailaddr,
-            $idp,$idpname,$affiliation,$clientparams,$redirect);
+            $idp,$idpname,$affiliation,$clientparams,$redirect,$redirectform);
 
         echo '
         </div>
@@ -2259,7 +2258,7 @@ function getCompositeIdPList($incommonidps=false) {
  ************************************************************************/
 function printAttributeReleaseErrorMessage(
     $ePPN,$ePTID,$firstname,$lastname,$displayname,$emailaddr,
-    $idp,$idpname,$affiliation,$clientparams,$redirect) {
+    $idp,$idpname,$affiliation,$clientparams,$redirect,$redirectform='') {
 
     global $idplist;
 
@@ -2397,7 +2396,7 @@ function printAttributeReleaseErrorMessage(
     ';
 
     printFormHead($redirect);
-    echo '
+    echo $redirectform . '
     <input type="submit" name="submit" class="submit"
     value="Proceed" />
     </form>
