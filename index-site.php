@@ -434,7 +434,7 @@ function printDownloadCertificate() {
     ';
 
     printFormHead(preg_replace('/^\s*=\s*/','',
-        $gridshibconf['root']['GridShibCAURL']).'shibCILaunchGSCA.jnlp',true);
+        $gridshibconf['root']['GridShibCAURL']).'shibCILaunchGSCA.jnlp','post',true);
         
     $certlifetime   = util::getCookieVar('certlifetime');
     $certmultiplier = util::getCookieVar('certmultiplier');
