@@ -4,29 +4,30 @@
   <initialidp>https://login.ligo.org/idp/shibboleth</initialidp>
 
   <pkcs12>
-    <initiallifetime>
-      <number>3</number>
-      <multiplier>24</multiplier>
-    </initiallifetime>
-    <maxlifetime>72</maxlifetime>
+    <disabled>1</disabled>
+    <disabledmessage>
+    LIGO Users: Please use ligo-proxy-init to obtain your certificate.
+    Alternatively, please Log Off and choose a different identity provider
+    to obtain your certificate.
+    </disabledmessage>
   </pkcs12>
 
   <gsca>
     <initiallifetime>
-      <number>3</number>
+      <number>11.5</number>
       <multiplier>86400</multiplier>
     </initiallifetime>
-    <maxlifetime>72</maxlifetime>
+    <maxlifetime>276</maxlifetime>
   </gsca>
 
   <delegate>
-    <initiallifetime>72</initiallifetime>
-    <maxlifetime>72</maxlifetime>
+    <initiallifetime>276</initiallifetime>
+    <maxlifetime>276</maxlifetime>
   </delegate>
 
   <ecp>
-    <defaultlifetime>72</defaultlifetime>
-    <maxlifetime>72</maxlifetime>
+    <defaultlifetime>276</defaultlifetime>
+    <maxlifetime>276</maxlifetime>
   </ecp>
 
 </config>

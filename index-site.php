@@ -217,194 +217,213 @@ function printCertInfo() {
 function printGetCertificate() {
     global $skin;
 
-    $downloadcerttext = "Clicking this button will generate a link to a new certificate, which you can download to your local computer. The certificate is valid for up to 13 months."; 
-    $p12linktext = "Left-click this link to import the certificate into your broswer / operating system. (Firefox users see the FAQ.) Right-click this link and select 'Save As...' to save the certificate to your desktop.";
-    $passwordtext1 = 'Enter a password of at least 12 characters to protect your certificate.';
-    $passwordtext2 = 'Re-enter your password to verify.';
+    $disabled     = $skin->getConfigOption('pkcs12','disabled');
+    $disabledmsg  = $skin->getConfigOption('pkcs12','disabledmessage');
 
-    validateP12();
-    $p12expire = '';
-    $p12link = '';
-    $p12 = util::getSessionVar('p12');
-    if (preg_match('/([^\s]*)\s(.*)/',$p12,$match)) {
-        $p12expire = $match[1];
-        $p12link = $match[2];
-    }
+    // Check if PKCS12 downloading is disabled. If so, print out message.
+    if ((!is_null($disabled)) && ((int)$disabled == 1)) {
+        if (!is_null($disabledmsg)) {
+            $disabledmsg = trim(html_entity_decode($disabledmsg));
+        }
+        if (strlen($disabledmsg) == 0) {
+            $disabledmsg = "Downloading PKCS12 certificates is restricted. Please try another method or log on with a different Identity Provider.";
+        }
         
-    if ((strlen($p12link) > 0) && (strlen($p12expire) > 0)) {
-        $p12link = '<a href="' . $p12link . 
-            '">&raquo; Click Here To Download Your Certificate &laquo;</a>';
-    }
-    if ((strlen($p12expire) > 0) && ($p12expire > 0)) {
-        $expire = $p12expire - time();
-        $minutes = floor($expire % 3600 / 60);
-        $seconds = $expire % 60;
-        $p12expire = 'Link Expires: ' . 
-            sprintf("%02dm:%02ds",$minutes,$seconds);
-    } else {
+        echo '<div class="p12actionbox"><p>
+             ', $disabledmsg , '
+             </p></div> <!-- p12actionbox -->';
+        
+    } else { // PKCS12 downloading is okay
+
+        $downloadcerttext = "Clicking this button will generate a link to a new certificate, which you can download to your local computer. The certificate is valid for up to 13 months."; 
+        $p12linktext = "Left-click this link to import the certificate into your broswer / operating system. (Firefox users see the FAQ.) Right-click this link and select 'Save As...' to save the certificate to your desktop.";
+        $passwordtext1 = 'Enter a password of at least 12 characters to protect your certificate.';
+        $passwordtext2 = 'Re-enter your password to verify.';
+
+        validateP12();
         $p12expire = '';
-    }
-
-    $p12lifetime = util::getSessionVar('p12lifetime');
-    if ((strlen($p12lifetime) == 0) || ($p12lifetime == 0)) {
-        $p12lifetime = util::getCookieVar('p12lifetime');
-    }
-    $p12multiplier = util::getSessionVar('p12multiplier');
-    if ((strlen($p12multiplier) == 0) || ($p12multiplier == 0)) {
-        $p12multiplier = util::getCookieVar('p12multiplier');
-    }
-
-    // Try to read the skin's intiallifetime if not yet set
-    if ((strlen($p12lifetime) == 0) || ($p12lifetime <= 0)) {
-        // See if the skin specified an initial value
-        $skinlife = $skin->getConfigOption('pkcs12','initiallifetime','number');
-        $skinmult = $skin->getConfigOption('pkcs12','initiallifetime','multiplier');
-        if ((!is_null($skinlife)) && (!is_null($skinmult)) &&
-            ((int)$skinlife > 0) && ((int)$skinmult > 0)) {
-            $p12lifetime = (int)$skinlife;
-            $p12multiplier = (int)$skinmult;
+        $p12link = '';
+        $p12 = util::getSessionVar('p12');
+        if (preg_match('/([^\s]*)\s(.*)/',$p12,$match)) {
+            $p12expire = $match[1];
+            $p12link = $match[2];
+        }
+            
+        if ((strlen($p12link) > 0) && (strlen($p12expire) > 0)) {
+            $p12link = '<a href="' . $p12link . 
+                '">&raquo; Click Here To Download Your Certificate &laquo;</a>';
+        }
+        if ((strlen($p12expire) > 0) && ($p12expire > 0)) {
+            $expire = $p12expire - time();
+            $minutes = floor($expire % 3600 / 60);
+            $seconds = $expire % 60;
+            $p12expire = 'Link Expires: ' . 
+                sprintf("%02dm:%02ds",$minutes,$seconds);
         } else {
-            $p12lifetime = 13;      // Default to 13 months
-            $p12multiplier = 732;
+            $p12expire = '';
         }
-    }
-    if ((strlen($p12multiplier) == 0) || ($p12multiplier <= 0)) {
-        $p12multiplier = 732;   // Default to months
-        if ($p12lifetime > 13) {
-            $p12lifetime = 13;
+
+        $p12lifetime = util::getSessionVar('p12lifetime');
+        if ((strlen($p12lifetime) == 0) || ($p12lifetime == 0)) {
+            $p12lifetime = util::getCookieVar('p12lifetime');
         }
-    }
-    
-    // Make sure lifetime is within [minlifetime,maxlifetime]
-    list($minlifetime,$maxlifetime) = getMinMaxLifetimes('pkcs12',9516);
-    if (($p12lifetime * $p12multiplier) < $minlifetime) {
-        $p12lifetime = $minlifetime;
-        $p12multiplier = 1; // In hours
-    } elseif (($p12lifetime * $p12multiplier) > $maxlifetime) {
-        $p12lifetime = $maxlifetime;
-        $p12multiplier = 1; // In hours
-    }
+        $p12multiplier = util::getSessionVar('p12multiplier');
+        if ((strlen($p12multiplier) == 0) || ($p12multiplier == 0)) {
+            $p12multiplier = util::getCookieVar('p12multiplier');
+        }
 
-    $lifetimetext = "Specify the certificate lifetime. Acceptable range " .
-                    "is between $minlifetime and $maxlifetime hours" .
-                    (($maxlifetime > 732) ? 
-                        " ( = " . round(($maxlifetime/732),2) . " months)." : 
-                        "."
-                    );
+        // Try to read the skin's intiallifetime if not yet set
+        if ((strlen($p12lifetime) == 0) || ($p12lifetime <= 0)) {
+            // See if the skin specified an initial value
+            $skinlife = $skin->getConfigOption('pkcs12','initiallifetime','number');
+            $skinmult = $skin->getConfigOption('pkcs12','initiallifetime','multiplier');
+            if ((!is_null($skinlife)) && (!is_null($skinmult)) &&
+                ((int)$skinlife > 0) && ((int)$skinmult > 0)) {
+                $p12lifetime = (int)$skinlife;
+                $p12multiplier = (int)$skinmult;
+            } else {
+                $p12lifetime = 13;      // Default to 13 months
+                $p12multiplier = 732;
+            }
+        }
+        if ((strlen($p12multiplier) == 0) || ($p12multiplier <= 0)) {
+            $p12multiplier = 732;   // Default to months
+            if ($p12lifetime > 13) {
+                $p12lifetime = 13;
+            }
+        }
+        
+        // Make sure lifetime is within [minlifetime,maxlifetime]
+        list($minlifetime,$maxlifetime) = getMinMaxLifetimes('pkcs12',9516);
+        if (($p12lifetime * $p12multiplier) < $minlifetime) {
+            $p12lifetime = $minlifetime;
+            $p12multiplier = 1; // In hours
+        } elseif (($p12lifetime * $p12multiplier) > $maxlifetime) {
+            $p12lifetime = $maxlifetime;
+            $p12multiplier = 1; // In hours
+        }
 
-    echo '
-    <div class="p12actionbox"';
+        $lifetimetext = "Specify the certificate lifetime. Acceptable range " .
+                        "is between $minlifetime and $maxlifetime hours" .
+                        (($maxlifetime > 732) ? 
+                            " ( = " . round(($maxlifetime/732),2) . " months)." : 
+                            "."
+                        );
 
-    if (util::getSessionVar('showhelp') == 'on') {
-      echo ' style="width:92%;"';
-    }
-    
-    echo '>
-    <table class="helptable">
-    <tr>
-    <td class="actioncell">
-    ';
-
-    printFormHead();
-
-    echo '
-      <fieldset>
-      ';
-
-      $p12error = util::getSessionVar('p12error');
-      if (strlen($p12error) > 0) {
-          echo "<p class=\"logonerror\">$p12error</p>";
-          util::unsetSessionVar('p12error');
-      }
-
-      echo '
-      <p>
-      Password Protect Your New Certificate:
-      </p>
-
-      <p>
-      <label for="password1" class="helpcursor" title="' ,
-      $passwordtext1 , '">Enter A Password:</label>
-      <input type="password" name="password1" id="password1"
-      size="25" title="' , $passwordtext1 , '" onkeyup="checkPassword()"/>
-      <img src="/images/blankIcon.png" width="14" height="14" alt="" 
-      id="pw1icon"/>
-      </p>
-
-      <p>
-      <label for="password2" class="helpcursor" title="' ,
-      $passwordtext2 , '">Confirm Password:</label>
-      <input type="password" name="password2" id="password2"
-      size="25" title="' , $passwordtext2 , '" onkeyup="checkPassword()"/>
-      <img src="/images/blankIcon.png" width="14" height="14" alt="" 
-      id="pw2icon"/>
-      </p>
-
-      <p class="p12certificatelifetime">
-      <label for="p12lifetime" title="' , $lifetimetext ,
-      '" class="helpcursor">Certificate Lifetime:</label>
-      <input type="text" name="p12lifetime" id="p12lifetime" 
-      title="', $lifetimetext , 
-      '" class="helpcursor" value="' , $p12lifetime ,
-      '" size="8" maxlength="8"/> 
-      <select title="' , $lifetimetext , 
-      '" class="helpcursor" id="p12multiplier" name="p12multiplier">
-      <option value="1"' , 
-          (($p12multiplier==1) ? ' selected="selected"' : '') , 
-          '>hours</option>
-      <option value="24"' ,
-          (($p12multiplier==24) ? ' selected="selected"' : '') ,
-          '>days</option>
-      <option value="732"' ,
-          (($p12multiplier==732) ? ' selected="selected"' : '') ,
-          '>months</option>
-      </select>
-      <img src="/images/blankIcon.png" width="14" height="14" alt=""/>
-      </p>
-
-      <p>
-      <input type="submit" name="submit" class="submit helpcursor" 
-      title="' , $downloadcerttext , '" value="Get New Certificate"
-      onclick="showHourglass(\'p12\')"/>
-      <img src="/images/hourglass.gif" width="32" height="32" alt="" 
-      class="hourglass" id="p12hourglass"/>
-      </p>
-
-      <p id="p12value" class="helpcursor" title="' , 
-          $p12linktext , '">' , $p12link , '</p>
-      <p id="p12expire">' , $p12expire , '</p>
-
-      </fieldset>
-      </form>
-    </td>
-    ';
-
-    if (util::getSessionVar('showhelp') == 'on') {
         echo '
-        <td class="helpcell">
-        <div>
-        <p>
-        In order to get a new certificate, please enter a password of at
-        least 12 characters in length.  This password protects the private
-        key of the certificate and is different from your identity provider
-        password.  You must enter the password twice for verification. 
-        </p>
-        <p>
-        After entering a password, click the "Get New Certificate" button to
-        generate a new link.  Right-click on this link to download the
-        certificate to your computer.  The certificate is valid for up to 13
-        months.
-        </p>
-        </div>
+        <div class="p12actionbox"';
+
+        if (util::getSessionVar('showhelp') == 'on') {
+          echo ' style="width:92%;"';
+        }
+        
+        echo '>
+        <table class="helptable">
+        <tr>
+        <td class="actioncell">
+        ';
+
+        printFormHead();
+
+        echo '
+          <fieldset>
+          ';
+
+          $p12error = util::getSessionVar('p12error');
+          if (strlen($p12error) > 0) {
+              echo "<p class=\"logonerror\">$p12error</p>";
+              util::unsetSessionVar('p12error');
+          }
+
+          echo '
+          <p>
+          Password Protect Your New Certificate:
+          </p>
+
+          <p>
+          <label for="password1" class="helpcursor" title="' ,
+          $passwordtext1 , '">Enter A Password:</label>
+          <input type="password" name="password1" id="password1"
+          size="25" title="' , $passwordtext1 , '" onkeyup="checkPassword()"/>
+          <img src="/images/blankIcon.png" width="14" height="14" alt="" 
+          id="pw1icon"/>
+          </p>
+
+          <p>
+          <label for="password2" class="helpcursor" title="' ,
+          $passwordtext2 , '">Confirm Password:</label>
+          <input type="password" name="password2" id="password2"
+          size="25" title="' , $passwordtext2 , '" onkeyup="checkPassword()"/>
+          <img src="/images/blankIcon.png" width="14" height="14" alt="" 
+          id="pw2icon"/>
+          </p>
+
+          <p class="p12certificatelifetime">
+          <label for="p12lifetime" title="' , $lifetimetext ,
+          '" class="helpcursor">Certificate Lifetime:</label>
+          <input type="text" name="p12lifetime" id="p12lifetime" 
+          title="', $lifetimetext , 
+          '" class="helpcursor" value="' , $p12lifetime ,
+          '" size="8" maxlength="8"/> 
+          <select title="' , $lifetimetext , 
+          '" class="helpcursor" id="p12multiplier" name="p12multiplier">
+          <option value="1"' , 
+              (($p12multiplier==1) ? ' selected="selected"' : '') , 
+              '>hours</option>
+          <option value="24"' ,
+              (($p12multiplier==24) ? ' selected="selected"' : '') ,
+              '>days</option>
+          <option value="732"' ,
+              (($p12multiplier==732) ? ' selected="selected"' : '') ,
+              '>months</option>
+          </select>
+          <img src="/images/blankIcon.png" width="14" height="14" alt=""/>
+          </p>
+
+          <p>
+          <input type="submit" name="submit" class="submit helpcursor" 
+          title="' , $downloadcerttext , '" value="Get New Certificate"
+          onclick="showHourglass(\'p12\')"/>
+          <img src="/images/hourglass.gif" width="32" height="32" alt="" 
+          class="hourglass" id="p12hourglass"/>
+          </p>
+
+          <p id="p12value" class="helpcursor" title="' , 
+              $p12linktext , '">' , $p12link , '</p>
+          <p id="p12expire">' , $p12expire , '</p>
+
+          </fieldset>
+          </form>
         </td>
         ';
-    }
 
-    echo '
-    </tr>
-    </table>
-    </div> <!-- p12actionbox -->
-    ';
+        if (util::getSessionVar('showhelp') == 'on') {
+            echo '
+            <td class="helpcell">
+            <div>
+            <p>
+            In order to get a new certificate, please enter a password of at
+            least 12 characters in length.  This password protects the private
+            key of the certificate and is different from your identity provider
+            password.  You must enter the password twice for verification. 
+            </p>
+            <p>
+            After entering a password, click the "Get New Certificate" button to
+            generate a new link.  Right-click on this link to download the
+            certificate to your computer.  The certificate is valid for up to 13
+            months.
+            </p>
+            </div>
+            </td>
+            ';
+        }
+
+        echo '
+        </tr>
+        </table>
+        </div> <!-- p12actionbox -->
+        ';
+    }
 }
 
 /************************************************************************
