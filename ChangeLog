@@ -1,0 +1,4421 @@
+2016-11-22 08:55  tfleury
+
+	* index.php, index-site.php, skin/config-example.xml,
+	  skin/LIGO/config.xml: CIL-353 - Inspired by LIGO use-case, add
+	  config option to disable downloading of PKCS12 certicates.
+	  Instead, print out message that PKCS12 certs are not available
+	  for download. Allow configuration to set message displayed to
+	  user. Also, for LIGO skin, increase lifetime of certificates to
+	  11.5 days (276 hours).
+
+2016-10-27 14:48  tfleury
+
+	* index-site.php, index.php: The correct thing to do for OAuth
+	  1.0a/2.0 error response is to make the <form> use the 'get'
+	  method as described in the OIDC spec.
+
+2016-10-26 16:44  tfleury
+
+	* include/content.php: The correct thing to do for OAuth 1.0a/2.0
+	  error response is to make the <form> use the 'get' method as
+	  described in the OIDC spec.
+
+2016-10-26 15:26  tfleury
+
+	* include/content.php: For mod_auth_openidc, the error response
+	  parameters need to be POSTed (i.e., in a <form>).
+
+2016-10-25 14:28  tfleury
+
+	* index-site.php, index.php, authorize/index-site.php,
+	  authorize/index.php, delegate/index-site.php, delegate/index.php,
+	  getuser/index.php, include/content.php, secure/getuser/index.php,
+	  testidp/index.php: 'exit()' after 302 redirects.
+
+2016-10-25 11:12  tfleury
+
+	* include/idplist.php: Use English version of
+	  OrganizationDisplayName rather than the first one found in
+	  metadata.
+
+2016-10-19 09:21  tfleury
+
+	* include/.cvsignore: Ignore idplist.json from CVS.
+
+2016-09-30 17:19  tfleury
+
+	* authorize/index-site.php, authorize/index.php,
+	  delegate/index-site.php, delegate/index.php: CIL-289 - ePPN is
+	  being unset which is causing problems for GridGTP. So revert to
+	  non Web SSO environment until we figure out which session
+	  variables can be unset and which cannot.
+
+2016-09-30 16:59  tfleury
+
+	* util/idpquery.php: CIL-346 - Add script to query idplist.xml for
+	  a list of IdPs which match a certain set of attributes.
+
+2016-09-30 16:57  tfleury
+
+	* include/cilogon.css, include/content.php, requestidp/index.php,
+	  skin/NICS/skin.css, skin/OOI/skin.css, skin/SeedMe/skin.css,
+	  skin/bamboo/skin.css, skin/cvrg/skin.css: CIL-345 - Since all
+	  IdPs are now whitelisted by default, we no longer need the
+	  https://cilogon.org/requestidp/ endpoint. Change /requestidp/
+	  references to "send email to help@cilogon.org".
+
+2016-09-30 12:59  tfleury
+
+	* gridshib-ca/GridShibCA-2.0.1.jar: Apply new code signing
+	  certificate to GridShibCA.jar, expires Sep 30, 2019.
+
+2016-09-19 13:50  tfleury
+
+	* include/content.php: Remove temporary hack for United ID.
+
+2016-09-19 13:47  tfleury
+
+	* README.txt: Make /include/ subdir writable by apache for idplist
+	  creation.
+
+2016-09-19 13:45  tfleury
+
+	* include/idplist.php: CIL-338 - Major change of idplist format
+	  from DOM to array. This results in a 10x speed increase of
+	  display of WAYF.
+
+2016-09-19 13:44  tfleury
+
+	* secure/testidp/index.php: Since all IdPs are now whitelisted,
+	  /testidp/ no longer needs functionality to add IdPs to the
+	  whitelist.
+
+2016-09-19 13:43  tfleury
+
+	* me/index.php: Do full string match for popup help text.
+
+2016-09-19 13:43  tfleury
+
+	* include/util.php: CIL-289 - Separate out the user session vars
+	  into their own "unset" method so that OIDC/OAuth transactions do
+	  not "log off" the user for a better Web SSO user experience.
+
+2016-09-19 13:41  tfleury
+
+	* include/content.php: Add check for if IdP is eduGAIN and current
+	  session could be used to get a certificate. If so, unset user
+	  session vars to prevent getcert.
+
+2016-09-19 13:40  tfleury
+
+	* util/convertidplist.php: New script convertidplist.php to convert
+	  xml to json and vice versa.
+
+2016-09-19 13:39  tfleury
+
+	* util/idplist.php: idplist.php script no longer uses database
+	  whitelist, and can generate both idplist.xml and idplist.json.
+
+2016-09-19 13:39  tfleury
+
+	* util/randsidps.php: No need for randsidps.php script since
+	  idplist no longer relies on database whitelist.
+
+2016-09-19 13:38  tfleury
+
+	* authorize/index-site.php, authorize/index.php,
+	  delegate/index-site.php, delegate/index.php: Do not unset user
+	  session vars when returning from OAuth/OIDC transaction.
+
+2016-09-19 13:36  tfleury
+
+	* README.txt: Make /include/ subdir writable by apache for idplist
+	  creation.
+
+2016-09-15 10:03  tfleury
+
+	* include/blacklist.txt: CIL-337 - Blacklist mdanderson.org .
+
+2016-09-14 18:15  tfleury
+
+	* include/content.php: Make /var/www/html/pkcs12 subdirectories
+	  non-world-readable.
+
+2016-09-14 17:50  tfleury
+
+	* include/content.php: When testing for eduGAIN, make sure IdP
+	  isn't Google. Duh.
+
+2016-09-14 17:43  tfleury
+
+	* include/content.php: Move unsetAllUserSessionVars() inside the
+	  brackets rather than the if block.
+
+2016-09-14 17:40  tfleury
+
+	* include/content.php: Only unset user session variables when
+	  printing out error page.
+
+2016-09-14 17:32  tfleury
+
+	* include/content.php: CIL-327 additional - If the IdP is an
+	  eduGAIN IdP without REFEDS R&S and SIRTFI, and the user could get
+	  an X509 cert (i.e., OIDC scope contains
+	  edu.uiuc.ncsa.myproxy.getcert, or a non-OIDC transaction such as
+	  PKCS12, JWS, or OAuth 1.0a), print out the error page regardless
+	  if the IdP actually released all required attributes.
+
+2016-09-14 16:31  tfleury
+
+	* include/idplist.php: Add method $idplist->getOrganizationName().
+
+2016-09-12 14:12  tfleury
+
+	* include/dbservice.php: When whitelisting IdPs, send 50 at a time
+	  to prevent problems with the URL query paramter being too long
+	  for the httpd server.
+
+2016-09-12 10:32  tfleury
+
+	* util/whitelist.php: Since $idplist is global, need to require it.
+
+2016-09-12 09:08  tfleury
+
+	* include/content.php, include/dbservice.php, include/idplist.php,
+	  include/util.php, me/index.php, requestidp/index.php,
+	  secure/getuser/index.php, secure/testidp/index.php,
+	  testidp/index.php, util/idplist.php, util/randsidps.php: CIL-327
+	  - Add all IdPs to whitelist. Also includes the following changes:
+	  * Update attribute release error page to be more helpful.  * Scan
+	  for more InCommon metadata attributes for local idplist.xml file.
+	  * Show new InCommon attributes in testidp page.  * Send 'us_idp'
+	  to dbservice endpoint for '/C=US'.  * Initialize $idplist in
+	  util.php and use with 'global'.
+
+2016-08-23 14:04  tfleury
+
+	* include/util.php: Add $disableligoalerts boolean to allow
+	  temporary suspension of LIGO email alerts to
+	  'alerts@cilogon.org'.
+
+2016-08-19 12:27  tfleury
+
+	* include/blacklist.txt: Blacklist the old (legacy) University of
+	  Pittsburgh IdP.
+
+2016-08-11 13:10  tfleury
+
+	* include/dbservice.php, include/ecpidps.txt, include/idplist.php,
+	  skin/jws/config.xml, util/randsidps.php: Undo premature commit of
+	  untested code.
+
+2016-08-11 12:37  tfleury
+
+	* include/content.php, include/dbservice.php, include/ecpidps.txt,
+	  include/idplist.php, skin/jws/config.xml, util/randsidps.php: Add
+	  configuration file for OIDC Discovery.
+
+2016-08-04 10:20  tfleury
+
+	* cilogon-basic.signing_policy, cilogon-ca-certificates.tar.gz:
+	  CIL-235 - Remove /C=US from basic signing_policy.
+
+2016-07-25 09:53  tfleury
+
+	* include/loggit.php: Don't log messages from monit/nagios hosts.
+
+2016-07-22 08:33  tfleury
+
+	* include/util.php: Revert to previous version: Send error alerts
+	  for LIGO missing attribute errors to alerts@cilogon.org, per Jim
+	  Basney.
+
+2016-07-22 08:33  tfleury
+
+	* include/content.php: Prevent error messages from being logged for
+	  missing shibarray elements.
+
+2016-07-20 11:02  tfleury
+
+	* secure/: getuser/index.php, testidp/index.php: Prevent error
+	  messages from being logged for missing shibarray elements.
+
+2016-07-20 10:57  tfleury
+
+	* secure/testidp/index.php: Prevent error messages from being
+	  logged for missing shibarray elements.
+
+2016-07-20 10:56  tfleury
+
+	* include/content.php: Fix typo.
+
+2016-07-20 08:23  tfleury
+
+	* index.php: Fix typo.
+
+2016-07-20 07:58  tfleury
+
+	* secure/getuser/index.php: Fix typo of extra close paren.
+
+2016-07-19 16:41  tfleury
+
+	* include/util.php: For LIGO logon problems, send "missing
+	  parameters" email ONLY to LIGO, but all other logon problems to
+	  alerts@cilogon.org AND LIGO.
+
+2016-07-19 16:00  tfleury
+
+	* include/loggit.php: Minor code reformat.
+
+2016-07-19 15:58  tfleury
+
+	* include/: loggit.php, util.php: When writing missing attributes
+	  error to syslog, ALSO output any important missing user session
+	  variables.
+
+2016-07-19 14:26  tfleury
+
+	* include/content.php: Add extra message if missing emailaddr and
+	  affiliation contains 'student@'.
+
+2016-07-19 14:09  tfleury
+
+	* secure/getuser/index.php: Remove special handling of
+	  {tfleury,jbasney}@illinois.edu.
+
+2016-07-19 14:07  tfleury
+
+	* index-site.php, index.php, authorize/index-site.php,
+	  authorize/index.php, delegate/index-site.php, delegate/index.php,
+	  getuser/index.php, include/content.php, include/idplist.php,
+	  include/util.php, secure/getuser/index.php: Fixes CIL-298 and
+	  CIL-313. Revamp "missing attributes" error page to give more
+	  information to the end user to allow him to contact the identity
+	  provider.  Also return to OIDC/OAuth1.0a error url if available.
+	  Print error message to log rather than sending email alert. Add
+	  check in logwatch script to show IdPs with attribute release
+	  problems.
+
+2016-07-19 08:17  tfleury
+
+	* include/ecpidps.txt: Add NCSA to list of ECP-enabled IdPs.
+
+2016-07-13 19:15  tfleury
+
+	* ecp-test.pl, ecp.pl: Add more debugging output. Also check for
+	  "Success" response from IdP.
+
+2016-06-28 13:15  tfleury
+
+	* include/content.php, skin/config-example.xml,
+	  skin/globusonline/config.xml, skin/globusonline2/config.xml:
+	  CIL-308 Allow the CILogon OIDC consent page to be skipped when
+	  <forceinitialidp> is configured in the skin and "selected_idp" is
+	  passed as a URL query parameter for OIDC clients, i.e.,
+	  "selected_idp" acts as the skin's <initialidp>.
+
+2016-05-25 08:56  tfleury
+
+	* include/idplist.php: Performance tweak: get the full list of R&S
+	  IdPs first rather than searching through the DOM each time.
+
+2016-05-24 16:01  tfleury
+
+	* include/content.php: Move fix for CIL-174 from printWAYF() to
+	  getComopositeIdPList().
+
+2016-05-24 15:59  tfleury
+
+	* index-site.php, index.php: Specify class for static object
+	  util::$timeit.
+
+2016-03-08 16:37  tfleury
+
+	* include/: content.php, util.php: Fix CIL-275 - Change error
+	  message for missing Shibboleth attributes to include links to (1)
+	  /secure/testidp/ to see which attributes are missing and (2) the
+	  InCommon Federated Error Handling Services to allow user to
+	  contact IdP admins (if info is available).
+
+2016-01-06 12:57  tfleury
+
+	* authorize/: index-site.php, index.php: Replace '+' with spaces in
+	  error message returned by OIDC server.
+
+2015-12-16 08:32  tfleury
+
+	* authorize/: index-site.php, index.php: Need to call isset() on
+	  array entries.
+
+2015-12-14 15:38  tfleury
+
+	* include/cilogon.js: Make the domain the same for cookies set by
+	  JavaScript.
+
+2015-12-14 13:40  tfleury
+
+	* getuser/index.php: Another place for the
+	  getPortalOrNormalCookeVar convenience function.
+
+2015-12-12 11:18  tfleury
+
+	* include/portalcookie.php: Add space after comma for better flow
+	  when printing debug info.
+
+2015-12-12 11:14  tfleury
+
+	* include/portalcookie.php: Forgot opening curly brace for 'else'
+	  clause.
+
+2015-12-12 11:05  tfleury
+
+	* include/portalcookie.php: Add safety bailout case which should
+	  never be reached, but just in case so we don't have an infinite
+	  while loop.
+
+2015-12-12 10:58  tfleury
+
+	* include/portalcookie.php: With the new longer keys for the
+	  portalcookie array, it might be possible for a user to get enough
+	  entries to encroach on the 4K cookie size limit. To alleviate
+	  this, add a timestamp to when the entry was last updated, and
+	  delete older entries when the size of the array grows too large.
+
+2015-12-12 06:59  tfleury
+
+	* include/portalcookie.php: CIL-253 - Easy encryption of
+	  portalcookie using built-in PHP openssl_encrypt and
+	  openssl_decrypt with AES-128-CBC algorithm.
+
+2015-12-12 03:18  tfleury
+
+	* include/: dbprops.php, duoconfig.php, util.php: Create new
+	  function getConfigVar() to read values from the cilogon.ini file.
+
+2015-12-11 17:01  tfleury
+
+	* include/content.php: Stop passing selected_idp as a parameter.
+	  Instead, get it from the PHP session $clientparams (if
+	  available). Also, since scope is now part of the 'key' into the
+	  portalcookie, no need to check if it has changed to force user
+	  re-consent.
+
+2015-12-11 17:00  tfleury
+
+	* include/portalcookie.php: For the OIDC case, the index into the
+	  portalcookie is now a tuple:
+	  (client_id,redirect_uri,scope,selected_idp), where selected_idp
+	  is optional.
+
+2015-12-11 16:59  tfleury
+
+	* authorize/: index-site.php, index.php: Stop passing selected_idp
+	  as a parameter. Instead, get it from the PHP session
+	  $clientparams (if available).
+
+2015-12-11 11:02  tfleury
+
+	* include/: content.php, shiberror.php, util.php: Added convenience
+	  function getPortalOrNormalCookieVar for those occasions when we
+	  want to get a single cookie value from either the portal cookie
+	  or from the 'normal' cookie.
+
+2015-12-10 18:51  tfleury
+
+	* authorize/: index-site.php, index.php: CIL-251 - Output OIDC
+	  server error message to end user.
+
+2015-12-10 17:06  tfleury
+
+	* delegate/index-site.php, delegate/index.php, getuser/index.php,
+	  include/content.php, include/portalcookie.php,
+	  include/shiberror.php: CIL-245 - Save cookies on a per-portal
+	  basis so that OAuth 1.0a (delegate) and OIDC (authorize) can have
+	  their own selected idp and "Remember this selection" cookie
+	  values. Rework the portalcookie.php class to be simpler and
+	  auto-detect the callback/redirect uri for the portal.  CIL-244 -
+	  Also save "scope" to the portal cookie for OIDC case to force
+	  user to re-consent if portal changes scope.
+
+2015-12-10 17:02  tfleury
+
+	* secure/testidp/index.php: Fix typo. 'OU' in $shibarray is
+	  uppercase.
+
+2015-12-10 17:00  tfleury
+
+	* include/util.php: When setting cookie, also set $_COOKIE array so
+	  PHP code picks up the new value immediately. Also, simplify
+	  deleting cookie by setting time to 1 (= Jan 1, 1970).
+
+2015-12-10 16:56  tfleury
+
+	* authorize/: index-site.php, index.php: Fix PHP-logged error. Need
+	  to check if selected_idp array key exists before using it.
+
+2015-12-10 15:47  tfleury
+
+	* include/ecpidps.txt: CIL-250 - Add two ECP-enabled IdPs for Fermi
+	  National Accelerator Laboratory (one is Kerberos-enabled).
+
+2015-12-02 14:48  tfleury
+
+	* skin/: DataONE/skin.css, DataONEDev/skin.css,
+	  DataONEDev2/skin.css, DataONESandbox/skin.css,
+	  DataONESandbox2/skin.css, DataONEStage/skin.css,
+	  DataONEStage2/skin.css: When Lauren changed the CSS for the
+	  DataONE skins, she changed the behavior from JWS to PKCS12. Now
+	  reverted.
+
+2015-12-02 14:12  tfleury
+
+	* README.txt: Create symlinks for all DataONE skin directories.
+
+2015-12-02 14:08  tfleury
+
+	* skin/: DataONE/blue-button.png, DataONE/logo.png,
+	  DataONE/preface-wrapper-bg.png, DataONE/skin.css,
+	  DataONEDev/blue-button.png, DataONEDev/logo.png,
+	  DataONEDev/preface-wrapper-bg.png, DataONEDev/skin.css,
+	  DataONEDev2/blue-button.png, DataONEDev2/logo.png,
+	  DataONEDev2/preface-wrapper-bg.png, DataONEDev2/skin.css,
+	  DataONESandbox/blue-button.png, DataONESandbox/logo.png,
+	  DataONESandbox/preface-wrapper-bg.png, DataONESandbox/skin.css,
+	  DataONESandbox2/blue-button.png, DataONESandbox2/logo.png,
+	  DataONESandbox2/preface-wrapper-bg.png, DataONESandbox2/skin.css,
+	  DataONEStage/blue-button.png, DataONEStage/logo.png,
+	  DataONEStage/preface-wrapper-bg.png, DataONEStage/skin.css,
+	  DataONEStage2/blue-button.png, DataONEStage2/logo.png,
+	  DataONEStage2/preface-wrapper-bg.png, DataONEStage2/skin.css:
+	  Update DataONE skin using new logo.png and CSS provided by Lauren
+	  Walker <walker@nceas.ucsb.edu>.
+
+2015-12-02 14:01  tfleury
+
+	* util/: adduser.php, showuser.php: Update PHP comman line
+	  utilities to include new display_name, affiliation, and ou
+	  attributes.
+
+2015-12-02 14:00  tfleury
+
+	* include/dbservice.php: Dump 'pretty print' text of status result.
+
+2015-11-13 19:12  tfleury
+
+	* include/content.php: When selected_idp is not the remembered IdP,
+	  uncheck the "Remember this selection" checkbox.
+
+2015-11-13 17:11  tfleury
+
+	* authorize/index-site.php, authorize/index.php,
+	  include/content.php, include/dbservice.php: Two fixes: (1) Pass
+	  cilogon_info to the setTransactionState() method.  (2) If
+	  selected_idp is passed to the authorize endpoint, allow it to
+	  override the "Remember this selection" checkbox when the saved
+	  IdP is different.
+
+2015-11-11 11:21  tfleury
+
+	* include/dbservice.php: Fix typo in comment.
+
+2015-11-11 11:18  tfleury
+
+	* getuser/index.php, include/content.php, include/dbservice.php,
+	  include/idplist.php, include/util.php, me/index.php,
+	  secure/getuser/index.php, secure/testidp/index.php: CIL-211 - Add
+	  support for "affiliation", "display_name", and "ou" in PHP code.
+
+2015-10-27 15:20  tfleury
+
+	* skin/NICS/config.xml: <forceauthn> is not supported by UTK's IdP.
+	  Remove it.
+
+2015-10-27 15:05  tfleury
+
+	* skin/NICS/config.xml: Add <forceauthn> to NICS skin.
+
+2015-10-08 14:04  tfleury
+
+	* skin/: DataONEDev2/blue-button.png, DataONEDev2/config.xml,
+	  DataONEDev2/logo.png, DataONEDev2/preface-wrapper-bg.png,
+	  DataONEDev2/skin.css, DataONESandbox2/blue-button.png,
+	  DataONESandbox2/config.xml, DataONESandbox2/logo.png,
+	  DataONESandbox2/preface-wrapper-bg.png, DataONESandbox2/skin.css,
+	  DataONEStage2/blue-button.png, DataONEStage2/config.xml,
+	  DataONEStage2/logo.png, DataONEStage2/preface-wrapper-bg.png,
+	  DataONEStage2/skin.css: Fix CIL-232 - Add new DataONE skins for
+	  testing environments. Need to update myproxy-extapps on
+	  warm/cool/tepid to use the new skins.
+
+2015-10-08 13:50  tfleury
+
+	* include/util.php: Fix CIL-205 again - Change email to
+	  'cilogon-alerts@ligo.org'.
+
+2015-10-07 21:06  tfleury
+
+	* include/content.php: Fixes CIL-233 - Don't clear session
+	  variables when Show/Hide Help button is clicked.
+
+2015-09-28 09:23  tfleury
+
+	* include/dbprops.php: For upcoming transition to database being
+	  stored on separate server, make hostspec a configurable
+	  connection option.
+
+2015-09-22 17:13  tfleury
+
+	* authorize/: index-site.php, index.php: For the OIDC case, reduce
+	  the amount of text shown to the user regarding the attributes
+	  released to the client. Also center the text block.
+
+2015-09-22 17:12  tfleury
+
+	* include/content.php: Allow an OIDC client to select an IdP via a
+	  "selected_idp" URL query parameter. If that IdP is whitelisted,
+	  show only that IdP in the selection list.
+
+2015-09-22 17:10  tfleury
+
+	* include/cilogon.css: Change the "CILogon Service" banner to
+	  "CILogon".
+
+2015-09-22 16:01  tfleury
+
+	* skin/NICS/config.xml: Change NICS pattern match to allow for http
+	  or https, as well as specified port number
+
+2015-09-21 18:06  tfleury
+
+	* authorize/: index-site.php, index.php: OIDC bugfix: If
+	  redirect_uri contains a '?', append '&' instead of '?' for
+	  additional query string parameters.  Interface tweaks: Display
+	  OIDC consent information in an expandable <div>.  Show requested
+	  scope items in an unordered list.
+
+2015-09-21 10:45  tfleury
+
+	* authorize/index-site.php, authorize/index.php,
+	  include/dbservice.php: Add LOA parameter to setTransactionState
+	  so OA4MP OIDC can fetch the certifcate from the correct MyProxy
+	  server.
+
+2015-09-17 16:18  tfleury
+
+	* skin/NICS/config.xml: Remove unnecessary wildcard match.
+
+2015-09-17 16:08  tfleury
+
+	* skin/NICS/config.xml: NICS skin now forces Univ of Tenn as the
+	  IdP, skipping the initial "Select an Identity Provider" screen.
+
+2015-09-11 11:02  tfleury
+
+	* include/content.php: Once again, move statement out of the loop.
+
+2015-09-11 10:16  tfleury
+
+	* include/content.php: Clean up code by using regex variable.
+
+2015-09-11 09:45  tfleury
+
+	* include/content.php: Move sort out of the loop.
+
+2015-09-11 09:38  tfleury
+
+	* include/content.php: Fixes CIL-174 - Inconsistent Univ of Calif
+	  IdP names. Implemented fix suggested by Keith Hazelton. Replace
+	  commas and hyphens with comma.
+
+2015-09-10 16:53  tfleury
+
+	* authorize/: index-site.php, index.php: CIL-89 - Initial
+	  PHP-frontend support for OIDC. Note that this code will be
+	  modified when CIL-212 (revert protocol for OIDC 'init' servlet)
+	  is implemented.
+
+2015-09-09 09:41  tfleury
+
+	* include/util.php: CIL-205 update - Change 'rt-auth@ligo.org' to
+	  'auth@ligo.org'.
+
+2015-08-12 16:03  tfleury
+
+	* include/util.php: Fixes CIL-205 - Send LIGO-related IdP login
+	  issues to rt-auth@ligo.org.
+
+2015-08-07 14:16  tfleury
+
+	* secure/testidp/index.php, util/randsidps.php: Fixes CIL-203 -
+	  Notify partners on IdP added to CILogon.
+
+2015-08-07 13:29  tfleury
+
+	* skin/SeedMe/config.xml: Fixes CIL-202 - Add ProtectNetwork to
+	  SeeMe's idpblacklist.
+
+2015-08-03 13:14  tfleury
+
+	* skin/purduegateway/config.xml: Fixes CIL-199 - Change
+	  purduegateway skin <forcelifetime> to 240.
+
+2015-07-15 13:03  tfleury
+
+	* skin/NICS/config.xml: Remove NCSA from portal list (for testing).
+
+2015-07-15 13:02  tfleury
+
+	* skin/NICS/config.xml: Make changes to NICS skin as per Tabitha
+	  Samuel.
+
+2015-06-24 19:36  tfleury
+
+	* ecp-test.pl, ecp.pl: Forgot to increment version number.
+
+2015-06-24 19:33  tfleury
+
+	* ecp-test.pl, ecp.pl: Use GetOptionsFromString to correctly
+	  tokenize command line options from the /etc/ecp-mapfile (in the
+	  event of quoted strings, for example). Also make sure all
+	  non-successful exit statements exit with "1" (when listing IdPs
+	  or showing help text, for example).
+
+2015-06-24 17:51  tfleury
+
+	* ecp-test.pl, ecp.pl: Added '--pam' option to ecp.pl script to
+	  allow for ECP authentication using pam_exec.
+
+2015-06-24 12:29  tfleury
+
+	* include/ecpidps.txt: Added Penn State U and U of Tennessee to
+	  ecpidps.txt.
+
+2015-06-04 16:12  tfleury
+
+	* authorize/: index-site.php, index.php: The oauth2/init endpoint
+	  returns HTTP 200 upon success (unlike the oauth2/authorize
+	  endpoint which returns HTTP 302 upon success). So change HTTP 302
+	  to HTTP 200.
+
+2015-06-04 15:11  tfleury
+
+	* include/content.php: Move funtionality of checkForceSkin() into
+	  the $skin->init(). Do extra checks for forceskin before and after
+	  user has authenticated with an IdP or come from an oauth (portal)
+	  client. Clear the cilogon_skin session variable after "Log Off"
+	  so that we no longer have to manually set the skin to "default"
+	  or "none".
+
+2015-06-04 15:08  tfleury
+
+	* include/skin.php: When initializing the skin object, check the
+	  forceskin.txt file for a matching IdP entityID or portal
+	  callbackurl. Put functionality of checkForceSkin into init().
+
+2015-06-04 15:06  tfleury
+
+	* include/util.php: Allow for comments (lines starting with '#') in
+	  readArrayFromFile().
+
+2015-06-04 15:06  tfleury
+
+	* include/forceskin.txt: Add comment block to forceskin.txt. Change
+	  from strict string equality to regex matching for URIs.
+
+2015-06-04 15:05  tfleury
+
+	* include/blacklist.txt: Add comment block to blacklist.txt file.
+
+2015-06-04 15:04  tfleury
+
+	* index-site.php, index.php: For "Log Off", clear the cilogon_skin
+	  session variable and recheck for forced skin.
+
+2015-06-04 15:03  tfleury
+
+	* delegate/: index-site.php, index.php: Replace checkForceSkin with
+	  $skin->init(). Clear cilogon_skin session variable when returing
+	  to client (similar to "Log Off").
+
+2015-06-04 15:02  tfleury
+
+	* authorize/: index-site.php, index.php: Unset the cilogon_skin
+	  session variable when returning to the client (similar to "Log
+	  Off").
+
+2015-06-04 15:01  tfleury
+
+	* secure/getuser/index.php: Replace checkForceSkin with
+	  $skin->init().
+
+2015-06-04 15:00  tfleury
+
+	* testidp/index.php: There is no provderId PHP session variable, so
+	  stop checking for it.
+
+2015-06-02 08:21  tfleury
+
+	* delegate/: index-site.php, index.php: After verifying portal
+	  parameters, also check if the current portal should have a skin
+	  forced.
+
+2015-06-02 08:20  tfleury
+
+	* include/content.php: Add extra security check after successful
+	  user authn to make sure selected IdP was actually whitelisted.
+	  Also modify checkForceSkin() to skip checking GET or POST
+	  parameters.
+
+2015-06-02 08:18  tfleury
+
+	* include/forceskin.txt: Make SeedMe dev portal use the SeedMe
+	  skin.
+
+2015-06-02 08:17  tfleury
+
+	* include/skin.php: When checking for skin name, add parameter to
+	  skip checking GET or POST parameters for checkForceSkin().
+
+2015-06-01 18:10  tfleury
+
+	* include/content.php: Create new function getCompositeIdPList()
+	  which returns just the whitelisted IdPs, correctly sorted (i.e.,
+	  not using natcasesort()). When user clicks "Log On" button,
+	  verify that selected IdP is whitelisted.
+
+2015-06-01 18:08  tfleury
+
+	* include/dbservice.php: Don't use natcasesort since it ignores
+	  spaces.
+
+2015-05-27 13:38  tfleury
+
+	* include/forceskin.txt: Added backup LIGO IdPs to forceskin.txt.
+
+2015-04-30 15:19  tfleury
+
+	* include/blacklist.txt: Blacklist the legacy Cal Poly Pomona IdP
+	  so new users select the newer IdP.
+
+2015-04-30 13:38  tfleury
+
+	* include/EmailAddressValidator.php, include/util.php,
+	  requestidp/index.php, secure/testidp/index.php: Replace
+	  EmailAddressValidator with PHP built-in function filter_var().
+
+2015-04-30 09:28  tfleury
+
+	* secure/testidp/index.php: Check for valid email address in
+	  testidp.
+
+2015-04-29 14:22  tfleury
+
+	* ecp-test.pl, ecp.pl: Forgot to change version number for ecp.pl
+	  scripts.
+
+2015-04-29 14:20  tfleury
+
+	* ecp-test.pl, ecp.pl: With Shibboleth 3.x IdP software, ECP
+	  clients must specify the content type of the POST to be
+	  'text/xml'.
+
+2015-04-24 11:10  tfleury
+
+	* skin/SeedMe/config.xml: Needed to blacklist Google IdP.
+
+2015-04-24 11:09  tfleury
+
+	* skin/SeedMe/: config.xml, seedme_transparent_0.png, skin.css: Fix
+	  https://jira.ncsa.illinois.edu/browse/CIL-145 . Create skin for
+	  SeedMe portal.
+
+2015-04-24 10:03  tfleury
+
+	* skin/NICS/: config.xml, nicslogo.png, skin.css, utlogo.png:
+	  Created skin for NICS/UTK. Still waiting for approval from
+	  Tabitha Samuel.
+
+2015-04-17 09:32  tfleury
+
+	* include/idplist.php: For upcoming InCommon-metadata.xml change of
+	  adding entities which were not registered by InCommon (e.g.,
+	  eduGAIN), only allow IdPs with the RegistrationInfo extension of
+	  'https://incommon.org'.
+
+2015-04-15 09:14  tfleury
+
+	* include/idplist.php: Add new refeds 'research-and-scholarship'
+	  attribute for RandS entities.
+
+2015-03-26 16:55  tfleury
+
+	* cilogon-basic.signing_policy, cilogon-ca-certificates.tar.gz,
+	  cilogon-globus.signing_policy, cilogon-host.signing_policy,
+	  cilogon-openid.signing_policy, cilogon-osg.signing_policy,
+	  cilogon-silver.signing_policy: Added double quotes to
+	  'cond_subjects' line. Also updated certificates tarball with
+	  latest crl_url files (which include CDN links) and osg cert.
+
+2015-03-26 16:05  tfleury
+
+	* authorize/: index-site.php, index.php: Use the /oauth2/init
+	  endpoint as the OA4MP/OIDC Authorization Endpoint since it does
+	  all the work (and assumes the user has authenticated).
+
+2015-03-25 13:47  tfleury
+
+	* authorize/: index-site.php, index.php: Change /oauth2/authorized
+	  to /oauth2/authorize .
+
+2015-03-03 12:37  tfleury
+
+	* include/ecpidps.txt: Added Clemson University to list of
+	  ECP-enabled IdPs.
+
+2015-03-02 17:03  tfleury
+
+	* cilogon-basic.crl_url, cilogon-basic.info,
+	  cilogon-openid.crl_url, cilogon-openid.info, cilogon-osg.crl_url,
+	  cilogon-osg.crt, cilogon-osg.info, cilogon-osg.pem,
+	  cilogon-osg.signing_policy, cilogon-silver.crl_url,
+	  cilogon-silver.info: Add cilogon-osg.* files. Update
+	  cilogon-*.crl_url and cilogon-*.info files to include new CDN
+	  URLs.
+
+2015-03-02 16:13  tfleury
+
+	* include/ecpidps.txt: Added University of Utah to list of
+	  ECP-enabled IdPs.
+
+2015-02-18 13:32  tfleury
+
+	* include/.cvsignore: Added .cvsignore for idplist.xml.
+
+2015-02-17 14:23  tfleury
+
+	* include/content.php: Add poloc to getMachineHostname().
+
+2015-02-13 14:26  tfleury
+
+	* README.txt: Add command to create /var/www/virthosts/crl
+	  directory.
+
+2015-02-13 09:44  tfleury
+
+	* README.txt: Add 'ln' commands for new /authorize/ directory.
+
+2015-02-06 10:49  tfleury
+
+	* skin/iugateway/config.xml: Changed cert lifetime for
+	  iub.globusonline.org from 12 to 240 as requested by Chathuri
+	  Kamalasini Wimalasena <cpelikan@iu.edu>.
+
+2015-02-04 20:01  tfleury
+
+	* authorize/: index-site.php, index.php: Simplify header() redirect
+	  string.
+
+2015-02-04 19:57  tfleury
+
+	* authorize/: index-site.php, index.php: header() redirect must be
+	  last thing, not first.
+
+2015-02-04 16:41  tfleury
+
+	* authorize/: index-site.php, index.php: Finished with the OIDC
+	  authorization endpoint code flow. Currently untested as it
+	  requires functionality from the new CILogon-specific OA4MP Oauth
+	  2.0 service (in progress).
+
+2015-02-04 16:30  tfleury
+
+	* include/content.php: * authntime is now a required user session
+	  variable.  * Change forceauthn from a function parameter to a
+	  session variable.  * For the OIDC authorization code flow, always
+	  skip the New User page.  * Check dbservice return values to
+	  ensure successful call(). Send error	 email alert upon failure.
+
+2015-02-04 16:06  tfleury
+
+	* secure/getuser/index.php: Remove unused dbservice() object.
+
+2015-02-04 16:05  tfleury
+
+	* include/util.php: Send error alert email when getUser dbservice
+	  command fails to execute.
+
+2015-02-04 16:03  tfleury
+
+	* include/portalcookie.php: Fixed typo in comment.
+
+2015-02-02 15:00  tfleury
+
+	* authorize/: index-site.php, index.php: Initial check-in of OIDC
+	  authorization endpoint code. Source copied from
+	  /delegate/index-site.php. Currently checks incoming OIDC client
+	  request.  Still need to print out appropriate HTML for Select IdP
+	  and error messages.
+
+2015-01-29 09:59  tfleury
+
+	* include/dbservice.php: Added error code returned by
+	  setTransactionState(). Changed error code name for getClient().
+
+2015-01-29 09:48  tfleury
+
+	* include/content.php: When logging off, should also unset the
+	  ePPN, ePTID, openidID, and oidcID session variables.
+
+2015-01-29 09:17  tfleury
+
+	* include/dbservice.php: Fixed typo in debug output.
+
+2015-01-29 09:08  tfleury
+
+	* include/dbservice.php: Added two new dbservice commands
+	  "getClient" and "setTransactionState" to support OIDC
+	  authorization endpoint.  NOTE: Still need to add error STATUS_
+	  values returned by setTransactionState.
+
+2015-01-29 09:06  tfleury
+
+	* include/content.php: * Added support for authntime, the Unix
+	  timestamp for the user's most recent	 IdP authentication.  *
+	  Added function parameter to force re-authentication when OIDC
+	  client   passes in max_age parameter.  * Added second
+	  myproxy2.cilogon.org server for myproxy-logon command.
+
+2015-01-29 09:03  tfleury
+
+	* include/myproxy.php: Added undocumented MYPROXY_SOCKET_TIMEOUT=1
+	  for shorter timeout when primary myproxy.cilogon.org server is
+	  offline.
+
+2015-01-29 09:01  tfleury
+
+	* me/index.php, include/util.php: Added support for authntime, the
+	  Unix timestamp for the user's most recent IdP authentication.
+
+2015-01-29 09:00  tfleury
+
+	* secure/getuser/index.php: Added second myproxy2.cilogon.org
+	  server for myproxy-logon command.
+
+2015-01-23 13:49  tfleury
+
+	* include/content.php: Fixed typo.
+
+2015-01-23 13:48  tfleury
+
+	* getuser/index.php: Removed unnecessary "require_once" statement
+	  since dbService functionality was moved to util.php.
+
+2015-01-23 09:57  tfleury
+
+	* ecp-test.pl: Create test.cilogon.org specific version of ecp.pl
+	  so both ecp.pl and ecp-test.pl are available on any cilogon.org
+	  server.
+
+2014-12-12 15:09  tfleury
+
+	* ecp.pl: Add text to clarify specifying ECP-enabled IdP endpoint
+	  URL.
+
+2014-12-11 12:28  tfleury
+
+	* include/util.php: Remove "transitional" code for deleting
+	  non-domain-specific cookies which caused problems with Safari on
+	  polo3.
+
+2014-12-10 14:17  tfleury
+
+	* include/phpqrcode.php: Add missing closing php tag.
+
+2014-11-03 11:44  tfleury
+
+	* delegate/: index-site.php, index.php: Added sentence on IdP
+	  Selection Page: 'By proceeding you agree to share your name and
+	  email address with "Portal Name"'.
+
+2014-09-30 09:54  tfleury
+
+	* README.txt: Need to give apache write permission to the 'pkcs12'
+	  directory.
+
+2014-09-27 08:23  tfleury
+
+	* gridshib-ca/GridShibCA-2.0.1.jar: Add new intermediate
+	  certificates to work with the InCommon SHA-2 SSL certificate.
+
+2014-09-25 15:43  tfleury
+
+	* skin/config.xml: Change default behavior for delegation (used by
+	  portals) to skip the "Certificate Lifetime" and "Certificate
+	  Details" pages.
+
+2014-09-19 15:34  tfleury
+
+	* include/idplist.php: For multi-valued SAML attributes, use only
+	  the first one by chopping off everything after the semicolon.
+
+2014-09-12 08:18  tfleury
+
+	* include/content.php: Add "prompt=select_account" as per Google
+	  API docs at
+	  https://developers.google.com/accounts/docs/OAuth2Login#prompt to
+	  allow the user to select a Google account at login time.
+
+2014-09-11 16:00  tfleury
+
+	* getuser/index.php: Add '@' for error suppression, just in case.
+
+2014-09-11 15:34  tfleury
+
+	* getuser/index.php: If email address is not in returned token,
+	  look for email address in the Google+ "me" object instead.
+
+2014-09-11 15:33  tfleury
+
+	* include/content.php: Updated Google logon error message to
+	  include email address as possible cause.
+
+2014-09-11 12:17  tfleury
+
+	* pkcs12/index.html: Re-adding pkcs12 files to try to fix weird cvs
+	  error.
+
+2014-09-11 12:15  tfleury
+
+	* pkcs12/index.html: Removing pkcs12 directory to try to fix some
+	  weird cvs error.
+
+2014-09-05 10:33  tfleury
+
+	* skin/purduegateway/config.xml: Add staging <portal> URL to skin
+	  configuration.
+
+2014-09-04 13:10  tfleury
+
+	* include/twofactor.php: Add 'issuer' label for Google
+	  Authenticator as described in
+	  https://code.google.com/p/google-authenticator/wiki/KeyUriFormat
+	  .
+
+2014-09-03 16:19  tfleury
+
+	* skin/purduegateway/config.xml: Create new skin for Purdue portal
+	  for GlobusOnline.
+
+2014-08-19 09:05  tfleury
+
+	* README.txt: Note that password is empty.
+
+2014-08-19 08:55  tfleury
+
+	* README.txt: Added note about running idplist.cron to generate
+	  idplist.xml after initial checkout.
+
+2014-08-19 08:48  tfleury
+
+	* README.txt: Added info about 'cvs checkout' to allow for future
+	  'cvs update' commands.
+
+2014-08-15 16:35  tfleury
+
+	* ecp.pl: Changed default ECP IdP from ProtectNetwork to UIUC.
+
+2014-08-15 10:55  tfleury
+
+	* getuser/index.php: Removed commented-out debugging code.
+
+2014-08-15 10:51  tfleury
+
+	* cilogon.xrds, delegate/index-site.php, delegate/index.php,
+	  getuser/index.php, gridshib-ca/GridShibCA-2.0.1.jar,
+	  gridshib-ca/GridShibCA.cgi, gridshib-ca/shibCILaunchGSCA.jnlp,
+	  include/content.php, include/dbservice.php, include/openid.php,
+	  include/util.php, secure/getuser/index.php,
+	  skin/config-example.xml, skin/OSG/config.xml,
+	  skin/cvrg/config.xml, skin/eduroam/config.xml,
+	  skin/globusonline/config.xml, skin/globusonline2/config.xml,
+	  skin/iugalaxy/config.xml, util/adduser.php, util/showuser.php:
+	  MAJOR UPDATE - removed OpenID 2.0 support, added Google OIDC
+	  support.  Also now send eppn/eptid/openid/oidc to datastore to
+	  allow for when Google stops sending OpenID 2.0 identifiers.
+
+2014-08-08 14:01  tfleury
+
+	* include/: content.php, openid.php: Remove help text references to
+	  ProtectNetwork, Verisign, and PayPal. Also remove Verisign from
+	  list of available IdPs.
+
+2014-07-31 11:03  tfleury
+
+	* skin/tf/skin.css: Rename the twofactor skin to 'tf' so as not to
+	  collide with the new OA4MP 'twofactor' endpoint.
+
+2014-07-09 16:29  tfleury
+
+	* include/content.php: Add banner text when user is logged in with
+	  ProtectNetwork to notify end of support for PN IdP Dec 2014.
+
+2014-07-09 14:09  tfleury
+
+	* util/idplist.php: Verify that we correctly read in the list of
+	  whitelisted IdPs. Also, don't create the idplist.xml file by
+	  default, only if we read in whitelisted IdPs correctly.
+
+2014-07-09 09:44  tfleury
+
+	* requestidp/index.php: Fix link to route user to non-secure
+	  'testidp' page to use CILogon IdP selection list.
+
+2014-07-07 11:23  tfleury
+
+	* cilogon-basic.info: CILogon Basic is now accredited.
+
+2014-06-30 11:26  tfleury
+
+	* skin/xsede/config.xml: Make UIUC the default IdP in the selection
+	  list.
+
+2014-06-19 11:20  tfleury
+
+	* skin/xsede/skin.css: Make the background of the page the whole
+	  XSEDE background image.
+
+2014-06-19 10:45  tfleury
+
+	* skin/xsede/: background.jpg, config.xml, logo.png, skin.css:
+	  Create new skin for XSEDE User Portal.
+
+2014-06-18 09:42  tfleury
+
+	* include/: idplist.php, util.php, whitelist.php: For atomic
+	  action, save to a temporary file and then rename to final
+	  filename.
+
+2014-06-18 09:41  tfleury
+
+	* include/skin.php: Send Google OIDC Identifier to datastore if
+	  available. Currently ignored by datastore webapp.
+
+2014-06-18 09:40  tfleury
+
+	* include/openid.php: Disable PayPal since OpenID no longer works.
+
+2014-06-18 09:39  tfleury
+
+	* include/content.php: Updated "outage" message.
+
+2014-06-18 09:38  tfleury
+
+	* include/dbservice.php, me/index.php, secure/getuser/index.php:
+	  Send Google OIDC Identifier to datastore if available. Currently
+	  ignored by datastore webapp.
+
+2014-05-20 13:42  tfleury
+
+	* include/content.php: Add fozzie.nics.utk.edu to list of
+	  polo?.cilogon.org hostnames.
+
+2014-05-20 13:42  tfleury
+
+	* cilogon.xrds: Remove polo-staging, add polo3.
+
+2014-04-30 17:55  tfleury
+
+	* include/: content.php, util.php: Move getMachineHostname() from
+	  util.php to content.php since only content.php calls it.
+	  getMachineHostname() now uses an array to map local hostnames
+	  (e.g. polo1.ncsa.illinois.edu) to cilogon-specific URL hostnames
+	  (e.g. polo1.cilogon.org).
+
+2014-04-28 18:03  tfleury
+
+	* include/idplist.php: Check for empty idpdom variable before
+	  writing it to file.
+
+2014-04-28 15:25  tfleury
+
+	* README.txt: No longer need to create symlink for
+	  gridshib-ca-2.0.1 since gridshib-ca is now the default directory.
+
+2014-04-28 15:17  tfleury
+
+	* gridshib-ca/: GridShibCA-2.0.1.jar, GridShibCA.cgi,
+	  gridshibca-client.py, index.html, shibCILaunchGSCA.jnlp: To make
+	  things cleaner on the new polos rename
+	  /var/www/html/gridshib-ca-2.0.1 to /var/www/html/gridshib-ca
+	  (rather than using a symbolic link).
+
+2014-04-25 15:55  tfleury
+
+	* include/openid.php: The database.configuration file is no longer
+	  used.
+
+2014-04-24 16:09  tfleury
+
+	* README.txt: Add README.txt which is also a script to create
+	  symlinks after fresh checkout/export from CVS.
+
+2014-04-24 15:01  tfleury
+
+	* skin/index.html: Forgot to add a file to CVS.
+
+2014-04-23 14:26  tfleury
+
+	* skin/globusonline2/: config.xml, globusonline.png,
+	  logo_globus.png, skin.css: Update globusonline2 skin to match new
+	  globusonline skin.
+
+2014-04-23 14:26  tfleury
+
+	* skin/globusonline/skin.css: Update CSS for submit button to match
+	  updated Globus.org CSS.
+
+2014-04-22 15:28  tfleury
+
+	* skin/globusonline/: config.xml, globusonline.png,
+	  logo_globus.png, skin.css: Update GlobusOnline skin to match the
+	  new Globus branding.
+
+2014-04-21 13:31  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php: Remove unnecesssary '$log = new loggit()'
+	  entries since $log is initialized in content.php.
+
+2014-04-21 13:30  tfleury
+
+	* include/openid.php: Swap PostgreSQL & MySQL if...then blocks.
+	  Oops!
+
+2014-04-21 13:29  tfleury
+
+	* include/content.php: Updated outage message date/time.
+
+2014-04-07 11:22  tfleury
+
+	* include/dbprops.php: Don't rely on the OA4MP cilogon.xml file for
+	  database username/password.  Instead read values from
+	  cilogon.ini.
+
+2014-03-26 15:40  tfleury
+
+	* include/: blacklist.txt, content.php, util.php: Add a global
+	  blacklist.txt file. Any entityIDs listed in this file will be
+	  globally blacklisted, i.e., removed from all skins' IdP selection
+	  lists.
+
+2014-03-26 13:17  tfleury
+
+	* include/dbservice.php, secure/getuser/index.php: Send openid,
+	  eppn, and eptid to database web service.  Extra parameters are
+	  simply ignored by the web service.
+
+2014-03-11 11:07  tfleury
+
+	* include/content.php, secure/getuser/index.php,
+	  skin/config-example.xml, skin/OSG/config.xml: Remove "SHA1"
+	  support in certificates since OSG no longer needs it.
+
+2014-02-13 10:33  tfleury
+
+	* include/cilogon.js, include/content.php, skin/config-example.xml,
+	  skin/DataONE/config.xml, skin/DataONEDev/config.xml,
+	  skin/DataONESandbox/config.xml, skin/DataONEStage/config.xml,
+	  skin/all/config.xml, skin/jws/config.xml: Make "deployjava" a
+	  skin config option so as not to check for installed version of
+	  Java unless explicitly told to do so. Update skins which use the
+	  JWS downloader to use the new "deployjava" config option. This
+	  fixes the issue where PKCS12 cert users see a notice about Java
+	  even though Java is not necessary for their use case.
+
+2014-02-13 10:31  tfleury
+
+	* include/deployJava.js: Checking in latest version available from
+	  http://www.java.com/js/deployJava.js . See
+	  http://docs.oracle.com/javase/6/docs/technotes/guides/jweb/deployment_advice.html
+	  for more information.
+
+2014-02-13 10:29  tfleury
+
+	* skin/OOI/skin.css: Removed extra div.certactionbox entry.
+
+2014-02-04 16:52  tfleury
+
+	* skin/umich/config.xml: Added new skin for UMich to set
+	  "University of Michigan" as the selected IdP, for use with
+	  GlobusOnline endpoints.
+
+2014-01-21 17:04  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php, include/csrf.php, requestidp/index.php,
+	  secure/getuser/index.php, secure/testidp/index.php,
+	  testidp/index.php: In csrf.php, change static (class) methods to
+	  instance methods. Add extra space for Show/Hide Help button since
+	  latest MSIE does not honor force line breaks in Submit buttons.
+
+2014-01-21 17:02  tfleury
+
+	* include/openid.php: Added entry for "Google+" (currently
+	  commented out) to use new Google OAuth 2.0 login method.
+
+2014-01-21 17:02  tfleury
+
+	* include/content.php: Added code to deal with new Google OAuth 2.0
+	  login method. Currently only activated by uncommenting "Google+"
+	  in array in openid.php. Use old Google OpenID method until Google
+	  OAuth 2.0 is not quite so buggy.
+
+2014-01-21 17:00  tfleury
+
+	* include/util.php: Move getMachineHostname from content.php to
+	  util.php.
+
+2014-01-21 16:59  tfleury
+
+	* include/shiberror.php: Rename redirectToGetUser() to
+	  redirectToGetShibUser().
+
+2014-01-21 16:58  tfleury
+
+	* include/idplist.php: Look for InCommon-metadata.xml file in
+	  /var/cache/shibboleth/ instead of /etc/shibboleth/ .
+
+2014-01-21 16:52  tfleury
+
+	* include/cilogon.css, me/index.php: Change 'openiderror' to
+	  'logonerror'.
+
+2014-01-21 16:49  tfleury
+
+	* cilogon.xrds: Removed non *.cilogon.org entries.
+
+2013-11-22 14:59  tfleury
+
+	* delegate/: index-site.php, index.php: Add missing case for
+	  handling Duo Login for "delegate" flow.
+
+2013-11-20 10:49  tfleury
+
+	* skin/ciduke/config.xml: Add new "auto-login/auto-approve" skin
+	  for Duke users of the ci-connect.net portal
+	  (https://portal.duke.ci-connect.net/).
+
+2013-11-07 15:53  tfleury
+
+	* include/ecpidps.txt: Added University of Michigan to list of ECP
+	  IdPs.
+
+2013-10-22 11:08  tfleury
+
+	* include/util.php: Add reverse DNS lookup to email alert.
+
+2013-10-22 11:07  tfleury
+
+	* include/myproxy.php: Remote extra space.
+
+2013-10-11 12:22  tfleury
+
+	* include/content.php: For the delegate case, show the "User
+	  Changed" page even if the skin has been configured to skip all of
+	  the "extra" pages.
+
+2013-10-09 11:46  tfleury
+
+	* example/index.php: Found http://cilogon.org in "examples" page.
+	  Change to https://.
+
+2013-10-04 11:09  tfleury
+
+	* secure/getuser/index.php: Call setMyProxyInfo just before
+	  generating the certificate for the ECP case.
+
+2013-09-16 10:14  tfleury
+
+	* include/ecpidps.txt: Remove Indiana University due to problems
+	  with their campus SSO / Shibboleth integration.
+
+2013-09-16 10:13  tfleury
+
+	* cilogon.xrds: Change domain name from cites.illinois.edu to
+	  ncsa.illinois.edu due to moving servers across campus.
+
+2013-09-04 15:34  tfleury
+
+	* skin/iugalaxy/: NCGAS_Logo_Vertical.png, config.xml, skin.css:
+	  Added new skin for 'iugalaxy' (galaxy.indiana.edu).
+
+2013-09-03 15:40  tfleury
+
+	* include/content.php: Use HOSTNAME rather than 'cilogon.org'.
+
+2013-09-03 15:32  tfleury
+
+	* testidp/index.php: Remove old code that was commented out.
+
+2013-09-03 13:43  tfleury
+
+	* include/util.php: Fix the main class comment block.
+
+2013-08-28 06:53  tfleury
+
+	* include/content.php: Updated service outage message.
+
+2013-08-28 06:53  tfleury
+
+	* include/ecpidps.txt: Added Indiana University to list of ECP
+	  IdPs.
+
+2013-08-20 13:33  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php: CURLOPT_SSL_VERIFYHOST=1 is no longer
+	  supported as of cURL 7.28.1. Now must be set to 0 or 2 (which is
+	  preferred and default).
+
+2013-08-20 13:30  tfleury
+
+	* include/content.php: Updated outage message for upcoming polo
+	  swap.
+
+2013-08-20 13:30  tfleury
+
+	* include/loggit.php: Certain $_SERVER variables were Arrays which
+	  caused error messages in ssl_error_log. Catch them and simply
+	  output "Array" instead.
+
+2013-08-15 15:25  tfleury
+
+	* skin/iugateway/config.xml: Specify two hosts for the
+	  <portallist>.
+
+2013-08-15 15:24  tfleury
+
+	* include/content.php: Updated "system outage" message.
+
+2013-08-15 15:24  tfleury
+
+	* cilogon.xrds: Update domain names for polo2 and polo-staging due
+	  to move from CITES to NPCF.
+
+2013-05-16 15:21  tfleury
+
+	* skin/OSG/skin.css: For OSG skin, use standard PKCS12 "Get New
+	  Certificate" box rather than GridShibCA JWS.
+
+2013-04-18 12:55  tfleury
+
+	* include/content.php, secure/getuser/index.php,
+	  skin/config-example.xml, skin/OSG/config.xml: Add new skin config
+	  option "usesha1" and new skin "sha1". This supplants the hack
+	  that was specific to the OSG skin. Now any skin can specify SHA-1
+	  (instead of SHA-256) when getting a cert from the myproxy server.
+
+2013-04-17 13:55  tfleury
+
+	* skin/LIGO/config.xml: When using LIGO skin, set default IdP to
+	  LIGO in the IdP selection list.
+
+2013-04-17 11:49  tfleury
+
+	* skin/OSG/config.xml: OSG now accepts ProtectNetwork, as stated by
+	  Mine Altunay.
+
+2013-03-26 14:53  tfleury
+
+	* include/forceskin.txt, skin/LIGO/config.xml: Add new config.xml
+	  for LIGO skin to set default AND max cert lifetimes to 72 hours.
+	  Also force use of LIGO skin when LIGO IdP selected.
+
+2013-03-20 15:15  tfleury
+
+	* ecp.pl: Add example for using '--proxyfile' in help text.
+
+2013-03-20 11:00  tfleury
+
+	* ecp.pl: Remove unnecessary commented-out MacOS-specific code.
+
+2013-03-20 10:47  tfleury
+
+	* ecp.pl: Added ability to output generated private key to STDOUT.
+
+2013-03-20 00:58  tfleury
+
+	* ecp.pl: Use 'openssl genrsa' to create the private key. Private
+	  key is written to temp file if '--proxyfile' option is specified.
+	  Unset the 'TMPDIR' environment variable for Mac.
+
+2013-03-19 22:19  tfleury
+
+	* ecp.pl: Add new command line option '--proxyfile' ('-1' for
+	  short) which writes the certificate and key to the Globus proxy
+	  file location (such as /tmp/x509up_u500), and automatically sets
+	  the '--get cert' option.
+
+2013-03-19 14:48  tfleury
+
+	* ecp.pl: Added some more comments.
+
+2013-03-19 13:29  tfleury
+
+	* ecp.pl: Bug fix for when the filename for the cert is the same as
+	  the filename for the key (generated on-the-fly). Now both cert
+	  and key can be written to the same file, cert before key.
+
+2013-03-08 16:22  tfleury
+
+	* delegate/: index-site.php, index.php: Simplify checking for
+	  <hideportalinfo>.
+
+2013-03-08 16:21  tfleury
+
+	* include/content.php: If <allowforceinitialidp> is set, make sure
+	  the portal is in the <portallist> before force redirecting the
+	  user to the <initialidp>.
+
+2013-03-08 16:20  tfleury
+
+	* include/skin.php: Rename portalListed() to inPortalList(), and
+	  fix bug where no <portal>s in the <portallist> would incorrectly
+	  return true for inPortalList().
+
+2013-03-08 16:18  tfleury
+
+	* skin/: config-example.xml, iugateway/config.xml: Add new
+	  <portallistaction> option <allowforceinitialidp> which checks the
+	  <portallist> before redirecting the user to the <initialidp>.
+
+2013-03-08 08:36  tfleury
+
+	* cilogon-basic.crl_url, cilogon-basic.info,
+	  cilogon-ca-certificates.tar.gz, cilogon-openid.crl_url,
+	  cilogon-openid.info, cilogon-silver.crl_url, cilogon-silver.info:
+	  Remove references to crl.doegrids.org due to upcoming retirement
+	  of doegrids.org.
+
+2013-03-06 17:07  tfleury
+
+	* include/content.php: Fix issue with slashes in first/last name by
+	  using a lower-level function of the LDAP library and processing
+	  the subject DN element-by-element.
+
+2013-03-06 16:05  tfleury
+
+	* include/content.php: Fix reformatting of subject DNs for RFC2253.
+
+2013-03-05 10:41  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php, include/content.php: Added new
+	  <forceinitialidp> option to completely bypass the Select IdP
+	  page.  Also moved code from the main "switch" statements (for
+	  both the main CILogon site and the "delegate" CILogon site) into
+	  functions for code reuse.
+
+2013-03-05 10:39  tfleury
+
+	* skin/: config-example.xml, iugateway/config.xml: Added new config
+	  option <forceinitialidp> to immediately redirect to <initialidp>,
+	  bypassing the Select IdP page. Configured new skin for
+	  'iugateway' using the various <force...> config options so that
+	  no CILogon pages are displayed to the user.
+
+2013-03-05 10:38  tfleury
+
+	* skin/bamboo/config.xml: Bamboo config.xml is not needed yet.
+
+2013-02-20 09:44  tfleury
+
+	* index-site.php, index.php, include/content.php,
+	  include/dbservice.php, include/shiberror.php, include/util.php,
+	  me/index.php: Put htmlentities in a util function so as to force
+	  "UTF-8" encoding. Also use iconv() to convert UTF-8 to UTF-7 for
+	  first and last name.
+
+2013-02-07 16:36  tfleury
+
+	* secure/getuser/index.php: Attempt to catch ECP communication by
+	  checking for /secure/getcert/ and return error message rather
+	  than redirect. Also, added log messages for ECP success/failure.
+
+2013-02-07 16:35  tfleury
+
+	* ecp.pl: When HTTP 400 returned, also output any message body.
+
+2013-02-05 08:52  tfleury
+
+	* index-site.php, index.php: Remove unnecessary global statement.
+
+2013-02-05 08:45  tfleury
+
+	* include/csrf.php: Log CSRF check failure.
+
+2013-02-05 08:07  tfleury
+
+	* ecp.pl: Remove Scott citation.
+
+2013-01-16 13:27  tfleury
+
+	* skin/OOI/skin.css: Remove gray border lines as requested by Seman
+	  Said.
+
+2013-01-10 14:08  tfleury
+
+	* skin/OOI/skin.css: Fixed font color for orange banner for OOI
+	  skin.
+
+2013-01-09 16:41  tfleury
+
+	* skin/OOI/: banner.png, ooi-logo.png, skin.css: Updated OOI skin
+	  to match new "dark" theme.
+
+2013-01-03 09:00  tfleury
+
+	* include/ecpidps.txt: Added UIUC to list of ECP-enabled IdPs.
+
+2012-12-11 14:44  tfleury
+
+	* ecp.pl, include/content.php, include/duoconfig.php,
+	  include/twofactor.php, include/util.php,
+	  secure/getuser/index.php: Added two-factor support for ECP.
+
+2012-12-07 15:28  tfleury
+
+	* include/cilogon.css, skin/all/skin.css: Hide "Duo Security"
+	  method in "twofactor" skin (and default skin), but make available
+	  in "all" skin.
+
+2012-12-06 16:33  tfleury
+
+	* include/duoconfig.php: Add comments in header block.
+
+2012-12-06 16:29  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php, include/cilogon.css, include/cilogon.js,
+	  include/content.php, include/csrf.php, include/dbservice.php,
+	  include/ecpidps.txt, include/idplist.php, include/loggit.php,
+	  include/myproxy.php, include/portalcookie.php,
+	  include/shiberror.php, include/skin.php, include/util.php,
+	  me/index.php, requestidp/index.php, secure/getuser/index.php,
+	  secure/testidp/index.php, skin/OSG/skin.css, skin/all/skin.css,
+	  skin/code/skin.css, skin/jws/skin.css, testidp/index.php,
+	  util/showuser.php: Major update. (1) Add two-factor
+	  authentication support. (2) Refactor util.php as a class with
+	  static methods.
+
+2012-12-06 16:27  tfleury
+
+	* include/: Duo-Web-v1.bundled.min.js, Duo.php, Google2FA.php,
+	  phpqrcode.php, duoconfig.php, twofactor.php: Add new classes for
+	  twofactor authentication support.
+
+2012-12-06 16:25  tfleury
+
+	* cilogon.xrds: Omitted polo-staging.cilogon.org from the list.
+
+2012-12-06 16:25  tfleury
+
+	* util/randsidps.php: Add php script to scan idplist.xml file for
+	  IdPs tagged <RandS> and add them to the whitelist of IdPs in the
+	  database (if not yet added).
+
+2012-10-18 11:23  tfleury
+
+	* include/: cilogon.css, content.php: Change page footer to link to
+	  acknowledgements on a separate page
+	  (http://ca.cilogon.org/acknowledgements).
+
+2012-10-08 15:56  tfleury
+
+	* include/content.php: Check IdP list for <silver>. If found,
+	  request silver from IdP.
+
+2012-10-08 15:55  tfleury
+
+	* secure/getuser/index.php: Deleted the $env variable delaration,
+	  but forgot to delete its usage.  Generated warning message in PHP
+	  logs.
+
+2012-09-27 23:24  tfleury
+
+	* ecp.pl: Connect to https://ecp.cilogon.org/secure/getcert/ since
+	  ecp.cilogon.org is now in InCommon metadata. Successful test with
+	  ProtectNetwork.
+
+2012-09-19 10:55  tfleury
+
+	* ecp.pl: Additional error output when fetching list of IdPs.
+
+2012-09-18 13:16  tfleury
+
+	* testidp/index.php: Don't bother with silver for testidp.
+
+2012-09-18 09:31  tfleury
+
+	* include/ecpidps.txt: Added University of Wisconsin-Madison to ECP
+	  list.
+
+2012-09-14 16:41  tfleury
+
+	* ecp.pl: Change ecp endpoint from /secure/getuser/ to
+	  /secure/getcert/ .
+
+2012-09-14 16:01  tfleury
+
+	* include/: content.php, shiberror.php: Change handling of
+	  requesting silver assurance certification. User can still check
+	  "Request Silver" checkbox, but the checkbox is hidden by default.
+	  (It can be shown via CSS.) Also, now check local idplist.xml file
+	  for <Silver> tag (set by scanning InCommon Metadata). This extra
+	  functionality is currently implemented on test.cilogon.org only
+	  (i.e., the code is commented out on polo1/polo2.)
+
+2012-09-14 15:57  tfleury
+
+	* include/idplist.php: Scan the InCommon MetaData for silver
+	  assurance certification and add tag to local idplist.xml file.
+
+2012-09-14 15:56  tfleury
+
+	* include/cilogon.css: Changed the display of the "Request Silver"
+	  checkbox to a CSS option, hidden by default.
+
+2012-09-14 15:54  tfleury
+
+	* skin/: config-example.xml, bamboo/config.xml: Removed the
+	  "requestsilver" skin configuration option. Changed the display of
+	  the "Request Silver" checkbox to a CSS option, hidden by default.
+
+2012-09-14 13:16  tfleury
+
+	* cilogon-ca-certificates.tar.gz, cilogon-globus-example.pem,
+	  cilogon-globus.crl_url, cilogon-globus.crt, cilogon-globus.info,
+	  cilogon-globus.pem, cilogon-globus.signing_policy,
+	  include/content.php: New files added for upcoming CILogon Globus
+	  CA.
+
+2012-08-27 12:55  tfleury
+
+	* include/content.php: Make shib request to
+	  {polo1,polo2}.cilogon.org, but only for a subset of REMOTE_ADDRs.
+
+2012-08-27 12:53  tfleury
+
+	* secure/getuser/index.php: Remove temporary hack for using patched
+	  version of MyProxy 5.5. No longer needed since installed RPM
+	  version of MyProxy is 5.6, which contains command line option for
+	  cert request.
+
+2012-08-22 10:43  tfleury
+
+	* include/content.php: Simplify code handling cilogon.org ->
+	  {polo1|polo2}.cilogon.org URL redirection for Shibboleth.
+
+2012-08-21 21:54  tfleury
+
+	* cilogon.xrds: Add polo1.cilogon.org and polo2.cilogon.org to XRDS
+	  file.
+
+2012-08-18 10:38  tfleury
+
+	* include/content.php: Start requesting the ICAM LoA 1 PAPE policy
+	  since Google fixed the problem on July 19.
+
+2012-08-10 15:37  tfleury
+
+	* testidp/index.php: Revert to the standard "CILogon Service"
+	  graphic header.
+
+2012-08-10 15:33  tfleury
+
+	* include/content.php, testidp/index.php: Update text for
+	  /testidp/.
+
+2012-08-10 15:14  tfleury
+
+	* testidp/index.php: Initial check-in of testidp script which uses
+	  the CILogon Identity Provider Selector (rather than relying on
+	  InCommon WAYF).
+
+2012-08-10 15:01  tfleury
+
+	* include/util.php: Unset host-specific cookie when setting
+	  domain-specific cookie.
+
+2012-08-10 15:00  tfleury
+
+	* include/idplist.php: Added getInCommonIdPs() function to return
+	  list of all InCommon IdPs.
+
+2012-08-10 14:59  tfleury
+
+	* include/content.php: Modified printWAYF so that it can
+	  alternatively list all InCommon IdPs (rather than just
+	  whitelisted IdPs).
+
+2012-08-10 14:56  tfleury
+
+	* me/index.php: Add explanation text for certlifetime and
+	  certmultiplier.
+
+2012-08-10 12:39  tfleury
+
+	* skin/: DataONEDev/blue-button.png, DataONEDev/config.xml,
+	  DataONEDev/logo.png, DataONEDev/preface-wrapper-bg.png,
+	  DataONEDev/skin.css, DataONESandbox/blue-button.png,
+	  DataONESandbox/config.xml, DataONESandbox/logo.png,
+	  DataONESandbox/preface-wrapper-bg.png, DataONESandbox/skin.css,
+	  DataONEStage/blue-button.png, DataONEStage/config.xml,
+	  DataONEStage/logo.png, DataONEStage/preface-wrapper-bg.png,
+	  DataONEStage/skin.css: Copy DataONE development skins to polo1
+	  and polo2.
+
+2012-08-10 08:26  tfleury
+
+	* images/cilogon-header.png: Add new "CILogon" header (without the
+	  trailing "Service").
+
+2012-08-09 14:57  tfleury
+
+	* me/index.php: Changed title text for 'idp'.
+
+2012-08-09 14:52  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php, include/content.php, include/csrf.php,
+	  include/util.php: Move setcookie() calls to setCookieVar()
+	  function in util.php.  Set a domain for cookies.
+
+2012-08-09 14:51  tfleury
+
+	* secure/getuser/index.php: Removed unused 'authncontext' session
+	  variable.
+
+2012-08-09 14:50  tfleury
+
+	* include/portalcookie.php: Added 'toString' method to allow for
+	  text output of portalparams cookie.
+
+2012-08-09 14:48  tfleury
+
+	* me/index.php: Added new 'me' page to manage/delete browser
+	  cookies and session variables.
+
+2012-07-25 16:33  tfleury
+
+	* env3.php, delegate/index-site.php, delegate/index.php,
+	  include/cilogon.js, include/content.php, requestidp/index.php,
+	  secure/env3.php, secure/testidp/index.php, util/adduser.php,
+	  util/idplist.php, util/whitelist.php: Fix opening bracket; move
+	  to same line as "function" for consistency.
+
+2012-07-25 16:32  tfleury
+
+	* include/: openid.php, util.php: Read storage type for PHP
+	  sessions and OpenID state sessions from
+	  /var/www/config/cilogon.ini configuration file.
+
+2012-07-25 13:53  tfleury
+
+	* include/shiberror.php: Add extra output on shib error to show
+	  that forceauthn was requested.
+
+2012-07-24 12:28  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php, include/content.php, include/dbprops.php,
+	  include/dbservice.php, include/openid.php, include/skin.php,
+	  include/timeit.php, secure/getuser/index.php: Use is_null()
+	  function instead of comparing value to 'null'.
+
+2012-07-24 12:26  tfleury
+
+	* include/: sessionmgr.php, util.php: Initial check-in of
+	  sessionmgr.php to save PHP session data to MySQL. This can be
+	  enabled by calling startPHPSession(true), or by changing the
+	  default value of $usemysql in that function.
+
+2012-07-24 12:25  tfleury
+
+	* env3.php, secure/env3.php: Call startPHPSession() in util.php so
+	  we can read session data from file or MySQL as necessary.
+
+2012-07-19 15:22  tfleury
+
+	* skin/globusonline2/: config.xml, globusonline.png, skin.css:
+	  Created new skin 'globusonline2' which is a duplicate of the
+	  'globusonline' skin with the addition of <forceauthn> config
+	  option.
+
+2012-07-19 11:42  tfleury
+
+	* skin/globusonline/config.xml: Removed <forceauthn> option from
+	  GlobusOnline skin.
+
+2012-07-12 13:48  tfleury
+
+	* include/: dbprops.php, openid.php: Moved reading of the database
+	  config file to a new class dbprops.php.  Recoded openid.php's
+	  getDBStorage() to use new dbprops class.
+
+2012-07-11 12:19  tfleury
+
+	* include/util.php: Print more PHP session variables in email
+	  alerts.
+
+2012-07-11 12:19  tfleury
+
+	* include/shiberror.php: Send Shibboleth errors to
+	  alerts@cilogon.org (rather than tfleury).
+
+2012-07-11 06:58  tfleury
+
+	* include/openid.php: Read database config info from new
+	  /var/www/config/cilogon.xml file. Use MySQL for PHP state info
+	  (instead of PostgreSQL).
+
+2012-07-11 06:57  tfleury
+
+	* include/content.php: Commented out PAPE openid-trust-level1
+	  extension due to Google no longer accepting it.
+
+2012-06-29 08:34  tfleury
+
+	* include/content.php: Update outage text to be the same on all
+	  polos.
+
+2012-06-29 08:33  tfleury
+
+	* include/dbservice.php: Change dbservice to use the new (cilogon2)
+	  oauth webapp interface.
+
+2012-06-29 08:23  tfleury
+
+	* cilogon.xrds: Fixed problem with Google not allowing
+	  polo1.cites.illionis.edu to authenticate by listing all hostnames
+	  in cilogon.xrds file.
+
+2012-06-21 13:27  tfleury
+
+	* include/cilogon.js: Ran JavaScript code through JSHint.
+
+2012-06-15 10:49  tfleury
+
+	* index-site.php, index.php, include/cilogon.js: Fixed missing
+	  closing quote.
+
+2012-06-15 09:11  tfleury
+
+	* skin/all/skin.css: When using the 'all' skin, display the
+	  'Powered by' logo as a reminder that a skin is being used.
+
+2012-06-15 08:43  tfleury
+
+	* skin/all/config.xml: Set <forceauthn> option on the 'all' skin
+	  for demonstration purposes.
+
+2012-06-14 18:28  tfleury
+
+	* skin/globusonline/config.xml: Add <forceauthn> option for
+	  globusonline skin.
+
+2012-06-14 18:24  tfleury
+
+	* include/content.php, skin/config-example.xml: Add code to handle
+	  <forceauthn> for OpenID IdPs by setting max_auth_age=0 in a PAPE
+	  extension.
+
+2012-06-13 14:54  tfleury
+
+	* include/content.php, skin/config-example.xml: Add new skin config
+	  parameter <forceauthn> which makes a user reauthenticate at a
+	  Shibboleth IdP every time by sending "forceAuthn=true" when
+	  initiating the session. See
+	  https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPSessionCreationParameters
+	  for documentation.
+
+2012-06-01 16:34  tfleury
+
+	* secure/getuser/index.php: If user has only a single name (first
+	  or last), copy that name into the other one. Needed for users
+	  with just a first or last name because the database requires
+	  non-empty first AND last names.
+
+2012-05-22 15:51  tfleury
+
+	* include/shiberror.php: Wrap shibboleth errors in htmlentities to
+	  prevent script attacks.
+
+2012-05-22 11:16  tfleury
+
+	* include/idplist.php: When an IdP sends multiple email addresses,
+	  they are concatenated together with a semicolon. This breaks the
+	  email address validator. So check for a semicolon and use only
+	  the first of multiple email addresses.
+
+2012-05-11 16:55  tfleury
+
+	* include/content.php: Add a few more htmlentities() calls. Also,
+	  check new user DNs for htmlentities. If found, send an email
+	  alert.
+
+2012-05-11 15:19  tfleury
+
+	* index-site.php, index.php, include/content.php: Call
+	  htmlentities() on the DN so that weird characters are rendered
+	  correctly in browser.
+
+2012-04-25 11:15  tfleury
+
+	* secure/getuser/index.php: Similar to getopeniduser, if there is
+	  only a single name in displayName, copy first name into last
+	  name.
+
+2012-04-25 11:11  tfleury
+
+	* secure/getuser/index.php: When only displayName is released
+	  (i.e., neither of givenName or sn is released), split the
+	  displayName as first word = first name, all remaining words =
+	  last name.
+
+2012-04-19 17:36  tfleury
+
+	* include/shiberror.php: Stop accessing null data which causes "PHP
+	  Notice" messages in /var/log/httpd/ssl_error_log.
+
+2012-04-19 10:41  tfleury
+
+	* include/content.php: Updated outage banner text.
+
+2012-04-04 13:22  tfleury
+
+	* requestidp/index.php, secure/testidp/index.php: Add HOSTNAME to
+	  email subject so we know which machine generated the message.
+
+2012-03-30 14:03  tfleury
+
+	* skin/cvrg/config.xml: Change <idpwhitelist> to <idpblacklist>,
+	  and make cert lifetime 3 hours.
+
+2012-03-29 17:33  tfleury
+
+	* skin/cvrg/config.xml: Remove extra comment block at top of file.
+
+2012-03-29 17:32  tfleury
+
+	* skin/cvrg/config.xml: Jim suggested some additions to the
+	  config.xml file. They are currently commented out awaiting
+	  approval by Chris Jurado.
+
+2012-03-29 17:23  tfleury
+
+	* skin/config-example.xml: Fix comment for <idpwhitelist> due to
+	  new idplist.xml file.
+
+2012-03-29 17:10  tfleury
+
+	* skin/bamboo/skin.css: Removed a couple unnecessary lines.
+
+2012-03-29 16:55  tfleury
+
+	* skin/cvrg/: company_logo.png, config.xml, skin.css: Created new
+	  skin 'cvrg' for CardioVascular Research Grid
+	  (https://portal.cvrgrid.org).
+
+2012-03-29 14:47  tfleury
+
+	* secure/testidp/index.php: Fixed bug in testidp. Should call
+	  "isWhitelisted()" instead of "exists()".
+
+2012-03-29 14:47  tfleury
+
+	* include/idplist.php: Updated comments.
+
+2012-03-29 14:21  tfleury
+
+	* skin/bamboo/skin.css: Add space above "Powered By" logo to better
+	  align with "Project bamboo" logo.
+
+2012-03-29 13:20  tfleury
+
+	* skin/bamboo/: bamboo-logo.jpg, config.xml, header-bkgd.gif,
+	  skin.css: Created new skin 'bamboo' for
+	  http://www.projectbamboo.org/ . All entries in config.xml are
+	  currently commented out.
+
+2012-03-26 17:11  tfleury
+
+	* secure/getuser/index.php: Add ePPN, ePTID, and openidID as
+	  session variables so they can be passed to MyProxy. Also
+	  reorganize setting/unsetting of session variables so that
+	  get(shib)user and getopeniduser are more similar.
+
+2012-03-26 17:10  tfleury
+
+	* include/content.php: Updated BANNER outage message content.
+
+2012-03-26 17:09  tfleury
+
+	* include/skin.php: Add ePPN, ePTID, and openidID to the "info"
+	  parameter passed to MyProxy.
+
+2012-03-26 17:08  tfleury
+
+	* delegate/: index-site.php, index.php: Added code to scan
+	  "tempcred" for "delegate2" to use new OA4MP servlet.
+
+2012-03-26 17:06  tfleury
+
+	* index-site.php, index.php, include/shiberror.php: Added code to
+	  handle Shibboleth SP errors when configured with a
+	  "redirectErrors" URL.
+
+2012-03-16 16:55  tfleury
+
+	* images/poweredby32.png, include/content.php,
+	  skin/config-example.xml, skin/globusonline/config.xml,
+	  skin/globusonline/skin.css: Allow specifying a different "Powered
+	  By CILogon" icon via skin's config.xml file. Updated globusonline
+	  skin to use squater "Powered By" icon in upper-right corner.
+
+2012-03-09 11:11  tfleury
+
+	* skin/globusonline/: globusonline.png, skin.css: Created new skin
+	  for globusonline.org.
+
+2012-03-06 16:28  tfleury
+
+	* skin/config-example.xml: Updated URLs for the OpenID IdPs to
+	  match include/openid.php URLs.
+
+2012-03-06 16:27  tfleury
+
+	* skin/globusonline/config.xml: Created config.xml file for
+	  globusonline.
+
+2012-03-06 14:22  tfleury
+
+	* include/dbservice.php: Can now change the dbservice URL via a
+	  function call.
+
+2012-02-23 09:55  tfleury
+
+	* ecp.pl: Make the default IdP a configurable constant.
+
+2012-02-23 09:44  tfleury
+
+	* ecp.pl: Forgot to increment the version number.
+
+2012-02-23 09:43  tfleury
+
+	* ecp.pl: Added a bit more debugging output.
+
+2012-02-03 15:01  tfleury
+
+	* example/index.php: Fix bad formatting of <hr> tags.
+
+2012-02-03 11:42  tfleury
+
+	* secure/getuser/index.php: Remove extra space in error email.
+
+2012-01-26 14:36  tfleury
+
+	* include/util.php: Allow setting destination for email alerts.
+
+2012-01-26 11:17  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php, include/content.php, include/dbservice.php,
+	  include/idplist.php, include/incommon.php, include/shib.php,
+	  include/util.php, include/whitelist.php, requestidp/index.php,
+	  secure/getuser/index.php, secure/testidp/index.php,
+	  skin/config-example.xml, util/idplist.php, util/whiteidps.php:
+	  Major rewrite of handling InCommon Metadata.
+
+2012-01-23 17:15  tfleury
+
+	* cilogon.xml: Pull out the latest cilogon.org block from the
+	  InCommon-metadata.xml.
+
+2012-01-17 16:52  tfleury
+
+	* index-maint.php, include/content.php: Made the index-maint.php
+	  page a bit nicer looking.
+
+2011-12-16 15:16  tfleury
+
+	* secure/getuser/index.php: Fix typo: should be $location instead
+	  of $responseurl.
+
+2011-12-05 17:12  tfleury
+
+	* skin/OSG/config.xml: Had previously commented out Google from
+	  blacklist for testing purposes. The main cilogon.org site was not
+	  affected.
+
+2011-12-05 17:09  tfleury
+
+	* include/content.php: Special hack for OSG to get SHA-1 signed
+	  certificates.
+
+2011-12-05 17:08  tfleury
+
+	* include/loggit.php: Add note to self to fix printing of session
+	  vars to log when we move to storing PHP session to database.
+
+2011-12-05 17:07  tfleury
+
+	* secure/getuser/index.php: Special hack for OSG to get SHA-1
+	  signed certificates. Also remove non-used code to print out
+	  server vars.
+
+2011-12-05 17:06  tfleury
+
+	* skin/eduroam/config.xml: When I made the change to all https://
+	  URLs for the OpenID providers, I neglected to update the
+	  blacklist for the eduroam skin.
+
+2011-12-05 17:05  tfleury
+
+	* skin/OSG/config.xml: For the OSG skin, blacklist all OpenID IdPs
+	  and ProtectNetwork.
+
+2011-11-15 13:53  tfleury
+
+	* include/: csrf.php, dbservice.php, portalcookie.php, skin.php,
+	  timeit.php: Add missing 'php' to the opening '<?' tag.  Required
+	  for PHP 5.3.x.
+
+2011-10-28 11:23  tfleury
+
+	* skin/DataONE/config.xml: Added configuration to DataONE skin to
+	  skip delegate confirmation pages.
+
+2011-10-26 10:07  tfleury
+
+	* delegate/index-site.php, delegate/index.php, index-site.php,
+	  index.php: Check for the skin's configured minlifetime and
+	  maxlifetime for the various credential fetching methods.
+
+2011-10-26 10:06  tfleury
+
+	* secure/getuser/index.php: Check if a particular IdP should be
+	  "forced" to use a specific skin.  When fetching a certificate or
+	  PKCS12 credential via ECP, check for lifetime within minlifetime
+	  and maxlifetime.
+
+2011-10-26 10:04  tfleury
+
+	* include/content.php: Read minlifetime and maxlifetime from skin.
+	  Added function to check if a particular IdP should be "forced" to
+	  use a specific skin.
+
+2011-10-26 10:03  tfleury
+
+	* include/openid.php: Added support for MySQL. Untested.
+
+2011-10-26 10:02  tfleury
+
+	* include/skin.php: Can now read default/site-wide config.xml from
+	  the root 'skin' directory.
+
+2011-10-26 10:02  tfleury
+
+	* include/forceskin.txt: Added placeholder for IdPs which should be
+	  "forced" to use a specific skin.
+
+2011-10-26 10:01  tfleury
+
+	* include/cilogon.js: Also check for minlifetime now.
+
+2011-10-26 10:01  tfleury
+
+	* include/cilogon.css: Removed unneeded CSS for the no-longer
+	  displayed "Help Me Choose" button.
+
+2011-10-26 10:00  tfleury
+
+	* skin/config.xml: Added a placeholder for the site-wide
+	  configuration file.
+
+2011-10-26 09:59  tfleury
+
+	* skin/config-example.xml: Added new entries for minlifetime and
+	  maxlifetime, for the various credential fetching methods.
+
+2011-10-26 09:56  tfleury
+
+	* skin/LIGO/: logo.png, skin.css: Added new initial skin for LIGO.
+	  Will require future tweaking.
+
+2011-09-29 10:37  tfleury
+
+	* include/content.php: Fixed typo.
+
+2011-09-29 10:35  tfleury
+
+	* index-site.php, index.php, include/content.php,
+	  skin/config-example.xml, skin/DataONE/config.xml: Added a new
+	  skin config option <dnformat> for DataONE. This allows the
+	  certificate subject DN to be displayed in RFC2253 format.
+
+2011-09-23 12:20  tfleury
+
+	* include/content.php: Print a more precise error message to user
+	  when an IdP does not provide full name and/or email address.
+
+2011-09-19 15:39  tfleury
+
+	* include/content.php: Modified OpenID Error message to include
+	  "help@cilogon.org".
+
+2011-09-16 12:59  tfleury
+
+	* include/openid.php: Changed OpenId provider endpoints.  Made them
+	  all "https" (instead of "http") and also changed "google.com" to
+	  "www.google.com" as per Google's latest documentation. Patched
+	  getopeniduser to map new OpenId provider endpoints to old
+	  (non-https) URLs, so no changes to database needed.
+
+2011-09-15 14:11  tfleury
+
+	* include/cilogon.js: Made a few code changes as suggested by
+	  jslint.com.
+
+2011-09-15 13:49  tfleury
+
+	* delegate/index-site.php, delegate/index.php, include/cilogon.js:
+	  Set text focus to lifetime text input field on "allow or deny
+	  delegation" page.
+
+2011-09-12 10:00  tfleury
+
+	* InCommon-Server-CA.tar.gz: Added file for
+	  http://www.cilogon.org/globus-with-incommon-ca .
+
+2011-09-09 14:05  tfleury
+
+	* cilogon-silver.info: Jim Basney updated status from experimental
+	  to accredited.
+
+2011-09-06 14:54  tfleury
+
+	* ecp.pl, include/ecpidps.txt: Remove CILogon Test IdP (Boingo)
+	  from ECP IdP list.  Also make ProtectNetwork the default choice
+	  in the ecp.pl script.
+
+2011-09-02 13:14  tfleury
+
+	* delegate/: index-site.php, index.php: Increase curl timeout to 35
+	  seconds to allow for delegate servlet timeout of 30 seconds.
+
+2011-09-01 10:09  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php: For Opera, additionally replace "\n" and "\r"
+	  with space (rather than just "\r\n").
+
+2011-08-26 16:13  tfleury
+
+	* images/blackflash.gif, include/cilogon.css: Make "Show/Hide Help"
+	  button flash every 10 seconds via an animated gif background.
+
+2011-08-26 14:28  tfleury
+
+	* ecp.pl: Set access to the private key for user only.
+
+2011-08-26 13:44  tfleury
+
+	* delegate/: index-site.php, index.php: Added note about "back"
+	  button.
+
+2011-08-26 10:13  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php, include/dbservice.php, include/myproxy.php,
+	  include/util.php, secure/getuser/index.php: Rewrite the error
+	  email alerting code so that it is centralized. Also myproxy
+	  getcert errors now send an alert email.
+
+2011-08-26 10:13  tfleury
+
+	* include/ecpidps.txt: Rename LTERN to LTER Network.
+
+2011-08-25 16:21  tfleury
+
+	* include/ecpidps.txt: Added ProtectNetwork to the list of
+	  ECP-enabled IdPs.
+
+2011-08-17 11:29  tfleury
+
+	* delegate/index-site.php, delegate/index.php, include/content.php,
+	  skin/config-example.xml, skin/OOI/config.xml: Changed the options
+	  for the <delegate> block in the skin's config.xml file.  Now have
+	  <initial...> and <force...> parameters for lifetime and remember.
+	  The <initial..> options set the cookies for the portal, while
+	  the <force...> options override the portal cookies.
+
+2011-08-12 14:53  tfleury
+
+	* include/cilogon.css: Add a little top/bottom padding to help
+	  button.
+
+2011-08-12 14:30  tfleury
+
+	* include/cilogon.css: Make the help button background black, and
+	  make the font bigger.
+
+2011-08-12 13:57  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php: Send alert on curl error.
+
+2011-08-12 13:57  tfleury
+
+	* include/: dbservice.php, skin.php, util.php: Forgot to add
+	  dbservice.php before!  Specifying skin with the cilogon_skin is
+	  now case-insensitive.  Send alert on curl error.
+
+2011-08-11 09:46  tfleury
+
+	* include/ecpidps.txt: Added University of Chicago to list of ECP
+	  IdPs.
+
+2011-08-11 09:40  tfleury
+
+	* skin/UCSD/: body_gradient.gif, buttonbg.png, config.xml,
+	  skin.css, ucsd_logo_screen.gif: Add a new skin for UCSD.
+
+2011-08-11 09:39  tfleury
+
+	* util/adduser.php: Don't allow the 2 parameter case anymore since
+	  OpenID now also requires all 6 parameters when changing/adding a
+	  user in/to the database.
+
+2011-08-11 09:38  tfleury
+
+	* skin/OSG/config.xml: Allow all IdPs for OSG skin.
+
+2011-08-11 09:36  tfleury
+
+	* include/cilogon.js: When there is just one IdP in the list, don't
+	  show the "Search" box.
+
+2011-08-11 09:36  tfleury
+
+	* include/cilogon.css, skin/DataONE/skin.css, skin/OOI/skin.css:
+	  Removed "allowdiv" specific stuff since that class is no longer
+	  used.
+
+2011-08-09 14:41  tfleury
+
+	* secure/getuser/index.php: Changed the destination email for
+	  errors back to help@cilogon.org.
+
+2011-08-08 14:48  tfleury
+
+	* delegate/: index-site.php, index.php: Move the log statement up.
+
+2011-08-02 14:30  tfleury
+
+	* include/ecpidps.txt: Add University of Washington to the list of
+	  ECP-enabled IdPs.
+
+2011-08-02 11:29  tfleury
+
+	* include/ecpidps.txt: Added 'LTERN IdP' to the list of ECP-enabled
+	  IdPs.
+
+2011-08-01 10:53  tfleury
+
+	* secure/getuser/index.php: When a user hits getopeniduser or
+	  secure/getuser without the proper form varibles submitted, return
+	  the user to the correct "top level".	This should be either
+	  https://cilogon.org/ or https://cilogon.org/delegate/ .
+
+2011-07-29 18:07  tfleury
+
+	* ecp.pl: Explicitly require Crypt::SSLeay for https:// support.
+	  Also now have --skipssl option to bypass SSL/https hostname
+	  checking.
+
+2011-07-29 17:27  tfleury
+
+	* secure/getuser/index.php: Going to /secure/getuser/ or
+	  /getopeniduser/ without the correct form variables (say when the
+	  user hits the back button or navigates there directly) now
+	  redirects to the main page rather than showing a list of server
+	  and environment variables.
+
+2011-07-29 17:26  tfleury
+
+	* ecp.pl: Move the no check SSL CA cert hack to the top of the
+	  script.
+
+2011-07-28 13:51  tfleury
+
+	* ecp.pl: Removed POD-style comments from subroutines. Fixed
+	  $maxlifetime undefined warning. Set default output of PKCS12 to
+	  usercred.p12 instead of STDOUT.
+
+2011-07-28 13:50  tfleury
+
+	* include/ecpidps.txt: Removed the LIGO test IdP from the list.
+
+2011-07-26 13:52  tfleury
+
+	* ecp.pl, include/ecpidps.txt: Initial check-in of the Perl ECP
+	  client. Need to add more ECP-enabled IdPs to the ecpidps.txt
+	  file, and change the SP from test.cilogon.org to cilogon.org.
+
+2011-07-25 13:13  tfleury
+
+	* delegate/: index-site.php, index.php: Send "cilogon_info=..." to
+	  delegation/authorized servlet.
+
+2011-07-15 11:27  tfleury
+
+	* skin/OOI/config.xml: Change portallist to allow
+	  *.oceanobservatories.org instead of just ion.
+
+2011-07-13 11:55  tfleury
+
+	* include/content.php: When the skin is configured to skip the
+	  Certificate Lifetime page (for the 'delegate' case), the New User
+	  and User Changed pages should also be skipped.
+
+2011-07-13 11:21  tfleury
+
+	* delegate/: index-site.php, index.php: Append "?reason=cancel" to
+	  failure URL so portal can process the "Cancel" button (for OOI).
+
+2011-07-13 11:20  tfleury
+
+	* skin/OOI/: G1123-Wire-Waves-White-Wide.png, ooi-logo.png,
+	  skin.css: Updated OOI skin to move waves up to the top of the
+	  page (instead of in the main body of the page).
+
+2011-07-11 11:23  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php, include/content.php, skin/config-example.xml,
+	  skin/OOI/G1123-Wire-Waves-White-Wide.png, skin/OOI/config.xml,
+	  skin/OOI/ooi-logo.png, skin/OOI/skin.css: Added OOI-requested
+	  enhancements and updated OOI skin.
+
+2011-07-08 15:23  tfleury
+
+	* include/skin.php: Added code to handle new <portallist>
+	  config.xml option.  Also renamed <whitelist> and <blacklist> to
+	  <idpwhitelist> and <idpblacklist>.
+
+2011-07-08 15:23  tfleury
+
+	* include/cilogon.css: Added hidden "Cancel" button on WAYF.
+
+2011-07-08 15:22  tfleury
+
+	* include/content.php: Rename <whitelist> and <blacklist> to
+	  <idpwhitelist> and <idpblacklist>.  Also output hidden "Cancel"
+	  button for the WAYF.
+
+2011-07-08 15:20  tfleury
+
+	* delegate/: index-site.php, index.php: Added "Cancel" button
+	  functionality for delegate WAYF.  Also hide Portal Info box for
+	  portals listed in the skin config.xml file.
+
+2011-07-08 15:17  tfleury
+
+	* skin/: config-example.xml, OOI/config.xml, OOI/skin.css,
+	  OSG/config.xml, eduroam/config.xml: Added new options
+	  <portallist> and <portallistaction> which allows for special
+	  features on a per-portal basis (rather than skin-wide).  Also
+	  renamed <whitelist> and <blacklist> to <idpwhitelist> and
+	  <idpblacklist>.
+
+2011-07-08 15:16  tfleury
+
+	* index-site.php, index.php: If there is a "Cancel" button on the
+	  WAYF, simply redirect to Google for the default CILogon site.
+
+2011-07-06 13:25  tfleury
+
+	* include/content.php: When user has no first/last name at Google,
+	  print nicer error message with link to Google Account profile
+	  page, and allow user to try to "Log On" again.
+
+2011-07-06 13:23  tfleury
+
+	* secure/getuser/index.php: Put HOSTNAME and IdP name on subject
+	  line for error messages.
+
+2011-06-20 13:32  tfleury
+
+	* skin/DataONE/: config.xml, skin.css: For DataONE, hide the
+	  "Lifetime" input field and set the default lifetime to 18 hours.
+
+2011-06-20 13:30  tfleury
+
+	* index-site.php, index.php, include/cilogon.css,
+	  skin/all/skin.css: Distinguish between the two lifetime
+	  paragraphs, one for PKCS12 certs and one for GridShib-CA certs,
+	  so either can be hidden.
+
+2011-06-14 10:04  tfleury
+
+	* logo: 'logo' is a symlink to images/cilogon-ci-80-w.png for
+	  InCommon metadata.
+
+2011-06-14 09:58  tfleury
+
+	* images/cilogon-ci-80-w.png: Created new 80 pixel-high CILogon
+	  header logo for InCommon metadata.
+
+2011-05-25 11:19  tfleury
+
+	* secure/getuser/index.php: Forgot to change the 'split' character
+	  from \t to \s.
+
+2011-05-23 15:21  tfleury
+
+	* index-site.php, index.php, include/util.php: Revert to calling
+	  startPHPSession(), but fix that utility call so as NOT to first
+	  check session_id().  Rather, simply tall session_start(), but
+	  with error reporting turned off.  This will keep the same session
+	  ID if already set.
+
+2011-05-22 01:23  tfleury
+
+	* index-site.php, index.php, include/content.php: Change separator
+	  character from tab to space for 'activation' and 'p12' PHP
+	  session variables.  Also, must call "start_session()" instead of
+	  "startPHPSession()" in order to keep the Activation Code in the
+	  PHP session.	Need to investigate the reason for this.
+
+2011-05-19 14:59  tfleury
+
+	* index-site.php, index.php, include/content.php: Move generateP12
+	  from main index-site.php to content.php, so it can be called by
+	  the secure/getuser/ script.
+
+2011-05-19 14:58  tfleury
+
+	* include/myproxy.php: Add support for certreq option for
+	  myproxy-logon, to be used by ECP clients.
+
+2011-05-19 14:57  tfleury
+
+	* include/skin.php: Per Jim Basney, add "?vo=..." URL option as
+	  alias for "?skin=...".
+
+2011-05-19 14:56  tfleury
+
+	* delegate/: index-site.php, index.php: Add cilogon_info parameter
+	  to the delegation/authorized servlet call.  Note that right now
+	  that parameter is always empty, pending support for it to be
+	  added to the servlet by Jeff.
+
+2011-05-19 14:46  tfleury
+
+	* secure/getuser/index.php: Complete refactor of getuser to allow
+	  for ECP clients.  ECP client can now fetch PKCS12 credential, or
+	  certificate using certreq as input.
+
+2011-05-13 15:07  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php, include/cilogon.css, include/content.php,
+	  include/skin.php, secure/getuser/index.php,
+	  skin/DataONE/skin.css, skin/OOI/skin.css, skin/OSG/skin.css,
+	  skin/eduroam/skin.css: Added a "Show Help" / "Hide Help" button
+	  to toggle the display of help text.
+
+2011-05-13 15:07  tfleury
+
+	* requestidp/index.php: Rearranged the paragraphs to put the "test
+	  your IdP" link nearer the top.
+
+2011-04-21 14:04  tfleury
+
+	* include/openid.php: Remove Yahoo from OpenID providers so as to
+	  be compliant with ICAM LOA 1 with remaining OpenID providers.
+
+2011-04-04 18:25  tfleury
+
+	* index-site.php, index.php: The URL for the PKCS12 download link
+	  is now machine-specific (e.g.  polo1.cilogon.org).
+
+2011-04-04 15:57  tfleury
+
+	* include/openid.php: Added PayPal OpenID authentication.
+
+2011-03-31 14:42  tfleury
+
+	* index-site.php, index.php, include/content.php,
+	  secure/getuser/index.php: Updated OpenID policy to fetch
+	  first/last name and email address and store these in the
+	  database.  Also updated MyProxy config for OpenID to issue certs
+	  with DN and subjectAltName similar to Basic and Silver.
+
+2011-03-30 14:17  tfleury
+
+	* include/content.php: Stopped using the OpenID box a long time
+	  ago.	Remove unneeded CSS.
+
+2011-03-23 18:13  tfleury
+
+	* skin/config-example.xml: Restore the config values to the
+	  defaults.
+
+2011-03-23 18:05  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php, include/cilogon.css, include/content.php,
+	  include/openid.php, include/skin.php, skin/config-example.xml,
+	  skin/DataONE/skin.css, skin/OOI/config.xml, skin/OSG/config.xml,
+	  skin/eduroam/config.xml: Created new "skin.php" class to read in
+	  CSS and config.xml for a skin. Added new skin configuration
+	  options for both 'normal' site and 'delegate' site.  (Config for
+	  OOI now auto-skips the approval page.) A config-example.xml file
+	  is available in /var/www/html/skin/.	Added Portal Info table to
+	  WAYF page for delegate site, which can be hidden via CSS.
+
+2011-03-17 17:02  tfleury
+
+	* skin/: OSG/config.xml, OSG/skin.css, OSG/template_02.gif,
+	  eduroam/config.xml, eduroam/logo.gif, eduroam/skin.css: Added two
+	  new skins for OSG and eduroam.
+
+2011-03-17 16:54  tfleury
+
+	* include/cilogon.js: Use "try...catch" to overcome MSIE problem.
+
+2011-03-17 16:20  tfleury
+
+	* include/cilogon.js: JavaScipt bug fixes for MSIE.
+
+2011-03-15 14:42  tfleury
+
+	* index-site.php, index.php: Call startPHPSession() for
+	  consistency.
+
+2011-03-15 14:41  tfleury
+
+	* include/: content.php, skin.php: Created new 'skin' class to
+	  handle reading not only CSS for a skin, but also configuration
+	  options.  New options include whitelist, blacklist, and
+	  defaultidp.
+
+2011-03-15 14:40  tfleury
+
+	* include/shib.php: ePTID now set from HTTP_PERSISTENT_ID rather
+	  than HTTP_TARGETED_ID.
+
+2011-03-15 14:38  tfleury
+
+	* skin/DataONE/skin.css, skin/OOI/skin.css, include/cilogon.css:
+	  Display of the "Powered by CILogon" is now controlled via CSS.
+
+2011-03-07 15:07  tfleury
+
+	* include/content.php: Make 'viewport' slightly smaller for Jim's
+	  iPhone.
+
+2011-03-02 16:45  tfleury
+
+	* index-site.php, index.php: Added title text to the Get New
+	  Certificate box, and moved Certificate Lifetime below the two
+	  password boxes.
+
+2011-03-02 16:45  tfleury
+
+	* skin/OOI/skin.css: Removed "Activation Token" from OOI skin.
+
+2011-03-02 15:34  tfleury
+
+	* index-maint.php: Change wait time to '15 minutes'.
+
+2011-03-02 10:48  tfleury
+
+	* include/: cilogon.js, content.php: Added check for Safari on Mac
+	  for the "ondblclick" JavaScript action in the WAYF <select> list.
+	  Safari on Mac does a double-click even on the scroll arrows,
+	  which is bad.  So ignore double-clicks for Safari on Mac.
+
+2011-03-02 10:46  tfleury
+
+	* index-maint.php: Changed wait interval from 1 hour to 15 minutes.
+
+2011-02-17 12:36  tfleury
+
+	* include/content.php: Added <meta> tag for viewport zoom to 80%
+	  for phone browsers.
+
+2011-02-17 12:36  tfleury
+
+	* include/cilogon.js: Fixed bug - Search box is now case
+	  insensitive.
+
+2011-02-15 14:37  tfleury
+
+	* index-site.php, index.php: Changed text to "Enter A Password".
+
+2011-02-14 14:48  tfleury
+
+	* index-maint.php, index-site.php, index.php,
+	  delegate/index-site.php, delegate/index.php, include/cilogon.css,
+	  include/content.php, include/csrf.php, include/loggit.php,
+	  include/openid.php, include/util.php, requestidp/index.php,
+	  secure/getuser/index.php, secure/testidp/index.php: New version
+	  of cilogon.org.  WAYF now has a search function and uses
+	  JavaScript to provide better user experience.  Main site now has
+	  a "Get New Certificate" button which generates a PKCS12 file
+	  directly rather than relying on the GridShib-CA code.  Old site
+	  is retained and can be displayed by using skins.
+
+2011-02-14 14:46  tfleury
+
+	* include/cilogon.js: Moved all JavaScript code from secutil.js to
+	  cilogon.js. Added new JavaScript for handling various interface
+	  elements in new cilogon site.
+
+2011-02-14 14:43  tfleury
+
+	* skin/: DataONE/skin.css, OOI/skin.css, all/skin.css,
+	  code/skin.css, jws/skin.css: Added new skins to show/hide the
+	  various "main page" sections. Also updated OOI and DataONE skins
+	  to use the new section names.
+
+2011-02-14 14:38  tfleury
+
+	* images/: blankIcon.png, hourglass.gif: Added two new icons for
+	  the new cilogon website design.
+
+2011-02-14 14:32  tfleury
+
+	* include/secutil.js: Moved all JavaScript code from secutil.js to
+	  cilogon.js.
+
+2011-01-21 16:50  tfleury
+
+	* skin/OOI/skin.css: Fixed border around Log Off box for OOI.
+
+2011-01-21 16:11  tfleury
+
+	* include/util.php: Added tempDir and deleteDir for use by the new
+	  "Get New Certificate" button.
+
+2011-01-21 16:11  tfleury
+
+	* include/content.php: Remove session variables for the Download
+	  Link and Activation Code.
+
+2011-01-21 15:57  tfleury
+
+	* include/myproxy.php: Undelete the myproxy.php code since we might
+	  replace the JWS stuff with the new "Click Here To Download
+	  Certificate" link.
+
+2011-01-21 11:26  tfleury
+
+	* images/index.html, include/index.html, pkcs12/index.html,
+	  secure/index.html, util/index.html: Updated the index.html files
+	  to redirect to the parent directory rather than cilogon.org.
+
+2011-01-20 15:05  tfleury
+
+	* index-site.php, index.php: Put reference to
+	  "www.cilogon.org/enabled" in hover text.
+
+2011-01-20 14:56  tfleury
+
+	* images/poweredbycilogon.png, include/content.php: Changed the
+	  skinned CILogon logo to be "Powered By CILogon".
+
+2011-01-20 14:05  tfleury
+
+	* index-site.php, index.php: Removed extra space from hover text.
+
+2011-01-20 13:56  tfleury
+
+	* include/content.php: Put hover text correctly in the <span>
+	  rather than the <img>.
+
+2011-01-20 13:52  tfleury
+
+	* include/content.php: Move non-breaking space inside the <span> so
+	  it also gets the hover text.
+
+2011-01-20 13:48  tfleury
+
+	* index-site.php, index.php, include/cilogon.css,
+	  skin/DataONE/skin.css: Added a new text-only "Quit your browser
+	  to log off" box for DataONE.
+
+2011-01-20 13:09  tfleury
+
+	* include/cilogon.css, include/content.php, skin/DataONE/skin.css:
+	  Added small "?" icon next to "Select Identity Provider" with a
+	  link to an entry on www.cilogon.org.	Also changed "privacy
+	  policy" font size for DataONE.
+
+2011-01-11 14:22  tfleury
+
+	* index-site.php, index.php: Fixed incorrect "if !== false"
+	  statement.
+
+2011-01-07 16:37  tfleury
+
+	* skin/DataONE/skin.css: Make the font of the page "footer" text
+	  slightly larger for DataONE.
+
+2011-01-07 13:06  tfleury
+
+	* images/questionIcon.png, include/content.php: Change the question
+	  icon in the footer to a bigger icon.
+
+2011-01-07 13:05  tfleury
+
+	* util/: adduser.php, showuser.php: Always show "last user"
+	  information if available.
+
+2010-12-15 17:41  tfleury
+
+	* index-site.php, index.php: Added the new Activation Code box for
+	  use with third-party clients, like the gridshibca-client.py
+	  python program.
+
+2010-12-15 17:39  tfleury
+
+	* include/cilogon.css: Fixed the padding in the actionboxes to be
+	  more uniform around the edges.
+
+2010-12-15 17:37  tfleury
+
+	* secure/getuser/index.php, include/content.php: Changed all
+	  $_SESSION[] instances to using functions in util.php, to set or
+	  unset the value.
+
+2010-12-15 17:36  tfleury
+
+	* delegate/: index-site.php, index.php: Fixed a spacing problem.
+
+2010-12-10 12:24  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php, include/cilogon.css, include/content.php,
+	  include/openid.php, include/secutil.js, include/util.php,
+	  include/whitelist.php, secure/getuser/index.php,
+	  util/adduser.php, util/removeuser.php, util/showuser.php:
+	  Modified cilogon.org site to be more streamlined and faster.
+
+2010-12-10 12:17  tfleury
+
+	* include/: myproxy.php, openid.js, store.php: Removing unnecessary
+	  files due to the update of the cilogon.org site.
+
+2010-12-10 12:01  tfleury
+
+	* images/: aol.png, b.jpg, blogger.png, certifi.ca.png, chi.mp.png,
+	  claimid.png, clavid.png, clickpass.png, flickr.png, fupei.png,
+	  getopenid.png, google.png, hyves.png, identity.net.png, l.jpg,
+	  launchpad.png, liquidid.png, livejournal.png, myid.png,
+	  myopenid.png, myspace.png, myvidoop.png, netlog.png,
+	  onelogin.png, openid.png, r.jpg, steam.png, t.jpg, verisign.png,
+	  vox.png, wordpress.png, yahoo.png, yiid.png: Remove all OpenID
+	  icons since we don't use them anymore.  Also remove unused box
+	  side icons.
+
+2010-12-10 11:55  tfleury
+
+	* skin/: DataONE/blue-button.png, DataONE/logo.png,
+	  DataONE/preface-wrapper-bg.png, DataONE/skin.css,
+	  OOI/ooi-logo.png, OOI/skin.css: Added new skins for DataONE and
+	  OOI.
+
+2010-11-12 11:32  tfleury
+
+	* include/: timeit.php, util.php: Tried to make the timeit.php code
+	  a little more robust and also added lots of comments.
+
+2010-11-12 11:30  tfleury
+
+	* delegate/: index-site.php, index.php: Changed to using
+	  localhost:8080 for the delegation/authorized servlet.
+
+2010-10-20 16:26  tfleury
+
+	* util/showuser.php: Removed a space.
+
+2010-10-14 14:09  tfleury
+
+	* index-site.php, index.php: Speed tweaks. Stop using GridShib-CA
+	  perl interface and instead use PHP native version. Stop reading
+	  database to get DN since DN is now stored in PHP session by the
+	  get user script.
+
+2010-10-14 14:02  tfleury
+
+	* delegate/: index-site.php, index.php: Added a new section for
+	  pointing the user to the FAQs.
+
+2010-10-14 14:01  tfleury
+
+	* secure/getuser/index.php: Also save the user's DN to the PHP
+	  session so that it does not need to be (re)calculated by the main
+	  cilogon.org script.  This is to avoid one access to the database.
+
+2010-10-14 14:00  tfleury
+
+	* secure/testidp/index.php: When a new IdP is added by an admin
+	  user, the IdP is added to the database.  Now, also write the new
+	  list of IdPs to the include/whitelist.txt file, AND update the
+	  include/whiteidps.txt file (which is a mapping of IdPs to
+	  pretty-print names as found in the InCommon metadata file).
+
+2010-10-14 13:58  tfleury
+
+	* util/whitelist.php: Allow the specification of the whitelist
+	  filename on the command line.
+
+2010-10-14 13:58  tfleury
+
+	* util/whiteidps.php: Added new PHP program to scan the list of
+	  whitelisted IdPs (from the database), look for their pretty-print
+	  names in the InCommon metadata file, and write out those pairs to
+	  a text file include/whiteidps.txt.
+
+2010-10-14 13:56  tfleury
+
+	* include/util.php: Added functions to read/write array to/from
+	  file, and to read the GridShib-CA config file using straight PHP
+	  (rather than PHP->Perl).
+
+2010-10-14 13:55  tfleury
+
+	* include/content.php: Remove references to GridShib-CA perl code
+	  by (re)writing the previously called functions in straight PHP.
+	  Also, attempt to read mapping of IdPs to PrettyPrintNames from a
+	  basic text file rather than from the InCommon metadata XML file.
+	  Both of these are for speed increases.
+
+2010-10-14 13:53  tfleury
+
+	* include/whitelist.php: Change the way the whitelist file is
+	  written.  Previously wrote out XML formatted file. Now simply
+	  print out basic file with one IdP per line.  Also, default to
+	  reading whitelist from file rather than database.
+
+2010-10-14 13:51  tfleury
+
+	* include/secutil.js: Since there is now a checkbox for "Download
+	  Root CAs", a cookie needs to be set so the checkbox state is
+	  remembered.
+
+2010-10-14 13:51  tfleury
+
+	* include/openid.php: Fixed some comment strings.
+
+2010-10-14 13:49  tfleury
+
+	* include/portalcookie.php: Fixed error due to copying of code
+	  without changing variable name.
+
+2010-10-14 13:48  tfleury
+
+	* include/myproxy.php: MyProxy rpm is now at 5.2, so we no longer
+	  need special 2048 bit version of myproxy-logon.
+
+2010-10-14 13:45  tfleury
+
+	* include/timeit.php: Added new timeit class to help debugging
+	  timing of php execution.
+
+2010-10-13 15:34  tfleury
+
+	* index-site.php, index.php: Removed references to NSF on front
+	  page.  Added "FAQ" link to front page.
+
+2010-10-11 17:03  tfleury
+
+	* include/content.php: Fixed incorrect if..then block.
+
+2010-10-07 09:36  tfleury
+
+	* cilogon-silver-example.pem: TAGPMA accredited CILogon Silver CA.
+
+2010-10-04 14:44  tfleury
+
+	* cilogon-basic.csr, cilogon-openid.csr, cilogon-silver.csr: Added
+	  by Jim Basney for cross-certifying our CAs with the SURAgrid
+	  bridge CA (https://www.pki.virginia.edu/nmi-bridge/).
+
+2010-10-01 12:49  tfleury
+
+	* example.php, example/index.php: Moved example.php to its own
+	  subdirectory to remove .php extension. Added redirect from old
+	  example.php to new subdir to prevent broken links.
+
+2010-09-28 13:29  tfleury
+
+	* cilogon-silver-example.pem: To quote Jim Basney: Last minute
+	  policy updates in preparation for TAGPMA meeting next week.
+
+2010-09-24 17:46  tfleury
+
+	* images/fupei.png, include/cilogon.css, include/openid.js,
+	  include/openid.php: Added Fupei.com as a new OpenID provider.
+
+2010-09-24 15:25  tfleury
+
+	* include/: openid.js, openid.php: Removed Yiid from list of OpenID
+	  providers since they are closing next week.
+
+2010-09-24 15:20  tfleury
+
+	* cilogon-host.crt, cilogon-host.pem, cilogon-host.signing_policy:
+	  Jim Basney added new host certs for portal developers.
+
+2010-09-03 14:14  tfleury
+
+	* include/whitelist.xml: Removed whitelist.xml since we are using
+	  the database to store the list of available IdPs.
+
+2010-09-03 14:10  tfleury
+
+	* images/clickpass.png, include/cilogon.css, include/openid.js,
+	  include/openid.php: Removed Vox as an OpenID provider since they
+	  are ending service as of Sept. 30, 2010. Added Clickpass as a new
+	  OpenID provider.
+
+2010-08-20 11:11  tfleury
+
+	* include/: cilogon.css, content.php: Removed unneeded CSS since no
+	  longer using actual text for the page header.
+
+2010-08-20 11:09  tfleury
+
+	* images/cilogon-service-header.png, include/cilogon.css,
+	  include/content.php: Changed the page header icon/text to be a
+	  single image so as to have nicely rendered text.
+
+2010-08-19 17:09  tfleury
+
+	* example.php: More modifications to text.  Still need to add link
+	  to portal developer documentation (when available from Jeff).
+
+2010-08-19 17:08  tfleury
+
+	* include/cilogon.css: Fixed "arial" in font-family, and tweaked
+	  color of form submit buttons.
+
+2010-08-19 12:40  tfleury
+
+	* example.php: First draft complete. Still needs tweaking.
+
+2010-08-19 12:40  tfleury
+
+	* images/: cilogon-logon-16-g.png, cilogon-logon-16-w.png,
+	  cilogon-logon-24-g.png, cilogon-logon-24-w.png,
+	  cilogon-logon-32-w.png, cilogon-logon-40-g.png,
+	  cilogon-logon-40-w.png, cilogon-logon-48-g.png,
+	  cilogon-logon-48-w.png, cilogon-logon-64-g.png,
+	  cilogon-logon-64-w.png: Needed to refresh certain images since
+	  they were not being displayed correctly in MSIE.
+
+2010-08-19 09:43  tfleury
+
+	* images/cilogon-logo-5000x5000.png: Added the big button for
+	  people to resize themselves.
+
+2010-08-18 17:37  tfleury
+
+	* example.php, images/cilogon-ci-16-g.png,
+	  images/cilogon-ci-16-w.png, images/cilogon-ci-24-g.png,
+	  images/cilogon-ci-24-w.png, images/cilogon-ci-32-g.png,
+	  images/cilogon-ci-32-w.png, images/cilogon-ci-40-g.png,
+	  images/cilogon-ci-40-w.png, images/cilogon-ci-48-g.png,
+	  images/cilogon-ci-48-w.png, images/cilogon-ci-64-g.png,
+	  images/cilogon-ci-64-w.png, images/cilogon-logo-16x16-b.png,
+	  images/cilogon-logo-16x16.png, images/cilogon-logo-24x24-b.png,
+	  images/cilogon-logo-24x24.png, images/cilogon-logo-32x32-b.png,
+	  images/cilogon-logo-32x32.png, images/cilogon-logo-40x40-b.png,
+	  images/cilogon-logo-40x40.png, images/cilogon-logo-48x48-b.png,
+	  images/cilogon-logo-48x48.png, images/cilogon-logo-64x64-b.png,
+	  images/cilogon-logo-64x64.png, images/cilogon-logon-16-g.png,
+	  images/cilogon-logon-16-w.png, images/cilogon-logon-24-g.png,
+	  images/cilogon-logon-24-w.png, images/cilogon-logon-32-g.png,
+	  images/cilogon-logon-32-w.png, images/cilogon-logon-40-g.png,
+	  images/cilogon-logon-40-w.png, images/cilogon-logon-48-g.png,
+	  images/cilogon-logon-48-w.png, images/cilogon-logon-64-g.png,
+	  images/cilogon-logon-64-w.png: Added a page of examples on how to
+	  link to the cilogon.org service page, along with a bunch of
+	  buttons.
+
+2010-08-18 17:37  tfleury
+
+	* index-site.php, index.php: Don't include OpenID Consumer here
+	  since it isn't used here.
+
+2010-08-12 17:29  tfleury
+
+	* requestidp/index.php: Added link to POP.
+
+2010-08-12 17:29  tfleury
+
+	* include/secutil.js: Added function handleLifetime() which gets
+	  called when the user clicks the "Download Credential" button.
+	  This function populates the hidden RequestedLifetime field and
+	  sets a cookie for the field value.
+
+2010-08-12 17:27  tfleury
+
+	* include/content.php: Fix spelling error.
+
+2010-08-12 17:27  tfleury
+
+	* include/cilogon.css: Added CSS for the "Lifetime" field under the
+	  "Download Certificate" button.
+
+2010-08-12 17:26  tfleury
+
+	* index-site.php, index.php: Modified text on front page to show
+	  links to POP and 'testidp' pages.  Also added Lifetime field for
+	  'Download Certificate' button.
+
+2010-08-11 11:20  tfleury
+
+	* index-site.php, index.php, delegate/index-site.php,
+	  delegate/index.php: Added a "Welcome New User" page to show the
+	  user their certificate subject for when they log in with a
+	  particular identity provider for the first time.  Also updated
+	  the logwatch scripts to catch these new user logons.
+
+2010-08-11 11:19  tfleury
+
+	* cilogon-basic.info, cilogon-ca-certificates.tar.gz,
+	  cilogon-openid.info, cilogon-silver.info: Jim Basney updated the
+	  certificate .info files.
+
+2010-08-09 17:20  tfleury
+
+	* include/: cilogon.css, content.php: Add a link to the privacy
+	  policy in the "Start Here" box under the "Log On" button.
+
+2010-08-09 16:29  tfleury
+
+	* index-site.php, index.php: Output the user's certificate subject
+	  on the main page.
+
+2010-08-03 12:31  tfleury
+
+	* images/steam.png, include/cilogon.css, include/content.php,
+	  include/openid.js, include/openid.php: Compacted the code to
+	  output the dropdown table of OpenID Providers.  Table now
+	  generated dynamically using $providerarray in openid.php.  Also,
+	  added Steam as a new OpenID provider and temporarily removed
+	  certifi.ca (since it hasn't worked for me in over a month).
+
+2010-08-02 15:47  tfleury
+
+	* index-maint.php, index-site.php, index.php,
+	  delegate/index-site.php, delegate/index.php: Move the "undergoing
+	  maintenance" stuff to a separate index-maint.php page.  Then, do
+	  a symlink from index.php to index-site.php or index-maint.php as
+	  appropriate.	Easier to put into maintenance mode this way.
+
+2010-07-28 15:02  tfleury
+
+	* index.php: Change the behavior of the GSI-SSHTerm applet. Removed
+	  versioncheck.jar and also use https for codebase. As per Jon
+	  Siwek.
+
+2010-07-23 17:04  tfleury
+
+	* include/openid.php: Revert to using PostgreSQL for OpenID stuff.
+
+2010-07-23 17:03  tfleury
+
+	* include/content.php: Commented out the "next service outage"
+	  message.
+
+2010-07-23 17:02  tfleury
+
+	* index.php, delegate/index.php: Added commented out block for when
+	  site is undergoing maintenance.
+
+2010-07-16 15:37  tfleury
+
+	* cilogon-basic.crl_url, cilogon-basic.info,
+	  cilogon-ca-certificates.tar.gz, cilogon-openid.crl_url,
+	  cilogon-openid.info, cilogon-silver-example.pem,
+	  cilogon-silver.crl_url, cilogon-silver.info: Add *.crl_url and
+	  *.info files for the various cilogon basic/silver/openid
+	  certificates.  Also add tarball of all cilogon certs.
+
+2010-07-16 14:14  tfleury
+
+	* include/openid.php: Added a getFileStorage() function to use
+	  OpenID FileStore in addition to OpenID PostgreSQLStore.  Which
+	  one gets used is determined by what gets called in the
+	  getStorage() function.
+
+2010-07-14 16:05  tfleury
+
+	* secure/testidp/index.php: Added email notification to
+	  'alerts@cilogon.org' when a new IdP is added to the whitelist.
+
+2010-07-14 16:04  tfleury
+
+	* include/whitelist.xml: Latest dump of whitelist database.
+
+2010-07-14 16:04  tfleury
+
+	* include/whitelist.php: Added "clear()" metehod. Also clear out
+	  the current whitearray before reading from file or database.
+
+2010-07-09 16:05  tfleury
+
+	* include/cilogon.css: Change background color back to white.
+
+2010-07-09 15:08  tfleury
+
+	* index.php, delegate/index.php, include/cilogon.css,
+	  include/content.php, include/util.php: Replace instances of
+	  'cilogon.org' in URLs with HOSTNAME, set in include/util.php via
+	  the HTTP_HOST server variable (or to 'cilogon.org' if HTTP_HOST
+	  is not set).
+
+2010-07-08 10:00  tfleury
+
+	* include/content.php: Change the output for "OpenID Login".
+	  Simply print out the "pretty print" name of the OpenID provider.
+
+2010-07-07 11:21  tfleury
+
+	* include/: cilogon.css, content.php: Added banner to top of pages
+	  indicating future outage.
+
+2010-07-02 15:19  tfleury
+
+	* index.php, delegate/index.php, include/content.php,
+	  requestidp/index.php, secure/getuser/index.php,
+	  secure/testidp/index.php: For 'echo' statements, replace '.'
+	  concat operator with ',' as suggested by
+	  http://www.tuxradar.com/practicalphp/18/1/6 .
+
+2010-07-01 16:46  tfleury
+
+	* include/content.php: Break out long strings into shorter strings.
+	  Probably not useful.
+
+2010-07-01 15:27  tfleury
+
+	* include/content.php: Broke up one long 'echo' statement into
+	  several smaller staements for debugging purposes.
+
+2010-07-01 15:26  tfleury
+
+	* index.php, delegate/index.php, include/util.php,
+	  requestidp/index.php, secure/getuser/index.php,
+	  secure/testidp/index.php: Moved the "startPHPSession()" call to
+	  /include/util.php so that simply require_once('include/util.php')
+	  at the top of any other PHP file will start a secure PHP session.
+
+2010-07-01 13:57  tfleury
+
+	* index.php: Handle OpenID as logon method.  Moved several
+	  functions to include/content.php.
+
+2010-07-01 13:57  tfleury
+
+	* include/openid.php: Make $db protected instead of public.
+
+2010-07-01 13:56  tfleury
+
+	* include/content.php: Added OpenID as login option.  Moved several
+	  common functions from /index.php and /delegate/index.php to here.
+
+2010-07-01 13:55  tfleury
+
+	* delegate/index.php: Move several functions to include/content.php
+	  since also used by /index.php.
+
+2010-06-30 11:53  tfleury
+
+	* delegate/index.php: Copy code from staging/index.php to handle
+	  OpenID authentication.
+
+2010-06-30 11:23  tfleury
+
+	* secure/getuser/index.php: Set additional session variables only
+	  when no error.
+
+2010-06-30 11:22  tfleury
+
+	* include/secutil.js: Remove showUrlDiv() function since we don't
+	  use it.
+
+2010-06-30 11:19  tfleury
+
+	* include/openid.php: Added code to connect to the PostgreSQL
+	  database for use by the Auth_OpenID_Consumer.
+
+2010-06-30 11:18  tfleury
+
+	* include/openid.js: When setting useOpenID to '1', also
+	  focus/select the OpenID 'username' field, if any.
+
+2010-06-30 11:15  tfleury
+
+	* include/content.php: Add lengthy notice about "not the opinion of
+	  NSF".
+
+2010-06-30 11:14  tfleury
+
+	* include/cilogon.css: Add CSS for when there is an OpenID error.
+
+2010-06-10 17:25  tfleury
+
+	* include/myproxy.php: Use the 2048 bit private key version of
+	  myproxy-logon.
+
+2010-06-04 17:34  tfleury
+
+	* include/secutil.js: Fixed JavaScript syntax errors.
+
+2010-06-04 17:33  tfleury
+
+	* include/openid.php: Changed "exists()" method to always require 1
+	  parameter.
+
+2010-06-04 17:33  tfleury
+
+	* include/openid.js: Fixed capitalization mistake in function name.
+
+2010-06-04 17:32  tfleury
+
+	* include/content.php: Added link in footer to "Subscriber
+	  Responsibilities" link.
+
+2010-06-04 17:30  tfleury
+
+	* delegate/index.php: Added text for using OpenID authentication on
+	  initial logon page.
+
+2010-06-04 17:28  tfleury
+
+	* cilogon-basic.crt, cilogon-basic.pem,
+	  cilogon-basic.signing_policy, cilogon-openid.crt,
+	  cilogon-openid.pem, cilogon-openid.signing_policy,
+	  cilogon-silver.crt, cilogon-silver.pem,
+	  cilogon-silver.signing_policy: Added basic/silver/openid
+	  certificates, root CAs, and signing_policy files.  Served from
+	  https://cilogon.org since Google Sites doesn't send the correct
+	  MIME type for .crt files.
+
+2010-06-03 17:09  tfleury
+
+	* include/openid.php: Added method to output OpenID URL with a
+	  <input type="text"> box replacing the 'username' in the URL.
+
+2010-06-03 14:52  tfleury
+
+	* include/content.php: Fixed warning message from Yahoo OpenID
+	  using local cilogon.xrds file.
+
+2010-06-03 14:46  tfleury
+
+	* cilogon.xrds: Added file to fix Yahoo OpenID warning as
+	  documented at
+	  http://blog.nerdbank.net/2008/06/why-yahoo-says-your-openid-site.html
+	  .
+
+2010-06-03 14:45  tfleury
+
+	* cilogon.xml: Added Shibboleth metadata .xml file for cilogon.org.
+
+2010-06-02 17:39  tfleury
+
+	* include/whitelist.php: Shorten exists() method block.
+
+2010-06-02 17:38  tfleury
+
+	* include/openid.php: Change isProviderValid() to exists() to
+	  better align with whitelist.php functionality.
+
+2010-06-02 17:37  tfleury
+
+	* secure/getuser/index.php: Fix spelling mistake in comment block.
+
+2010-06-02 16:01  tfleury
+
+	* util/adduser.php: Added support for the two-argument version of
+	  getUserObj for OpenID.
+
+2010-06-02 15:49  tfleury
+
+	* include/cilogon.css: Changed '.' to '#' since using
+	  id="providerId".
+
+2010-06-02 15:45  tfleury
+
+	* include/cilogon.css, include/content.php, requestidp/index.php:
+	  Changed id="selectIdP" to id="providerId" to be the same as the
+	  root index.php script.
+
+2010-06-02 15:44  tfleury
+
+	* include/whitelist.php: Changed read()/write() to read/write
+	  to/from the data store rather than the whitelist.xml file.
+
+2010-06-02 13:48  tfleury
+
+	* include/: cilogon.css, openid.js, openid.php: Added new
+	  openid.php file to manage the OpenID providers and their
+	  associated URLs.  Modified CSS file to handle OpenID provider
+	  list.  Fixed openid.js to change alt text of img.
+
+2010-06-01 14:18  tfleury
+
+	* util/whitelist.php: Added new utility to read/write whitelist.
+	  This utility can display the contents of the whitelist.xml file
+	  and/or the database.	It can also copy the contents of the file
+	  to the database and vice versa.
+
+2010-05-28 16:23  tfleury
+
+	* include/cilogon.css: Added block to preload all OpenID images for
+	  immediate display of dropdown menu icons.
+
+2010-05-28 15:18  tfleury
+
+	* include/openid.js: Changed path to the openid icon .png.
+
+2010-05-28 15:17  tfleury
+
+	* include/cilogon.css: Added CSS specific to the OpenID selector.
+
+2010-05-28 14:54  tfleury
+
+	* include/openid.js: Added new JavaScript file to support OpenID
+	  selector.
+
+2010-05-28 14:35  tfleury
+
+	* include/csshover3.htc: Added support for ":hover" over anything
+	  in Internet Explorer.  Taken from
+	  http://www.xs4all.nl/~peterned/csshover.html , version 3.11.
+
+2010-05-28 14:31  tfleury
+
+	* images/: aol.png, blogger.png, certifi.ca.png, chi.mp.png,
+	  claimid.png, clavid.png, clear.png, droparrow.png, flickr.png,
+	  getopenid.png, google.png, hyves.png, identity.net.png,
+	  launchpad.png, liquidid.png, livejournal.png, myid.png,
+	  myopenid.png, myspace.png, myvidoop.png, netlog.png,
+	  onelogin.png, openid.png, verisign.png, vox.png, wordpress.png,
+	  yahoo.png, yiid.png: Added new icons for OpenID support.
+
+2010-05-12 17:55  tfleury
+
+	* index.php, delegate/index.php: Changed the text of one log output
+	  message.
+
+2010-05-07 16:17  tfleury
+
+	* index.php, delegate/index.php: Add logging output.
+
+2010-05-07 16:17  tfleury
+
+	* include/loggit.php: Add / remove some spaces in the log output
+	  string.
+
+2010-05-07 11:22  tfleury
+
+	* delegate/index.php: Grammar fix.
+
+2010-05-06 15:17  tfleury
+
+	* delegate/index.php: Index portalparams cookie by callbackuri
+	  rather than portalname.  Get the certificate from the output of
+	  the 'delegation/authorized' servlet and output "Certificate
+	  Details" in expanding div.
+
+2010-05-06 15:15  tfleury
+
+	* include/content.php: Fix selected="selected" option for HTML
+	  validation.
+
+2010-05-06 09:47  tfleury
+
+	* delegate/index.php: Cast lifetime to an integer to catch bad
+	  input to the form field.
+
+2010-05-05 17:22  tfleury
+
+	* include/portalcookie.php: Set cookie duration to 1 year rather
+	  than expire at session end.
+
+2010-05-05 17:22  tfleury
+
+	* delegate/index.php: Pass portalname as a parameter to
+	  setPortalLifetime and setPortalRemember.
+
+2010-05-05 16:54  tfleury
+
+	* delegate/index.php: Added code to read/write the portal
+	  parameters from/to a cookie.	Also added code to call out to the
+	  'delegate/authorized' servlet and print out the appropriate HTML
+	  for success/failure.	Needs final approval from Jim.
+
+2010-05-05 16:52  tfleury
+
+	* include/cilogon.css: Added CSS for the "Return to Your Portal"
+	  link.
+
+2010-05-05 10:24  tfleury
+
+	* include/portalcookie.php: Added sanity checks when reading the
+	  cookie.
+
+2010-05-05 10:16  tfleury
+
+	* include/portalcookie.php: Initial check in of portalcookie.php to
+	  keep track of info related to delegated certificate ('lifetime'
+	  and 'remember these settings').
+
+2010-04-30 16:01  tfleury
+
+	* include/cilogon.css: Added CSS for the "Allow Delegation" page.
+
+2010-04-30 16:01  tfleury
+
+	* delegate/index.php: Modified text with Jim Basney.  Changed
+	  button layout for "Allow Delegation" page.
+
+2010-04-30 14:51  tfleury
+
+	* index.php: Make the 'GSI-SSHTerm Desktop App' button reload the
+	  script so that the button press can be logged.
+
+2010-04-27 14:41  tfleury
+
+	* delegate/index.php: More work on the delegate script.  Still need
+	  to fix the main "Welcome" page and the "Allow Delegation" page.
+
+2010-04-27 14:40  tfleury
+
+	* include/cilogon.css: Move p.note out of div to be more general.
+
+2010-04-27 14:40  tfleury
+
+	* index.php: Remove 'main' case since it is never used.
+
+2010-04-26 17:15  tfleury
+
+	* delegate/index.php: Started implementing the 'delegate' script
+	  for Community Portal / OAuth utilization.
+
+2010-04-26 17:14  tfleury
+
+	* include/util.php: Added getGetVar() and setOrUnsetSessionVar()
+	  functions.
+
+2010-04-26 17:13  tfleury
+
+	* include/store.php: Added methods to call
+	  CILogon::Store->getPortalParameters() and associated
+	  PortalParameters subroutines.
+
+2010-04-26 17:12  tfleury
+
+	* index.php: Fixed a comment.
+
+2010-04-23 16:27  tfleury
+
+	* secure/testidp/index.php: Output csrf hidden form element.
+
+2010-04-23 16:27  tfleury
+
+	* include/store.php: Fixed a comment.
+
+2010-04-23 16:26  tfleury
+
+	* include/cilogon.css: Added css for the printUserChangedPage()
+	  output.
+
+2010-04-23 16:26  tfleury
+
+	* index.php: Added the printUserChangedPage() function to show when
+	  user attributes from the IdP have changed.
+
+2010-04-23 13:43  tfleury
+
+	* images/index.html: Added some index.html files to redirect to
+	  https://cilogon.org/ from subdirectories.
+
+2010-04-23 13:41  tfleury
+
+	* util/: adduser.php, index.html, removeuser.php, showuser.php:
+	  Added a few utilities to add/remove/show persistent store user.
+
+2010-04-23 13:40  tfleury
+
+	* include/store.php: Added getLastUserObj() method to call
+	  getLastArchivedUser().  This gets the latest archived user to
+	  find out which attributes changed.
+
+2010-04-22 17:17  tfleury
+
+	* index.php: Fixed spelling errors.
+
+2010-04-22 17:08  tfleury
+
+	* index.php: Minor text and comment changes.
+
+2010-04-22 14:43  tfleury
+
+	* secure/getuser/index.php: When there is an error in the getuser
+	  script (either by missing SAML attributes or by a bad database
+	  status code), send email to 'help@cilogon.org' with the available
+	  information.
+
+2010-04-22 14:42  tfleury
+
+	* requestidp/index.php: Send requests to 'help@cilogon.org'.
+
+2010-04-22 14:05  tfleury
+
+	* index.php: Add closing '/' for <param> tags.
+
+2010-04-22 13:52  tfleury
+
+	* index.php: Modified the text on the "Download Certificate" page.
+	  Added verifyCurrentSession() check which is called when the user
+	  clicks on the "Log On" button.  If there is a PHP session with
+	  valid values (e.g. for the 'uid'), then don't bother going to the
+	  IdP.
+
+2010-04-22 13:49  tfleury
+
+	* include/content.php: Fixed the url for MyProxy.
+
+2010-04-22 09:27  tfleury
+
+	* include/store.php: Changed the STATUS_* codes from individual
+	  variables to an array.
+
+2010-04-21 17:32  tfleury
+
+	* index.php: Forgot to remove debugging line.
+
+2010-04-21 16:45  tfleury
+
+	* include/cilogon.css: Remove multiple input.submit blocks.  Add
+	  css for printing error messages and the GSI-SSHTerm applet.
+
+2010-04-21 16:44  tfleury
+
+	* index.php: Catch error for GSI-SSHTerm applet when could not get
+	  credential for user.
+
+2010-04-20 14:46  tfleury
+
+	* include/util.php: Deleted the "redirect()" function since I
+	  probably don't need it.
+
+2010-04-20 14:46  tfleury
+
+	* include/csrf.php: Delete the PHP session csrf value after
+	  successfully accessing it.
+
+2010-04-19 18:35  tfleury
+
+	* secure/getuser/index.php: Put the IdP into the PHP session so as
+	  to make it easier for GridShib-CA to get that value.
+
+2010-04-19 18:35  tfleury
+
+	* include/store.php: Needed to include CILogon::IdentifierFactory"
+	  for when a new user gets added to the database.
+
+2010-04-19 18:34  tfleury
+
+	* include/content.php: Needed to initialize the GridShibCA perl
+	  code in order to set the csrf cookie for "Download Certificate"
+	  button (i.e. launch gridshib-ca).
+
+2010-04-19 18:33  tfleury
+
+	* index.php: The <form> submit method now prints out appropriate
+	  information for "Download Certificate" (i.e. gridshib-ca).
+
+2010-04-16 17:18  tfleury
+
+	* secure/getuser/index.php: Put idp display name in session for
+	  display purposes.
+
+2010-04-16 17:17  tfleury
+
+	* index.php: Open GSI-SSHTerm new connection dialog box upon applet
+	  start.
+
+2010-04-15 17:48  tfleury
+
+	* include/store.php: Remove unnecessary perl "use" statements since
+	  they seem to cause problems.
+
+2010-04-15 17:47  tfleury
+
+	* include/util.php: Add new function to unset a given $_SESSION
+	  variable.
+
+2010-04-15 17:46  tfleury
+
+	* include/csrf.php: Check to see if the $_SESSION token exists
+	  before removing it.
+
+2010-04-15 17:45  tfleury
+
+	* secure/getuser/index.php: Utilize the new perl CILogon::Store
+	  interface to the persistent store.
+
+2010-04-15 17:44  tfleury
+
+	* index.php: Start trying to get a credential from MyProxy using
+	  the new Perl interface to the persistent store.
+
+2010-04-15 14:44  tfleury
+
+	* include/whitelist.php: Added methods to read/write whitelist
+	  from/to the persistent store.  Also, renamed "delete" methods to
+	  "remove" since "delete" is a built-in PHP function.
+
+2010-04-15 14:42  tfleury
+
+	* include/: csrf.php, incommon.php, shib.php: Renamed "delete"
+	  methods to "remove" since "delete" is a built-in PHP function.
+
+2010-04-15 14:41  tfleury
+
+	* include/store.php: Initial check in of the wrapper class for the
+	  CILogon::Store Perl module.
+
+2010-04-14 10:50  tfleury
+
+	* index.php: Add skeleton code for launching GSI-SSHTerm.
+
+2010-04-14 10:42  tfleury
+
+	* secure/getuser/index.php: Reordering of lines.
+
+2010-04-14 10:42  tfleury
+
+	* include/util.php: Remove a space.
+
+2010-04-14 10:41  tfleury
+
+	* include/loggit.php: Append $_SESSION variables to log output.
+
+2010-04-14 10:40  tfleury
+
+	* include/myproxy.php: Initial check in of getMyProxyCredential()
+	  function.
+
+2010-04-13 14:32  tfleury
+
+	* include/content.php: Check the keepidp cookie and check the
+	  checkbox appropriately.
+
+2010-04-13 14:31  tfleury
+
+	* index.php, secure/getuser/index.php: Set csrf for the cookie and
+	  the session at the same time.
+
+2010-04-12 14:32  tfleury
+
+	* secure/getuser/index.php: Inject the rest of the SAML attributes
+	  into the PHP session just in case we want them for debug purposes
+	  in the main script.
+
+2010-04-12 14:31  tfleury
+
+	* include/cilogon.css: Added css for the main "Get Certificate"
+	  page.
+
+2010-04-12 14:31  tfleury
+
+	* index.php: Provided test for main "Get Certificate" page.
+	  Handled "Log Off" button.
+
+2010-04-09 11:54  tfleury
+
+	* secure/getuser/index.php: Added code to get the SAML attributes
+	  as set by Shibboleth and call out to the database to get the user
+	  id, which gets injected into the PHP session.  Still need to
+	  implement the actual database callout.
+
+2010-04-09 11:53  tfleury
+
+	* include/shib.php: Typecast returned xml values as strings.
+
+2010-04-09 11:53  tfleury
+
+	* index.php: Reorganized control flow as a "switch" statement.
+	  Added printGetCertficatePage() to print the "main" page after
+	  successful log on.
+
+2010-04-08 17:03  tfleury
+
+	* secure/getuser/index.php: Script now handles redirection from a
+	  "calling script" by checking some PHP session variables.  Also
+	  output the $_POST variables in a table.
+
+2010-04-08 17:02  tfleury
+
+	* secure/testidp/index.php: Changed a comment block.
+
+2010-04-08 17:01  tfleury
+
+	* requestidp/index.php: Changed some comment lines.
+
+2010-04-08 17:01  tfleury
+
+	* include/util.php: Modified getScriptDir() to allow for the
+	  prepending of the https://servername to result in a full URL.
+
+2010-04-08 17:00  tfleury
+
+	* include/content.php: Added a comment line.
+
+2010-04-08 17:00  tfleury
+
+	* include/csrf.php: Make tokenname a const value.  Change all
+	  "csrf::" to "self:".	Modify verifyCookieAndGetSubmit to check
+	  both the hidden <form> csrf element AND the PHP session "submit"
+	  variable.
+
+2010-04-08 16:58  tfleury
+
+	* include/cilogon.css: Add a little space just above the header on
+	  the Welcome page.
+
+2010-04-08 16:58  tfleury
+
+	* index.php: Modify redirection to secure 'getuser' script so as to
+	  add several PHP session variables utilized by the getuser script.
+
+2010-04-02 11:06  tfleury
+
+	* secure/getuser/index.php: Created a function for "pretty
+	  printing" the various Shibboleth and server variables.
+
+2010-03-31 17:24  tfleury
+
+	* include/incommon.php: Added convenience methods to check if an
+	  entityID / OrganizationDisplayName exists in the InCommon
+	  metadata.
+
+2010-03-31 17:23  tfleury
+
+	* include/whitelist.xml: Adding to the whitelist.xml file via
+	  testidp now works.
+
+2010-03-31 17:23  tfleury
+
+	* include/content.php: Added new function printIcon for printing
+	  okay/error icons.  Also minor text changes.
+
+2010-03-31 17:22  tfleury
+
+	* include/cilogon.css: Added markup for the testidp page.
+
+2010-03-31 17:22  tfleury
+
+	* requestidp/index.php: Use new printIcon() function.
+
+2010-03-31 17:21  tfleury
+
+	* secure/testidp/index.php: Finished revamp of testidp script.	The
+	  summary now appears as the first section, before the SAML and
+	  metadata attributes sections.
+
+2010-03-31 17:20  tfleury
+
+	* index.php: Change "Logon" button text to "Log On".
+
+2010-03-31 17:19  tfleury
+
+	* images/: tridown.gif, triright.gif: Added icons for expanding /
+	  contracting divs on the testidp page.
+
+2010-03-30 14:38  tfleury
+
+	* secure/getuser/index.php: Output some more apache variables.
+
+2010-03-30 14:37  tfleury
+
+	* secure/testidp/index.php: Begin major modification of testidp
+	  script.  Still a long way to go.
+
+2010-03-30 14:36  tfleury
+
+	* include/util.php: Added convenience method to get the directory
+	  of a script (rather than using SCRIPT_NAME).
+
+2010-03-30 14:35  tfleury
+
+	* include/csrf.php: Added convenience method to get the value of a
+	  form "submit" button while also verifying that the hidden csrf
+	  field matches the csrf cookie.
+
+2010-03-30 14:34  tfleury
+
+	* include/content.php: Use getScriptDir() for target of form submit
+	  button.
+
+2010-03-30 14:33  tfleury
+
+	* requestidp/index.php: Add link to "testidp" script. Use
+	  convenience methods for checking of cookies against submitted
+	  form.
+
+2010-03-30 14:32  tfleury
+
+	* index.php: Handle the reading/setting of cookies for the WAYF and
+	  redirect to the Shibboleth-protected getuser script.
+
+2010-03-29 16:45  tfleury
+
+	* requestidp/index.php: Updated the CSS for the RequestIdP page.
+	  Minor html edits as well.
+
+2010-03-29 16:43  tfleury
+
+	* include/cilogon.css: Changed "id" to "class" for all divs.  CSS
+	  is now correct for the main Welcome page and the RequestIdP page.
+
+2010-03-29 16:42  tfleury
+
+	* include/content.php: Updated the WAYF whitelist of IdPs. Other
+	  minor html fixes.
+
+2010-03-29 16:41  tfleury
+
+	* index.php: Revamped the "Welcome" screen to have decent text and
+	  utilize the whitelist of IdPs.
+
+2010-03-27 10:15  tfleury
+
+	* include/: cilogon.css, content.php: Use a simpler tooltip popup.
+
+2010-03-27 09:55  tfleury
+
+	* images/: bubble.gif, bubblefill.gif: Decided to use a simpler
+	  tooltip popup, so don't need bubble gifs.
+
+2010-03-26 16:09  tfleury
+
+	* images/: bubble.gif, bubblefill.gif: Added images for
+	  experimental 'graphical' tooltip popups.
+
+2010-03-26 16:08  tfleury
+
+	* index.php: Experimenting with different tooltip popups.
+
+2010-03-26 16:08  tfleury
+
+	* include/cilogon.css: Added a bunch of testing css.  Needs
+	  cleanup.
+
+2010-03-26 16:07  tfleury
+
+	* include/content.php: Fixed form submit action. Added "Logon"
+	  button.  Added function to print a decorated page header.
+
+2010-03-26 16:06  tfleury
+
+	* include/util.php: Forgot to add parens to the funtion definition.
+
+2010-03-26 16:06  tfleury
+
+	* images/: b.jpg, l.jpg, r.jpg, t.jpg: Added a few new border
+	  images.
+
+2010-03-26 12:31  tfleury
+
+	* include/content.php: Change including of .css file to older (and
+	  faster) <link> style.
+
+2010-03-26 12:30  tfleury
+
+	* include/csrf.php: Added a bunch of methods to write the CSRF
+	  token to a PHP session (rather than a hidden <form> element) and
+	  compare that to the CSRF cookie.
+
+2010-03-26 11:39  tfleury
+
+	* include/: session.php, util.php: Moved the session_start stuff
+	  from the (now deleted) session.php file to the util.php file in a
+	  new startPHPSession() function.
+
+2010-03-25 14:49  tfleury
+
+	* index.php: Remove one line to generate a 'cvs commit'
+	  notification email.
+
+2010-03-25 14:34  tfleury
+
+	* index.php: Add a line to generate a 'cvs commit' notification
+	  email.
+
+2010-03-25 14:09  tfleury
+
+	* include/autoloader.php: Needed to add another subdirectory to the
+	  search list since I moved some <name>.php scripts to
+	  <name>/index.php.
+
+2010-03-25 13:46  tfleury
+
+	* requestidp.php: Moved requestidp.php to requestidp/index.php
+	  (forgot to do 'cvs delete' last time)
+
+2010-03-25 13:45  tfleury
+
+	* secure/testidp.php: Moved testidp.php to testidp/index.html
+	  (forgot to do 'cvs delete' last time)
+
+2010-03-25 13:35  tfleury
+
+	* secure/service.php: No longer need service.php since the
+	  functionality will reside in html/delegate/index.php.
+
+2010-03-25 13:35  tfleury
+
+	* secure/getuser/index.php: Added a placeholder index.php for the
+	  "getuser" webapp which will eventually read/write SAML attributes
+	  to the local database.
+
+2010-03-25 13:32  tfleury
+
+	* secure/testidp/index.php: Renamed html/secure/testidp.php to
+	  html/secure/testidp/index.php
+
+2010-03-25 13:30  tfleury
+
+	* delegate/index.php: Created an empty index.php file for the
+	  "delegate" page to be utilized by portals.
+
+2010-03-25 13:27  tfleury
+
+	* requestidp/index.php: Renamed html/requestidp.php to
+	  html/requestidp/index.php
+
+2010-03-25 09:56  tfleury
+
+	* images/: greenStarIcon.png, redStarIcon.png: Added two new icon
+	  images.
+
+2010-03-24 16:50  tfleury
+
+	* secure/testidp.php: The whitelist now automatically reads in the
+	  file.
+
+2010-03-24 16:50  tfleury
+
+	* secure/service.php: Added  a couple of required includes (for
+	  util.php and session.php). This file may be renamed in the
+	  future.
+
+2010-03-24 16:49  tfleury
+
+	* include/whitelist.php: We are no longer using a local Discovery
+	  Service (in Tomcat), so remove all functionality specific to the
+	  Tomcat stuff.
+
+2010-03-24 16:48  tfleury
+
+	* include/util.php: Moved the secure session creation out of
+	  util.php and into session.php.
+
+2010-03-24 16:47  tfleury
+
+	* include/shib.php: Moved the functionality of getInCommonIdPs out
+	  of the shib.php file and into a new incommon.php class.
+
+2010-03-24 16:47  tfleury
+
+	* include/content.php: Added some new text to the footer section
+	  and added a new method to print out the list of available IdPs
+	  for the user to choose.
+
+2010-03-24 16:46  tfleury
+
+	* include/cilogon.css: Added markup for the footer at the bottom of
+	  each page.  Still needs tweaking since vertical alignment and
+	  text color is off.
+
+2010-03-24 16:46  tfleury
+
+	* requestidp.php: Updated text to remove references to IdP and also
+	  utilize new incommon.php class.
+
+2010-03-24 16:45  tfleury
+
+	* index.php: Read session.php to establish secure PHP session.
+
+2010-03-24 16:44  tfleury
+
+	* include/incommon.php: Removed getInCommonIdPs from shib.php and
+	  created a new class for reading IdP information
+	  (entityID/OrganizationDisplayName) from the InCommon metadata
+	  file.
+
+2010-03-24 16:43  tfleury
+
+	* include/session.php: Moved PHP session creation out of util.php
+	  and into its own file.
+
+2010-03-24 16:42  tfleury
+
+	* include/whitelist.xml: Added a sample whitelist.xml file for
+	  testing purposes.
+
+2010-03-03 21:45  tfleury
+
+	* index.php: When the user clicks the "Log in to your IdP" button,
+	  don't force a redirect through the WAYF.  Simply go to the secure
+	  service script and let Shibboleth handle the case when there
+	  isn't a Shibboleth authentication yet.
+
+2010-03-03 16:41  tfleury
+
+	* secure/testidp.php: Fully functional testdip.php script.
+	  Everything now works.
+
+2010-03-03 16:40  tfleury
+
+	* include/whitelist.php: The "exists()" method checks for empty
+	  strings, so no need to do it twice.
+
+2010-03-03 16:40  tfleury
+
+	* include/util.php: Add some functions to get $_SERVER, $_POST, and
+	  $_COOKIE variables.
+
+2010-03-03 16:39  tfleury
+
+	* include/shib.php: Rather than return a boolean from getShibInfo
+	  and set the $shibarray as a side effect, return the shib
+	  attribute array itself.
+
+2010-03-03 16:37  tfleury
+
+	* include/loggit.php: Utilize a function from the util.php file.
+
+2010-03-03 16:37  tfleury
+
+	* include/content.php: Changed from Strict to Transitional and
+	  fixed the text encoding.
+
+2010-03-03 16:36  tfleury
+
+	* include/cilogon.css: Added more CSS for various new entities on
+	  the php pages.  Probably need to go back and consolidate some of
+	  them.
+
+2010-03-03 16:35  tfleury
+
+	* requestidp.php: Finished with the first functional version of the
+	  "requestidp" script.	Everything is working now, but I need to
+	  change the email address for whom is going to receive the request
+	  for a new IdP.
+
+2010-03-03 16:29  tfleury
+
+	* secure/env3.php: Added a temporary script to print out the shib
+	  header values.
+
+2010-03-03 16:27  tfleury
+
+	* images/infoIcon.png: Added new infoIcon.png for popup explanatory
+	  text.
+
+2010-03-03 16:26  tfleury
+
+	* index.html, index.php: Replace index.html (which simply
+	  redirected to www.cilogon.org) with index.php (which displays a
+	  page to Log in to your IdP to Get a Credential).
+
+2010-03-02 10:55  tfleury
+
+	* images/okayIcon.png: Add new "okay" icon for testidp.php page.
+
+2010-03-01 18:40  tfleury
+
+	* requestidp.php, robots.txt, include/EmailAddressValidator.php,
+	  include/content.php: Create a new page 'requestidp.php' which
+	  allows a user to request any IdP to be added to our Discovery
+	  Service.
+
+2010-03-01 18:38  tfleury
+
+	* include/util.php: Added a function to get the value of a $_POST
+	  variable.
+
+2010-03-01 18:38  tfleury
+
+	* include/csrf.php: When setting the cookie, ALWAYS set it.  Also,
+	  added method to get the cookie previously set.
+
+2010-03-01 18:37  tfleury
+
+	* index.html: Use the favicon on the main page.
+
+2010-03-01 18:36  tfleury
+
+	* favicon.ico, images/cilogon-gradient.jpg,
+	  images/cilogon-logo-60x60.png, images/errorIcon.png,
+	  include/cilogon.css: We decided to go ahead with the simple
+	  CILogon logo that Terry designed, so start using it in the CSS
+	  file. Also add some other images needed for the web pages.
+
+2010-02-25 17:48  tfleury
+
+	* include/shib.php: Added new function to get a list of all
+	  InCommon IdPs.  This can be utilized to populate a dropdown list
+	  of (non-whitelisted) IdPs from which a user can select when
+	  requesting the school be added to our WAYF's whitelist.
+
+2010-02-17 17:37  tfleury
+
+	* index.html: For now, redirect http://cilogon.org to
+	  http://www.cilogon.org.
+
+2010-02-17 17:35  tfleury
+
+	* secure/index.html: Added secure/index.html to prevent listing of
+	  directory and to redirect to main cilogon.org web page.
+
+2010-02-17 16:39  tfleury
+
+	* include/autoloader.php, include/csrf.php, include/index.html,
+	  include/loggit.php, include/secutil.js, include/shib.php,
+	  include/util.php, include/whitelist.php, secure/service.php,
+	  secure/testidp.php: Initial creation of 'service' module and
+	  initial check in of PHP code
+
+2010-02-17 16:39  tfleury
+
+	* include/autoloader.php, include/csrf.php, include/index.html,
+	  include/loggit.php, include/secutil.js, include/shib.php,
+	  include/util.php, include/whitelist.php, secure/service.php,
+	  secure/testidp.php: Initial revision
+
