@@ -217,11 +217,10 @@ function printCertInfo() {
 function printGetCertificate() {
     global $skin;
 
-    $disabled     = $skin->getConfigOption('pkcs12','disabled');
-    $disabledmsg  = $skin->getConfigOption('pkcs12','disabledmessage');
-
     // Check if PKCS12 downloading is disabled. If so, print out message.
+    $disabled     = $skin->getConfigOption('pkcs12','disabled');
     if ((!is_null($disabled)) && ((int)$disabled == 1)) {
+        $disabledmsg  = $skin->getConfigOption('pkcs12','disabledmessage');
         if (!is_null($disabledmsg)) {
             $disabledmsg = trim(html_entity_decode($disabledmsg));
         }
