@@ -268,6 +268,8 @@ class idplist {
      * the internal idparray at the same time as the idpdom.            *
      ********************************************************************/
     private function addNode($dom,$idpnode,$nodename,$nodevalue) {
+        $nodename = trim($nodename);    // Remove leading/trailing
+        $nodevalue = trim($nodevalue);  // spaces, tabs, etc.
         $elemnode = $dom->createElement($nodename);
         $textnode = $dom->createTextNode($nodevalue);
         $elemnode->appendChild($textnode);
