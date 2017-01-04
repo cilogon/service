@@ -621,7 +621,7 @@ function handleAllowDelegation($always=false) {
                         $cert = base64_decode($b64cert);
                         if ($cert !== false) {
                             // Run "openssl x509" command for cert info
-                            exec('/bin/env /usr/bin/openssl x509 -text '.
+                            exec('/bin/env RANDFILE=/tmp/.rnd /usr/bin/openssl x509 -text '.
                                  '<<< ' . escapeshellarg($cert) . ' 2>&1',
                                  $x509out,$retcode);
                             if ($retcode == 0) {

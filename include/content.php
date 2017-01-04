@@ -1993,6 +1993,7 @@ function generateP12() {
 
             /* Call the openssl pkcs12 program to convert certificate */
             exec('/bin/env ' .
+                 'RANDFILE=/tmp/.rnd ' .
                  'CILOGON_PKCS12_PW=' . escapeshellarg($password1) . ' ' .
                  '/usr/bin/openssl pkcs12 -export ' .
                  '-passout env:CILOGON_PKCS12_PW ' .
