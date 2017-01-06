@@ -1412,8 +1412,11 @@ function handleGotUser() {
     if (isset($clientparams['redirect_uri'])) {
         $redirect = $clientparams['redirect_uri'];
         $redirectform = '<input type="hidden" name="error" value="access_denied" />' .
-            '<input type="hidden" name="error_description" value="Missing attributes" />' .
-            '<input type="hidden" name="state" value="'. $clientparams['state'] . '" />';
+            '<input type="hidden" name="error_description" value="Missing attributes" />';
+        if (isset($clientparams['state'])) {
+            $redirectform .= '<input type="hidden" name="state" value="' . 
+                $clientparams['state'] . '" />';
+        }
     }
     // Next, check for OAuth 1.0a 
     if ((strlen($redirect) == 0) && (strlen($failureuri) > 0)) {
