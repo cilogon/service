@@ -87,6 +87,7 @@ class dbservice {
         'STATUS_NO_IDENTITY_PROVIDER'      => 0xFFFFD,
         'STATUS_CLIENT_NOT_FOUND'          => 0xFFFFF,
         'STATUS_TRANSACTION_NOT_FOUND'     => 0x10001,
+        'STATUS_EPTID_MISMATCH'            => 0x100001,
     );
 
     /* Define the various member variables previously stored by *
