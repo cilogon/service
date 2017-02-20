@@ -388,16 +388,18 @@ EOT;
                     $idps->appendChild($idp);
 
                     // Search for the desired <idp> attribute sub-blocks
-                    $xp = $idx[0]->xpath(
-                        "Organization/OrganizationDisplayName[@xml:lang='en']");
+
+                    // CIL-367 - Prefer <mdui:DisplayName> for IdP list
+                    $xp = $sxe->xpath(
+                        "IDPSSODescriptor/Extensions/mdui:UIInfo/mdui:DisplayName[@xml:lang='en']");
                     if (($xp !== false) && (count($xp)>0)) {
                         $this->addNode($dom,$idp,
                             'Organization_Name',(string)$xp[0]);
                     } else {
-                        // If we didn't find the OrganzationName, look for
-                        // a DisplayName in the Extensions section
-                        $xp = $sxe->xpath(
-                            "IDPSSODescriptor/Extensions/mdui:UIInfo/mdui:DisplayName[@xml:lang='en']");
+                        // If we didn't find the DisplayName, look for
+                        // OrganizationDisplayName instead
+                        $xp = $idx[0]->xpath(
+                            "Organization/OrganizationDisplayName[@xml:lang='en']");
                         if (($xp !== false) && (count($xp)>0)) {
                             $this->addNode($dom,$idp,
                                 'Organization_Name',(string)$xp[0]);
