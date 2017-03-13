@@ -67,8 +67,8 @@ if [ ! -f /var/www/html/index-site.php ] ; then
 fi
 echo 'cd /var/www/html/'
 cd /var/www/html/
-echo 'composer install'
-composer install
+echo 'composer install --no-plugins --no-scripts'
+composer install --no-plugins --no-scripts
 echo 'rm -f index.php'
 rm -f index.php
 echo 'ln -sf index-site.php index.php'
