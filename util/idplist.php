@@ -1,6 +1,8 @@
 <?php
 
-require_once '../include/idplist.php';
+require_once __DIR__ . '/../include/IdpList.php';
+
+use CILogon\Service\IdpList;
 
 if (($argc >= 2) && ($argc <= 4)) {
     $idpfile = $argv[1];
@@ -12,51 +14,63 @@ if (($argc >= 2) && ($argc <= 4)) {
     if ($argc >= 4) {
         $checkfornew = 1;
     }
-    
+
     $oldEntityIdList = array();
 
-    // If checkfornew, attempt to read in the already existing 
+    // If checkfornew, attempt to read in the already existing
     // /var/www/html/include/idplist.{json,xml} file so we can use
     // that as the list of current IdPs. This will allow us to find
     // out if any new IdPs have been added to the InCommon metadata.
     if ($checkfornew) {
         // First, try reading /var/www/html/include/idplist.json
-        $oldidplist = new idplist(idplist::defaultIdPFilename,'',false,'json');
+        $oldidplist = new IdpList(IdpList::DEFAULTIDPFILENAME, '', false, 'json');
         $oldEntityIDList = $oldidplist->getEntityIDs();
         if (empty($oldEntityIDList)) {
             // Next, try /var/www/html/include/idplist.xml
-            $filename = preg_replace('/\.json$/','.xml',
-                idplist::defaultIdPFilename);
-            $oldidplist = new idplist($filename,'',false,'xml');
+            $filename = preg_replace(
+                '/\.json$/',
+                '.xml',
+                IdpList::DEFAULTIDPFILENAME
+            );
+            $oldidplist = new IdpList($filename, '', false, 'xml');
             $oldEntityIDList = $oldidplist->getEntityIDs();
         }
         // If we couldn't read in an exiting idplist, print warning message.
         if (empty($oldEntityIDList)) {
-            fwrite(STDERR, 
-                   "Warning: Unable to read an existing idplist file,\n" ,
-                   "         so unable to check for new InCommon IdPs.\n");
+            fwrite(
+                STDERR,
+                "Warning: Unable to read an existing idplist file,\n",
+                "         so unable to check for new InCommon IdPs.\n"
+            );
         }
     }
 
     // Now, create a new idplist from the InCommon Metadata
-    $idplist = new idplist($idpfile,idplist::defaultInCommonFilename,
-                           false,$filetype);
+    $idplist = new IdpList(
+        $idpfile,
+        IdpList::DEFAULTINCOMMONFILENAME,
+        false,
+        $filetype
+    );
     $idplist->create();
     if (!$idplist->write($filetype)) {
-       fwrite(STDERR, "Error! There was a problem writing to the file '" . 
-                      $idpfile . "'\n");
-       exit(1);
+        fwrite(
+            STDERR,
+            "Error! There was a problem writing to the file '" .
+            $idpfile . "'\n"
+        );
+        exit(1);
     }
 
-    // If we successfully read in a 'good' idplist.{json.xml} file from 
+    // If we successfully read in a 'good' idplist.{json.xml} file from
     // /var/www/html/include, use that as the list of currently
-    // 'whitelisted' IdPs and check to see if any new IdP were added to 
+    // 'whitelisted' IdPs and check to see if any new IdP were added to
     // the InCommon metadata.
     $newIdPList = array();
     if (!empty($oldEntityIDList)) {
         $entityIDList = $idplist->getEntityIDs();
         foreach ($entityIDList as $value) {
-            if (!in_array($value,$oldEntityIDList)) {
+            if (!in_array($value, $oldEntityIDList)) {
                 $newIdPList[$value] = 1;
             }
         }
@@ -65,14 +79,14 @@ if (($argc >= 2) && ($argc <= 4)) {
     // Found some new InCommon metadata entries. Print them to STDOUT.
     if (!empty($newIdPList)) {
         $plural = (count($newIdPList) > 1);
-        echo ($plural ? 'New' : 'A new') , ' Identity Provider', 
+        echo($plural ? 'New' : 'A new') , ' Identity Provider',
              ($plural ? 's were' : ' was') , ' found in metadata ',
              "and added to the \nlist of available IdPs.\n",
              '--------------------------------------------------------------',
              "\n\n";
         foreach ($newIdPList as $entityID => $value) {
             echo "EntityId               = $entityID\n";
-            echo "Organization Name      = " . 
+            echo "Organization Name      = " .
                 $idplist->getOrganizationName($entityID) . "\n";
             if ($idplist->isRegisteredByInCommon($entityID)) {
                 echo "Registered by InCommon = Yes\n";
@@ -84,7 +98,7 @@ if (($argc >= 2) && ($argc <= 4)) {
                 echo "REFEDS R & S           = Yes\n";
             }
             if ($idplist->isSIRTFI($entityID)) {
-            echo "SIRTFI                 = Yes\n";
+                echo "SIRTFI                 = Yes\n";
             }
             echo "\n";
         }
@@ -93,7 +107,8 @@ if (($argc >= 2) && ($argc <= 4)) {
     printUsage();
 }
 
-function printUsage() {
+function printUsage()
+{
     echo "Usage: idplist.php IDPFILE {FILETYPE} <CHECK>\n";
     echo "     IDPFILE  is the full path name of the idplist file.\n";
     echo "     FILETYPE is either 'xml' or 'json'. Defaults to 'json.'\n";
@@ -106,5 +121,3 @@ function printUsage() {
     echo "list of IdPs so it can check if any new IdPs have beenn added\n";
     echo "to InCommon metadata. If so, the new IdPs are printed to STDOUT.\n";
 }
-
-?>

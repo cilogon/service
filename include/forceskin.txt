@@ -1,4 +1,4 @@
-# This file contains IdPs and Portals that should have a skin 
+# This file contains IdPs and Portals that should have a skin
 # applied by force. Each line of the file has the following format:
 #
 #    URI skinname
@@ -7,8 +7,8 @@
 #
 # The URI must be a PHP PCRE (Perl-Compatible Regular Expression). See
 # http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
-# Note that '#' should not be used as a delimiter since lines beginning with 
-# '#' (pound/hash) are skipped as comments. '%' (percent) is a good choice 
+# Note that '#' should not be used as a delimiter since lines beginning with
+# '#' (pound/hash) are skipped as comments. '%' (percent) is a good choice
 # for delimiter so that slashes do not need to be escaped.
 #
 # The URI regex should match either an IdP entityID or a portal callbackURL.

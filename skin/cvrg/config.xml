@@ -12,8 +12,9 @@
     <idp>urn:mace:incommon:mcnc.org</idp>
     <!-- ProtectNetwork -->
     <idp>urn:mace:incommon:idp.protectnetwork.org</idp>
-    <!-- Google -->
+    <!-- Google and GitHub -->
     <idp>https://accounts.google.com/o/oauth2/auth</idp>
+    <idp>https://github.com/login/oauth/authorize</idp>
     <!-- Test IdPs -->
     <idp>https://boingo.ncsa.uiuc.edu/idp/shibboleth</idp>
     <idp>https://comanage.psu.edu/idp/shibboleth</idp>

@@ -1,10 +1,15 @@
 <?php
 
-require_once('include/util.php');
-require_once('include/autoloader.php');
-require_once('include/content.php');
+// error_reporting(E_ALL); ini_set('display_errors',1);
 
-printHeader('Site Maintenance');
+require_once __DIR__ . '/vendor/autoload.php';
+
+use CILogon\Service\Util;
+use CILogon\Service\Content;
+
+Util::startPHPSession();
+
+Content::printHeader('Site Maintenance');
 
 echo '
 <div class="boxed">
@@ -19,6 +24,4 @@ echo '
   </p>
 </div> <!-- boxed -->
 ';
-printFooter();
-
-?>
+Content::printFooter();

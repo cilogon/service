@@ -13,7 +13,7 @@
 -->
 <config>
 
-<!-- As of Sept. 25, 2014, the default behavior for the delegation use-case 
+<!-- As of Sept. 25, 2014, the default behavior for the delegation use-case
      is to always skip the "Certificate Lifetime" and "Certificate Details"
      pages. This makes it so client (portal) sites without a configured
      skin will only see the "Select IdP" page. This includes our test

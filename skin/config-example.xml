@@ -19,7 +19,7 @@
 
 
   <!-- <forceinitialidp>
-       This option can be used in conjunction with <initialidp> or 
+       This option can be used in conjunction with <initialidp> or
        "selected_idp" (an OIDC optional URL query parameter). This
        option is functionally equivalent to having the "Remember this
        selection" checkbox checked on the IdP selection page. When set to 1,
@@ -109,7 +109,7 @@
 
   <!-- <pkcs12>
        This block contains options specific to the "Get New Certificate" box
-       (i.e. download a PKCS12 credential). 
+       (i.e. download a PKCS12 credential).
        The <initiallifetime> block allows you to specify the initial value
        for "Certificate Lifetime".  If set, you must specify BOTH <number>
        AND <multiplier>.
@@ -124,13 +124,13 @@
        user can enter for the credential. Defaults to 9516 (which equals 13
        months). Should not be greater than 9516.
        Note: The program checks for 1 <= minlifetime <= initiallifetime <=
-       maxlifetime <= 9516. 
-       <disable> If set to 1, downloading PKCS12 certificates is disabled. 
+       maxlifetime <= 9516.
+       <disable> If set to 1, downloading PKCS12 certificates is disabled.
        Instead, a message will be shown to the user stating that PKCS12
-       certificates cannot be downloaded due to restriction. The actual 
+       certificates cannot be downloaded due to restriction. The actual
        message can be overridden with the <disabledmessage> option.
        <disabledmessage> overrides the default message shown to the user
-       when <disabled> is set to 1. If using HTML in the message, be sure 
+       when <disabled> is set to 1. If using HTML in the message, be sure
        to encode any special characters (such as '<') to HTML entities.
   -->
   <!--
@@ -168,7 +168,7 @@
        GridShib-CA, currently 9516 (which equals 13 months). Should not be
        greater than 9516.
        Note: The program checks for 1 <= minlifetime <= initiallifetime <=
-       maxlifetime <= 9516. 
+       maxlifetime <= 9516.
   -->
   <!--
   <gsca>
@@ -273,8 +273,8 @@
        (PCRE), which is matched against the callback URI as passed by the
        portal to the CILogon Delegate service. The callback URI typically
        looks like "https://my.site.org/portal-service/ready". You need
-       to give a regular expression, including the delimeters (slash and 
-       pound are common). For information about PHP's PCRE syntax, see 
+       to give a regular expression, including the delimeters (slash and
+       pound are common). For information about PHP's PCRE syntax, see
        http://www.php.net/manual/en/pcre.pattern.php . Once you have
        specified a list of <portal> regular expressions, you also need to
        specify a <portallistaction> below, which tells the program what to
@@ -330,7 +330,7 @@
   -->
 
   <!-- <forceauthn>
-       If set to 1, make the user reauthenticate at the IdP every time, 
+       If set to 1, make the user reauthenticate at the IdP every time,
        assuming the CILogon session cookie has been cleared.  For
        Shibboleth authentication, this bypasses the SSO behavior by setting
        "forceAuthn=true" for the AuthnRequest when initiating the session.

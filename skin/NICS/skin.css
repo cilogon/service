@@ -30,15 +30,15 @@ div.boxheader {
   background-color: #444;
 }
 input.submit {
-  color: #000; 
-  font-size: 12px; 
-  font-weight: 400; 
-  letter-spacing: 2px; 
-  padding-top: 5px; 
-  padding-right: 10px; 
-  padding-bottom: 5px;   
-  padding-left: 10px; 
-  text-decoration: none; 
+  color: #000;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  padding-top: 5px;
+  padding-right: 10px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  text-decoration: none;
   background: #bbb;
 }
 

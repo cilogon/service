@@ -1,6 +1,8 @@
 <?php
 
-require_once '../include/idplist.php';
+require_once __DIR__ . '/../include/IdpList.php';
+
+use CILogon\Service\IdpList;
 
 if ($argc == 4) {
     $command = $argv[1];
@@ -18,24 +20,24 @@ if ($argc == 4) {
         printUsage();
     }
 
-    $idplist = new idplist($file1,'',false,$readtype);
+    $idplist = new IdpList($file1, '', false, $readtype);
     if (!$idplist->read($readtype)) {
-        fwrite(STDERR,"Unable to read from $file1\n");
+        fwrite(STDERR, "Unable to read from $file1\n");
         exit(1);
     }
 
     $idplist->setFilename($file2);
     if (!$idplist->write($writetype)) {
-        fprint(STDERR,"Unable to write to $file2\n");
+        fprint(STDERR, "Unable to write to $file2\n");
         exit(1);
     }
-
 } else {
     printUsage();
 }
 
 
-function printUsage() {
+function printUsage()
+{
     echo "Usage: convertidplist.php COMMAND {FILE1} {FILE2}\n";
     echo "     where COMMAND is one of the following:\n";
     echo "         xml2json - read FILE1 as XML and write FILE2 as JSON\n";
@@ -44,5 +46,3 @@ function printUsage() {
     echo "     FILE2 is the file to write to\n";
     echo "Convert the idplist file betwewn XML and JSON.\n";
 }
-
-?>

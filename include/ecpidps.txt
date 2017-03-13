@@ -7,6 +7,7 @@ https://idp.marshall.edu/idp/profile/SAML2/SOAP/ECP Marshall University
 https://idp.ncsa.illinois.edu/idp/profile/SAML2/SOAP/ECP National Center for Supercomputing Applications
 https://as1.fim.psu.edu/idp/profile/SAML2/SOAP/ECP Penn State University
 https://idp.protectnetwork.org/protectnetwork-idp/profile/SAML2/SOAP/ECP ProtectNetwork
+https://shibboleth-test.techservices.illinois.edu/idp/profile/SAML2/SOAP/ECP UIUC Test
 https://shibboleth2.uchicago.edu/idp/profile/SAML2/SOAP/ECP University of Chicago
 https://shibboleth.illinois.edu/idp/profile/SAML2/SOAP/ECP University of Illinois at Urbana-Champaign
 https://shibboleth.umich.edu/idp/profile/SAML2/SOAP/ECP University of Michigan

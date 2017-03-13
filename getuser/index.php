@@ -1,47 +1,50 @@
 <?php
 
-require_once('../include/util.php');
-require_once('../include/autoloader.php');
-require_once('../include/content.php');
-require_once('Google/Client.php');
-require_once('Google/Service/Plus.php');
+// error_reporting(E_ALL); ini_set('display_errors',1);
 
-/* Check the csrf cookie against either a hidden <form> element or a *
- * PHP session variable, and get the value of the "submit" element.  */
-$submit = $csrf->verifyCookieAndGetSubmit();
-util::unsetSessionVar('submit');
+require_once __DIR__ . '/../vendor/autoload.php';
 
-/* Get the URL to reply to after database query. */
-$responseurl = util::getSessionVar('responseurl');
+use CILogon\Service\Util;
+use CILogon\Service\OAuth2Provider;
+use League\OAuth2\Client\Token\AccessToken;
+
+Util::startPHPSession();
+
+// Check the csrf cookie against either a hidden <form> element or a
+// PHP session variable, and get the value of the 'submit' element.
+$submit = Util::getCsrf()->verifyCookieAndGetSubmit();
+Util::unsetSessionVar('submit');
+
+// Get the URL to reply to after database query.
+$responseurl = Util::getSessionVar('responseurl');
 
 
-if (($submit == 'getuser') && 
+if (($submit == 'getuser') &&
     (strlen($responseurl) > 0) &&
-    (strlen(util::getGetVar('state')) > 0)) {
-        getUserAndRespond2();
+    (strlen(Util::getGetVar('state')) > 0)) {
+    getUserAndRespond();
 } else {
     // If responseurl is empty, simply redirect to main site
     if (strlen($responseurl) == 0) {
-        $responseurl = 'https://' . HOSTNAME;
+        $responseurl = 'https://' . Util::getHN();
     }
 }
 
-/* Finally, redirect to the calling script. */
+// Finally, redirect to the calling script.
 header('Location: ' . $responseurl);
 exit; // No further processing necessary
 
 
-/************************************************************************
- * Function   : getUserAndRespond2                                      *
- * This function specifically handles the new Google OIDC login API.    *
- * The function reads developer and client keys from a local            *
- * configuration file, and then uses the Google OIDC PHP API            *
- * (https://github.com/google/google-api-php-client)                    *
- * to extract user parameters from the HTTP response.                   *
- ************************************************************************/
-function getUserAndRespond2() {
-    global $csrf;
-
+/**
+ * getUserAndRespond
+ *
+ * This function specifically handles the redirect from OAuth2 providers.
+ * The function reads client keys/secrets from a local configuration file,
+ * and then uses the PHP League OAuth2 client library to extract user
+ * parameters from the HTTP response.
+ */
+function getUserAndRespond()
+{
     $firstname = '';
     $lastname = '';
     $displayname = '';
@@ -50,95 +53,112 @@ function getUserAndRespond2() {
     $openidid = '';
     $oidcid = '';
 
-    util::unsetSessionVar('logonerror');
-    
-    $state = util::getGetVar('state');  // 'state' must match last CSRF value
-    $code = util::getGetVar('code');    // 'code' must not be empty
-    $lastcsrf = $csrf->getTheCookie();
+    Util::unsetSessionVar('logonerror');
+
+    $state = Util::getGetVar('state');  // 'state' must match last CSRF value
+    $code = Util::getGetVar('code');    // 'code' must not be empty
+    $lastcsrf = Util::getCsrf()->getTheCookie();
     if ($state != $lastcsrf) {
-        // Verify that response's "state" equals the last CSRF token
-        util::setSessionVar('logonerror','Invalid state parameter.');
+        // Verify that response's 'state' equals the last CSRF token
+        Util::setSessionVar('logonerror', 'Invalid state parameter.');
     } elseif (strlen($code) == 0) {
-        // Make sure the response has a non-empty "code" 
-        util::setSessionVar('logonerror','Empty code parameter.');
+        // Make sure the response has a non-empty 'code'
+        Util::setSessionVar('logonerror', 'Empty code parameter.');
     } else {
-        // Read the developer/client secret keys from local config file
-        if ((is_array(util::$ini_array)) &&
-            (array_key_exists('googleoauth2.applicationname',
-                              util::$ini_array)) &&
-            (array_key_exists('googleoauth2.clientid',util::$ini_array)) &&
-            (array_key_exists('googleoauth2.clientsecret',util::$ini_array)) &&
-            (array_key_exists('googleoauth2.developerkey',util::$ini_array))) {
-            $appname      = util::$ini_array['googleoauth2.applicationname'];
-            $clientid     = util::$ini_array['googleoauth2.clientid'];
-            $clientsecret = util::$ini_array['googleoauth2.clientsecret'];
-            $devkey       = util::$ini_array['googleoauth2.developerkey'];
+        // When using OAuth or OIDC, check portalcookie for providerId
+        $providerId = Util::getPortalOrNormalCookieVar('providerId');
+        $providerName = Util::getAuthzIdP($providerId);
+        $prov = strtolower($providerName); // IdP name all lowercase
 
-            // Call the Google OAuth2 API to extract user data
-            $client = new Google_Client();
-            $client->setApplicationName($appname);
-            $client->setClientID($clientid);
-            $client->setClientSecret($clientsecret);
-            $client->setRedirectUri(GETOIDCUSER_URL);
-            $client->setDeveloperKey($devkey);
-            $plus = new Google_Service_Plus($client);
-           
+        // Read the client secret keys from local config file
+        $clientid     = Util::getConfigVar($prov.'oauth2.clientid');
+        $clientsecret = Util::getConfigVar($prov.'oauth2.clientsecret');
+        if ((strlen($clientid) > 0) && (strlen($clientsecret) > 0)) {
+            $oauth2 = new OAuth2Provider($providerName);
             try {
-                // Make sure returned data is valid
-                $client->authenticate($code);
+                $token = $oauth2->provider->getAccessToken(
+                    'authorization_code',
+                    [ 'code' => $code ]
+                );
+                $user = $oauth2->provider->getResourceOwner($token);
+                $oidcid = $user->getId();
+                $emailaddr = $user->getEmail();
+                // GitHub email may require special handling
+                if ((strlen($emailaddr) == 0) && ($prov == 'github')) {
+                    $emailaddr = getGitHubEmail($oauth2, $token);
+                }
+                $name = $user->getName();
+                $first = '';
+                $last = '';
+                if ($prov != 'github') { // No first/last for GitHub
+                    $first = $user->getFirstName();
+                    $last = $user->getLastName();
+                }
+                list($firstname, $lastname) =
+                    Util::getFirstAndLastName($name, $first, $last);
             } catch (Exception $e) {
-                util::setSessionVar('logonerror',$e->getMessage());
-                $client = null;
+                Util::setSessionVar('logonerror', $e->getMessage());
             }
-
-            if (!is_null($client)) {
-                try {
-                    // Try to get the token data for further processing
-                    $token_data = $client->verifyIdToken()->getAttributes();
-                } catch (Exception $e) {
-                    util::setSessionVar('logonerror',$e->getMessage());
-                    $token_data = null;
-                }
-                if (!is_null($token_data)) {
-                    // Get the OpenID identifier and email
-                    $openidid = @$token_data['payload']['openid_id'];
-                    $emailaddr = @$token_data['payload']['email'];
-                    $oidcid = @$token_data['payload']['sub'];
-                }
-
-                try {
-                    // Try to get the "me" data for first/last name
-                    $me = $plus->people->get('me');
-                } catch (Exception $e) {
-                    util::setSessionVar('logonerror',$e->getMessage());
-                    $me = null;
-                }
-                if (!is_null($me)) {
-                    if (strlen($emailaddr) == 0) {
-                        $emailaddr = @$me->getEmails()[0]->getValue();
-                    }
-                    $displayname = @$me['displayName'];
-                    list($firstname,$lastname) = util::getFirstAndLastName(
-                        $displayname,
-                        @$me['name']['givenName'],
-                        @$me['name']['familyName']);
-                }
-            }
+        } else {
+            Util::setSessionVar(
+                'logonerror',
+                'Missing OAuth2 client configuration values.'
+            );
         }
     }
 
-
-    /* If no error reported, save user data to datastore */
-    if (strlen(util::getSessionVar('logonerror')) == 0) {
-        // If using OAuth 1.0a or OIDC, check portalcookie for providerId
-        $providerId = util::getPortalOrNormalCookieVar('providerId');
-        $providerName = 'Google';
-        util::saveUserToDataStore($openidid,$providerId,$providerName,
-                                  $firstname,$lastname,$displayname,
-                                  $emailaddr,'openid','','',$openidid,$oidcid);
+    // If no error reported, save user data to datastore.
+    if (strlen(Util::getSessionVar('logonerror')) == 0) {
+        Util::saveUserToDataStore(
+            $openidid,
+            $providerId,
+            $providerName,
+            $firstname,
+            $lastname,
+            $displayname,
+            $emailaddr,
+            'openid',
+            '', // ePPN
+            '', // ePTID
+            $openidid,
+            $oidcid
+        );
     } else {
-        util::unsetSessionVar('submit');
+        Util::unsetSessionVar('submit');
     }
 }
 
-?>
+/**
+ * getGitHubEmail
+ *
+ * This function gets a GitHub user email address from the special
+ * user email API endpoint. It returns an email address that is marked
+ * as 'primary' by GitHub.
+ *
+ * @param OAuth2Provider An exsiting OAuth2Provider object
+ * @param League\OAuth2\Client\Token\AccessToken An oauth2 token
+ * @return string A GitHub user's primary email address, or empty string
+ *         if no such email address exists.
+ */
+function getGitHubEmail($oauth2, $token)
+{
+    $oauth2_email = '';
+
+    $request = $oauth2->provider->getAuthenticatedRequest(
+        'GET',
+        'https://api.github.com/user/emails',
+        $token
+    );
+    $github_emails = json_decode(
+        $oauth2->provider->getResponse($request)->getBody()
+    );
+
+    foreach ($github_emails as $email) {
+        if ($email->primary == 1) {
+            $oauth2_email = $email->email;
+            break;
+        }
+    }
+
+    return $oauth2_email;
+}

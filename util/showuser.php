@@ -1,14 +1,14 @@
 <?php
 
-require_once('../include/util.php');
-require_once('../include/autoloader.php');
+require_once __DIR__ . '/../include/DBService.php';
+
+use CILogon\Service\DBService;
 
 if ($argc == 2) {
-
     $uid = $argv[1];
-    
+
     if (strlen($uid) > 0) {
-        $dbs = new dbservice();
+        $dbs = new DBService();
 
         $dbs->getUser($uid);
         $status = $dbs->status;
@@ -31,12 +31,14 @@ if ($argc == 2) {
     echo "    where UID is a database user identifier\n";
 }
 
-function printStatus($status) {
-    echo "status = " . $status . " = " . 
-        array_search($status,dbservice::$STATUS) . "\n";
+function printStatus($status)
+{
+    echo "status = " . $status . " = " .
+        array_search($status, DBService::$STATUS) . "\n";
 }
 
-function printUser($dbs) {
+function printUser($dbs)
+{
     echo "uid = $dbs->user_uid\n";
     echo "first_name = $dbs->first_name\n";
     echo "last_name = $dbs->last_name\n";
@@ -55,5 +57,3 @@ function printUser($dbs) {
     echo "affiliation = $dbs->affiliation\n";
     echo "ou = $dbs->ou\n";
 }
-
-?>

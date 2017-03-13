@@ -54,7 +54,7 @@
 #                                                                       #
 #########################################################################
 
-use constant { 
+use constant {
     OPENSSL_BIN  =>'/usr/bin/openssl' ,  ### CHANGE THIS IF NECESSARY
     ECP_IDPS_URL =>'https://cilogon.org/include/ecpidps.txt' ,
     DEFAULT_IDP  =>'University of Illinois at Urbana-Champaign' ,
@@ -136,7 +136,7 @@ if (exists $opts{version}) {
     print "ecp.pl version '" . main->VERSION . "'\n";
     exit 1;
 }
- 
+
 # Check if the user wants to bypass SSL hostname verification
 if (exists $opts{skipssl}) {
     $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
@@ -145,7 +145,7 @@ if (exists $opts{skipssl}) {
 # Fetch the list of IdPs to list them now or search them later.
 %idps = fetchIdps();
 if (!keys %idps) {  # MAJOR ERROR! No ECP IdPs fetched!
-    warn "Error: Unable to fetch the list of IdPs from the CILogon server." if 
+    warn "Error: Unable to fetch the list of IdPs from the CILogon server." if
         (!$quiet);
     exit 1;
 }
@@ -220,7 +220,7 @@ if ((length($idpurl) == 0) && (exists $opts{idpname})) {
         }
     }
     if (!$found) {
-        warn "Error: '$idpname' does not appear to be a valid IdP." if 
+        warn "Error: '$idpname' does not appear to be a valid IdP." if
             (!$quiet);
         $idpname = '';
     }
@@ -353,7 +353,7 @@ if ($get eq 'u') {
 if ($get eq 'c') {
     $getstr = 'certificate';
     # Check to make sure that the openssl binary is available
-    if (!checkOpenSSL()) { 
+    if (!checkOpenSSL()) {
         warn "Error: Unable to execute the OpenSSL command at '" .
              OPENSSL_BIN . "'. Aborting." if (!$quiet);
         exit 1;
@@ -370,7 +370,7 @@ if ($get eq 'c') {
         $reply = $term->get_reply(
                  prompt   => 'Enter filename',
                  print_me => 'Enter filename containing a certificate ' .
-                             'signing request,' . "\n" . 
+                             'signing request,' . "\n" .
                              'or leave blank to create one on-the-fly:',
                  default  => ' ',
                  allow    => \&blankOrReadable
@@ -389,7 +389,7 @@ if ($get eq 'c') {
                         $csr .= $_;
                     }
                 } else {
-                    warn "Error: Unable to read CSR from file " . 
+                    warn "Error: Unable to read CSR from file " .
                          "'$certreqfile'." if (!$quiet);
                     $certreqfile = '';
                 }
@@ -412,7 +412,7 @@ if ($get eq 'c') {
         if (exists $opts{inkey}) { # Read in private key from file
             $inkey = trim($opts{inkey});
             if (!(-r $inkey)) {
-                warn "Error: Unable to read private key from file " . 
+                warn "Error: Unable to read private key from file " .
                      "'$inkey'." if (!$quiet);
                 $inkey = '';
             }
@@ -424,7 +424,7 @@ if ($get eq 'c') {
             if (exists $opts{outkey}) { # Verify can write out to file
                 $outkey = trim($opts{outkey});
                 if (!fileWriteable($outkey)) {
-                    warn "Error: Unable to write private key to file " . 
+                    warn "Error: Unable to write private key to file " .
                          "'$outkey'." if (!$quiet);
                     $outkey = '';
                 }
@@ -443,14 +443,14 @@ if ($get eq 'c') {
             }
 
             # If still no outkey filename and '--proxyfile' was specified,
-            # or if STDOUT was given as the outkey filename, write the 
+            # or if STDOUT was given as the outkey filename, write the
             # key to a temp file.
-            if (((length($outkey) == 0) && (exists $opts{proxyfile})) || 
+            if (((length($outkey) == 0) && (exists $opts{proxyfile})) ||
                 ($outkey =~ /^(stdout|-)$/i)) {
                 if ($outkey =~ /^(stdout|-)$/i) {
                     $outkeystdout = 1; # Print key to stdout at the very end
                 }
-                ($outkeyfh,$outkey) = 
+                ($outkeyfh,$outkey) =
                     tempfile(UNLINK=>1,TMPDIR=>1,SUFFIX=>'.pem');
             } else {
                 open($outkeyfh,">",$outkey);
@@ -504,14 +504,14 @@ if ($get eq 'p') {
                 print "\n";
             }
             if (length($passwd) < 12) {
-                warn "Error: Password must be at least 12 characters long." if 
+                warn "Error: Password must be at least 12 characters long." if
                     (!$quiet);
             }
         }
     }
 }
 
-# If getting a certificate or a credential, get the lifetime, 
+# If getting a certificate or a credential, get the lifetime,
 # and check for VO and two-factor passcode command line options
 if (($get eq 'c') || ($get eq 'p')) {
     my $maxlifetime = (($get eq 'c') ? 277 : 9516);
@@ -564,7 +564,7 @@ if (($get eq 'c') || ($get eq 'p')) {
 if (exists $opts{out}) {
     $outputfile = trim($opts{out});
     if (!fileWriteable($outputfile)) {
-        warn "Error: Specified output file '$outputfile' is not writeable." if 
+        warn "Error: Specified output file '$outputfile' is not writeable." if
             (!$quiet);
         $outputfile = '';
     }
@@ -624,7 +624,7 @@ if ($response->is_success) {
 # Get <ecp:RelayState> element from the SP's SOAP response
 ($xmlstr =~ m#(<ecp:RelayState.*</ecp:RelayState>)#i) && ($relaystate = $1);
 if (!$relaystate) {
-    warn "Error: No <ecp:RelayState> block in response from '$urltoget'." if 
+    warn "Error: No <ecp:RelayState> block in response from '$urltoget'." if
         (!$quiet);
     exit 1;
 }
@@ -683,7 +683,7 @@ if (!$foundsuccess) {
 }
 
 # Find the AssertionConsumerServiceURL from the IdP's response
-($idpresp=~m#AssertionConsumerServiceURL=\"([^\"]*)\"#i) && 
+($idpresp=~m#AssertionConsumerServiceURL=\"([^\"]*)\"#i) &&
     ($assertionConsumerServiceURL=$1);
 if (!$assertionConsumerServiceURL) {
     warn "Error: No AssertionConsumerServiceURL in response from '$idpurl'." if
@@ -770,7 +770,7 @@ do {
         $authOK = 1;
         print "Success!\n" if ($verbose);
         if (length($outputfile) > 0) {
-            # If a certificate was fetched (not a PKCS12 or other) and 
+            # If a certificate was fetched (not a PKCS12 or other) and
             # either (a) the outputfile is the same as keyfile OR (b) the
             # user specified the '--proxyfile' command line option, read in
             # the keyfile, then output cert followed by contents of keyfile
@@ -784,7 +784,7 @@ do {
                             $keystr .= $_;
                         }
                     } else { # This shouldn't happen, but just in case.
-                        warn "Error: Unable to read key from file " . 
+                        warn "Error: Unable to read key from file " .
                              "'$keyfile'." if (!$quiet);
                         $keystr = '';
                     }
@@ -1005,7 +1005,7 @@ sub blankOrReadable
 {
     my $filename = trim(shift);
     my $retval = 1;
-    if ((length($filename) > 0) && (!(-r $filename))) { 
+    if ((length($filename) > 0) && (!(-r $filename))) {
         $retval = 0;
     }
     return $retval;
@@ -1045,8 +1045,8 @@ sub runCmdGetStdout
     my $res = '';
     open(NULL,">",File::Spec->devnull);
     my $pid = open3(gensym,\*PH,">&NULL",$cmd);
-    while (<PH>) { 
-        $res .= $_; 
+    while (<PH>) {
+        $res .= $_;
     }
     waitpid($pid,0);
     return $res;
@@ -1066,8 +1066,8 @@ sub runCmdGetStderr
     my $res = '';
     open(NULL,">",File::Spec->devnull);
     my $pid = open3(gensym,">&NULL",\*PH,$cmd);
-    while (<PH>) { 
-        $res .= $_; 
+    while (<PH>) {
+        $res .= $_;
     }
     waitpid($pid,0);
     return $res;
@@ -1111,7 +1111,7 @@ sub trim
 # to reset the terminal to 'echo on' and non-bold text.                 #
 #########################################################################
 sub resetTerm
-{ 
+{
     if ($^O !~ /MSWin/i) {
         print "\e[0m";
         system('stty','echo');
@@ -1157,8 +1157,8 @@ sub getProxyFilename
     my $envvalue = $ENV{'X509_USER_PROXY'};
     if (length($envvalue) > 0) {
         $retval = $envvalue;
-    } 
-    
+    }
+
     # Next, try the temp directory plus UID for non-Win32 systems
     # (Can't do this on Win32 systems since $< always returns 0)
     if ((length($retval) == 0) && ($^O ne 'MSWin32')) {
@@ -1290,7 +1290,7 @@ since the key will be written to the resulting Globus proxy file.
 
 =item B<-t> I<hours>, B<--lifetime> I<hours>
 
-Specify the lifetime of the certificate or credential, in integer hours. 
+Specify the lifetime of the certificate or credential, in integer hours.
 Maximum lifetime for a certificate is 277 hours (11.5 days). Maximum
 lifetime for a PKCS12 credential is 9516 hours (13 months).
 
@@ -1310,7 +1310,7 @@ credential. This password must be at least 12 characters in length.
 Specify a passcode for two-factor authentication. If two-factor
 authentication had been previously enabled for your account (via the web
 interface), use this value to validate the two-factor authentication step.
-If you specify '0' (zero) as the I<passcode>, two-factor authentication will 
+If you specify '0' (zero) as the I<passcode>, two-factor authentication will
 be disabled for your account.
 
 =item B<-U> I<url>, B<--url> I<url>
@@ -1355,9 +1355,9 @@ auth sufficient pam_exec.so expose_authtok /usr/local/bin/ecp.pl --pam --idpurl 
 C<auth> is the only supported PAM_TYPE. The C<expose_authtok> option is
 mandatory to prompt the user for a password and give the ecp.pl script
 access to that password. In this example, an ECP endpoint is specified using
-the B<--idpurl> command line option. 
+the B<--idpurl> command line option.
 
-The B<--pam> option also supports an optional C<ecp-mapfile> (defaults to 
+The B<--pam> option also supports an optional C<ecp-mapfile> (defaults to
 I</etc/ecp-mapfile>) which can override the command line options specified in
 the pam.d configuration file on a user-by-user basis. This can be used to
 map the local B<PAM_USER> username to a different IdP URL and IdP username,
@@ -1397,8 +1397,8 @@ prompted for all required information.
 Print out the list of available ECP-enabled Identity Providers. This is
 useful when using the I<--idpname> command line option in later invocations.
 
-=item ecp.pl --get cert --idpname urbana --idpuser joesmith 
-             --idppass mypass --certreq create --outkey userkey.pem 
+=item ecp.pl --get cert --idpname urbana --idpuser joesmith
+             --idppass mypass --certreq create --outkey userkey.pem
              --lifetime 240 --out usercert.pem
 
 Get a certificate from the CILogon Service. Authenticate to the Identity
@@ -1408,7 +1408,7 @@ on-the-fly and output the private key to the file C<userkey.pem>. Set the
 lifetime of the certificate to 240 hours (10 days). Output the fetched
 certificate to the file C<usercert.pem>.
 
-=item ecp.pl --get cert --idpname urbana --idpuser joesmith 
+=item ecp.pl --get cert --idpname urbana --idpuser joesmith
              --idppass mypass --certreq usercsr.pem --lifetime 168
              --out STDOUT
 
@@ -1429,8 +1429,8 @@ on-the-fly. Set the lifetime of the certificate to 12 hours. Output the
 fetched certificate and private key to the Globus proxy file location (e.g.,
 /tmp/x509up_u500).
 
-=item ecp.pl --get pkcs12 --idpname urbana --idpuser joesmith 
-             --idppass mypass --password abcdefghijkl --lifetime 8766 
+=item ecp.pl --get pkcs12 --idpname urbana --idpuser joesmith
+             --idppass mypass --password abcdefghijkl --lifetime 8766
              --out usercred.p12
 
 Get a PKCS12 credential from the CILogon Service.  Authenticate to the

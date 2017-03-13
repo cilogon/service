@@ -1,11 +1,16 @@
 <?php
 
-require_once('../include/util.php');
-require_once('../include/autoloader.php');
-require_once('../include/content.php');
+// error_reporting(E_ALL); ini_set('display_errors',1);
 
-printHeader('CILogon Service Example Buttons');
-printPageHeader('Examples of CILogon Service Buttons and Links');
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use CILogon\Service\Util;
+use CILogon\Service\Content;
+
+Util::startPHPSession();
+
+Content::printHeader('CILogon Service Example Buttons');
+Content::printPageHeader('Examples of CILogon Service Buttons and Links');
 
 ?>
 
@@ -60,12 +65,12 @@ for simple hyperlinks (<tt>&lt;a href="..."&gt;</tt>).
 <p>
 If you use a <tt>&lt;form&gt;</tt> to route users from your site to the
 CILogon Service, you will need to set the "<tt>action=...</tt>" and
-"<tt>method=...</tt>" parameters appropriately for your site.  
+"<tt>method=...</tt>" parameters appropriately for your site.
 If your site can process <tt>&lt;form&gt;</tt> submission,
 you can set the target for the "<tt>action</tt>" parameter to be one of your
 site's pages, and then redirect to the appropriate CILogon Service URL.
 Otherwise, you can set the target for the "<tt>action</tt>" parameter to be
-the CILogon Service URL directly.  
+the CILogon Service URL directly.
 </p>
 <p>
 Note that for the CILogon Delegation
@@ -84,7 +89,7 @@ probably need to generate the HTML output dynamically (e.g. via PHP or ASP).
 For the purposes of these examples, we will assume that the current page can
 process forms, so the "<tt>action</tt>" parameter will be "<tt>#</tt>".  For
 the anchors (hyperlinks), we will use the end-user CILogon Service
-URL (https://cilogon.org) in the "<tt>href</tt>" parameter. 
+URL (https://cilogon.org) in the "<tt>href</tt>" parameter.
 </p>
 
 <h2>Text-Only Button</h2>
@@ -92,18 +97,18 @@ URL (https://cilogon.org) in the "<tt>href</tt>" parameter.
 This example shows a form "submit" button that has been stylized with
 colors used by the CILogon site.
 
-<table width="100%" cellspacing="0" cellpadding="10" 
+<table width="100%" cellspacing="0" cellpadding="10"
   style="border-width:0; border-spacing:0;
          border-style:solid; border-collapse:collapse;">
   <tr>
     <td>
     <form action="#" method="post">
-    <input type="submit" name="cisubmit1" id="cisubmit1" 
-      value="CILogon Service" 
+    <input type="submit" name="cisubmit1" id="cisubmit1"
+      value="CILogon Service"
       title="Click to get a certificate via the CILogon Service."
-      style="font-family:Arial,sans-serif; font-style:italic; 
-      font-weight:bold; font-size:large; color:#030; 
-      background-color:#aca; cursor:help;" 
+      style="font-family:Arial,sans-serif; font-style:italic;
+      font-weight:bold; font-size:large; color:#030;
+      background-color:#aca; cursor:help;"
       onclick="return false;"
       />
     </form>
@@ -112,11 +117,11 @@ colors used by the CILogon site.
     <form action="#" method="post">
     <textarea cols="68" rows="8">
 &lt;form action="#" method="post"&gt;
-&lt;input type="submit" name="cisubmit1" id="cisubmit1" 
-value="CILogon Service" 
+&lt;input type="submit" name="cisubmit1" id="cisubmit1"
+value="CILogon Service"
 title="Click to get a certificate via the CILogon Service."
-style="font-family:Arial,sans-serif; font-style:italic; 
-font-weight:bold; font-size:large; color:#030; 
+style="font-family:Arial,sans-serif; font-style:italic;
+font-weight:bold; font-size:large; color:#030;
 background-color:#aca; cursor:help;" /&gt;
 &lt;/form&gt;</textarea>
     </form>
@@ -132,17 +137,17 @@ This example shows another form "submit" button, this time using the type
 "<tt>image</tt>" to show an icon rather than text.  Additional buttons/icons
 are available at the bottm of the page.
 
-<table width="100%" cellspacing="0" cellpadding="10" 
+<table width="100%" cellspacing="0" cellpadding="10"
   style="border-width:0; border-spacing:0;
          border-style:solid; border-collapse:collapse;">
   <tr>
     <td>
     <form action="#" method="post">
-    <input type="image" name="cisubmit2" id="cisubmit2" 
+    <input type="image" name="cisubmit2" id="cisubmit2"
       src="https://cilogon.org/images/cilogon-logon-32-g.png"
-      alt="CILogon Service" 
+      alt="CILogon Service"
       title="Click to get a certificate via the CILogon Service."
-      style="cursor:help;" 
+      style="cursor:help;"
       onclick="return false;"
       />
     </form>
@@ -151,9 +156,9 @@ are available at the bottm of the page.
     <form action="#" method="post">
     <textarea cols="68" rows="7">
 &lt;form action="#" method="post"&gt;
-&lt;input type="image" name="cisubmit2" id="cisubmit2" 
-src="https://cilogon.org/images/cilogon-ci-32-g.png" 
-alt="CILogon Service" 
+&lt;input type="image" name="cisubmit2" id="cisubmit2"
+src="https://cilogon.org/images/cilogon-ci-32-g.png"
+alt="CILogon Service"
 title="Click to get a certificate via the CILogon Service."
 style="cursor:help;" /&gt;
 &lt;/form&gt;</textarea>
@@ -172,14 +177,14 @@ href="..."&gt;</tt> tag if you want a basic link.  Here is one example using
 a CILogon icon and some CSS stylized text.
 </p>
 
-<table width="100%" cellspacing="0" cellpadding="10" 
+<table width="100%" cellspacing="0" cellpadding="10"
   style="border-width:0; border-spacing:0;
          border-style:solid; border-collapse:collapse;">
   <tr>
     <td>
-      <a href="https://cilogon.org/" 
+      <a href="https://cilogon.org/"
       style="font-family:Arial,sans-serif; font-style:italic;
-      font-weight:bold; font-size:x-large; color:#696;"><img 
+      font-weight:bold; font-size:x-large; color:#696;"><img
       style="border-style:none; vertical-align:middle"
       src="https://cilogon.org/images/cilogon-logo-24x24-b.png"
       alt=""/>Get Certificate</a>
@@ -187,9 +192,9 @@ a CILogon icon and some CSS stylized text.
     <td align="right">
       <form action="#" method="post">
       <textarea cols="68" rows="6">
-&lt;a href="https://cilogon.org/" 
+&lt;a href="https://cilogon.org/"
 style="font-family:Arial,sans-serif; font-style:italic;
-font-weight:bold; font-size:x-large; color:#696;"&gt;&lt;img 
+font-weight:bold; font-size:x-large; color:#696;"&gt;&lt;img
 style="border-style:none; vertical-align:middle"
 src="https://cilogon.org/images/cilogon-logo-24x24-b.png"
 alt=""&gt;Get Certificate&lt;/a&gt;</textarea>
@@ -210,15 +215,15 @@ decoration to make it look like a button.  Notice the addition of the
 <tt>&lt;div&gt;</tt> to make the entire "button" clickable.
 </p>
 
-<table width="100%" cellspacing="0" cellpadding="10" 
+<table width="100%" cellspacing="0" cellpadding="10"
   style="border-width:0; border-spacing:0;
          border-style:solid; border-collapse:collapse;">
   <tr>
     <td>
       <div style="border: 5px outset #696; cursor:pointer;
-      display:inline-block; padding:3px;" 
+      display:inline-block; padding:3px;"
       onclick="location.href='https://cilogon.org'">
-      <a href="https://cilogon.org" 
+      <a href="https://cilogon.org"
       style="font-family:Arial,sans-serif; font-style:italic;
       font-weight:bold; font-size:28px; color:#363;
       text-decoration:none;">
@@ -231,9 +236,9 @@ decoration to make it look like a button.  Notice the addition of the
     <textarea cols="68" rows="9">
 &lt;div style="border: 5px outset #696; cursor:pointer; padding:3px;
 display:inline-block;" onclick="location.href='https://cilogon.org'"&gt;
-&lt;a href="https://cilogon.org" 
+&lt;a href="https://cilogon.org"
 style="font-family:Arial,sans-serif; font-style:italic;
-font-weight:bold; font-size:28px; color:#363; 
+font-weight:bold; font-size:28px; color:#363;
 text-decoration:none;"&gt;&lt;img alt=""
 src="https://cilogon.org/images/cilogon-logo-32x32.png"
 style="vertical-align:middle"/&gt;&amp;nbsp;CILogon&amp;nbsp;Service&lt;/a&gt;
@@ -264,7 +269,7 @@ link to save to your local computer.
 <p>
 The font used for the "CILogon" text is <a target="_blank"
 href="http://web.nickshanks.com/fonts/microsoft-core-web-fonts">Arial</a>,
-with font-weight <strong>bold</strong>, and font-style <em>italic</em>. 
+with font-weight <strong>bold</strong>, and font-style <em>italic</em>.
 </p>
 
 <table cellpadding="5" width="100%"
@@ -390,5 +395,5 @@ with font-weight <strong>bold</strong>, and font-style <em>italic</em>.
 
 
 <?php
-printFooter();
+Content::printFooter();
 ?>

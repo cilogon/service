@@ -9,7 +9,7 @@ a {
   color: blue;
 }
 a:visited {
-  color: purple; 
+  color: purple;
 }
 a:hover, a:active {
   color: red;

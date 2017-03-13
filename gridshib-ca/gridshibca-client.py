@@ -142,7 +142,7 @@ class GridShibCATrustRootsURL(GridShibCAURL):
                 # If file not open yes, silently ignore line
         if file:
             file.close()
-            
+
 class GridShibCACredentialIssuerURL(GridShibCAURL):
     def requestCertificate(self, actCode, lifetime):
         """Request certificate from GridShib-CA. Returns X509Credential object."""
@@ -191,7 +191,7 @@ class X509Credential:
         self.request.sign(self.privateKey, messageDigest)
         return crypto.dump_certificate_request(crypto.FILETYPE_PEM,
                                                self.request)
-    
+
     def setCertificate(self, certificate):
         """Use given OpenSSL.crypto.X509 as certificate."""
         self.certificate = certificate
@@ -202,7 +202,7 @@ class X509Credential:
         if self.certificate is None:
             raise GridShibCAException("Attempt to write incomplete credential (public key is mising)")
         exp_time = datetime.strptime(self.certificate.get_notAfter(),
-                                     "%Y%m%d%H%M%SZ") 
+                                     "%Y%m%d%H%M%SZ")
         timeleft = exp_time - datetime.utcnow()
         secondsleft = timeleft.seconds + timeleft.days * 24 * 3600
         debug("Certificate lifetime: %d seconds" % secondsleft)

@@ -4,7 +4,6 @@
 ini_set('session.cookie_secure',true);
 if (session_id() == "") session_start();
 */
-include_once('../include/util.php');
 
 if (isset($_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'])) {
     $providerId = $_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'];
@@ -62,7 +61,7 @@ if (isset($_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'])) {
     var char1, char2, char3;
     var enc1, enc2, enc3, enc4;
     var i = 0;
-  
+
     //remove all characters that are not A-Z, a-z, 0-9, +, /, or =
     encodedString = encodedString.replace(/[^A-Za-z0-9\+\/\=]/g, "");
     do {

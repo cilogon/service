@@ -1,73 +1,82 @@
 <?php
 
-require_once('../include/util.php');
-require_once('../include/autoloader.php');
-require_once('../include/content.php');
+// error_reporting(E_ALL); ini_set('display_errors',1);
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use CILogon\Service\Util;
+use CILogon\Service\Content;
+use CILogon\Service\ShibError;
+
+Util::startPHPSession();
 
 // Check for a Shibboleth error and handle it
-$shiberror = new shiberror();
+$shiberror = new ShibError();
 
-// $idplist initialized in util.php
-
-/* Check the csrf cookie against either a hidden <form> element or a *
- * PHP session variable, and get the value of the "submit" element.  *
- * Note: replace CR/LF with space for "Show/Hide Help" buttons.      */
+// Check the csrf cookie against either a hidden <form> element or a
+// PHP session variable, and get the value of the 'submit' element.
+// Note: replace CR/LF with space for 'Show/Hide Help' buttons.
 $retchars = array("\r\n","\n","\r");
-$submit = str_replace($retchars," ",$csrf->verifyCookieAndGetSubmit());
-util::unsetSessionVar('submit');
+$submit = str_replace(
+    $retchars,
+    ' ',
+    Util::getCsrf()->verifyCookieAndGetSubmit()
+);
+Util::unsetSessionVar('submit');
 
-/* Depending on the value of the clicked "submit" button or the    *
- * equivalent PHP session variable, take action or print out HTML. */
+// Depending on the value of the clicked 'submit' button or the
+// equivalent PHP session variable, take action or print out HTML.
 switch ($submit) {
-
     case 'Log On': // Check for OpenID or InCommon usage.
     case 'Continue': // For OOI
-        $providerIdPost = util::getPostVar('providerId');
-        if ($idplist->exists($providerIdPost)) { // Use InCommon authn
-            util::setCookieVar('providerId',$providerIdPost);
+        $providerIdPost = Util::getPostVar('providerId');
+        if (Util::getIdpList()->exists($providerIdPost)) {
+            // Use InCommon authn
+            Util::setCookieVar('providerId', $providerIdPost);
             redirectToTestIdP($providerIdPost);
         } else { // Either providerId not set or not in whitelist
-            util::unsetCookieVar('providerId');
+            Util::unsetCookieVar('providerId');
             printLogonPage();
         }
-    break; // End case 'Log On'
+        break; // End case 'Log On'
 
     case 'Cancel': // Cancel button on WAYF page - go to Google
-        header('Location: http://www.google.com/');
+        header('Location: https://www.google.com/');
         exit; // No further processing necessary
-    break;
+        break;
 
     case 'Show  Help ': // Toggle showing of help text on and off
     case 'Hide  Help ':
-        if (util::getSessionVar('showhelp') == 'on') {
-            util::unsetSessionVar('showhelp');
+        if (Util::getSessionVar('showhelp') == 'on') {
+            Util::unsetSessionVar('showhelp');
         } else {
-            util::setSessionVar('showhelp','on');
+            Util::setSessionVar('showhelp', 'on');
         }
         printLogonPage();
-    break; // End case 'Show Help' / 'Hide Help'
+        break; // End case 'Show Help' / 'Hide Help'
 
     default: // No submit button clicked nor PHP session submit variable set
         printLogonPage();
-    break; // End default case
-
+        break; // End default case
 } // End switch($submit)
 
 
-/************************************************************************
- * Function   : printLogonPage                                          *
- * This function prints out the HTML for the IdP Selector page.         *
- * Explanatory text is shown as well as a button to log in to an IdP    *
- * and get rerouted to the Shibboleth protected testidp script.         *
- ************************************************************************/
-function printLogonPage() {
-    printHeader('Test Your Identity Provider With CILogon');
+/**
+ * printLogonPage
+ *
+ * This function prints out the HTML for the IdP Selector page.
+ * Explanatory text is shown as well as a button to log in to an IdP
+ * and get rerouted to the Shibboleth protected testidp script.
+ */
+function printLogonPage()
+{
+    Content::printHeader('Test Your Identity Provider With CILogon');
 
     echo '
     <div class="boxed">
     ';
 
-    printHelpButton();
+    Content::printHelpButton();
 
     echo '
       <br />
@@ -76,39 +85,42 @@ function printLogonPage() {
       it from the list below and Log On.
       </p>
     ';
-    
-    printWAYF(false,true);
+
+    Content::printWAYF(false, true);
 
     echo '
     </div> <!-- End boxed -->
     ';
-    printFooter();
+    Content::printFooter();
 }
 
-/************************************************************************
- * Function   : redirectToTestIdP                                       *
- * Parameters : (1) An entityId of the authenticating IdP.  If not      *
- *                  specified (or set to the empty string), we check    *
- *                  providerId PHP session variable and providerId      *
- *                  cookie (in that order) for non-empty values.        *
- * If the first parameter (a whitelisted entityId) is not specified,    *
- * we check to see if either the providerId PHP session variable or the *
- * providerId cookie is set (in that order) and use one if available.   *
- * Then this function redirects to the "/secure/testidp/" script so as  *
- * to do a Shibboleth authentication via mod_shib.  When the providerId *
- * is non-empty, the SessionInitiator will automatically go to that IdP *
- * (i.e. without stopping at a WAYF).                                   *
- ************************************************************************/
-function redirectToTestIdP($providerId='') {
+/**
+ * redirectToTestIdP
+ *
+ * If the first parameter (a whitelisted entityId) is not specified,
+ * we check to see if either the providerId PHP session variable or the
+ * providerId cookie is set (in that order) and use one if available.
+ * Then this function redirects to the "/secure/testidp/" script so as
+ * to do a Shibboleth authentication via mod_shib.  When the providerId
+ * is non-empty, the SessionInitiator will automatically go to that IdP
+ * (i.e. without stopping at a WAYF).
+ *
+ * @param string $providerId (Optionals) An entityId of the authenticating
+ *        IdP. If not specified (or set to the empty string), we check
+ *        providerId PHP session variable and providerId cookie (in that
+ *        order) for non-empty values.
+ */
+function redirectToTestIdP($providerId = '')
+{
     // If providerId not set, try the cookie value
     if (strlen($providerId) == 0) {
-        $providerId = util::getCookieVar('providerId');
+        $providerId = Util::getCookieVar('providerId');
     }
-    
+
     // Set up the "header" string for redirection thru mod_shib
-    $testidp_url = 'https://' . HOSTNAME . '/secure/testidp/';
-    $redirect = 
-        'Location: https://' . HOSTNAME . '/Shibboleth.sso/Login?' .
+    $testidp_url = 'https://' . Util::getHN() . '/secure/testidp/';
+    $redirect =
+        'Location: https://' . Util::getHN() . '/Shibboleth.sso/Login?' .
         'target=' . urlencode($testidp_url);
     if (strlen($providerId) > 0) {
         $redirect .= '&providerId=' . urlencode($providerId);
@@ -117,5 +129,3 @@ function redirectToTestIdP($providerId='') {
     header($redirect);
     exit; // No further processing necessary
 }
-
-?>

@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #############################################################################
-#                        ABOUT THIS DIRECTORY                               
+#                        ABOUT THIS DIRECTORY
 #                        --------------------
 # This directory contains the PHP code for the CILogon Service Provider.
-# You can check out the files to the /var/www/html/ directory on your server 
+# You can check out the files to the /var/www/html/ directory on your server
 # using thefollowing commands:
 #
 # sudo su -
@@ -15,7 +15,7 @@
 # cvs -d:pserver:anonymous@cilogon.cvs.sourceforge.net:/cvsroot/cilogon \
 #      export -D now -d html service/html
 #
-# If you prefer to be able to keep the files current via 'cvs update', 
+# If you prefer to be able to keep the files current via 'cvs update',
 # you can replace the last cvs command above with this one:
 #
 # cvs -d:pserver:anonymous@cilogon.cvs.sourceforge.net:/cvsroot/cilogon \
@@ -48,15 +48,15 @@ fi
 
 cat <<HELPTEXT
 
-This script should be executed after a fresh checkout/export from CVS. 
+This script should be executed after a fresh checkout/export from CVS.
 It creates symbolic links for proper functionality of the CILogon Service.
-It assumes files have been placed in the /var/www/html/ directory. 
+It assumes files have been placed in the /var/www/html/ directory.
 
 Type "proceed" to execute commands, or anything else to exit:
 HELPTEXT
 
 read proceed
-case $proceed in 
+case $proceed in
   proceed ) ;;
   *       ) echo "Exiting." ; exit 1;;
 esac
@@ -120,6 +120,10 @@ for d in /var/www/html/skin/DataONE* ; do
   echo 'ln -sf /var/www/html/skin/DataONE/skin.css .'
   ln -sf /var/www/html/skin/DataONE/skin.css .
 done
+echo 'cd /var/www/html/include/'
+cd /var/www/html/include/
+echo 'ln -sf ../vendor/duosecurity/duo_php/js/Duo-Web-v2.min.js .'
+ln -sf ../vendor/duosecurity/duo_php/js/Duo-Web-v2.min.js .
 
 filename=`basename $0`
 

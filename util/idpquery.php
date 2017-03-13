@@ -1,6 +1,8 @@
 <?php
 
-require_once '../include/idplist.php';
+require_once __DIR__ . '/../include/IdpList.php';
+
+use CILogon\Service\IdpList;
 
 if ($argc >= 2) {
     $regbyincommon = null;
@@ -14,43 +16,43 @@ if ($argc >= 2) {
     // Scan command line for attributes to match
     for ($v = 1; $v < $argc; $v++) {
         $param = strtolower($argv[$v]);
-        if (preg_match('/^registeredbyincommon=?([01]?)$/',$param,$matches)) {
+        if (preg_match('/^registeredbyincommon=?([01]?)$/', $param, $matches)) {
             if ((isset($matches[1])) && ($matches[1] == '0')) {
                 $regbyincommon = 0;
             } else {
                 $regbyincommon = 1;
             }
-        } elseif (preg_match('/^incommonrands=?([01]?)$/',$param,$matches)) {
+        } elseif (preg_match('/^incommonrands=?([01]?)$/', $param, $matches)) {
             if ((isset($matches[1])) && ($matches[1] == '0')) {
                 $incommonrands = 0;
             } else {
                 $incommonrands = 1;
             }
-        } elseif (preg_match('/^refedsrands=?([01]?)$/',$param,$matches)) {
+        } elseif (preg_match('/^refedsrands=?([01]?)$/', $param, $matches)) {
             if ((isset($matches[1])) && ($matches[1] == '0')) {
                 $refedsrands = 0;
             } else {
                 $refedsrands = 1;
             }
-        } elseif (preg_match('/^sirtfi=?([01]?)$/',$param,$matches)) {
+        } elseif (preg_match('/^sirtfi=?([01]?)$/', $param, $matches)) {
             if ((isset($matches[1])) && ($matches[1] == '0')) {
                 $sirtfi = 0;
             } else {
                 $sirtfi = 1;
             }
-        } elseif (preg_match('/^rands=?([01]?)$/',$param,$matches)) {
+        } elseif (preg_match('/^rands=?([01]?)$/', $param, $matches)) {
             if ((isset($matches[1])) && ($matches[1] == '0')) {
                 $rands = 0;
             } else {
                 $rands = 1;
             }
-        } elseif (preg_match('/^bronze=?([01]?)$/',$param,$matches)) {
+        } elseif (preg_match('/^bronze=?([01]?)$/', $param, $matches)) {
             if ((isset($matches[1])) && ($matches[1] == '0')) {
                 $bronze = 0;
             } else {
                 $bronze = 1;
             }
-        } elseif (preg_match('/^silver=?([01]?)$/',$param,$matches)) {
+        } elseif (preg_match('/^silver=?([01]?)$/', $param, $matches)) {
             if ((isset($matches[1])) && ($matches[1] == '0')) {
                 $silver = 0;
             } else {
@@ -62,7 +64,7 @@ if ($argc >= 2) {
         }
     }
 
-    $idplist = new idplist();
+    $idplist = new IdpList();
     $allidps = $idplist->getEntityIDs();
     $idps = array();
 
@@ -118,12 +120,12 @@ if ($argc >= 2) {
         echo $idp . "\t" . $idplist->getOrganizationName($idp) . "\n";
     }
     echo count($idps) . " IdPs found matching these conditions.\n";
-
 } else {
     printUsage();
 }
 
-function printUsage() {
+function printUsage()
+{
     echo "Usage: php idpquery.php <RegisteredByInCommon=0|1> <InCommonRandS=0|1>\n";
     echo "                        <REFEDSRandS=0|1> <SIRTFI=0|1> <RandS=0|1>\n";
     echo "                        <Bronze=0|1> <Silver=0|1>\n\n";
@@ -136,5 +138,3 @@ function printUsage() {
     echo "The attributes are case-insensitive. If you neglect to specify =0 or =1,\n";
     echo "=1 is assumed (i.e., 'RandS' is equivalent to 'RandS=1').\n";
 }
-
-?>
