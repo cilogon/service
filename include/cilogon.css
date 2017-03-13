@@ -18,9 +18,9 @@ img {
   border-style: none;
 }
 img.floatrightclear {
-  float: right; 
-  clear: right; 
-  margin: 4px; 
+  float: right;
+  clear: right;
+  margin: 4px;
 }
 a {
   color: #363;
@@ -31,7 +31,7 @@ a:link {
 }
 a:visited {
   text-decoration: underline;
-  color: #030; 
+  color: #030;
 }
 a:hover, a:active {
   text-decoration: underline;
@@ -419,7 +419,9 @@ input.helpbutton {
   background: url('/images/blackflash.gif') repeat top left;
   padding: 1px 0px;
   margin: 2px 2px 0 1em;
+  width: 3.5em;
   float: right;
+  white-space: normal;
 }
 table.helptable {
   border: none;
