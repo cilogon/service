@@ -1,6 +1,17 @@
 <?php
 
-require_once __DIR__ . '/../include/DBService.php';
+set_include_path(
+    '/var/www/html/vendor/pear/pear-core-minimal/src' . PATH_SEPARATOR .
+    '/var/www/html/vendor/pear/pear_exception' . PATH_SEPARATOR .
+    '/var/www/html/vendor/pear/log' . PATH_SEPARATOR .
+    '/var/www/html/vendor/pear/db' . PATH_SEPARATOR .
+    '/var/www/html/vendor/pear/config' . PATH_SEPARATOR .
+    '/var/www/html/vendor/pear/net_ldap2' . PATH_SEPARATOR .
+    '/var/www/html/include' . PATH_SEPARATOR . 
+    '.'
+);
+
+require_once 'DBService.php';
 
 use CILogon\Service\DBService;
 
