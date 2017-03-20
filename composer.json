@@ -1,0 +1,29 @@
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/pear/Config"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/pear/DB"
+        }
+    ],
+    "require": {
+        "league/oauth2-google": "^2.0",
+        "league/oauth2-github": "^2.0",
+        "duosecurity/duo_php": "dev-master",
+        "endroid/qrcode": "^1.9",
+        "phpgangsta/googleauthenticator": "dev-master",
+        "pear/net_ldap2": "^2.2",
+        "pear/log": "^1.13",
+        "pear/config": "dev-master",
+        "pear/db": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "CILogon\\Service\\":"include/"
+        }
+    }
+
+}
