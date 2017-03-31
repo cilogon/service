@@ -1,4 +1,23 @@
 {
+    "name": "cilogon/service",
+    "description": "CILogon Service Web Front-end",
+    "license": "NCSA",
+    "authors": [
+        {
+            "name": "Terry Fleury",
+            "email": "tfleury@cilogon.org",
+            "homepage": "http://www.cilogon.org"
+        }
+    ],
+    "keywords": [
+        "saml",
+        "oauth",
+        "oauth2",
+        "x509",
+        "authentication",
+        "authorization",
+        "cilogon"
+    ],
     "repositories": [
         {
             "type": "vcs",
@@ -9,21 +28,8 @@
             "url": "https://github.com/pear/DB"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
-        "league/oauth2-google": "^2.0",
-        "league/oauth2-github": "^2.0",
-        "duosecurity/duo_php": "dev-master",
-        "endroid/qrcode": "^1.9",
-        "phpgangsta/googleauthenticator": "dev-master",
-        "pear/net_ldap2": "^2.2",
-        "pear/log": "^1.13",
-        "pear/config": "dev-master",
-        "pear/db": "dev-master"
-    },
-    "autoload": {
-        "psr-4": {
-            "CILogon\\Service\\":"include/"
-        }
+        "cilogon/service-lib": "dev-master"
     }
-
 }
