@@ -50,6 +50,8 @@ if [ ! -f /var/www/html/index-site.php ] ; then
   echo "Error! Could not find /var/www/html/index-site.php. Exiting."
   exit 1;
 fi
+echo 'chown -R root:root /var/www/html/'
+chown -R root:root /var/www/html/
 echo 'cd /var/www/html/'
 cd /var/www/html/
 echo 'composer install --no-plugins --no-scripts'
