@@ -3,3 +3,4 @@ composer.phar
 vendor/
 test/
 .DS_Store
+include/Duo-Web-v2.min.js
