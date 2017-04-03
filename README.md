@@ -31,7 +31,7 @@ cd /var/www
 git clone git@github.com:cilogon/service.git
 ln -s service html
 cd /var/www/html
-composer install
+sh README.txt
 ```
 
 ## License
