@@ -56,24 +56,7 @@ echo 'cd /var/www/html/'
 cd /var/www/html/
 echo 'composer install --no-plugins --no-scripts'
 composer install --no-plugins --no-scripts
-echo 'rm -f index.php'
-rm -f index.php
-echo 'rm -f logo'
-rm -f logo
-echo 'cd /var/www/html/skin/globusonline2/'
-cd /var/www/html/skin/globusonline2/
-echo 'rm -f logo_globus.png'
-rm -f logo_globus.png
-echo 'rm -f skin.css'
-rm -f skin.css
 echo 'cd /var/www/html/delegate/'
-cd /var/www/html/delegate/
-echo 'rm -f index.php'
-rm -f index.php
-echo 'cd /var/www/html/authorize/'
-cd /var/www/html/authorize/
-echo 'rm -f index.php'
-rm -f index.php
 echo 'cd /var/www/html/'
 cd /var/www/html/
 echo 'chmod 775 pkcs12 include'
