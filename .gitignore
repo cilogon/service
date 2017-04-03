@@ -6,3 +6,4 @@ test/
 include/Duo-Web-v2.min.js
 include/idplist.json
 include/idplist.xml
+pkcs12/
