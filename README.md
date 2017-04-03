@@ -27,6 +27,7 @@ The following versions of PHP are supported.
 To install:
 
 ```
+sudo su -
 cd /var/www
 git clone git@github.com:cilogon/service.git
 ln -s service html
