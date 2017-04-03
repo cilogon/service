@@ -4,3 +4,5 @@ vendor/
 test/
 .DS_Store
 include/Duo-Web-v2.min.js
+include/idplist.json
+include/idplist.xml
