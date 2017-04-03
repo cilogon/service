@@ -29,7 +29,7 @@ To install:
 ```
 sudo su -
 cd /var/www
-git clone git@github.com:cilogon/service.git
+git clone https://github.com/cilogon/service.git
 ln -s service html
 cd /var/www/html
 sh README.txt
