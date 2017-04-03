@@ -46,21 +46,6 @@ if [ "$(id -u)" != "0" ] ; then
     exit 1
 fi
 
-cat <<HELPTEXT
-
-This script should be executed after a fresh checkout/export from CVS.
-It creates symbolic links for proper functionality of the CILogon Service.
-It assumes files have been placed in the /var/www/html/ directory.
-
-Type "proceed" to execute commands, or anything else to exit:
-HELPTEXT
-
-read proceed
-case $proceed in
-  proceed ) ;;
-  *       ) echo "Exiting." ; exit 1;;
-esac
-
 if [ ! -f /var/www/html/index-site.php ] ; then
   echo "Error! Could not find /var/www/html/index-site.php. Exiting."
   exit 1;
@@ -71,34 +56,22 @@ echo 'composer install --no-plugins --no-scripts'
 composer install --no-plugins --no-scripts
 echo 'rm -f index.php'
 rm -f index.php
-echo 'ln -sf index-site.php index.php'
-ln -sf index-site.php index.php
 echo 'rm -f logo'
 rm -f logo
-echo 'ln -sf images/cilogon-ci-80-w.png logo'
-ln -sf images/cilogon-ci-80-w.png logo
 echo 'cd /var/www/html/skin/globusonline2/'
 cd /var/www/html/skin/globusonline2/
 echo 'rm -f logo_globus.png'
 rm -f logo_globus.png
 echo 'rm -f skin.css'
 rm -f skin.css
-echo 'ln -s ../globusonline/logo_globus.png .'
-ln -s ../globusonline/logo_globus.png .
-echo 'ln -s ../globusonline/skin.css .'
-ln -s ../globusonline/skin.css .
 echo 'cd /var/www/html/delegate/'
 cd /var/www/html/delegate/
 echo 'rm -f index.php'
 rm -f index.php
-echo 'ln -sf index-site.php index.php'
-ln -sf index-site.php index.php
 echo 'cd /var/www/html/authorize/'
 cd /var/www/html/authorize/
 echo 'rm -f index.php'
 rm -f index.php
-echo 'ln -sf index-site.php index.php'
-ln -sf index-site.php index.php
 echo 'cd /var/www/html/'
 cd /var/www/html/
 echo 'chmod 775 pkcs12 include'
@@ -107,21 +80,6 @@ echo 'chgrp apache pkcs12 include'
 chgrp apache pkcs12 include
 echo 'mkdir -p /var/www/virthosts/crl'
 mkdir -p /var/www/virthosts/crl
-for d in /var/www/html/skin/DataONE* ; do
-  if [ "$d" = "/var/www/html/skin/DataONE" ] ; then
-    continue
-  fi
-  echo "cd $d"
-  cd $d
-  echo 'rm -f config.xml'
-  rm -f config.xml
-  echo 'rm -f skin.css'
-  rm -f skin.css
-  echo 'ln -sf /var/www/html/skin/DataONE/config.xml .'
-  ln -sf /var/www/html/skin/DataONE/config.xml .
-  echo 'ln -sf /var/www/html/skin/DataONE/skin.css .'
-  ln -sf /var/www/html/skin/DataONE/skin.css .
-done
 echo 'cd /var/www/html/include/'
 cd /var/www/html/include/
 echo 'ln -sf ../vendor/duosecurity/duo_php/js/Duo-Web-v2.min.js .'
