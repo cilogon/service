@@ -5,12 +5,10 @@ ini_set('session.cookie_secure',true);
 if (session_id() == "") session_start();
 */
 
-/*
 if (isset($_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'])) {
     $providerId = $_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'];
-    setcookie('providerId',$providerId,time()+60*60*24*365,'/','',true);
+    setcookie('providerId', $providerId, time()+60*60*24*365, '/', '', true);
 }
-*/
 ?>
 
 <html>
@@ -112,15 +110,22 @@ echo '</table>';
 <br/>
 
 attribute response from the IdP (<code>HTTP_SHIB_ATTRIBUTES</code>):<br/>
-<textarea id="attributeResponseArea" onclick="select()" rows="1" cols="130"><?php echo $_SERVER["HTTP_SHIB_ATTRIBUTES"]; ?></textarea><br/>
-<span id="decodeButtonBlock"><input type="button" id="decodeButton" value="decode base64 encoded attribute response using JavaScript" onClick="decodeAttributeResponse();"><br/></span>
+<textarea id="attributeResponseArea" onclick="select()" rows="1"
+cols="130"><?php echo $_SERVER["HTTP_SHIB_ATTRIBUTES"]; ?></textarea><br/>
+<span id="decodeButtonBlock"><input type="button" id="decodeButton"
+value="decode base64 encoded attribute response using JavaScript"
+onClick="decodeAttributeResponse();"><br/></span>
 
 <br/>
 
 <small>
 notes:<br/>
-The AAP throws away invalid values (eg an unscopedAffiliation of value "myBoss@&lt;yourdomain&gt;" or a value with an invalid scope which scope is checked)<br/>
-The raw attribute response (<code>HTTP_SHIB_ATTRIBUTES</code>) is NOT filtered by the AAP and should therefore be disabled for most applications (<code>exportAssertion=false</code>).<br/>
+The AAP throws away invalid values (eg an unscopedAffiliation of value
+"myBoss@&lt;yourdomain&gt;" or a value with an invalid scope which scope is
+checked)<br/>
+The raw attribute response (<code>HTTP_SHIB_ATTRIBUTES</code>) is NOT
+filtered by the AAP and should therefore be disabled for most applications
+(<code>exportAssertion=false</code>).<br/>
 </small>
 
 <br/>

@@ -7,7 +7,7 @@ set_include_path(
     '/var/www/html/vendor/pear/db' . PATH_SEPARATOR .
     '/var/www/html/vendor/pear/config' . PATH_SEPARATOR .
     '/var/www/html/vendor/pear/net_ldap2' . PATH_SEPARATOR .
-    '/var/www/html/vendor/cilogon/service-lib/src/Service' . PATH_SEPARATOR . 
+    '/var/www/html/vendor/cilogon/service-lib/src/Service' . PATH_SEPARATOR .
     '.'
 );
 
@@ -92,9 +92,11 @@ if ($argc >= 7) {
 
 function printUsage()
 {
-    echo "Usage: adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME EMAIL DISPLAYNAME EPPN EPTID OPENID OIDC AFFILIATION OU\n";
-    echo "Note: The first six parameters must be specified for both InCommon and OpenID.\n";
-    echo "      The rest are optional.\n";
+    echo "Usage: adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME " ,
+         "EMAIL DISPLAYNAME EPPN EPTID OPENID OIDC AFFILIATION OU\n" ,
+         "Note: The first six parameters must be specified for both " ,
+         "InCommon and OpenID.\n" ,
+         "      The rest are optional.\n";
 }
 
 function printInfo($dbs)

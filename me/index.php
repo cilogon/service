@@ -464,20 +464,26 @@ function getTitleText($cookie)
         "affiliation" => "A list of attributes describing your affiliations at your Identity Provider." ,
         "authntime" => "The Unix timestamp of the last successful user authentication." ,
         "callbackuri" => "The URL of the callback servlet used by portals connecting to the CILogon Delegate service." ,
-        "certlifetime" => "This multiplied by the certmultipler gives the lifetime of the GridShib-CA certificate in seconds." ,
-        "certmultiplier" => "This multiplied by the certlifetime gives the lifetime of the GridShib-CA certificate in seconds." ,
-        "cilogon_skin" => "The skin affects the look-and-feel and functionality of the CILogon Service. It is typically specified by a portal." ,
+        "certlifetime" => "This multiplied by the certmultipler " .
+            "gives the lifetime of the GridShib-CA certificate in seconds." ,
+        "certmultiplier" => "This multiplied by the certlifetime " .
+            "gives the lifetime of the GridShib-CA certificate in seconds." ,
+        "cilogon_skin" => "The skin affects the look-and-feel and " .
+            "functionality of the CILogon Service. It is typically " .
+            "specified by a portal." ,
         "clientparams" => "A set of cookies for each portal you have used with CILogon." ,
         "displayname" => "Your full name set by your Identity Provider." ,
         "dn" => "A quasi distinguished name for the certificate issued by a MyProxy server to the CILogon Service." ,
         "emailaddr" => "Your email address given by your Identity Provider." ,
         "ePPN" => "'eduPerson Principal Name' - a SAML attribute set by your Identity Provider." ,
         "ePTID" => "'eduPerson Targeted Identifier' - a SAML attribute set by your Identity Provider" ,
-        "failureuri" => "A URL used by portals in case the CILogon Service is unable to issue a certificate on your behalf. " ,
+        "failureuri" => "A URL used by portals in case the CILogon " .
+            "Service is unable to issue a certificate on your behalf. " ,
         "firstname" => "Your given name set by your Identity Provider." ,
         "idpname" => "The display name of your chosen Identity Provider." ,
         "idp" => "The authentication URI of your chosen Identity Provider." ,
-        "keepidp" => "Remember if you checked the 'Remember this selection' checkbox when you selected and Identity Provider." ,
+        "keepidp" => "Remember if you checked the 'Remember this " .
+            "selection' checkbox when you selected and Identity Provider." ,
         "lastname" => "Your surname set by your Identity Provider." ,
         "loa" => "Level of Assurance set by your Identity Provider." ,
         "logonerror" => "A text message of the reason for the last authentication error." ,
@@ -488,13 +494,18 @@ function getTitleText($cookie)
         "p12lifetime" => "This multiplied by the p12multipler gives the lifetime of the PKCS12 certificate in hours." ,
         "p12multiplier" => "This multiplied by the p12lifetime gives the lifetime of the PKCS12 certificate in hours." ,
         "p12" => "The expiration time and URL to download a PKCS12 certificate file." ,
-        "portalcookie" => "Contains certificate lifetimes for all portals you have used with the CILogon Delegate service." ,
+        "portalcookie" => "Contains certificate lifetimes for all " .
+            "portals you have used with the CILogon Delegate service." ,
         "portalname" => "The display name of the portal connected to the CILogon Delegate service. " ,
-        "portalparams" => "For portals previously using the CILogon Delegate service, this is the saved lifetime of the delegated certificate." ,
+        "portalparams" => "For portals previously using the CILogon " .
+            "Delegate service, this is the saved lifetime of the " .
+            "delegated certificate." ,
         "portalstatus" => "An internal return code when fetching portal parameters from the datastore." ,
         "providerId" => "The previously selected Identity Provider." ,
-        "requestsilver" => "Set to 1 if attempting to get a 'silver' Level of Assurance from your chosen Identity Provider." ,
-        "responsesubmit" => "The name of the 'stage' to return to after authentication at your chosen Identity Provider." ,
+        "requestsilver" => "Set to 1 if attempting to get a 'silver' " .
+            "Level of Assurance from your chosen Identity Provider." ,
+        "responsesubmit" => "The name of the 'stage' to return to after " .
+            "authentication at your chosen Identity Provider." ,
         "responseurl" => "The URL to return to after authentication at your chosen Identity Provider." ,
         "_shibsession" => "A shibboleth session token set by an InCommon Identity Provider." ,
         "showhelp" => "Whether to show help text or not." ,
@@ -503,7 +514,9 @@ function getTitleText($cookie)
         "submit" => "The name of the 'submit' button clicked." ,
         "successuri" => "A URL used by portals for redirection after successful issuance of a certificate." ,
         "tempcred" => "An OAUTH identifier used to track portal sessions." ,
-        "twofactor" => "The types of two-factor authentication configured for your account, ga for Google Authenticator, duo for Duo Security." ,
+        "twofactor" => "The types of two-factor authentication " .
+            "configured for your account, ga for Google Authenticator, " .
+            "duo for Duo Security." ,
         "uid" => "The datastore user identifier." ,
     );
 
