@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 
-  <initialidp>urn:mace:incommon:uiuc.edu</initialidp>
+  <initialidp>https://idp.xsede.org/idp/shibboleth</initialidp>
 
   <delegate>
     <forcelifetime>240</forcelifetime>
