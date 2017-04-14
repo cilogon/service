@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+  <initialidp>https://idp.xsede.org/idp/shibboleth</initialidp>
+
+  <forceinitialidp>1</forceinitialidp>
+
+  <idplistsize>1</idplistsize>
+
+  <idpwhitelist>
+    <idp>https://idp.xsede.org/idp/shibboleth</idp>
+  </idpwhitelist>
+
+</config>
