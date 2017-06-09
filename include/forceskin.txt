@@ -16,6 +16,7 @@
 # skinname for the IdP entityID takes precedence. Skinname is case-insensitive.
 
 %^https://login\d?\.ligo\.org/idp/shibboleth% LIGO
-%^https://.*\.?seedme.org% SeedMe
+%^https://.*\.?seedme\.org% SeedMe
+%^https://redivis\.com/userRequirements/oauth2/authorize% redivis
 
 # %:uiuc\.edu% OOI
