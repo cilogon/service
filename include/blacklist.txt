@@ -3,6 +3,9 @@
 # in the InCommon metadata).
 #
 # Blank lines and lines beginning with '#' (no leading spaces) are skipped.
+#
+# NOTE: After modifying this file, run /etc/cron.hourly/idplist.cron so that
+# /var/www/html/include/idplist.xml is updated to remove <Whitelisted> tags.
 
 https://shibboleth.csupomona.edu/idp/shibboleth
 https://idp.pitt.edu/idp/shibboleth
