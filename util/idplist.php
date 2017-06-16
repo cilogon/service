@@ -12,6 +12,7 @@ set_include_path(
 );
 
 require_once 'IdpList.php';
+require_once 'Util.php';
 
 use CILogon\Service\IdpList;
 
