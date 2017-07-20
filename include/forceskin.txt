@@ -18,5 +18,6 @@
 %^https://login\d?\.ligo\.org/idp/shibboleth% LIGO
 %^https://.*\.?seedme\.org% SeedMe
 %^https://redivis\.com/userRequirements/oauth2/authorize% redivis
+%^https://clowder.ncsa.illinois.edu/clowder/authenticate/cilogon% NCSA
 
 # %:uiuc\.edu% OOI
