@@ -1,0 +1,119 @@
+/***** Begin basic elements *****/
+body {
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  color: #003;
+}
+a {
+  color: #336;
+}
+a:visited {
+  color: #003;
+}
+a:hover, a:active {
+  color: #669;
+}
+/***** End basic elements *****/
+
+/***** Begin a few misc elements *****/
+input.submit {
+  font-size: 100%;
+  color: #FFF;
+  margin: 5px 0.5em;
+  padding: 0.3em 0.8em;
+  text-decoration: none;
+  border: medium none;
+  border-radius: 4px;
+  background: #244279;
+  text-shadow: 0px 1px 2px #FFF, 0px -1px 1px #999;
+  -webkit-box-shadow: 0 0 1px 1px #858f99;
+  -moz-box-shadow: 0 0 1px 1px #858f99;
+  box-shadow: 0 0 1px 1px #858f99;
+  font-weight: normal;
+}
+input.submit:hover {
+  background: #0079af;
+}
+input.submit:active {
+  background: #025c99;
+}
+
+/***** End a few misc element *****/
+
+/***** Begin the "CILogon Service" header at the top of each page *****/
+div.logoheader {
+  background: transparent url("/skin/NCSA/top_banner.jpg") repeat-x top left;
+  background-size: cover;
+  height: 104px;
+  width: 100%;
+  min-width: 600px;
+}
+div.logoheader h1 {
+  background: transparent url("/skin/NCSA/logos_ncsa.png") no-repeat top left;
+  margin-top: 2px;
+  margin-left: 2px;
+  width: 148px;
+  height: 100px;
+  float: left;
+}
+
+/***** End the "CILogon Service" header at the top of each page *****/
+
+/***** Begin actionbox containing action buttons and WAYF *****/
+div.actionbox,
+div.p12actionbox,
+div.logoffactionbox {
+  border: 1px solid #333;
+  border-radius: 4px;
+  display: block;
+  color: #124272;
+  background-color: #eee;
+}
+/***** End actionbox *****/
+
+/***** Begin certinfo / portalinfo table *****/
+table.certinfo,
+table.portalinfo1,
+table.portalinfo2 {
+  background-color: #eee;
+}
+/***** End certinfo / portalinfo table *****/
+
+
+/***** Begin skincilogonlogo *****/
+div.skincilogonlogo {
+  margin: 3px;
+  margin-top: 18px;
+  display: inline;
+}
+/***** End skincilogonlogo *****/
+
+/***** Begin Help-related stuff *****/
+table.helptable td.helpcell div {
+  background-color: #eee;
+  margin-right: 1em;
+}
+tr.inforow td.helpcell {
+  background-color: #eee;
+}
+/***** End Help-related stuff *****/
+
+/***** Begin page footer *****/
+div.footer {
+  color: #222;
+}
+div.footer a:link {
+  color: #2079D2;
+}
+div.footer a:visited {
+  color: #2079D2;
+}
+div.footer a:hover {
+  color: #1961A9;
+}
+div.footer a:active {
+  color: #1961A9;
+}
+/***** End page footer *****/
+
