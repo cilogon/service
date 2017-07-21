@@ -43,8 +43,7 @@ input.submit:active {
 
 /***** Begin the "CILogon Service" header at the top of each page *****/
 div.logoheader {
-  background: transparent url("/skin/NCSA/top_banner.jpg") repeat-x top left;
-  background-size: cover;
+  background: #FFF;
   height: 104px;
   width: 100%;
   min-width: 600px;
