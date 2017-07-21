@@ -333,7 +333,8 @@ function searchOptions(value)
         idps.options.length = 0;
         lowval = value.toLowerCase();
         for (i = 0; i < idpstext.length; i = i + 1) {
-            if (idpstext[i].toLowerCase().indexOf(lowval) !== -1) {
+            if ((idpstext[i].toLowerCase().indexOf(lowval) !== -1) ||
+                (idpsvalue[i].toLowerCase().indexOf(lowval) !== -1)) {
                 addOption(idpstext[i], idpsvalue[i]);
             }
         }
