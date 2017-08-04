@@ -622,6 +622,16 @@ function verifyOIDCParams()
                         if (isset($info['redirect_url'])) {
                             $redirect_url = $info['redirect_url'];
                             $clientparmas['redirect_url'] = $redirect_url;
+                            // CIL-407 - In case of two question marks '?'
+                            // in redirect_url (caused by OIDC authz endpoint
+                            // blindly appending "?error=..."), change all
+                            // but the first '?' to '&'.
+                            // https://stackoverflow.com/a/37150213
+                            if (substr_count($redirect_url, '?') > 1) {
+                                $arr = explode('?', $redirect_url, 2);
+                                $arr[1] = str_replace('?', '&', $arr[1]);
+                                $redirect_url = implode('?', $arr);
+                            }
                         }
                         // Get components of redirect_url - need 'query'
                         $comps = parse_url($redirect_url);
