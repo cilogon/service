@@ -6,6 +6,7 @@ if (in_array($localhost, [ 'poloc.ncsa.illinois.edu' ])) {
     $hostname = 'test.cilogon.org';
 } elseif (in_array($localhost, [ 'polod.ncsa.illinois.edu' ])) {
     $hostname = 'dev.cilogon.org';
+}
 
 header('Content-Type:application/json;charset=utf-8');
 
