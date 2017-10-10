@@ -19,5 +19,7 @@
 %^https://.*\.?seedme\.org% SeedMe
 %^https://redivis\.com/userRequirements/oauth2/authorize% redivis
 %^https://clowder.ncsa.illinois.edu/clowder/authenticate/cilogon% NCSA
+%^https://sprout.ncsa.illinois.edu% ncsaonly
+%^https://clowder-agri.ncsa.illinois.edu% ncsaonly
 
 # %:uiuc\.edu% OOI

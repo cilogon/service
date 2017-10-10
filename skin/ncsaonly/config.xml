@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+  <initialidp>https://idp.ncsa.illinois.edu/idp/shibboleth</initialidp>
+
+  <forceinitialidp>1</forceinitialidp>
+
+  <idplistsize>1</idplistsize>
+
+  <idpwhitelist>
+    <idp>https://idp.ncsa.illinois.edu/idp/shibboleth</idp>
+  </idpwhitelist>
+
+</config>
