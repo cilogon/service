@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+  <initialidp>https://idp.xsede.org/idp/shibboleth</initialidp>
+
+  <forceinitialidp>1</forceinitialidp>
+
+  <idplistsize>1</idplistsize>
+
+  <idpwhitelist>
+    <idp>https://idp.xsede.org/idp/shibboleth</idp>
+  </idpwhitelist>
+
+  <portallistaction>
+    <allowforceinitialidp>1</allowforceinitialidp>
+  </portallistaction>
+
+  <portallist>
+    <portal>#https://example\.org/callback#</portal>
+  </portallist>
+
+  <forceauthn>1</forceauthn>
+
+</config>
