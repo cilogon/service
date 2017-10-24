@@ -693,6 +693,7 @@ function verifyOIDCParams()
                         );
                         // CIL-423 Better end-user error output for errors.
                         // Scan output for ServletException message.
+                        $errstr = '';
                         if (preg_match(
                             '/javax.servlet.ServletException:\s?(.*)/',
                             $output,
