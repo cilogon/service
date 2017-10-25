@@ -21,5 +21,6 @@
 %^https://clowder.ncsa.illinois.edu/clowder/authenticate/cilogon% NCSA
 %^https://sprout.ncsa.illinois.edu% ncsabypass
 %^https://clowder-agri.ncsa.illinois.edu% ncsabypass
+%^https://agri-clowder.ncsa.illinois.edu% ncsabypass
 
 # %:uiuc\.edu% OOI

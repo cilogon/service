@@ -18,6 +18,7 @@
   <portallist>
     <portal>#https://sprout\.ncsa\.illinois\.edu#</portal>
     <portal>#https://clowder-agri\.ncsa\.illinois\.edu#</portal>
+    <portal>#https://agri-clowder\.ncsa\.illinois\.edu#</portal>
   </portallist>
 
   <forceauthn>1</forceauthn>
