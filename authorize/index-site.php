@@ -250,9 +250,9 @@ function printOIDCErrorPage()
     <div class="boxed">
       <br class="clear"/>
       <p>
-      You have reached the CILogon OpenID Connect Authorization Endpoint.
-      This service is for use by OpenID Connect Relying Parties (RPs) to
-      authorize users of the CILogon Sevice. End users should not normally
+      You have reached the CILogon OAuth2/OpenID Connect (OIDC) Authorization 
+      Endpoint. This service is for use by OAuth2/OIDC Relying Parties (RPs)
+      to authorize users of the CILogon Service. End users should not normally
       see this page.
       </p>
     ';
@@ -276,13 +276,8 @@ function printOIDCErrorPage()
 
     echo '
       <p>
-      Please return to the previous site and try again. If the error persists,
-      please contact us at the email address at the bottom of the page.
-      </p>
-      <p>
-      If you are an individual wishing to download a certificate to your
-      local computer, please try the <a target="_blank"
-      href="https://' , Util::getHN() , '/">CILogon Service</a>.
+      For assistance, please contact us at the email address at the
+      bottom of the page.
       </p>
       <p>
       <strong>Note:</strong> You must enable cookies in your web browser to
@@ -605,10 +600,8 @@ function verifyOIDCParams()
                             );
                             Util::setSessionVar(
                                 'client_error_msg',
-                                'There was an unrecoverable error during the ' .
-                                'OpenID Connect transaction. This may be a ' .
-                                'temporary issue. CILogon system ' .
-                                'administrators have been notified.'
+                                'There was an unrecoverable error during the transaction. ' .
+                                'CILogon system administrators have been notified.'
                             );
                             $clientparams = array();
                         }
@@ -698,12 +691,37 @@ function verifyOIDCParams()
                             'clientparams = ' . print_r($clientparams, true) .
                             "\n"
                         );
+                        // CIL-423 Better end-user error output for errors.
+                        // Scan output for ServletException message.
+                        $errstr = '';
+                        if (preg_match(
+                            '/javax.servlet.ServletException:\s?(.*)/',
+                            $output,
+                            $matches
+                        )) {
+                            $output = '';
+                            $errstr = '
+                            <div>
+                            <p>Error Message: <b>' .
+                            $matches[1] . '</b>.</p>
+                            <ul>
+                            <li>Did you <b>register</b> your OAuth2/OIDC client? If not, go
+                            <b><a target="_blank" href="https://' .
+                            Util::getHN()
+                            . '/oauth2/register">here</a></b> to do so.</li>
+                            <li>Did you receive confirmation that your OAuth2/OIDC client
+                            was <b>approved</b>? If not, please wait up to 48 hours for an
+                            approval email from CILogon administrators.</li>
+                            <li>Did you configure your OAuth2/OIDC client with the
+                            registered <b>client ID and secret</b>?</li>
+                            </ul>
+                            </div>';
+                        }
                         Util::setSessionVar(
                             'client_error_msg',
-                            'There was an unrecoverable error during the ' .
-                            'OpenID Connect transaction. This may be a ' .
-                            'temporary issue. CILogon system ' .
-                            'administrators have been notified.' .
+                            'There was an unrecoverable error during the transaction. ' .
+                            'CILogon system administrators have been notified.' .
+                            ((strlen($errstr) > 0) ? $errstr : '') .
                             ((strlen($output) > 0) ?
                             '<br/><pre>' .
                             preg_replace('/\+/', ' ', $output) .

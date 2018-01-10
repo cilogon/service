@@ -3,8 +3,6 @@
 
   <initialidp>https://idp.xsede.org/idp/shibboleth</initialidp>
 
-  <forceinitialidp>1</forceinitialidp>
-
   <idplistsize>1</idplistsize>
 
   <idpwhitelist>
