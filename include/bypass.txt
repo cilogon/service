@@ -1,0 +1,35 @@
+# This file contains pairs of OAuth2/OIDC callback URIs and IdP entityIds.
+# If an incoming OIDC callback URI is matched from this file, the associated
+# IdP will be automatically used. This is used primarily by campus gateways
+# (portals) where users only ever log in with a single IdP. It replaces the
+# complex skin configuration which required a combination of
+# <forceinitialidp>, <allowforceinitialidp>, and <portallist>.
+#
+# Blank lines and lines beginning with '#' (no leading spaces) are skipped.
+#
+# The URI must be a PHP PCRE (Perl-Compatible Regular Expression). See
+# http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
+# Note that '#' should not be used as a delimiter since lines beginning with
+# '#' (pound/hash) are skipped as comments. '%' (percent) is a good choice
+# for delimiter so that slashes do not need to be escaped. Note that period
+# '.' matches any character, so if you want to match a dot, prefix with a
+# backslash, e.g., '\.' . However, in practice this unnecessary since dots
+# appear mainly in the FQDN.
+#
+# The callback URI regex should match an OAuth2/OIDC callback URI. The
+# entityID of the IdP must exactly match the metadata value.
+
+%^https://sprout.ncsa.illinois.edu% https://idp.ncsa.illinois.edu/idp/shibboleth
+%^https://clowder-agri.ncsa.illinois.edu% https://idp.ncsa.illinois.edu/idp/shibboleth
+%^https://agri-clowder.ncsa.illinois.edu% https://idp.ncsa.illinois.edu/idp/shibboleth
+%^https://iam.scigap.org/auth/realms/virginaaccord/broker/cilogon/endpoint% urn:mace:incommon:virginia.edu
+%^https://iam.scigap.org/auth/realms/iugateway/broker/cilogon/endpoint% urn:mace:incommon:iu.edu
+%^https://iam.scigap.org/auth/realms/georgiastate/broker/cilogon/endpoint% https://idp.gsu.edu/idp/shibboleth
+%^https://iam.scigap.org/auth/realms/university-of-kentucky-hpc-gateway/broker/cilogon/endpoint% https://ukidp.uky.edu/idp/shibboleth
+%^https://iam.scigap.org/auth/realms/nanoconfinement/broker/cilogon/endpoint% urn:mace:incommon:iu.edu
+%^https://iam.scigap.org/auth/realms/new-mexico-state/broker/cilogon/endpoint% https://myidp.nmsu.edu
+%^https://iam.scigap.org/auth/realms/oscer/broker/cilogon/endpoint% https://shib.ou.edu/idp/shibboleth
+%^https://iam.scigap.org/auth/realms/southdakota/broker/cilogon/endpoint% https://usd-shibboleth.usd.edu/idp/shibboleth
+%^https://iam.scigap.org/auth/realms/southill/broker/cilogon/endpoint% https://shib-idp.siu.edu/idp/shibboleth
+%^https://iam.scigap.org/auth/realms/alabama-birmingham/broker/cilogon/endpoint% urn:mace:incommon:uab.edu
+%^https://iam.scigap.org/auth/realms/utah/broker/cilogon/endpoint% urn:mace:incommon:utah.edu
