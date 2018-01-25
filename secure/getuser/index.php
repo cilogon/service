@@ -102,7 +102,8 @@ function getUID()
         '', // OpenID 2.0 ID
         '', // OpenID Connect ID
         @$shibarray['Affiliation'],
-        @$shibarray['OU']
+        @$shibarray['OU'],
+        @$shibarray['Member']
     );
 }
 

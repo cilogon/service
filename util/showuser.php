@@ -67,4 +67,5 @@ function printUser($dbs)
     echo "two_factor = $dbs->two_factor\n";
     echo "affiliation = $dbs->affiliation\n";
     echo "ou = $dbs->ou\n";
+    echo "member_of = $dbs->member_of\n";
 }

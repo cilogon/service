@@ -29,6 +29,7 @@ if ($argc >= 7) {
     $oidc = '';
     $affiliation = '';
     $ou = '';
+    $memberof = '';
     if ($argc >= 8) {
         $displayname = $argv[7];
     }
@@ -49,6 +50,9 @@ if ($argc >= 7) {
     }
     if ($argc >= 14) {
         $ou = $argv[13];
+    }
+    if ($argc >= 15) {
+        $memberof = $argv[14];
     }
 
     if ((strlen($remoteuser) > 0) &&
@@ -71,7 +75,8 @@ if ($argc >= 7) {
             $open_id,
             $oidc,
             $affiliation,
-            $ou
+            $ou,
+            $memberof
         );
 
         printInfo($dbs);
@@ -93,7 +98,7 @@ if ($argc >= 7) {
 function printUsage()
 {
     echo "Usage: adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME " ,
-         "EMAIL DISPLAYNAME EPPN EPTID OPENID OIDC AFFILIATION OU\n" ,
+         "EMAIL DISPLAYNAME EPPN EPTID OPENID OIDC AFFILIATION OU MEMBER\n" ,
          "Note: The first six parameters must be specified for both " ,
          "InCommon and OpenID.\n" ,
          "      The rest are optional.\n";

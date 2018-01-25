@@ -253,6 +253,12 @@ echo '
         <td> </td>
       </tr>
 
+      <tr>
+        <th>Member (member):</th>
+        <td>' , @$shibarray['Member'] , '</td>
+        <td> </td>
+      </tr>
+
     </table>
     </div> <!-- saml3 -->
 </div> <!-- summary -->

@@ -487,6 +487,7 @@ function getTitleText($cookie)
         "lastname" => "Your surname set by your Identity Provider." ,
         "loa" => "Level of Assurance set by your Identity Provider." ,
         "logonerror" => "A text message of the reason for the last authentication error." ,
+        "memberof" => "Groups of which you are a member",
         "oidcID" => "Your user identifier set by the OpenID Connect Identity Provider." ,
         "openidID" => "Your user identifier set by the OpenID Identity Provider." ,
         "ou" => "Your organizational unit set by your Identity Provider." ,
