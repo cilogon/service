@@ -799,7 +799,6 @@ function verifyOIDCParams()
         (isset($clientparams['redirect_url'])) &&
         (isset($clientparams['clientstatus'])) &&
         (!($clientparams['clientstatus'] & 1))) { // STATUS_OK* are even
-
         $retval = true;
         Util::setSessionVar('clientparams', json_encode($clientparams));
     }
