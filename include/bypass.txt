@@ -21,7 +21,6 @@
 
 %^https://sprout.ncsa.illinois.edu% https://idp.ncsa.illinois.edu/idp/shibboleth
 %^https://clowder-agri.ncsa.illinois.edu% https://idp.ncsa.illinois.edu/idp/shibboleth
-%^https://agri-clowder.ncsa.illinois.edu% https://idp.ncsa.illinois.edu/idp/shibboleth
 %^https://iam.scigap.org/auth/realms/virginaaccord/broker/cilogon/endpoint% urn:mace:incommon:virginia.edu
 %^https://iam.scigap.org/auth/realms/iugateway/broker/cilogon/endpoint% urn:mace:incommon:iu.edu
 %^https://iam.scigap.org/auth/realms/georgiastate/broker/cilogon/endpoint% https://idp.gsu.edu/idp/shibboleth
