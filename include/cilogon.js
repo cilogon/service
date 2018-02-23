@@ -331,7 +331,7 @@ function searchOptions(value)
 
         /* Scan thru the <options> for substrings matching the "Search" field */
         idps.options.length = 0;
-        lowval = value.toLowerCase();
+        lowval = value.normalize('NFD').replace(/[\u0300-\u036f]/g,"").toLowerCase();
         for (i = 0; i < idpstext.length; i = i + 1) {
             if ((idpstext[i].normalize('NFD').replace(/[\u0300-\u036f]/g,"").toLowerCase().indexOf(lowval) !== -1) ||
                 (idpsvalue[i].toLowerCase().indexOf(lowval) !== -1)) {
