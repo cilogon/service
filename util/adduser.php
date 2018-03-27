@@ -30,6 +30,7 @@ if ($argc >= 7) {
     $affiliation = '';
     $ou = '';
     $memberof = '';
+    $acr = '';
     if ($argc >= 8) {
         $displayname = $argv[7];
     }
@@ -54,6 +55,9 @@ if ($argc >= 7) {
     if ($argc >= 15) {
         $memberof = $argv[14];
     }
+    if ($argc >= 16) {
+        $acr = $argv[15];
+    }
 
     if ((strlen($remoteuser) > 0) &&
         (strlen($idp) > 0) &&
@@ -76,7 +80,8 @@ if ($argc >= 7) {
             $oidc,
             $affiliation,
             $ou,
-            $memberof
+            $memberof,
+            $acr
         );
 
         printInfo($dbs);

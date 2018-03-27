@@ -460,6 +460,7 @@ function getTitleText($cookie)
     // appear before shorter strings with the same prefix, e.g.
     // 'p12 error' appears before 'p12'.
     $explain = array(
+        "acr" => "Authentication Context Class Ref",
         "activation" => "The expiration time and activation code for use by CILogon-enabled applications." ,
         "affiliation" => "A list of attributes describing your affiliations at your Identity Provider." ,
         "authntime" => "The Unix timestamp of the last successful user authentication." ,

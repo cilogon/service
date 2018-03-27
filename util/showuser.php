@@ -68,4 +68,5 @@ function printUser($dbs)
     echo "affiliation = $dbs->affiliation\n";
     echo "ou = $dbs->ou\n";
     echo "member_of = $dbs->member_of\n";
+    echo "acr = $dbs->acr\n";
 }

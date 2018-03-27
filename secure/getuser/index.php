@@ -91,7 +91,7 @@ function getUID()
     Util::saveUserToDataStore(
         @$shibarray['User Identifier'],
         @$shibarray['Identity Provider'],
-        $shibarray['Organization Name'],
+        @$shibarray['Organization Name'],
         $firstname,
         $lastname,
         @$shibarray['Display Name'],
@@ -103,7 +103,8 @@ function getUID()
         '', // OpenID Connect ID
         @$shibarray['Affiliation'],
         @$shibarray['OU'],
-        @$shibarray['Member']
+        @$shibarray['Member'],
+        @$shibarray['Authn Context']
     );
 }
 
