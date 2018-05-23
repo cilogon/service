@@ -307,11 +307,11 @@ echo '
       <tr class="odd">
         <th>Support Contact:</th>
 ';
-if ((strlen(@$shibarray['Support Name']) > 0) &&
+if ((strlen(@$shibarray['Support Name']) > 0) ||
     (strlen(@$shibarray['Support Address']) > 0)) {
     echo '
         <td>' , @$shibarray['Support Name'] , ' &lt;' ,
-                @$shibarray['Support Address'] , '&gt;</td>
+                preg_replace('/^mailto:/', '', @$shibarray['Support Address']) , '&gt;</td>
         <td> </td>';
 }
 echo '
@@ -320,11 +320,11 @@ echo '
       <tr>
         <th>Technical Contact:</th>
 ';
-if ((strlen(@$shibarray['Technical Name']) > 0) &&
+if ((strlen(@$shibarray['Technical Name']) > 0) ||
     (strlen(@$shibarray['Technical Address']) > 0)) {
     echo '
         <td>' , @$shibarray['Technical Name'] , ' &lt;' ,
-                @$shibarray['Technical Address'] , '&gt;</td>
+                preg_replace('/^mailto:/', '', @$shibarray['Technical Address']) , '&gt;</td>
         <td> </td>';
 }
 echo '
@@ -333,11 +333,11 @@ echo '
       <tr class="odd">
         <th>Administrative Contact:</th>
 ';
-if ((strlen(@$shibarray['Administrative Name']) > 0) &&
+if ((strlen(@$shibarray['Administrative Name']) > 0) ||
     (strlen(@$shibarray['Administrative Address']) > 0)) {
     echo '
         <td>' , @$shibarray['Administrative Name'] , ' &lt;' ,
-                @$shibarray['Administrative Address'] , '&gt;</td>
+                preg_replace('/^mailto:/', '', @$shibarray['Administrative Address']) , '&gt;</td>
         <td> </td>';
 }
 echo '
