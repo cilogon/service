@@ -121,12 +121,6 @@ option {
   font-size: 14px!important;
   font-weight: normal!important;
 }
-label[for="keepidp"] {
-  display: none;
-}
-#keepidp {
-  display: none;
-}
 select {
 }
 select#providerId {
