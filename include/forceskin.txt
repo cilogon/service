@@ -20,6 +20,5 @@
 %^https://redivis\.com/userRequirements/oauth2/authorize% redivis
 %^https://clowder.ncsa.illinois.edu/clowder/authenticate/cilogon% NCSA
 %^https://agri-clowder.ncsa.illinois.edu/authenticate/cilogon% sprouttest
-%^https://simpl.ncsa.illinois.edu/clowder/authenticate/cilogon% sprouttest
 %^https://sprout.ncsa.illinois.edu/authenticate/cilogon% sprouttest
 %^https://sprout.ncsa.illinois.edu/clowder/authenticate/cilogon% sprouttest
