@@ -24,10 +24,20 @@ if ($idplist !== false) { // Verify we read in idplist.xml file
     $idps = Content::getCompositeIdPList(); // Using the 'skin'
     $randsidps = $idplist->getRandSIdPs();
 
-    foreach ($idps as $entityId => $idpName) {
+    // Re-sort the $idps by Organization_Name since the default is 
+    // to sort by Display_Name.
+    uasort($idps, function ($a, $b) {
+        return strcasecmp(
+          $a['Organization_Name'],
+          $b['Organization_Name']
+        );
+    });
+
+    foreach ($idps as $entityId => $names) {
         $idparray[] = array(
             'EntityID' => $entityId,
-            'OrganizationName' => $idpName,
+            'OrganizationName' => $names['Organization_Name'],
+            'DisplayName' => $names['Display_Name'],
             'RandS' => array_key_exists($entityId, $randsidps)
         );
     }
