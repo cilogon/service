@@ -24,12 +24,12 @@ if ($idplist !== false) { // Verify we read in idplist.xml file
     $idps = Content::getCompositeIdPList(); // Using the 'skin'
     $randsidps = $idplist->getRandSIdPs();
 
-    // Re-sort the $idps by Organization_Name since the default is 
+    // Re-sort the $idps by Organization_Name since the default is
     // to sort by Display_Name.
     uasort($idps, function ($a, $b) {
         return strcasecmp(
-          $a['Organization_Name'],
-          $b['Organization_Name']
+            $a['Organization_Name'],
+            $b['Organization_Name']
         );
     });
 
