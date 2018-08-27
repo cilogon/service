@@ -30,4 +30,7 @@
 %^https://iam.scigap.org/auth/realms/southill/broker/cilogon/endpoint% https://shib-idp.siu.edu/idp/shibboleth
 %^https://iam.scigap.org/auth/realms/alabama-birmingham/broker/cilogon/endpoint% urn:mace:incommon:uab.edu
 %^https://iam.scigap.org/auth/realms/utah/broker/cilogon/endpoint% urn:mace:incommon:utah.edu
+%^https://bhr.security.ncsa.illinois.edu/oidc/callback/% https://idp.ncsa.illinois.edu/idp/shibboleth
 %^https://portal-dev.security.internal.ncsa.edu/oidc/callback/% https://idp.ncsa.illinois.edu/idp/shibboleth
+%^https://portal.security.ncsa.illinois.edu/oidc/callback/% https://idp.ncsa.illinois.edu/idp/shibboleth
+%^https://rpz.security.ncsa.illinois.edu/oidc/callback/% https://idp.ncsa.illinois.edu/idp/shibboleth
