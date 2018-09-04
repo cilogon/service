@@ -100,6 +100,8 @@ if (($argc >= 2) && ($argc <= 4)) {
             echo "EntityId               = $entityID\n";
             echo "Organization Name      = " .
                 $idplist->getOrganizationName($entityID) . "\n";
+            echo "Display Name           = " .
+                $idplist->getDisplayName($entityID) . "\n";
             if ($idplist->isRegisteredByInCommon($entityID)) {
                 echo "Registered by InCommon = Yes\n";
             }
