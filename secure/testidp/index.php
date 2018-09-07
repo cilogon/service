@@ -117,7 +117,15 @@ below, please enable Javascript in your browser.
     '"><span class="expander"><a
     href="javascript:showHideDiv(\'saml\',-1)"><img
     src="/images/triright.gif" alt="&rArr;" width="14" height="14" />
-    SAML Attributes</a></span>
+    SAML Attributes</a></span>';
+
+// CIL-416 Show warning for missing ePPN
+if ((strlen(@$shibarray['ePPN']) == 0) &&
+    (strlen(@$shibarray['ePTID']) != 0)) {
+    Content::printIcon('warn', 'Some CILogon clients (e.g., Globus) require ePPN.');
+}
+
+echo '
     </div>
     <div id="saml2" style="display:' ,
         ($gotattrs ? "none" : "inline") ,
@@ -164,9 +172,12 @@ echo '
         <td>' , @$shibarray['ePPN'] , '</td>
         <td>';
 
-if ((strlen(@$shibarray['ePPN']) == 0) &&
-    (strlen(@$shibarray['ePTID']) == 0)) {
-    Content::printIcon('error', 'Must have either ePPN -OR- ePTID.');
+if (strlen(@$shibarray['ePPN']) == 0) {
+    if (strlen(@$shibarray['ePTID']) == 0) {
+        Content::printIcon('error', 'Must have either ePPN -OR- ePTID.');
+    } else {
+        Content::printIcon('warn', 'Some CILogon clients (e.g., Globus) require ePPN.');
+    }
 }
 
 echo '
@@ -269,7 +280,23 @@ echo '
     '"><span class="expander"><a
     href="javascript:showHideDiv(\'meta\',-1)"><img
     src="/images/triright.gif" alt="&rArr;" width="14" height="14" />
-    Metadata Attributes</a></span>
+    Metadata Attributes</a></span>';
+
+// CIL-416 Check for eduGAIN IdPs without both REFEDS R&S and SIRTFI
+// since these IdPs are not allowed to get certificates.
+$eduGainWithoutRandSandSIRTFI = 0;
+if ((!$idplist->isRegisteredByInCommon($entityID)) &&
+    ((!$idplist->isREFEDSRandS($entityID)) ||
+     (!$idplist->isSIRTFI($entityID)))) {
+    $eduGainWithoutRandSandSIRTFI = 1;
+}
+
+if ($eduGainWithoutRandSandSIRTFI) {
+    Content::printIcon('warn', 'This IdP does not support both ' .
+        'REFEDS R&amp;S and SIRTFI. CILogon functionality may be limited.');
+}
+
+echo '
     </div>
     <div id="meta2" style="display:' ,
         ($gotattrs ? "none" : "inline") ,
@@ -362,13 +389,23 @@ echo '
         href="http://refeds.org/category/research-and-scholarship">REFEDS
         R &amp; S</a>:</th>
         <td>' , ($idplist->isREFEDSRandS($entityID) ? 'Yes' : 'No') , '</td>
-        <td> </td>
+        <td>' ,
+        (($eduGainWithoutRandSandSIRTFI && !$idplist->isREFEDSRandS($entityID)) ?
+            Content::printIcon('warn', 'This IdP does not support both ' .
+                'REFEDS R&amp;S and SIRTFI. CILogon functionality may be limited.') :
+            '') ,
+        '</td>
       </tr>
 
       <tr class="odd">
         <th><a style="text-decoration:underline" target="_blank" href="https://refeds.org/sirtfi">SIRTFI</a>:</th>
         <td>' , ($idplist->isSIRTFI($entityID) ? 'Yes' : 'No') , '</td>
-        <td> </td>
+        <td>',
+        (($eduGainWithoutRandSandSIRTFI && !$idplist->isSIRTFI($entityID)) ?
+            Content::printIcon('warn', 'This IdP does not support both ' .
+                'REFEDS R&amp;S and SIRTFI. CILogon functionality may be limited.') :
+            '') ,
+        '</td>
       </tr>
 
       <tr>
@@ -382,6 +419,15 @@ echo '
         <th><a style="text-decoration:underline" target="_blank"
         href="http://id.incommon.org/assurance/silver">InCommon Silver</a>:</th>
         <td>' , ($idplist->isSilver($entityID) ? 'Yes' : 'No') , '</td>
+        <td> </td>
+      </tr>
+
+      <tr>
+        <th>Entity ID</th>
+        <td><a target="_blank" 
+        href="https://met.refeds.org/met/entity/',
+        rawurlencode($entityID),
+        '">', $entityID, '</td>
         <td> </td>
       </tr>
 ';
