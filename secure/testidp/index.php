@@ -5,7 +5,7 @@
 
  * This file prints out the main Shibboleth Attributes Test page.
  * It displays a table of all of the shib attributes utilized by the
- * CILogon Service.  If any attribute is missing, an error message is
+ * CILogon Service. If any attribute is missing, an error message is
  * printed out.
  */
 
@@ -39,16 +39,13 @@ echo '
   </div>
 
 <p>
-Thank you for your interest in the CILogon Service.  This page allows
+Thank you for your interest in the CILogon Service. This page allows
 the administrator of an Identity Provider (<acronym
 title="Identity Provider">IdP</acronym>) to verify that all necessary
 SAML attributes have been released to the CILogon Service Provider
-(<acronym title="Service Provider">SP</acronym>).  Below you will see
+(<acronym title="Service Provider">SP</acronym>). Below you will see
 the various attributes required by the CILogon Service and their values
-as released by your IdP.  If all required attributes are present, you
-can add your <acronym title="Identity Provider">IdP</acronym> to the
-list of organizations available to the CILogon Service (assuming it has
-not already been added).
+as released by your IdP.
 </p>
 
 <div class="summary">
@@ -75,7 +72,7 @@ if ($gotattrs) {
     <div class="summarytext">
     <p>
     All required attributes have been released by your <acronym
-    title="Identity Provider">IdP</acronym>.  For details of the various
+    title="Identity Provider">IdP</acronym>. For details of the various
     attributes utilized by the CILogon Service and their current values,
     see the sections below.
     </p>
@@ -93,7 +90,7 @@ if ($gotattrs) {
     <div class="summarytext">
     <p>
     One or more of the attributes required by the CILogon Service are
-    not available.  Please see the sections below for details.  Contact
+    not available. Please see the sections below for details. Contact
     <a href="mailto:help@cilogon.org">help&nbsp;@&nbsp;cilogon.org</a>
     for additional information and assistance.
     </p>
@@ -106,7 +103,7 @@ echo '
 
 <noscript>
 <div class="nojs">
-Javascript is disabled.  In order to expand or collapse the sections
+Javascript is disabled. In order to expand or collapse the sections
 below, please enable Javascript in your browser.
 </div>
 </noscript>
@@ -424,7 +421,7 @@ echo '
 
       <tr>
         <th>Entity ID</th>
-        <td><a target="_blank" 
+        <td><a style="text-decoration:underline" target="_blank"
         href="https://met.refeds.org/met/entity/',
         rawurlencode($entityID),
         '">', $entityID, '</td>
