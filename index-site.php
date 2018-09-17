@@ -240,7 +240,7 @@ function printCertInfo()
  * printGetCertificate
  *
  * This function prints the 'Get New Certificate' box on the main page.
- * If the 'p12' PHP session variable is valid, it is read and a ink for the
+ * If the 'p12' PHP session variable is valid, it is read and a link for the
  * usercred.p12 file is presented to the user.
  */
 function printGetCertificate()
