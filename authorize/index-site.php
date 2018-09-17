@@ -369,6 +369,9 @@ function printMainPage()
             }
         }
         $log->info('setTransactionState succeeded, redirect to ' . $redirect);
+        // CIL-507 Special log message for XSEDE
+        $log->info('USAGE email="' . Util::getSessionVar('emailaddr') .
+                   '" client="' . $clientparams['client_name'] . '"');
     } else { // dbservice error
         $errstr = '';
         if (!is_null($dbs->status)) {

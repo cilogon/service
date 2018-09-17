@@ -184,6 +184,9 @@ function getPKCS12()
 
         if (strlen($p12file) > 0) {
             $log->info('ECP PKCS12 success!');
+            // CIL-507 Special log message for XSEDE
+            $log->info('USAGE email="' . Util::getSessionVar('emailaddr') .
+                       '" client="ECP"');
             header('Content-type: application/x-pkcs12');
             echo $p12file;
         } else {
@@ -287,6 +290,9 @@ function getCert()
 
         if (strlen($cert) > 0) { // Successfully got a certificate!
             $log->info('ECP getcert success!');
+            // CIL-507 Special log message for XSEDE
+            $log->info('USAGE email="' . Util::getSessionVar('emailaddr') .
+                       '" client="ECP"');
             header('Content-type: text/plain');
             echo $cert;
         } else { // The myproxy-logon command failed - shouldn't happen!
