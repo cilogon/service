@@ -22,6 +22,7 @@
 %^https://agri-clowder.ncsa.illinois.edu/authenticate/cilogon% sprouttest
 %^https://agri-clowder.ncsa.illinois.edu/clowder/authenticate/cilogon% sprouttest
 %^https://simpl.ncsa.illinois.edu/clowder/authenticate/cilogon% sprouttest
+%^https://simpl-dev.ncsa.illinois.edu/clowder/authenticate/cilogon% sprouttest
 %^https://sprout.ncsa.illinois.edu/authenticate/cilogon% sprouttest
 %^https://sprout.ncsa.illinois.edu/clowder/authenticate/cilogon% sprouttest
 %^https://fairdata.sdsc.edu/openid-connect/generic% fairdata
