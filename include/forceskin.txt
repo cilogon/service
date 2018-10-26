@@ -26,3 +26,4 @@
 %^https://sprout.ncsa.illinois.edu/authenticate/cilogon% sprouttest
 %^https://sprout.ncsa.illinois.edu/clowder/authenticate/cilogon% sprouttest
 %^https://fairdata.sdsc.edu/openid-connect/generic% fairdata
+%^https://identity.lsst.org/cilogon-result% LSST
