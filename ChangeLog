@@ -1,3 +1,73 @@
+b6ee895 2018-12-03 Update License date to 2018 and replace template name with CILogon.
+e9429e2 2018-11-06 IL-526 Use SHA256withRSA instead of MD5withRSA for pkcs10SigAlgName so that GridShibCA can connect to openssl-1.0.1e-57.el6.
+fec2568 2018-10-26 CIL-524 Force LSST skin for https://identity.lsst.org OIDC client.
+a7b6530 2018-10-12 Add https://simpl-dev.ncsa.illinois.edu/clowder/authenticate/cilogon to force use of sprouttest skin.
+fb2a0e5 2018-09-17 CIL-507 Output special log messages for XSEDE log analysis.
+c66d4a7 2018-09-17 Fix typo in comment.
+6bb817d 2018-09-07 Add underline to metadata browser URL. Remove text related to 'Add IdP' button which no longer exists.
+414cca4 2018-09-07 CIL-416 Show a few extra warnings on the testidp page.
+76ee4a3 2018-09-06 Duplicate 'sprouttest' skin as 'sprout' for eventual rename since Syngenta IdP is now using production cilogon.org.
+6414e1b 2018-09-04 Also show Display Name for newly added IdPs.
+1501760 2018-08-27 Set simpl.ncsa.illionis.edu to use sprouttest skin for Rob Kooper.
+4f896c4 2018-08-27 Add more portals for Justin Azoff to force use of NCSA IdP.
+a6f0510 2018-08-24 Fix PSR2-related errors.
+526412d 2018-08-24 CIL-377 The service-lib code was updated to use mdui:DisplayName in the IdP listing. This new entry is available in the /idplist/ web endpoint, but still storted by OrganizationDisplayName (for SWAMP).
+974eafa 2018-08-16 For Justin Azoff's dev client, always use NCSA IdP.
+ae38b55 2018-06-22 Also remove "GitHub via eduTEAMS Identity Hub.
+2a6be7d 2018-06-22 Blacklist OAuth IdPs for https://fairdata.sdsc.edu .
+0a5e114 2018-06-12 Add another sprout url to forceskin.txt.
+2af26eb 2018-06-04 CIL-465 Show "Remember this selection" checkbox again.
+dff4eb6 2018-05-23 Rob Kooper added a new callback url to the sprout client, so make it use the sprouttest skin.
+24731d7 2018-05-23 CIL-471 Show contact email addresses even when no contact name given.
+14b4313 2018-04-05 Remove duplicate line.
+affadf2 2018-04-05 CIL-466 Make sprout.ncsa.illinios.edu use the sprout skin rather than the NCSA IdP.
+19969da 2018-04-05 CIL-466 Make sprout.ncsa.illinois.edu use the sprouttest skin rather than forcing the NCSA IdP.
+801f8d6 2018-04-03 CIL-465 Tweaks to the sprouttest skin.
+783b1f6 2018-03-27 CIL-462 Save 'acr' (Authentication Context Class Ref) SAML attribute in the PHP session for later use.
+4a907cb 2018-02-23 Also remove diacritics from the input search term.
+25cd9f8 2018-02-22 Use https://stackoverflow.com/a/37511463 to remove diacritics when searching for an international IdP.
+e2d0632 2018-02-15 CIL-458 Remove ProtectNetwork from ECP IdP list.
+98b1f6d 2018-02-02 CIL-456 Allow users from agri-clowder.ncsa.illinois.edu to select either NCSA IdP or Syngenta's Azure AD login.
+2425d76 2018-01-25 CIL-450 Get Shibboleth member / group attributes.
+45bf2b7 2018-01-25 Remove extra linefeeds.
+e8f5417 2018-01-10 CIL-431 Create 'bypass.txt' file for campus gateways. This new text file has <callback_uri, idp_entityid> keypairs which indicate gateways that should always use a specific IdP for logging on.
+40c4cad 2018-01-10 Remove commented-out line.
+3cee8aa 2017-10-30 Use PHP Coveralls v.1.0.2.
+6833ef5 2017-10-30 Try to make Travis-CI work with encrypted GITHUB_TOKEN.
+036790d 2017-10-25 CIL-418 Update - Add agri-clowder.ncsa.illinois.edu to ncsabypass skin.
+ee2adcd 2017-10-24 Should define $errstr before using it.
+c3531c0 2017-10-24 CIL-416 - New 'warn' icon for testidp page.
+d142f43 2017-10-24 CIL-423 Better end-user error output for OIDC errors with a javax.servlet.ServletException error message.
+277f1b8 2017-10-11 Remove unnecessary symlinks to images.
+8e2e64b 2017-10-11 CIL-419 , CIL-373 - Skins 'ncsaonly' and 'xsedeonly' display just a sinle IdP to the user on the CILogon OAuth Consent screen. Skins 'ncsabypass' and 'xsedebypass' skip the CILogon OAuth Consent screen for specified portals.
+3fc8696 2017-10-10 CIL-418 Set skin=ncsaonly for sprout.ncsa.illinois.edu.
+ef8a438 2017-08-22 Forgot closing brace.
+e94c6e9 2017-08-22 Add dev.cilogon.org (polod) config for /well-known/openid-configuration.
+de8a218 2017-08-04 CIL-407 - If the registered redirect_uri contains a question mark '?' and there is an error, the OIDC authz endpoint appends another question mark rather than an ampersand '&'. Check for this condition an replace all but the first question mark with an ampersand so parse_url() works as expected.
+972e350 2017-07-21 When searching for matching IdPs, also check the entityIds for aliases like 'ncsa'.
+e75062e 2017-07-21 Change NCSA header background from blue to white.
+6a8906d 2017-07-20 CIL-403 Force clowder portal to use NCSA skin.
+5fa37c4 2017-07-20 CIL-403 - Add NCSA skin to show 10 IdPs in the list.
+1ee9d35 2017-06-16 CIL-401 Now that the blacklist.txt file is consulted when creating the idplist.xml file, add a note to run /etc/cron.hourly/idplist.cron after updating blacklist.txt.
+860fbd7 2017-06-16 The idplist.php script needs to include Util.php since the Util class is used in the IdpList class.
+c866016 2017-06-12 CIL-397 Allow ORCID for SWAMP skin.
+f637fb5 2017-06-09 Set list size of redivis to 3 since only 3 IdPs listed right now.
+aff72db 2017-06-09 CIL-394 Create new skin for redivis.com and force use by its OAuth2 portal callback url.
+c658ea6 2017-05-25 For those skins which blacklisted Google and GitHub, also blacklist ORCID.
+867479c 2017-04-14 CIL-372 - For 'xsede' skin, set <initialidp> to XSEDE.
+27c6843 2017-04-14 CIL-373 - Create 'xsedeonly' skin which always automatically uses the XSEDE IdP.
+1e721d8 2017-04-05 Add require-dev section for Travis CI testing.
+1e6db3e 2017-04-05 Remove hhvm testing.
+90fca26 2017-04-05 Try to get Travis CI to build.
+8e0f5fa 2017-04-04 Update files to pass PSR2 check (ignoring SideEffects).
+21f0f15 2017-04-03 Ignore pkcs12 directory.
+093ea82 2017-04-03 Change include path to .../vendor/cilogon/service-lib/...
+fdd5da1 2017-04-03 Ignore /include/idplist.{json,xml} files.
+28ba83c 2017-04-03 Remove .cvsignore files.
+f96ca0d 2017-04-03 Ignore dynamically created symlinks.
+edbf411 2017-04-03 Don't delete symlinks.
+e68c02d 2017-04-03 Do 'git clone https://' for read-only checkout.
+2e50341 2017-04-03 Update ChangeLog using 'git log'.
 75b3388 2017-04-03 Run install commands as root.
 ea64bec 2017-04-03 Make /var/www/html owned by root.
 06736e4 2017-04-03 Update install instructions to run 'sh README.txt'.
