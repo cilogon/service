@@ -41,8 +41,10 @@ echo '{
   "client_secret_post"
  ],
  "claims_supported" : [
+  "affiliation",
   "aud",
   "auth_time",
+  "cert_subject_dn",
   "email",
   "eppn",
   "eptid",
