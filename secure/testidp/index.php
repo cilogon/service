@@ -256,12 +256,18 @@ echo '
       </tr>
 
       <tr class="odd">
+        <th>Entitlement (entitlement):</th>
+        <td>' , @$shibarray['Entitlement'] , '</td>
+        <td> </td>
+      </tr>
+
+      <tr>
         <th>Organizational Unit (ou):</th>
         <td>' , @$shibarray['OU'] , '</td>
         <td> </td>
       </tr>
 
-      <tr>
+      <tr class="odd">
         <th>Member (member):</th>
         <td>' , @$shibarray['Member'] , '</td>
         <td> </td>
