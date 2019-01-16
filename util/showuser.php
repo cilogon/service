@@ -69,4 +69,5 @@ function printUser($dbs)
     echo "ou = $dbs->ou\n";
     echo "member_of = $dbs->member_of\n";
     echo "acr = $dbs->acr\n";
+    echo "entitlement = $dbs->entitlement\n";
 }

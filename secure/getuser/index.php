@@ -104,7 +104,8 @@ function getUID()
         @$shibarray['Affiliation'],
         @$shibarray['OU'],
         @$shibarray['Member'],
-        @$shibarray['Authn Context']
+        @$shibarray['Authn Context'],
+        @$shibarray['Entitlement']
     );
 }
 

@@ -476,6 +476,7 @@ function getTitleText($cookie)
         "displayname" => "Your full name set by your Identity Provider." ,
         "dn" => "A quasi distinguished name for the certificate issued by a MyProxy server to the CILogon Service." ,
         "emailaddr" => "Your email address given by your Identity Provider." ,
+        "entitlement" => "A list of URIs representing permissions to access a resource or service." ,
         "ePPN" => "'eduPerson Principal Name' - a SAML attribute set by your Identity Provider." ,
         "ePTID" => "'eduPerson Targeted Identifier' - a SAML attribute set by your Identity Provider" ,
         "failureuri" => "A URL used by portals in case the CILogon " .
