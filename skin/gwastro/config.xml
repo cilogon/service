@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+  <idpblacklist>
+    <idp>https://github.com/login/oauth/authorize</idp>
+    <idp>https://orcid.org/oauth/authorize</idp>
+  </idpblacklist>
+
+</config>
