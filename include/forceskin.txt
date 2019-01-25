@@ -28,6 +28,6 @@
 %^https://fairdata.sdsc.edu/openid-connect/generic% fairdata
 %^https://identity.lsst.org/cilogon-result% LSST
 %^https://registry.gw-astronomy.org/secure/redirect% gwastro
-%^https://registry-test.gw-astronomy.org/secure/redirect% gwastro
-%^https://registry-dev.gw-astronomy.org/secure/redirect% gwastro
-%^https://gw-astronomy-dev.cilogon.org/secure/redirect% gwastro
+%^https://registry-test.gw-astronomy.org/secure/redirect% gwastroorcid
+%^https://registry-dev.gw-astronomy.org/secure/redirect% gwastroorcid
+%^https://gw-astronomy-dev.cilogon.org/secure/redirect% gwastroorcid
