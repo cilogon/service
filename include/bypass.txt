@@ -1,9 +1,8 @@
-# This file contains pairs of OAuth2/OIDC callback URIs and IdP entityIds.
-# If an incoming OIDC callback URI is matched from this file, the associated
-# IdP will be automatically used. This is used primarily by campus gateways
-# (portals) where users only ever log in with a single IdP. It replaces the
-# complex skin configuration which required a combination of
-# <forceinitialidp>, <allowforceinitialidp>, and <portallist>.
+# This file contains OAuth2/OIDC clients that should bypass the CILogon
+# "Select an Identity Provider" screen and go directly to a specific 
+# Identity Provider. Each line of the file has the following format:
+#
+#    URI entityId
 #
 # Blank lines and lines beginning with '#' (no leading spaces) are skipped.
 #
@@ -15,9 +14,18 @@
 # '.' matches any character, so if you want to match a dot, prefix with a
 # backslash, e.g., '\.' . However, in practice this unnecessary since dots
 # appear mainly in the FQDN.
+# 
+# The URI regex should match one of:
+#    * an OAuth2.0 redirect_uri
+#    * an Oauth2.0 client_id
 #
-# The callback URI regex should match an OAuth2/OIDC callback URI. The
-# entityID of the IdP must exactly match the metadata value.
+# The entityId must exactly match the IdP metadata value.
+#
+# If an incoming OIDC redirect_uri or client_id is matched from this file,
+# the associated IdP will be automatically used. This is used primarily by
+# campus gateways (portals) where users only ever log in with a single IdP.
+# It replaces the complex skin configuration which required a combination
+# of <forceinitialidp>, <allowforceinitialidp>, and <portallist>.
 
 %^https://iam.scigap.org/auth/realms/virginaaccord/broker/cilogon/endpoint% urn:mace:incommon:virginia.edu
 %^https://iam.scigap.org/auth/realms/iugateway/broker/cilogon/endpoint% urn:mace:incommon:iu.edu

@@ -158,11 +158,12 @@ function printLogonPage()
     ';
 
     // If the <hideportalinfo> option is set, do not show the portal info if
-    // the OIDC redirect_uri is in the portal list.
+    // the OIDC redirect_uri or client_id is in the portal list.
     $showportalinfo = true;
     $skin = Util::getSkin();
     if (((int)$skin->getConfigOption('portallistaction', 'hideportalinfo') == 1) &&
-        ($skin->inPortalList($clientparams['redirect_uri']))) {
+        (($skin->inPortalList($clientparams['redirect_uri'])) ||
+         ($skin->inPortalList($clientparams['client_id'])))) {
         $showportalinfo = false;
     }
 

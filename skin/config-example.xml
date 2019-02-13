@@ -111,7 +111,7 @@
        This block contains options specific to the "Get New Certificate" box
        (i.e. download a PKCS12 credential).
        The <initiallifetime> block allows you to specify the initial value
-       for "Certificate Lifetime".  If set, you must specify BOTH <number>
+       for "Certificate Lifetime". If set, you must specify BOTH <number>
        AND <multiplier>.
        <number> is the value that appears in the text input box.
        <multiplier> can be 1 (=> number is in hours), 24 (=> number is in
@@ -239,7 +239,7 @@
 
   <!-- <ecp>
        This block is specific to fetching an X.509 certificate using
-       an ECP-enabled client (e.g. "ecp.pl -g c").  This does NOT apply to
+       an ECP-enabled client (e.g. "ecp.pl -g c"). This does NOT apply to
        fetching a PKCS12 credential using an ECP-enabled client
        (e.g. "ecp.pl -g p") which is handled by the <pkcs12> block above.
        <defaultlifetime> can be used to specify a default lifetime (in
@@ -268,18 +268,20 @@
 
   <!-- <portallist>
        This block contains a list of regular expressions which attempt to
-       match up to a portal's "callback url" (a.k.a. Service URL). Each
-       <portal> listed is actually a Perl-Compatible Regular Expression
-       (PCRE), which is matched against the callback URI as passed by the
-       portal to the CILogon Delegate service. The callback URI typically
-       looks like "https://my.site.org/portal-service/ready". You need
-       to give a regular expression, including the delimeters (slash and
-       pound are common). For information about PHP's PCRE syntax, see
+       match up to a portal's "callback url" (a.k.a. Service URL) or client
+       ID. Each <portal> listed is a Perl-Compatible Regular Expression
+       (PCRE), which is matched against the callback URI (OAuth1.0),
+       redirect_uri (OAuth2.0), or client_id (OAuth2.0) as passed by the
+       portal. The callback URI typically looks like
+       "https://my.site.org/portal-service/ready". You need to give a
+       regular expression, including the delimeters (e.g., percent "%" is a
+       good choice so slashes don't need to be escaped). For information
+       about PHP's PCRE syntax, see
        http://www.php.net/manual/en/pcre.pattern.php . Once you have
        specified a list of <portal> regular expressions, you also need to
        specify a <portallistaction> below, which tells the program what to
-       do if the portal's callback URL matches a <portal> in the list.
-       The example below matches hostnames in the ".ncsa.uiuc.edu" domain.
+       do if the portal's callback URL matches a <portal> in the list. The
+       example below matches hostnames in the ".ncsa.uiuc.edu" domain.
   -->
   <!--
   <portallist>
@@ -289,10 +291,10 @@
 
   <!-- <portallistaction>
        This block works in conjunction with the <portallist> block. It has
-       options for what should happen if a portal callback url is found in
-       the <portallist>. This section may grow as we find new uses for the
-       <portallist>. The options in this section are independent of each
-       other.
+       options for what should happen if a portal callback url or client id
+       is found in the <portallist>. This section may grow as we find new
+       uses for the <portallist>. The options in this section are
+       independent of each other.
        <hideportalinfo> If present, set to 1. This allows you to hide the
        Portal Info block (Site Name / Site URL / Service URL) for portals
        in the <portallist> (rather than hiding it for the entire skin, as is
@@ -331,7 +333,7 @@
 
   <!-- <forceauthn>
        If set to 1, make the user reauthenticate at the IdP every time,
-       assuming the CILogon session cookie has been cleared.  For
+       assuming the CILogon session cookie has been cleared. For
        Shibboleth authentication, this bypasses the SSO behavior by setting
        "forceAuthn=true" for the AuthnRequest when initiating the session.
        For OpenID authentication, this sets the PAPE extension for
