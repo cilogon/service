@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+  <initialidp>urn:mace:incommon:nih.gov</initialidp>
+
+  <idplistsize>10</idplistsize>
+
+</config>
