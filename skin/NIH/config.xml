@@ -3,6 +3,6 @@
 
   <initialidp>urn:mace:incommon:nih.gov</initialidp>
 
-  <idplistsize>10</idplistsize>
+  <idplistsize>15</idplistsize>
 
 </config>

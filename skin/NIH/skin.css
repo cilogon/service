@@ -45,7 +45,6 @@ body > div.pagecontent > div.boxed > div.actionbox > table > tbody > tr > td > f
 }
 
 select#providerId {
-    height: 300px;
     width: 500px;
     font-size: 15px;
 }
