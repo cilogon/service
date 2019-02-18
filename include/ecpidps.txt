@@ -10,6 +10,7 @@ https://shibboleth-test.techservices.illinois.edu/idp/profile/SAML2/SOAP/ECP UIU
 https://shibboleth2.uchicago.edu/idp/profile/SAML2/SOAP/ECP University of Chicago
 https://shibboleth.illinois.edu/idp/profile/SAML2/SOAP/ECP University of Illinois at Urbana-Champaign
 https://shibboleth.umich.edu/idp/profile/SAML2/SOAP/ECP University of Michigan
+https://sso.unc.edu/idp/profile/SAML2/SOAP/ECP University of North Carolina at Chapel Hill
 https://idp.utk.edu/idp/profile/SAML2/SOAP/ECP University of Tennessee
 https://incommon2.sso.utah.edu/idp/profile/SAML2/SOAP/ECP University of Utah
 https://idp.u.washington.edu/idp/profile/SAML2/SOAP/ECP University of Washington
