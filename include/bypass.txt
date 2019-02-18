@@ -42,3 +42,4 @@
 %^https://portal-dev.security.internal.ncsa.edu/oidc/callback/% https://idp.ncsa.illinois.edu/idp/shibboleth
 %^https://portal.security.ncsa.illinois.edu/oidc/callback/% https://idp.ncsa.illinois.edu/idp/shibboleth
 %^https://rpz.security.ncsa.illinois.edu/oidc/callback/% https://idp.ncsa.illinois.edu/idp/shibboleth
+%^https://iamdev.scigap.org/auth/realms/usd/broker/usd/endpoint% https://usd-shibboleth.usd.edu/idp/shibboleth
