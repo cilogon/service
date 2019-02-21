@@ -5,7 +5,7 @@
 # Script      : ecp.pl                                                  #
 # Authors     : Terry Fleury <tfleury@illinois.edu>                     #
 # Create Date : July 06, 2011                                           #
-# Last Update : July 12, 2016                                           #
+# Last Update : February 21, 2019                                       #
 #                                                                       #
 # This PERL script allows a user to get an end-user X.509 certificate   #
 # or PKCS12 credential from the CILogon Service. It can also get the    #
@@ -13,12 +13,12 @@
 # used as an example of how a SAML ECP client works.                    #
 #                                                                       #
 # Studying this script is not an acceptable replacement for reading     #
-# Draft 02 of the ECP profile [ECP] available at:                       #
+# the specification of the ECP profile [ECP] available at:              #
 # http://wiki.oasis-open.org/security/SAML2EnhancedClientProfile        #
 #                                                                       #
 # This script assumes that the server hosting the IdP has been          #
 # configured to require a type of Basic Auth (username and password)    #
-# for the ECP location.                                                 #
+# for the ECP location, optionally with Duo as 2FA.                     #
 #                                                                       #
 #########################################################################
 #                                                                       #
@@ -68,16 +68,17 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.027";
+our $VERSION = "0.028";
 $VERSION = eval $VERSION;
 
 use strict;
+use Module::Load::Conditional qw(check_install);
 use Term::ReadLine;
 use Term::UI;
 use Getopt::Long qw(GetOptionsFromString :config bundling);
 use Pod::Usage;
 use LWP;
-use Crypt::SSLeay;
+use if (!check_install(module=>'IO::Socket::SSL')), 'Crypt::SSLeay';
 use HTTP::Cookies;
 use URI;
 use IPC::Open3;
@@ -113,6 +114,7 @@ my $keyfile = '';
 my $csr = '';
 my $passwd = '';
 my $tfpass = '';
+my $duo = '';
 my $lifetime = 0;
 my $vo = '';
 my $outputfile = '';
@@ -196,6 +198,17 @@ if (exists $opts{quiet}) {
 if (exists $opts{verbose}) {
     $verbose = 1;
     $quiet = 0;
+}
+
+# If the user entered --duo, validate the requested 2FA method
+if (exists $opts{duo}) {
+    my $duoopt = $opts{duo};
+    my $duo1 = substr($duoopt,0,1);
+    if (($duo1 eq 'a') || ($duo1 eq 'p') || ($duo1 eq 'c') || ($duoopt =~ /^\d+$/)) {
+        $duo = (($duo1 =~ /\d/) ? $duoopt : $duo1);
+    } else {
+        warn "Error: Unknown Duo 2FA method '$duoopt'." if (!$quiet);
+    }
 }
 
 # Check if the user entered --idpurl with a valid URL
@@ -651,6 +664,18 @@ if (!($xmlstr =~ s#<S:Header>.*</S:Header>##i)) {
 # Attempt to log in to the IdP with basic authorization
 $headers = HTTP::Headers->new();
 $headers->authorization_basic($idpuser,$idppass);
+# If Duo 2FA was specified, pass the method in the header
+if (length($duo) > 0) {
+    my $factor = '';
+    $factor = 'auto'  if ($duo eq 'a');
+    $factor = 'push'  if ($duo eq 'p');
+    $factor = 'phone' if ($duo eq 'c');
+    if ($duo =~ /^\d+$/) {
+        $factor = 'passcode';
+        $headers->header('X-Shibboleth-Duo-Passcode'=>$duo);
+    }
+    $headers->header('X-Shibboleth-Duo-Factor'=>$factor);
+}
 $ua->default_headers($headers);
 print "Logging in to IdP '$idpurl' with \n$xmlstr\n... " if ($verbose);
 $response = $ua->post($idpurl,Content_Type=>'text/xml',Content=>$xmlstr);
@@ -870,7 +895,7 @@ sub getCmdLineOpts
     my $ret;
     my %options;
     my @optdesc = ( 'help|h|?',
-                    'verbose|debug|v|d',
+                    'verbose|v',
                     'version|V',
                     'quiet|q',
                     'skipssl|s',
@@ -888,6 +913,7 @@ sub getCmdLineOpts
                     'out|o=s',
                     'password|P=s',
                     'twofactor|T=s',
+                    'duo|d=s',
                     'proxyfile|1',
                     'pam|m',
                     'url|U=s' );
@@ -1214,7 +1240,7 @@ Print out the help message and exit.
 
 Print out the version number and exit.
 
-=item B<-v, -d, --verbose, --debug>
+=item B<-v, --verbose>
 
 Output as much informational text as possible. Overrides B<--quiet>.
 
@@ -1258,7 +1284,15 @@ Specify the username for logging in to the ECP-enabled Identity Provider.
 
 Specify the password for logging in to the ECP-enabled Identity Provider.
 
-=item B<-g [cE<verbar>pE<verbar>u], --get [certE<verbar>pkcs12E<verbar>url]>
+=item B<-d> [aE<verbar>pE<verbar>cE<verbar>I<CODE>], B<--duo> [autoE<verbar>pushE<verbar>callE<verbar>I<CODE>]
+
+If your Identity Provider uses Duo as a second factor for authentication
+(2FA), specify the Duo authentication method. Enter C<auto> to use the
+preferred 2FA method for your account, C<push> to send a push notification
+to the Duo app on your phone, C<call> to have Duo servers call your phone
+for authentication, or a numeric I<CODE> generated by the Duo app.
+
+=item B<-g> [cE<verbar>pE<verbar>u], B<--get> [certE<verbar>pkcs12E<verbar>url]
 
 Specify the operation: fetch a certificate using a certificate signing
 request, fetch a PKCS12 credential, or fetch the contents of an ECP-enabled
