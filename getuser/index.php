@@ -63,7 +63,13 @@ function getUserAndRespond()
         Util::setSessionVar('logonerror', 'Invalid state parameter.');
     } elseif (strlen($code) == 0) {
         // Make sure the response has a non-empty 'code'
-        Util::setSessionVar('logonerror', 'Empty code parameter.');
+        $error = Util::getGetVar('error');
+        $error_description = Util::getGetVar('error_description');
+        if ((strlen($error) > 0) && (strlen($error_description) > 0)) {
+            Util::setSessionVar('logonerror', $error_description . '. Please try again.');
+        } else {
+            Util::setSessionVar('logonerror', 'Empty code parameter. Please try again.');
+        }
     } else {
         // When using OAuth or OIDC, check portalcookie for providerId
         $providerId = Util::getPortalOrNormalCookieVar('providerId');
