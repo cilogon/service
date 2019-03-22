@@ -23,7 +23,7 @@ $hide = array(
 );
 
 // Get the value of the 'submit' input element
-$submit = Util::getPostVar('submit');
+$submit = Util::getGetOrPostVar('submit');
 Util::unsetSessionVar('submit');
 
 // Depending on the value of the clicked 'submit' button,
@@ -61,6 +61,14 @@ printMainCookiesPage();
  */
 function printMainCookiesPage()
 {
+    // CIL-555 Allow for deletion of session/cookie vars without
+    // refreshing the user's browser.
+    $output = Util::getGetOrPostVar('output');
+    if (($output == 0) || ($output == 'no') || ($output == 'false')) {
+        http_response_code(204);
+        exit;
+    } 
+
     $browsercount = countBrowserCookies();
     $sessioncount = countSessionVariables();
 
