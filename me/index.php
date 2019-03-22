@@ -67,7 +67,7 @@ function printMainCookiesPage()
     if (($output == 0) || ($output == 'no') || ($output == 'false')) {
         http_response_code(204);
         exit;
-    } 
+    }
 
     $browsercount = countBrowserCookies();
     $sessioncount = countSessionVariables();
