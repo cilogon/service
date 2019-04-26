@@ -113,9 +113,18 @@ function getUserAndRespond()
         }
     }
 
-    // If no error reported, save user data to datastore.
+    // If no error reported, check for session var 'storeattributes'
+    // which indicates to simply store the user attributes in the
+    // PHP session. If not set, then by default save the user
+    // attributes to the database (which also stores the user
+    // attributes in the PHP session).
     if (strlen(Util::getSessionVar('logonerror')) == 0) {
-        Util::saveUserToDataStore(
+        $func = 'CILogon\Service\Util::saveUserToDataStore';
+        if (!empty(Util::getSessionVar('storeattributes'))) {
+            $func = 'CILogon\Service\Util::setUserAttributeSessionVars';
+            Util::unsetSessionVar('storeattributes');
+        }
+        $func(
             $openidid,
             $providerId,
             $providerName,

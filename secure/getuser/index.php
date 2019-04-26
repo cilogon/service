@@ -88,7 +88,17 @@ function getUID()
             'http://incommonfederation.org/assurance/silver';
     }
 
-    Util::saveUserToDataStore(
+    // Check for session var 'storeattributes' which indicates to
+    // simply store the user attributes in the PHP session.
+    // If not set, then by default save the user attributes to
+    // the database (which also stores the user attributes in
+    // the PHP session).
+    $func = 'CILogon\Service\Util::saveUserToDataStore';
+    if (!empty(Util::getSessionVar('storeattributes'))) {
+        $func = 'CILogon\Service\Util::setUserAttributeSessionVars';
+        Util::unsetSessionVar('storeattributes');
+    }
+    $func(
         @$shibarray['User Identifier'],
         @$shibarray['Identity Provider'],
         @$shibarray['Organization Name'],
