@@ -12,7 +12,7 @@ use CILogon\Service\Loggit;
 Util::startPHPSession();
 
 // The full URL of the 'oauth2/init' OAuth 2.0 (OIDC) script
-define('AUTHORIZE_URL', 'http://localhost:8080/oauth2/init');
+define('AUTHORIZE_URL', 'http://localhost:8080/oauth2/dbService?action=createTransaction');
 
 // Check the csrf cookie against either a hidden <form> element or a
 // PHP session variable, and get the value of the 'submit' element.
@@ -505,7 +505,8 @@ function verifyOIDCParams()
         if ($ch !== false) {
             $url = AUTHORIZE_URL;
             if (count($_GET) > 0) {
-                $url .= '?' . http_build_query($_GET);
+                $url .= (preg_match('/\?/', AUTHORIZE_URL) ? '&' : '?') .
+                    http_build_query($_GET);
             }
             if (count($_POST) > 0) {
                 curl_setopt($ch, CURLOPT_POST, true);
