@@ -491,6 +491,7 @@ function getTitleText($cookie)
         "firstname" => "Your given name set by your Identity Provider." ,
         "idpname" => "The display name of your chosen Identity Provider." ,
         "idp" => "The authentication URI of your chosen Identity Provider." ,
+        "itrustuin" => "Your university ID number.",
         "keepidp" => "Remember if you checked the 'Remember this " .
             "selection' checkbox when you selected and Identity Provider." ,
         "lastname" => "Your surname set by your Identity Provider." ,

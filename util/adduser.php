@@ -32,6 +32,7 @@ if ($argc >= 7) {
     $memberof = '';
     $acr = '';
     $entitlement = '';
+    $itrustuin = '';
     if ($argc >= 8) {
         $displayname = $argv[7];
     }
@@ -62,6 +63,9 @@ if ($argc >= 7) {
     if ($argc >= 17) {
         $entitlement = $argv[16];
     }
+    if ($argc >= 18) {
+        $itrustuin = $argv[17];
+    }
 
     if ((strlen($remoteuser) > 0) &&
         (strlen($idp) > 0) &&
@@ -86,7 +90,8 @@ if ($argc >= 7) {
             $ou,
             $memberof,
             $acr,
-            $entitlement
+            $entitlement,
+            $itrustuin
         );
 
         printInfo($dbs);
@@ -109,7 +114,7 @@ function printUsage()
 {
     echo "Usage: adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME " ,
          "EMAIL DISPLAYNAME EPPN EPTID OPENID OIDC AFFILIATION " ,
-         "OU MEMBER AUTHNCONTEXTCLASSREF ENTITLEMENT\n" ,
+         "OU MEMBER AUTHNCONTEXTCLASSREF ENTITLEMENT ITRUSTUIN\n" ,
          "Note: The first six parameters must be specified for both " ,
          "InCommon and OpenID.\n" ,
          "      The rest are optional.\n";

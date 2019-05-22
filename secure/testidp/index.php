@@ -273,6 +273,13 @@ echo '
         <td> </td>
       </tr>
 
+      <tr>
+        <th>iTrustUIN (itrustuin):</th>
+        <td>' , @$shibarray['iTrustUIN'] , '</td>
+        <td> </td>
+      </tr>
+
+
     </table>
     </div> <!-- saml3 -->
 </div> <!-- summary -->

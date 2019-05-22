@@ -115,7 +115,8 @@ function getUID()
         @$shibarray['OU'],
         @$shibarray['Member'],
         @$shibarray['Authn Context'],
-        @$shibarray['Entitlement']
+        @$shibarray['Entitlement'],
+        @$shibarray['iTrustUIN']
     );
 }
 
