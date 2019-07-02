@@ -590,14 +590,32 @@ function verifyOIDCParams()
                             // Either the output returned was not a valid
                             // JSON token, or there was no 'code' found in
                             // the returned JSON token.
+                            // CIL-575 Check for a "status=..." line in the
+                            // returned $output to print a useful error
+                            // message to the user (and in the error email).
+                            $errortxt = '';
+                            if (preg_match(
+                                '/status=(\d+)/',
+                                $output,
+                                $matches
+                            )) {
+                                $errornum = $matches[1];
+                                $errstr = array_search(
+                                    $errornum,
+                                    DBService::$STATUS
+                                );
+                                $errortxt = @DBService::$STATUS_TEXT[$errstr];
+                            }
+
                             Util::sendErrorAlert(
                                 'OA4MP OIDC authz endpoint error',
+                                (!empty($errortxt) ? $errortxt :
                                 'The OA4MP OIDC authorization endpoint ' .
                                 'returned an HTTP response 200, but either ' .
                                 'the output was not a valid JSON token, or ' .
                                 'there was no "code" in the JSON token. ' .
                                 ((strlen($output) > 0) ?
-                                    "\n\nReturned output =\n$output" : '') .
+                                    "\n\nReturned output =\n$output" : '')) .
                                 "\n\n" .
                                 'curl_getinfo = ' . print_r($info, true) . "\n\n" .
                                 'clientparams = ' . print_r($clientparams, true) .
@@ -606,7 +624,8 @@ function verifyOIDCParams()
                             Util::setSessionVar(
                                 'client_error_msg',
                                 'There was an unrecoverable error during the transaction. ' .
-                                'CILogon system administrators have been notified.'
+                                'CILogon system administrators have been notified. ' .
+                                (!empty($errortxt) ? "<p><b>Error message: $errortxt</b><p>" : '')
                             );
                             $clientparams = array();
                         }
@@ -679,8 +698,8 @@ function verifyOIDCParams()
                             $clientparams = array();
                         }
                     } else {
-                        // An HTTP return code than 200 (success) or 302
-                        // (redirect) means that the OA4MP OIDC authz
+                        // An HTTP return code other than 200 (success) or
+                        // 302 (redirect) means that the OA4MP OIDC authz
                         // endpoint tried to handle an unrecoverable error,
                         // possibly by outputting HTML. If so, then we
                         // ignore it and output our own error message to the
