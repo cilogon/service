@@ -123,7 +123,7 @@ table.portalinfo2 a:hover, table.portalinfo2 a:active {
 /***** Begin summary div on testidp page *****/
 div.summary {
   border: 1px solid #c0c2c5;
-  background-color: #f4f6f8;
+  background-color: #eff1f1;
 }
 div.summary a:link, div.summary a:visited {
   color: #5b677d;
@@ -134,10 +134,10 @@ div.summary a:hover, div.summary a:active {
   color: #06c;
 }
 div.summary table tr th {
-  background-color: #f8f9fa;
+  background-color: #eff1f1;
 }
 div.summary table tr td {
-  background-color: #f8f9fa;
+  background-color: #eff1f1;
 }
 div.summary table tr.odd th {
   background-color: #fff;
@@ -161,15 +161,15 @@ div.userchanged table {
 }
 div.userchanged table tr th {
   border: 1px solid #c0c2c5;
-  background-color: #f8f9fa;
+  background-color: #eff1f1;
 }
 div.userchanged table tr.headings th {
   border: 1px solid #c0c2c5;
-  background-color: #f8f9fa;
+  background-color: #eff1f1;
 }
 div.userchanged table tr td {
   border: 1px solid #c0c2c5;
-  background-color: #f8f9fa;
+  background-color: #eff1f1;
 }
 div.userchanged table tr.odd th {
   border: 1px solid #c0c2c5;
@@ -190,9 +190,9 @@ div.skincilogonlogo {
 
 /***** Begin Help-related stuff *****/
 table.helptable td.helpcell div {
-  background-color: #f8f9fa;
+  background-color: #eff1f1;
 }
 tr.inforow td.helpcell {
-  background-color: #f8f9fa;
+  background-color: #eff1f1;
 }
 /***** End Help-related stuff *****/
