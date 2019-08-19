@@ -22,6 +22,11 @@ echo '{
   "token",
   "id_token"
  ],
+ "response_modes_supported": [
+  "query",
+  "fragment",
+  "form_post"
+ ],
  "subject_types_supported": [
   "public"
  ],
