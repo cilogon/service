@@ -173,6 +173,11 @@ function getPKCS12()
         return; // ERROR means no further processing is necessary
     }
 
+    if (Util::isEduGAINAndGetCert(@$shibarray['Identity Provider'], @$shibarray['Organization Name'])) {
+        $log->info('ECP PKCS12 error: Failed to get cert due to eduGAIN IdP restriction.');
+        return; // ERROR means no further processing is necessary
+    }
+
     $skin->setMyProxyInfo();
     Content::generateP12();  // Try to create the PKCS12 credential file on disk
 
@@ -248,6 +253,11 @@ function getCert()
 
     if (!TwoFactor::ecpCheck()) {
         $log->info('ECP certreq error: Two-factor check failed.');
+        return; // ERROR means no further processing is necessary
+    }
+
+    if (Util::isEduGAINAndGetCert(@$shibarray['Identity Provider'], @$shibarray['Organization Name'])) {
+        $log->info('ECP certreq error: Failed to get cert due to eduGAIN IdP restriction.');
         return; // ERROR means no further processing is necessary
     }
 
