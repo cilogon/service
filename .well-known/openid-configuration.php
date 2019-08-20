@@ -19,8 +19,6 @@ echo '{
  "jwks_uri": "https://' , $hostname , '/oauth2/certs",
  "response_types_supported": [
   "code",
-  "token",
-  "id_token"
  ],
  "response_modes_supported": [
   "query",
