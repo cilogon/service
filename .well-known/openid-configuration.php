@@ -18,7 +18,7 @@ echo '{
  "userinfo_endpoint": "https://' , $hostname , '/oauth2/userinfo",
  "jwks_uri": "https://' , $hostname , '/oauth2/certs",
  "response_types_supported": [
-  "code",
+  "code"
  ],
  "response_modes_supported": [
   "query",
