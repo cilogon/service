@@ -493,6 +493,15 @@ function printDownloadCertificate()
     <td class="actioncell">
     ';
 
+    // CIL-593 - Add note to retire Download Certificate
+    echo '
+    <div>
+    <p style="color:red;font-weight:bold">
+    "Download Certificate" will be retired 2019-10-01. Please use "Get New Certificate" above instead.
+    </p>
+    </div>
+    ';
+
     Content::printFormHead(
         preg_replace(
             '/^\s*=\s*/',
