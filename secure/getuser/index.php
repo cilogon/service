@@ -170,12 +170,14 @@ function getPKCS12()
 
     if (!TwoFactor::ecpCheck()) {
         $log->info('ECP PKCS12 error: Two-factor check failed.');
+        outputError('2FA check failed.');
         return; // ERROR means no further processing is necessary
     }
 
     $shibarray = Util::getIdpList()->getShibInfo();
     if (Util::isEduGAINAndGetCert(@$shibarray['Identity Provider'], @$shibarray['Organization Name'])) {
         $log->info('ECP PKCS12 error: Failed to get cert due to eduGAIN IdP restriction.');
+        outputError('Failed to get cert due to eduGAIN IdP restriction.');
         return; // ERROR means no further processing is necessary
     }
 
@@ -254,12 +256,14 @@ function getCert()
 
     if (!TwoFactor::ecpCheck()) {
         $log->info('ECP certreq error: Two-factor check failed.');
+        outputError('2FA check failed.');
         return; // ERROR means no further processing is necessary
     }
 
     $shibarray = Util::getIdpList()->getShibInfo();
     if (Util::isEduGAINAndGetCert(@$shibarray['Identity Provider'], @$shibarray['Organization Name'])) {
         $log->info('ECP certreq error: Failed to get cert due to eduGAIN IdP restriction.');
+        outputError('Failed to get cert due to eduGAIN IdP restriction.');
         return; // ERROR means no further processing is necessary
     }
 
