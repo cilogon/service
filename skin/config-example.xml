@@ -48,6 +48,16 @@
   -->
 
 
+  <!-- <registeredbyincommonidps>
+       This restricts the list of SAML-based IdPs to those that have the
+      "Registered_By_InCommon" tag. Note that the OAuth2-based IdPs are
+       still included unless explicitly put in the <idpblacklist>.
+  -->
+  <!--
+  <registeredbyincommonidps>1</registeredbyincommonidps>
+  -->
+
+
   <!-- <idpwhitelist>
        The cilogon.org service maintains a global list of available IdPs in
        the file /var/www/html/include/idplist.xml. The whitelisted IdPs
