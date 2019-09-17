@@ -52,7 +52,7 @@ as released by your IdP.
 <h2>Summary</h2>
 ';
 
-$emailvalid=filter_var(@$shibarray['Email Address'], FILTER_VALIDATE_EMAIL);
+$emailvalid = filter_var(@$shibarray['Email Address'], FILTER_VALIDATE_EMAIL);
 
 if ((strlen($entityID) > 0) &&
     (strlen(@$shibarray['User Identifier']) > 0) &&

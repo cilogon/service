@@ -413,7 +413,7 @@ function printMainPage()
         <input type="text" name="lifetime" id="lifetime" title="' ,
         $lifetimetext , '" size="3" maxlength="3" value="' ,
         $lifetime , '" ' ,
-        (($forcelifetime>0) ? 'disabled="disabled" ' : 'class="helpcursor" ') ,
+        (($forcelifetime > 0) ? 'disabled="disabled" ' : 'class="helpcursor" ') ,
         '/>
 <!--[if IE]><input type="text" style="display:none;" disabled="disabled" size="1"/><![endif]-->
         </p>
@@ -684,7 +684,7 @@ function handleAllowDelegation($always = false)
                             // Run 'openssl x509' command for cert info
                             exec(
                                 '/bin/env RANDFILE=/tmp/.rnd ' .
-                                '/usr/bin/openssl x509 -text '.
+                                '/usr/bin/openssl x509 -text ' .
                                 '<<< ' . escapeshellarg($cert) . ' 2>&1',
                                 $x509out,
                                 $retcode
@@ -716,7 +716,7 @@ function handleAllowDelegation($always = false)
                ($success ? 'succeeded.' : 'failed.'));
     //CIL-507 Special log message for XSEDE
     $log->info('USAGE email="' . Util::getSessionVar('emailaddr') .
-               '" client="' . Util::getSessionVar('portalname'). '"');
+               '" client="' . Util::getSessionVar('portalname') . '"');
 
 
     // Depending on the result (success or failure), output appropriate

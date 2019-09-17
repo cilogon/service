@@ -28,7 +28,7 @@ div.logoheader h1 {
     height: 64px;
     float: left;
     margin: 17px 0px 0px 20px;
-} 
+}
 
 input#searchlist {
     font-size: inherit;
@@ -180,5 +180,5 @@ div.footer {
 
 div.footer p {
     font-size: inherit;
-    line-height: 1.6em; 
+    line-height: 1.6em;
 }

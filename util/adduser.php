@@ -124,6 +124,6 @@ function printInfo($dbs)
 {
     echo "uid = $dbs->user_uid\n";
     $status = $dbs->status;
-    echo "status = $status = " . array_search($status, DBService::$STATUS)."\n";
+    echo "status = $status = " . array_search($status, DBService::$STATUS) . "\n";
     echo "dn = $dbs->distinguished_name\n";
 }

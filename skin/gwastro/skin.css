@@ -1,7 +1,7 @@
 /***** Begin basic elements *****/
 body {
   font-family: Verdana, Geneva,"DejaVu Sans",Arial,Helvetica,sans-serif;
-	background-color: #E7E8E9;
+  background-color: #E7E8E9;
   color: #222;
 }
 a {
@@ -9,14 +9,14 @@ a {
   font-weight: bold;
 }
 a:link {
-	color: #2079D2;
+  color: #2079D2;
 }
 a:visited {
-	color: #2079D2;
+  color: #2079D2;
 }
 a:hover, a:active {
-	text-decoration: underline;
-	color: #1961A9;
+  text-decoration: underline;
+  color: #1961A9;
 }
 /***** End basic elements *****/
 

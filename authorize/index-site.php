@@ -74,11 +74,11 @@ if (verifyOIDCParams()) {
             // If user clicked the 'Cancel' button, return to the
             // OIDC client with an error message.
             $redirect = 'Location: ' . $clientparams['redirect_uri'] .
-                (preg_match('/\?/', $clientparams['redirect_uri'])?'&':'?') .
+                (preg_match('/\?/', $clientparams['redirect_uri']) ? '&' : '?') .
                 'error=access_denied&error_description=' .
                 'User%20denied%20authorization%20request' .
                 ((isset($clientparams['state'])) ?
-                    '&state='.$clientparams['state'] : '');
+                    '&state=' . $clientparams['state'] : '');
             Util::unsetAllUserSessionVars();
             header($redirect);
             exit; // No further processing necessary
@@ -383,7 +383,7 @@ function printMainPage()
             'error=server_error&error_description=' .
             'Unable%20to%20associate%20user%20UID%20with%20OIDC%20code' .
             ((isset($clientparams['state'])) ?
-                '&state='.$clientparams['state'] : '');
+                '&state=' . $clientparams['state'] : '');
         $log->info("setTransactionState failed $errstr, redirect to $redirect");
         Util::sendErrorAlert(
             'dbService Error',
@@ -542,13 +542,13 @@ function verifyOIDCParams()
                             // OIDC client to display to user
                             $clientparams['redirect_url'] =
                                 $clientparams['redirect_uri'] .
-                                (preg_match('/\?/', $clientparams['redirect_uri'])?'&':'?') .
+                                (preg_match('/\?/', $clientparams['redirect_uri']) ? '&' : '?') .
                                 http_build_query($json);
                             $clientparams['code'] = $json['code'];
                             $dbs = new DBService();
                             if (($dbs->getClient(
                                 $clientparams['client_id']
-                            )) && (!($dbs->status &1))) {
+                            )) && (!($dbs->status & 1))) {
                                 // STATUS_OK is even
                                 $status = $dbs->status;
                                 $clientparams['clientstatus'] = $status;
@@ -674,7 +674,7 @@ function verifyOIDCParams()
                             } else { // Weird params - Should never get here!
                                 Util::sendErrorAlert(
                                     'OA4MP OIDC 302 Error',
-                                    'The OA4MP OIDC authz endpoint '.
+                                    'The OA4MP OIDC authz endpoint ' .
                                     'returned a 302 redirect (error) ' .
                                     'response, but there was no "error" ' .
                                     "query parameter.\n\n" .
@@ -692,7 +692,7 @@ function verifyOIDCParams()
                                 'parse the redirect_url. This should never ' .
                                 "happen.\n\n" .
                                 "redirect_url = $redirect_url\n\n" .
-                                'clientparams = '.print_r($clientparams, true) .
+                                'clientparams = ' . print_r($clientparams, true) .
                                 "\n"
                             );
                             $clientparams = array();
@@ -768,7 +768,7 @@ function verifyOIDCParams()
         } else { // curl_init() returned false - should not happen
             Util::sendErrorAlert(
                 'curl_init error',
-                'When attempting to talk to the OA4MP OIDC authorization '.
+                'When attempting to talk to the OA4MP OIDC authorization ' .
                 'endpoint, curl_init() returned false. This should never ' .
                 "happen.\n\n" .
                 'clientparams = ' . print_r($clientparams, true) . "\n"

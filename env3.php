@@ -7,7 +7,7 @@ if (session_id() == "") session_start();
 
 if (isset($_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'])) {
     $providerId = $_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'];
-    setcookie('providerId', $providerId, time()+60*60*24*365, '/', '', true);
+    setcookie('providerId', $providerId, time() + 60 * 60 * 24 * 365, '/', '', true);
 }
 ?>
 
@@ -95,16 +95,16 @@ if (isset($_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'])) {
 <?php
 echo '<table>';
 foreach ($_SERVER as $key => $value) {
-    $fkey='_'.$key;
-    if (strpos($fkey, 'SHIB')>1 && $key!="HTTP_SHIB_ATTRIBUTES") {
+    $fkey = '_' . $key;
+    if (strpos($fkey, 'SHIB') > 1 && $key != "HTTP_SHIB_ATTRIBUTES") {
         #  if ( strpos($fkey,'SHIB')>1 )
         echo '<tr>';
-        echo '<td>'.$key.'</td><td>'.$value.'</td>';
+        echo '<td>' . $key . '</td><td>' . $value . '</td>';
         echo '</tr>';
     }
 }
-echo '<tr><td>(REMOTE_USER)</td><td>'.$_SERVER['REMOTE_USER'].'</td></tr>';
-echo '<tr><td>(HTTP_REMOTE_USER)</td><td>'.$_SERVER['HTTP_REMOTE_USER'].'</td></tr>';
+echo '<tr><td>(REMOTE_USER)</td><td>' . $_SERVER['REMOTE_USER'] . '</td></tr>';
+echo '<tr><td>(HTTP_REMOTE_USER)</td><td>' . $_SERVER['HTTP_REMOTE_USER'] . '</td></tr>';
 echo '</table>';
 ?>
 <br/>
@@ -138,7 +138,7 @@ filtered by the AAP and should therefore be disabled for most applications
 echo '<table>';
 foreach ($_REQUEST as $key => $value) {
     echo '<tr>';
-    echo '<td>'.$key.'</td><td>'.$value.'</td>';
+    echo '<td>' . $key . '</td><td>' . $value . '</td>';
     echo '</tr>';
 }
 echo '</table>'
@@ -155,7 +155,7 @@ echo '</table>'
 echo '<table>';
 foreach ($_SERVER as $key => $value) {
     echo '<tr>';
-    echo '<td>'.$key.'</td><td>'.$value.'</td>';
+    echo '<td>' . $key . '</td><td>' . $value . '</td>';
     echo '</tr>';
 }
 echo '</table>'
@@ -170,7 +170,7 @@ echo '</table>'
 echo '<table>';
 foreach ($_SESSION as $key => $value) {
     echo '<tr>';
-    echo '<td>'.$key.'</td><td>'.$value.'</td>';
+    echo '<td>' . $key . '</td><td>' . $value . '</td>';
     echo '</tr>';
 }
 echo '</table>'

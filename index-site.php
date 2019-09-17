@@ -344,7 +344,7 @@ function printGetCertificate()
         $lifetimetext = "Specify the certificate lifetime. Acceptable range " .
                         "is between $minlifetime and $maxlifetime hours" .
                         (($maxlifetime > 732) ?
-                            " ( = " . round(($maxlifetime/732), 2) . " months)." :
+                            " ( = " . round(($maxlifetime / 732), 2) . " months)." :
                             "."
                         );
 
@@ -406,13 +406,13 @@ function printGetCertificate()
           <select title="' , $lifetimetext ,
           '" class="helpcursor" id="p12multiplier" name="p12multiplier">
           <option value="1"' ,
-              (($p12multiplier==1) ? ' selected="selected"' : '') ,
+              (($p12multiplier == 1) ? ' selected="selected"' : '') ,
               '>hours</option>
           <option value="24"' ,
-              (($p12multiplier==24) ? ' selected="selected"' : '') ,
+              (($p12multiplier == 24) ? ' selected="selected"' : '') ,
               '>days</option>
           <option value="732"' ,
-              (($p12multiplier==732) ? ' selected="selected"' : '') ,
+              (($p12multiplier == 732) ? ' selected="selected"' : '') ,
               '>months</option>
           </select>
           <img src="/images/blankIcon.png" width="14" height="14" alt=""/>
@@ -556,7 +556,7 @@ function printDownloadCertificate()
     $lifetimetext = "Specify the certificate lifetime. Acceptable range " .
                     "is between $minlifetime and $maxlifetime hours" .
                     (($maxlifetime > 732) ?
-                        " ( = " . round(($maxlifetime/732), 2) . " months)." :
+                        " ( = " . round(($maxlifetime / 732), 2) . " months)." :
                         "."
                     );
 
@@ -568,7 +568,7 @@ function printDownloadCertificate()
     if (($maxcleartextlifetime > 0) &&
         ($maxlifetime >= $maxcleartextlifetime)) {
         $lifetimetext .= " Lifetimes greater than " .
-            round(($maxcleartextlifetime/24), 2) .
+            round(($maxcleartextlifetime / 24), 2) .
             " days will require you to specify a passphrase.";
     }
 
@@ -585,19 +585,19 @@ function printDownloadCertificate()
       '" class="helpcursor" id="certmultiplier" name="certmultiplier"
       disabled="disabled">
       <option value="3600"' ,
-          (($certmultiplier==3600) ? ' selected="selected"' : '') ,
+          (($certmultiplier == 3600) ? ' selected="selected"' : '') ,
           '>hours</option>
       <option value="86400"' ,
-          (($certmultiplier==86400) ? ' selected="selected"' : '') ,
+          (($certmultiplier == 86400) ? ' selected="selected"' : '') ,
           '>days</option>
       <option value="2635200"' ,
-          (($certmultiplier==2635200) ? ' selected="selected"' : '') ,
+          (($certmultiplier == 2635200) ? ' selected="selected"' : '') ,
           '>months</option>
       </select>
       <input type="hidden" name="minlifetime" id="minlifetime" value="' ,
-      $minlifetime*3600 , '" />
+      $minlifetime * 3600 , '" />
       <input type="hidden" name="maxlifetime" id="maxlifetime" value="' ,
-      $maxlifetime*3600 , '" />
+      $maxlifetime * 3600 , '" />
       <input type="hidden" name="RequestedLifetime" id="RequestedLifetime"
       value="' , ($certlifetime * $certmultiplier) , '" />
       </p>
@@ -912,10 +912,10 @@ function generateActivationCode()
             if ((strlen($tokenlifetime) == 0) || ($tokenlifetime == 0)) {
                 $tokenlifetime = 300;
             }
-            $activation = (time()+$tokenlifetime) . " " . $tokenvalue;
+            $activation = (time() + $tokenlifetime) . " " . $tokenvalue;
             Util::setSessionVar('activation', $activation);
             $log = new Loggit();
-            $log->info('Generated New Activation Code="'.$tokenvalue.'"');
+            $log->info('Generated New Activation Code="' . $tokenvalue . '"');
         }
     }
 }

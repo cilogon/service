@@ -184,7 +184,7 @@ function handleLifetime()
     /* Set the cookie for the certlifetime field and hour/day/month selector */
     var today  = new Date();
     var expire = new Date();
-    expire.setTime(today.getTime() + 365*24*3600000);
+    expire.setTime(today.getTime() + 365 * 24 * 3600000);
     var cookiestr = "certlifetime=" +
       encodeURIComponent(certlifetimefieldvalue) +
       ";expires=" + expire.toGMTString() + ";domain=.cilogon.org;path=/;secure";
@@ -210,7 +210,7 @@ function handleLifetime()
  ***************************************************************************/
 function countdown(which, expirelabel)
 {
-    var expire = document.getElementById(which+"expire");
+    var expire = document.getElementById(which + "expire");
     if (expire !== null) {
         var expiretext = expire.innerHTML;
         if ((expiretext !== null) && (expiretext.length > 0)) {
@@ -234,7 +234,7 @@ function countdown(which, expirelabel)
                         setTimeout(pc, 1000);
                     } else {
                         expire.innerHTML = "";
-                        var thevalue = document.getElementById(which+"value");
+                        var thevalue = document.getElementById(which + "value");
                         if (thevalue !== null) {
                             thevalue.innerHTML = "";
                         }
@@ -507,7 +507,7 @@ function checkPassword()
  ***************************************************************************/
 function showHourglass(which)
 {
-    var thehourglass = document.getElementById(which+'hourglass');
+    var thehourglass = document.getElementById(which + 'hourglass');
     if (thehourglass !== null) {
         thehourglass.style.display = 'inline';
     }

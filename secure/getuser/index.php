@@ -161,7 +161,7 @@ function getPKCS12()
 
     // If 'status' is not STATUS_OK*, then return error message
     if (Util::getSessionVar('status') & 1) { // Bad status codes are odd
-        $errstr=array_search(Util::getSessionVar('status'), DBService::$STATUS);
+        $errstr = array_search(Util::getSessionVar('status'), DBService::$STATUS);
         $log->info('ECP PKCS12 error: ' . $errstr . '.');
         outputError($errstr);
         Util::unsetAllUserSessionVars();
@@ -247,7 +247,7 @@ function getCert()
 
     // If 'status' is not STATUS_OK*, then return error message
     if (Util::getSessionVar('status') & 1) { // Bad status codes are odd
-        $errstr=array_search(Util::getSessionVar('status'), DBService::$STATUS);
+        $errstr = array_search(Util::getSessionVar('status'), DBService::$STATUS);
         $log->info('ECP certreq error: ' . $errstr . '.');
         outputError($errstr);
         Util::unsetAllUserSessionVars();

@@ -77,8 +77,8 @@ function getUserAndRespond()
         $prov = strtolower($providerName); // IdP name all lowercase
 
         // Read the client secret keys from local config file
-        $clientid     = Util::getConfigVar($prov.'oauth2.clientid');
-        $clientsecret = Util::getConfigVar($prov.'oauth2.clientsecret');
+        $clientid     = Util::getConfigVar($prov . 'oauth2.clientid');
+        $clientsecret = Util::getConfigVar($prov . 'oauth2.clientsecret');
         if ((strlen($clientid) > 0) && (strlen($clientsecret) > 0)) {
             $oauth2 = new OAuth2Provider($providerName);
             try {

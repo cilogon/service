@@ -48,5 +48,5 @@ header('Content-Type:application/json;charset=utf-8');
 // Don't escape '/' or unicode characters
 echo json_encode(
     $idparray,
-    JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
+    JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
 );

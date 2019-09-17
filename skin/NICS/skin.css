@@ -1,7 +1,7 @@
 /***** Begin basic elements *****/
 body {
   font: normal Arial, Helvetica, Verdana, lucida,"lucida-sans unicode",sans-serif;
-	background-color: #575757;
+  background-color: #575757;
   color: #000;
 }
 a {
@@ -9,14 +9,14 @@ a {
   font-weight: bold;
 }
 a:link {
-	color: #0776bc;
+  color: #0776bc;
 }
 a:visited {
-	color: #0776bc;
+  color: #0776bc;
 }
 a:hover {
-	text-decoration: underline;
-	color: #0776bc;
+  text-decoration: underline;
+  color: #0776bc;
 }
 /***** End basic elements *****/
 
