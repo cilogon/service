@@ -9,18 +9,14 @@ a {
 }
 div.footer a,
 div.actionbox a,
-div.p12actionbox a,
-div.certactionbox a,
-div.tokenactionbox a {
+div.p12actionbox a {
   color: #369;
   border-bottom: 1px dotted #369;
   text-decoration: none;
 }
 div.footer a:hover,
 div.actionbox a:hover,
-div.p12actionbox a:hover,
-div.certactionbox a:hover,
-div.tokenactionbox a:hover {
+div.p12actionbox a:hover {
   color: #369;
   border-bottom: 1px solid #369;
   text-decoration: none;
