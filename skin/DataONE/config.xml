@@ -10,13 +10,6 @@
     <maxlifetime>18</maxlifetime>
   </pkcs12>
 
-  <gsca>
-    <initiallifetime>
-      <number>18</number>
-      <multiplier>3600</multiplier>
-    </initiallifetime>
-  </gsca>
-
   <delegate>
     <forcelifetime>18</forcelifetime>
     <forceremember>1</forceremember>
