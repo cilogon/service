@@ -104,10 +104,6 @@ div.logoffactionbox {
   display: block;
   background-color: #1e1e1e;
 }
-div.certactionbox {
-  border: none;
-  display: none;
-}
 #wayfcancelbutton {
   display: inline;
 }

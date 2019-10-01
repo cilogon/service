@@ -30,7 +30,6 @@ table.certinfo, table.portalinfo1, table.portalinfo2{
 /***** Begin actionbox containing action buttons and WAYF *****/
 div.actionbox,
 div.p12actionbox,
-div.certactionbox,
 div.logofftextbox {
   display: block;
   border: 1px solid #D6DDB9;
