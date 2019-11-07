@@ -49,3 +49,4 @@
 %^cilogon:/client_id/112d2f5ffcb986660e0e57e7bcf72a4e% nih
 %^cilogon:/client_id/620b5873fda93e285ea48ad5b09568d2% nih
 %^cilogon:/client_id/56727d508077d1402cdcc66714ecf5ef% orcidfirst
+%cilogon:/client_id/3cbc990448f1ea8df6ebe128b101d84c% allowbypass
