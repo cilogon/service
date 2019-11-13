@@ -12,6 +12,8 @@ set_include_path(
 );
 
 require_once 'DBService.php';
+require_once 'Util.php';
+require_once 'IdpList.php';
 
 use CILogon\Service\DBService;
 
