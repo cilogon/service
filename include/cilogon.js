@@ -420,6 +420,5 @@ function showHourglass(which)
 addLoadEvent(cacheOptions);
 var fp12 = partial(countdown, 'p12', 'Link');
 addLoadEvent(fp12);
-addLoadEvent(ftok);
 addLoadEvent(textInputFocus);
 
