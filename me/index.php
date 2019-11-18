@@ -16,7 +16,6 @@ Util::startPHPSession();
 // list of cookies which could be deleted.
 $hide = array(
     'CSRF',
-    'CSRFProtection',
     'PHPSESSID',
     'lastaccess',
     'myproxyinfo',
@@ -468,14 +467,9 @@ function getTitleText($cookie)
     // 'p12 error' appears before 'p12'.
     $explain = array(
         "acr" => "Authentication Context Class Ref",
-        "activation" => "The expiration time and activation code for use by CILogon-enabled applications." ,
         "affiliation" => "A list of attributes describing your affiliations at your Identity Provider." ,
         "authntime" => "The Unix timestamp of the last successful user authentication." ,
         "callbackuri" => "The URL of the callback servlet used by portals connecting to the CILogon Delegate service." ,
-        "certlifetime" => "This multiplied by the certmultipler " .
-            "gives the lifetime of the GridShib-CA certificate in seconds." ,
-        "certmultiplier" => "This multiplied by the certlifetime " .
-            "gives the lifetime of the GridShib-CA certificate in seconds." ,
         "cilogon_skin" => "The skin affects the look-and-feel and " .
             "functionality of the CILogon Service. It is typically " .
             "specified by a portal." ,

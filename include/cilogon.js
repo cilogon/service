@@ -102,107 +102,11 @@ function showHideDiv(whichDiv, showhide)
 }
 
 /***************************************************************************
- * Function  : handleLifetime                                              *
- * This function is specific to the "Download Certificate" button area on  *
- * the "Get And Use Your CILogon Certificate" page.  It handles the issue  *
- * with the "Lifetime" of the certificate.  The GridShib-CA code expects   *
- * a RequestedLifetime field in seconds, but the cilogon.org site prompts  *
- * the user for hours/days/months. So this function transforms the visible *
- * certlifetime field to the hidden RequestedLifetime field (in seconds).  *
- * It also sets a cookie for the certlifetime field and the hour/day/      *
- * month selector so that they can be populated correctly upon the user's  *
- * next visit.                                                             *
- ***************************************************************************/
-function handleLifetime()
-{
-    /* Get the various lifetime interface objects */
-    var certlifetimefield      = document.getElementById('certlifetime');
-    var minlifetimefield       = document.getElementById('minlifetime');
-    var maxlifetimefield       = document.getElementById('maxlifetime');
-    var requestedlifetimefield = document.getElementById('RequestedLifetime');
-    var certmultiplierselect   = document.getElementById('certmultiplier');
-
-    var certlifetimefieldvalue = 12;      /* Default lifetime is 12 hours */
-    var certmultiplierselectvalue = 3600; /* Default unit is hours */
-    var minlifetimefieldvalue = 3600;     /* Default min lifetime is 1 hour */
-    var maxlifetimefieldvalue = 34257600; /* Default max lifetime is 13 months */
-    var needtoreset = false;
-
-    /* Get the number in the lifetime field */
-    if (certlifetimefield !== null) {
-        certlifetimefieldvalue = parseFloat(certlifetimefield.value);
-        if (isNaN(certlifetimefieldvalue)) {
-            certlifetimefieldvalue = 12;
-        }
-    }
-
-    /* Get the multiplier (hours/days/months) as seconds */
-    if (certmultiplierselect !== null) {
-        var certmultiplierselectindex = certmultiplierselect.selectedIndex;
-        if (certmultiplierselectindex >= 0) {
-            certmultiplierselectvalue =
-              certmultiplierselect.options[certmultiplierselectindex].value;
-        }
-    }
-
-    /* Get the hidden minlifetime and maxlifetime field values */
-    if (minlifetimefield !== null) {
-        minlifetimefieldvalue = parseInt(minlifetimefield.value, 10);
-    }
-    if (maxlifetimefield !== null) {
-        maxlifetimefieldvalue = parseInt(maxlifetimefield.value, 10);
-    }
-
-    /* Calculate requested cert lifetime in seconds */
-    var requestedcertlifetime =
-      Math.round(certlifetimefieldvalue * certmultiplierselectvalue);
-
-    /* Make sure the certlifetime is within bounds, reset text input if needed */
-    if (requestedcertlifetime < 0) {
-        requestedcertlifetime = 0;
-        needtoreset = true;
-    }
-    if (requestedcertlifetime < minlifetimefieldvalue) {
-        requestedcertlifetime = minlifetimefieldvalue;
-        needtoreset = true;
-    }
-    if (requestedcertlifetime > maxlifetimefieldvalue) {
-        requestedcertlifetime = maxlifetimefieldvalue;
-        needtoreset = true;
-    }
-    if (needtoreset) {
-        certlifetimefieldvalue =
-          Math.round(100 * requestedcertlifetime / certmultiplierselectvalue) / 100;
-        certlifetimefield.value = certlifetimefieldvalue;
-    }
-
-    /* Set the hidden RequestedLifetime field, in seconds */
-    if (requestedlifetimefield !== null) {
-        requestedlifetimefield.value = requestedcertlifetime;
-    }
-
-    /* Set the cookie for the certlifetime field and hour/day/month selector */
-    var today  = new Date();
-    var expire = new Date();
-    expire.setTime(today.getTime() + 365 * 24 * 3600000);
-    var cookiestr = "certlifetime=" +
-      encodeURIComponent(certlifetimefieldvalue) +
-      ";expires=" + expire.toGMTString() + ";domain=.cilogon.org;path=/;secure";
-    document.cookie = cookiestr;
-    cookiestr = "certmultiplier=" +
-      encodeURIComponent(certmultiplierselectvalue) +
-      ";expires=" + expire.toGMTString() + ";domain=.cilogon.org;path=/;secure";
-    document.cookie = cookiestr;
-
-    return true;
-}
-
-/***************************************************************************
  * Function  : countdown                                                   *
  * Parameters: (1) Prefix to prepend to "expire" and "value" ids.          *
  *             (2) Label to prepend to "Expires:" time.                    *
  * This function counts down a timer for a paragraph with an attribute     *
- * id=which+"expire".  In this case "which" can be "p12" or "token".       *
+ * id=which+"expire".  In this case "which" can be "p12".                  *
  * If there is still time left in the expire element, the value is fetched *
  * and decremented by one second, then updated.  Once time has run out,    *
  * the which+"value" and which+"expire" paragraph elements are set to      *
@@ -500,10 +404,10 @@ function checkPassword()
 /***************************************************************************
  * Function  : showHourglass                                               *
  * Parameter : Which hourglass icon to show (e.g. 'p12')                   *
- * This function is called when either the "Get New Certificate" button    *
- * or "Get New Activation code" button is clicked.  It unhides the small   *
- * hourglass icon next to the button.  The "which" parameter corresponds   *
- * to the prefix of the id=which+"hourglass" attribute of the <img>.       *
+ * This function is called when the "Get New Certificate" button is        *
+ * clicked.  It unhides the small hourglass icon next to the button.       *
+ * The "which" parameter corresponds to the prefix of the                  *
+ * id=which+"hourglass" attribute of the <img>.                            *
  ***************************************************************************/
 function showHourglass(which)
 {
@@ -513,44 +417,9 @@ function showHourglass(which)
     }
 }
 
-/***************************************************************************
- * Function  : enableCertlifetime                                          *
- * This function is called upon page load to enable the "certlifetime"     *
- * and "certmultiplier" elements.  These are disabled by default since     *
- * JavaScript must be enabled to calculate the RequestedLifetime hidden    *
- * input field.  This function also attempts to detect the version of      *
- * Java installed and displays a message if less than v.1.6 is detected.   *
- ***************************************************************************/
-function enableCertlifetime()
-{
-    var certlifetimeinput    = document.getElementById("certlifetime");
-    var certmultiplierselect = document.getElementById("certmultiplier");
-    var mayneedjavapara      = document.getElementById("mayneedjava");
-    if (certlifetimeinput !== null) {
-        certlifetimeinput.disabled = false;
-    }
-    if (certmultiplierselect !== null) {
-        certmultiplierselect.disabled = false;
-    }
-    if (mayneedjavapara !== null) {
-        if ((typeof deployJava === "object") &&
-            (typeof deployJava.isWebStartInstalled === "function") &&
-            (!deployJava.isWebStartInstalled("1.6.0"))) {
-            mayneedjavapara.style.display = "block";
-            mayneedjavapara.style.height = "1.5em";
-            mayneedjavapara.style.width = "auto";
-            mayneedjavapara.style.lineHeight = "auto";
-            mayneedjavapara.style.overflow = "visible";
-        }
-    }
-    return true;
-}
-
 addLoadEvent(cacheOptions);
 var fp12 = partial(countdown, 'p12', 'Link');
-var ftok = partial(countdown, 'token', 'Code');
 addLoadEvent(fp12);
 addLoadEvent(ftok);
 addLoadEvent(textInputFocus);
-addLoadEvent(enableCertlifetime);
 
