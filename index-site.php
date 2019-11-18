@@ -167,6 +167,10 @@ function printMainPage()
 
     Content::printHeader('Get Your Certificate');
 
+    // CIL-626 Allow browser 'reload page' by adding CSRF to the PHP session
+    Util::setSessionVar('submit', 'Proceed');
+    Util::getCsrf()->setTheSession();
+
     echo '
     <div class="boxed">
     ';
