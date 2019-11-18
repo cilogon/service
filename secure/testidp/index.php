@@ -54,13 +54,15 @@ as released by your IdP.
 
 $emailvalid = filter_var(@$shibarray['Email Address'], FILTER_VALIDATE_EMAIL);
 
-if ((strlen($entityID) > 0) &&
+if (
+    (strlen($entityID) > 0) &&
     (strlen(@$shibarray['User Identifier']) > 0) &&
     (strlen(@$shibarray['Email Address']) > 0) && ($emailvalid) &&
     (strlen(@$shibarray['Organization Name']) > 0) &&
         ((strlen(@$shibarray['Display Name']) > 0) ||
              ((strlen(@$shibarray['First Name']) > 0) &&
-              (strlen(@$shibarray['Last Name']) > 0)))) {
+              (strlen(@$shibarray['Last Name']) > 0)))
+) {
     $gotattrs = true;
 }
 
@@ -117,8 +119,10 @@ below, please enable Javascript in your browser.
     SAML Attributes</a></span>';
 
 // CIL-416 Show warning for missing ePPN
-if ((strlen(@$shibarray['ePPN']) == 0) &&
-    (strlen(@$shibarray['ePTID']) != 0)) {
+if (
+    (strlen(@$shibarray['ePPN']) == 0) &&
+    (strlen(@$shibarray['ePTID']) != 0)
+) {
     Content::printIcon('warn', 'Some CILogon clients (e.g., Globus) require ePPN.');
 }
 
@@ -155,8 +159,10 @@ echo '
         <td>' , @$shibarray['ePTID'] , '</td>
         <td>';
 
-if ((strlen(@$shibarray['ePPN']) == 0) &&
-    (strlen(@$shibarray['ePTID']) == 0)) {
+if (
+    (strlen(@$shibarray['ePPN']) == 0) &&
+    (strlen(@$shibarray['ePTID']) == 0)
+) {
     Content::printIcon('error', 'Must have either ePPN -OR- ePTID.');
 }
 
@@ -186,8 +192,10 @@ echo '
         <td>' , @$shibarray['First Name'] , '</td>
         <td>';
 
-if ((strlen(@$shibarray['First Name']) == 0) &&
-    (strlen(@$shibarray['Display Name']) == 0)) {
+if (
+    (strlen(@$shibarray['First Name']) == 0) &&
+    (strlen(@$shibarray['Display Name']) == 0)
+) {
     Content::printIcon('error', 'Must have either givenName + sn -OR- displayName.');
 }
 
@@ -200,8 +208,10 @@ echo '
         <td>' , @$shibarray['Last Name'] , '</td>
         <td>';
 
-if ((strlen(@$shibarray['Last Name']) == 0) &&
-    (strlen(@$shibarray['Display Name']) == 0)) {
+if (
+    (strlen(@$shibarray['Last Name']) == 0) &&
+    (strlen(@$shibarray['Display Name']) == 0)
+) {
     Content::printIcon('error', 'Must have either givenName + sn -OR- displayName.');
 }
 
@@ -214,9 +224,11 @@ echo '
         <td>' , @$shibarray['Display Name'] , '</td>
         <td>';
 
-if ((strlen(@$shibarray['Display Name']) == 0) &&
-        ((strlen(@$shibarray['First Name']) == 0) ||
-         (strlen(@$shibarray['Last Name']) == 0))) {
+if (
+    (strlen(@$shibarray['Display Name']) == 0) &&
+    ((strlen(@$shibarray['First Name']) == 0) ||
+    (strlen(@$shibarray['Last Name']) == 0))
+) {
     Content::printIcon('error', 'Must have either displayName -OR- givenName + sn.');
 }
 
@@ -295,9 +307,11 @@ echo '
 // CIL-416 Check for eduGAIN IdPs without both REFEDS R&S and SIRTFI
 // since these IdPs are not allowed to get certificates.
 $eduGainWithoutRandSandSIRTFI = 0;
-if ((!$idplist->isRegisteredByInCommon($entityID)) &&
+if (
+    (!$idplist->isRegisteredByInCommon($entityID)) &&
     ((!$idplist->isREFEDSRandS($entityID)) ||
-     (!$idplist->isSIRTFI($entityID)))) {
+     (!$idplist->isSIRTFI($entityID)))
+) {
     $eduGainWithoutRandSandSIRTFI = 1;
 }
 
@@ -344,8 +358,10 @@ echo '
       <tr class="odd">
         <th>Support Contact:</th>
 ';
-if ((strlen(@$shibarray['Support Name']) > 0) ||
-    (strlen(@$shibarray['Support Address']) > 0)) {
+if (
+    (strlen(@$shibarray['Support Name']) > 0) ||
+    (strlen(@$shibarray['Support Address']) > 0)
+) {
     echo '
         <td>' , @$shibarray['Support Name'] , ' &lt;' ,
                 preg_replace('/^mailto:/', '', @$shibarray['Support Address']) , '&gt;</td>
@@ -357,8 +373,10 @@ echo '
       <tr>
         <th>Technical Contact:</th>
 ';
-if ((strlen(@$shibarray['Technical Name']) > 0) ||
-    (strlen(@$shibarray['Technical Address']) > 0)) {
+if (
+    (strlen(@$shibarray['Technical Name']) > 0) ||
+    (strlen(@$shibarray['Technical Address']) > 0)
+) {
     echo '
         <td>' , @$shibarray['Technical Name'] , ' &lt;' ,
                 preg_replace('/^mailto:/', '', @$shibarray['Technical Address']) , '&gt;</td>
@@ -370,8 +388,10 @@ echo '
       <tr class="odd">
         <th>Administrative Contact:</th>
 ';
-if ((strlen(@$shibarray['Administrative Name']) > 0) ||
-    (strlen(@$shibarray['Administrative Address']) > 0)) {
+if (
+    (strlen(@$shibarray['Administrative Name']) > 0) ||
+    (strlen(@$shibarray['Administrative Address']) > 0)
+) {
     echo '
         <td>' , @$shibarray['Administrative Name'] , ' &lt;' ,
                 preg_replace('/^mailto:/', '', @$shibarray['Administrative Address']) , '&gt;</td>

@@ -69,12 +69,14 @@ if ($argc >= 7) {
         $itrustuin = $argv[17];
     }
 
-    if ((strlen($remoteuser) > 0) &&
+    if (
+        (strlen($remoteuser) > 0) &&
         (strlen($idp) > 0) &&
         (strlen($idpname) > 0) &&
         (strlen($firstname) > 0) &&
         (strlen($lastname) > 0) &&
-        (strlen($emailaddr) > 0)) {
+        (strlen($emailaddr) > 0)
+    ) {
         $dbs = new DBService();
         $dbs->getUser(
             $remoteuser,
