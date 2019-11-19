@@ -65,10 +65,6 @@ echo 'chgrp apache pkcs12 include'
 chgrp apache pkcs12 include
 echo 'mkdir -p /var/www/virthosts/crl'
 mkdir -p /var/www/virthosts/crl
-echo 'cd /var/www/html/include/'
-cd /var/www/html/include/
-echo 'ln -sf ../vendor/duosecurity/duo_php/js/Duo-Web-v2.min.js .'
-ln -sf ../vendor/duosecurity/duo_php/js/Duo-Web-v2.min.js .
 
 filename=`basename $0`
 
