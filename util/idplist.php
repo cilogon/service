@@ -39,14 +39,14 @@ if (($argc >= 2) && ($argc <= 4)) {
     // out if any new IdPs have been added to the InCommon metadata.
     if ($checkfornew) {
         // First, try reading /var/www/html/include/idplist.json
-        $oldidplist = new IdpList(IdpList::DEFAULTIDPFILENAME, '', false, 'json');
+        $oldidplist = new IdpList(DEFAULT_IDP_JSON, '', false, 'json');
         $oldEntityIDList = $oldidplist->getEntityIDs();
         if (empty($oldEntityIDList)) {
             // Next, try /var/www/html/include/idplist.xml
             $filename = preg_replace(
                 '/\.json$/',
                 '.xml',
-                IdpList::DEFAULTIDPFILENAME
+                DEFAULT_IDP_JSON
             );
             $oldidplist = new IdpList($filename, '', false, 'xml');
             $oldEntityIDList = $oldidplist->getEntityIDs();
@@ -64,7 +64,7 @@ if (($argc >= 2) && ($argc <= 4)) {
     // Now, create a new idplist from the InCommon Metadata
     $idplist = new IdpList(
         $idpfile,
-        IdpList::DEFAULTINCOMMONFILENAME,
+        DEFAULT_INCOMMON_XML,
         false,
         $filetype
     );

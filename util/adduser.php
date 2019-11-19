@@ -120,11 +120,10 @@ if ($argc >= 7) {
 function printUsage()
 {
     echo "Usage: adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME " ,
-         "EMAIL DISPLAYNAME EPPN EPTID OPENID OIDC AFFILIATION " ,
-         "OU MEMBER AUTHNCONTEXTCLASSREF ENTITLEMENT ITRUSTUIN\n" ,
+         "       EMAIL DISPLAYNAME EPPN EPTID OPENID OIDC AFFILIATION " ,
+         "       OU MEMBER AUTHNCONTEXTCLASSREF ENTITLEMENT ITRUSTUIN\n" ,
          "Note: The first six parameters must be specified for both " ,
-         "InCommon and OpenID.\n" ,
-         "      The rest are optional.\n";
+         "InCommon and OpenID. The rest are optional.\n";
 }
 
 function printInfo($dbs)
