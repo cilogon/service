@@ -1,6 +1,7 @@
 <?php
 
 set_include_path(
+    '/var/www/html' . PATH_SEPARATOR .
     '/var/www/html/vendor/pear/pear-core-minimal/src' . PATH_SEPARATOR .
     '/var/www/html/vendor/pear/pear_exception' . PATH_SEPARATOR .
     '/var/www/html/vendor/pear/log' . PATH_SEPARATOR .
@@ -11,8 +12,11 @@ set_include_path(
     '.'
 );
 
-require_once 'IdpList.php';
+require_once 'config.php';
+include_once 'config.secrets.php';
+require_once 'DBService.php';
 require_once 'Util.php';
+require_once 'IdpList.php';
 
 use CILogon\Service\IdpList;
 

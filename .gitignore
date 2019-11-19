@@ -8,3 +8,4 @@ include/idplist.json
 include/idplist.xml
 pkcs12/
 getoidc/
+config.secrets.php

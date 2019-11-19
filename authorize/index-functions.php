@@ -12,9 +12,6 @@ use CILogon\Service\Content;
 use CILogon\Service\DBService;
 use CILogon\Service\Loggit;
 
-// The full URL of the 'oauth2/init' OAuth 2.0 (OIDC) script
-define('AUTHORIZE_URL', 'http://localhost:8080/oauth2/dbService?action=createTransaction');
-
 /**
  * printLogonPage
  *
@@ -391,9 +388,9 @@ function verifyOIDCParams()
     if (isset($clientparams['redirect_uri'])) {
         $ch = curl_init();
         if ($ch !== false) {
-            $url = AUTHORIZE_URL;
+            $url = OAUTH2_CREATE_TRANSACTION_URL;
             if (count($_GET) > 0) {
-                $url .= (preg_match('/\?/', AUTHORIZE_URL) ? '&' : '?') .
+                $url .= (preg_match('/\?/', $url) ? '&' : '?') .
                     http_build_query($_GET);
             }
             if (count($_POST) > 0) {

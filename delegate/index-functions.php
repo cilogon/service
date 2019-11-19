@@ -13,9 +13,6 @@ use CILogon\Service\PortalCookie;
 use CILogon\Service\DBService;
 use CILogon\Service\Loggit;
 
-// The full URL of the 'oauth/authorized' OAuth script
-define('AUTHORIZED_URL', 'http://localhost:8080/oauth/authorized');
-
 /**
  * printLogonPage
  *
@@ -542,7 +539,7 @@ function handleAllowDelegation($always = false)
     $ch = curl_init();
     if ($ch !== false) {
         $tempcred = Util::getSessionVar('tempcred');
-        $url = AUTHORIZED_URL . '?' .
+        $url = OAUTH1_AUTHORIZED_URL . '?' .
                'oauth_token=' . urlencode($tempcred) . '&' .
                'cilogon_lifetime=' . $lifetime . '&' .
                'cilogon_loa=' . urlencode(Util::getSessionVar('loa')) . '&' .
