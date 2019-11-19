@@ -77,7 +77,6 @@ function printMainPage()
     Content::printHelpButton();
     printCertInfo();
     printGetCertificate();
-    Content::printTwoFactorBox();
     printLogOff();
 
     echo '

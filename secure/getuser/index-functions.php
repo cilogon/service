@@ -11,7 +11,6 @@ use CILogon\Service\Util;
 use CILogon\Service\Content;
 use CILogon\Service\DBService;
 use CILogon\Service\MyProxy;
-use CILogon\Service\TwoFactor;
 use CILogon\Service\Loggit;
 
 /**
@@ -139,12 +138,6 @@ function getPKCS12()
         return; // ERROR means no further processing is necessary
     }
 
-    if (!TwoFactor::ecpCheck()) {
-        $log->info('ECP PKCS12 error: Two-factor check failed.');
-        outputError('2FA check failed.');
-        return; // ERROR means no further processing is necessary
-    }
-
     $shibarray = Util::getIdpList()->getShibInfo();
     if (Util::isEduGAINAndGetCert(@$shibarray['Identity Provider'], @$shibarray['Organization Name'])) {
         $log->info('ECP PKCS12 error: Failed to get cert due to eduGAIN IdP restriction.');
@@ -222,12 +215,6 @@ function getCert()
         $log->info('ECP certreq error: ' . $errstr . '.');
         outputError($errstr);
         Util::unsetAllUserSessionVars();
-        return; // ERROR means no further processing is necessary
-    }
-
-    if (!TwoFactor::ecpCheck()) {
-        $log->info('ECP certreq error: Two-factor check failed.');
-        outputError('2FA check failed.');
         return; // ERROR means no further processing is necessary
     }
 

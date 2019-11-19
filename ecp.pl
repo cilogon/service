@@ -5,7 +5,7 @@
 # Script      : ecp.pl                                                  #
 # Authors     : Terry Fleury <tfleury@illinois.edu>                     #
 # Create Date : July 06, 2011                                           #
-# Last Update : February 21, 2019                                       #
+# Last Update : November 19, 2019                                       #
 #                                                                       #
 # This PERL script allows a user to get an end-user X.509 certificate   #
 # or PKCS12 credential from the CILogon Service. It can also get the    #
@@ -68,7 +68,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.028";
+our $VERSION = "0.029";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -525,7 +525,7 @@ if ($get eq 'p') {
 }
 
 # If getting a certificate or a credential, get the lifetime,
-# and check for VO and two-factor passcode command line options
+# and check for VO two-factor passcode command line options
 if (($get eq 'c') || ($get eq 'p')) {
     my $maxlifetime = (($get eq 'c') ? 277 : 9516);
     if (exists $opts{lifetime}) {
@@ -556,12 +556,6 @@ if (($get eq 'c') || ($get eq 'p')) {
     if (exists $opts{vo}) {
         $vo = trim($opts{vo});
         print "Using CILogon Virtual Organization '$vo'.\n" if ($verbose);
-    }
-
-    # Check if the user specified a "--twofactor" command line parameter
-    if (exists $opts{twofactor}) {
-        $tfpass = trim($opts{twofactor});
-        print "Using two-factor passcode '$tfpass'.\n" if ($verbose);
     }
 }
 
@@ -912,7 +906,6 @@ sub getCmdLineOpts
                     'vo|O=s',
                     'out|o=s',
                     'password|P=s',
-                    'twofactor|T=s',
                     'duo|d=s',
                     'proxyfile|1',
                     'pam|m',
@@ -1338,14 +1331,6 @@ so you must specify it with the B<--vo> command line option.
 
 Specify a password string to encrypt the private key of the PKCS12
 credential. This password must be at least 12 characters in length.
-
-=item B<-T> I<passcode>, B<--twofactor> I<passcode>
-
-Specify a passcode for two-factor authentication. If two-factor
-authentication had been previously enabled for your account (via the web
-interface), use this value to validate the two-factor authentication step.
-If you specify '0' (zero) as the I<passcode>, two-factor authentication will
-be disabled for your account.
 
 =item B<-U> I<url>, B<--url> I<url>
 

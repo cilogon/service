@@ -38,7 +38,7 @@ if (verifyOIDCParams()) {
     switch ($submit) {
         case 'Log On': // Check for OpenID or InCommon usage.
         case 'Continue': // For OOI
-            // Need to check for 'max_age' OIDC parameeter. If elapsed time
+            // Need to check for 'max_age' OIDC parameter. If elapsed time
             // since last user authentication is greater than max_age, then
             // set 'forceauthn' session variable to force the user to
             // (re)authenticate.
@@ -64,8 +64,7 @@ if (verifyOIDCParams()) {
             Content::handleGotUser();
             break; // End case 'gotuser'
 
-        case 'Proceed': // Proceed after 'User Changed' or Error page
-        case 'Done with Two-Factor':
+        case 'Proceed': // Proceed after Error page
             Util::verifySessionAndCall('printMainPage');
             break; // End case 'Proceed'
 
@@ -82,41 +81,6 @@ if (verifyOIDCParams()) {
             header($redirect);
             exit; // No further processing necessary
             break; // End case 'Cancel'
-
-        case 'Manage Two-Factor':
-            Util::verifySessionAndCall(
-                'CILogon\\Service\\Content::printTwoFactorPage'
-            );
-            break; // End case 'Manage Two-Factor'
-
-        case 'Enable':   // Enable / Disable two-factor authentication
-        case 'Disable':
-        case 'Verify':   // Log in with Google Authenticator
-        case 'Disable Two-Factor':
-            $enable = !preg_match('/^Disable/', $submit);
-            Util::verifySessionAndCall(
-                'CILogon\\Service\\Content::handleEnableDisableTwoFactor',
-                array($enable)
-            );
-            break; // End case 'Enable' / 'Disable'
-
-        case 'I Lost My Phone':
-            Util::verifySessionAndCall(
-                'CILogon\\Service\\Content::handleILostMyPhone'
-            );
-            break; // End case 'I Lost My Phone'
-
-        case 'Enter': // Verify Google Authenticator one time password
-            Util::verifySessionAndCall(
-                'CILogon\\Service\\Content::handleGoogleAuthenticatorLogin'
-            );
-            break; // End case 'Enter'
-
-        case 'EnterDuo': // Verify Duo Security login
-            Util::verifySessionAndCall(
-                'CILogon\\Service\\Content::handleDuoSecurityLogin'
-            );
-            break; // End case 'EnterDuo'
 
         case 'Show  Help ': // Toggle showing of help text on and off
         case 'Hide  Help ':

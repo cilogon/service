@@ -360,8 +360,6 @@ function printMainPage()
         </div> <!-- actionbox -->
         ';
 
-        Content::printTwoFactorBox();
-
         echo '
         </div> <!-- boxed -->
         ';

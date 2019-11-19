@@ -1,4 +1,3 @@
-div.twofactoractionbox,
 div.logofftextbox {
   border: 1px solid #888;
   display: block;
@@ -14,8 +13,4 @@ div.skincilogonlogo {
 
 p.silvercheckbox {
   display: block;
-}
-
-table.twofactortypes tr.twofactorduorow {
-  display: table-row;
 }

@@ -480,9 +480,6 @@ function getTitleText($cookie)
         "submit" => "The name of the 'submit' button clicked." ,
         "successuri" => "A URL used by portals for redirection after successful issuance of a certificate." ,
         "tempcred" => "An OAUTH identifier used to track portal sessions." ,
-        "twofactor" => "The types of two-factor authentication " .
-            "configured for your account, ga for Google Authenticator, " .
-            "duo for Duo Security." ,
         "uid" => "The datastore user identifier." ,
     );
 

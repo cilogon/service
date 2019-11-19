@@ -175,7 +175,6 @@ div.actionbox,
 div.p12actionbox,
 div.certactionbox,
 div.tokenactionbox,
-div.twofactoractionbox,
 div.logoffactionbox,
 div.logofftextbox {
   border: 1px solid #888;
@@ -190,7 +189,6 @@ div.actionbox fieldset,
 div.p12actionbox fieldset,
 div.certactionbox fieldset,
 div.tokenactionbox fieldset,
-div.twofactoractionbox fieldset,
 div.logoffactionbox fieldset {
   border: none;
   padding: 0;
@@ -200,7 +198,6 @@ div.actionbox p,
 div.p12actionbox p,
 div.certactionbox p,
 div.tokenactionbox p,
-div.twofactoractionbox p,
 div.logoffactionbox p,
 div.logofftextbox p {
   text-align: center;
@@ -213,7 +210,6 @@ div.p12actionbox label {
 }
 div.certactionbox,
 div.tokenactionbox,
-div.twofactoractionbox,
 div.logofftextbox {
   display: none;
 }
@@ -447,35 +443,3 @@ tr.inforow td.helpcell {
   background-color: #f3fff3;
 }
 /***** End Help-related stuff *****/
-
-/***** Begin Two-Factor-related stuff *****/
-table.twofactortypes {
-  margin: 1em;
-  width: 96%;
-  border: 1px solid #888;
-  border-spacing: 0;
-  border-collapse: collapse;
-}
-table.twofactortypes th {
-  text-align: left;
-  width: 99%;
-  padding: 5px;
-}
-table.twofactortypes td {
-  padding: 5px;
-}
-table.twofactortypes tr.twofactorduorow {
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #888;
-}
-iframe#duo_iframe {
-  margin-left: 2em;
-  background: transparent;
-  border: none;
-}
-/* For now, hide the Duo Security method */
-table.twofactortypes tr.twofactorduorow {
-  display: none;
-}
-/***** End Two-Factor-related stuff *****/
