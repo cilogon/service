@@ -180,6 +180,38 @@ define('BYPASS_IDP_ARRAY', array(
 ));
 
 /**
+ * This array contains OAuth2/OIDC client URIs that are allowed to bypass
+ * the 'Select an Identity Provider' page when passing 'idphint=...'
+ * (a.k.a., 'selected_idp=...').
+ *
+ * The URI must be a PHP PCRE (Perl-Compatible Regular Expression). See
+ * http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
+ * '%' (percent) is a good choice for delimiter so that slashes do not
+ * need to be escaped. Note that period '.' matches any character,
+ * so if you want to match a dot, prefix with a backslash, e.g., '\.' .
+ * However, in practice this unnecessary since dots appear mainly in
+ * the FQDN.
+ *
+ * The URI regex should match one of:
+ *    * an OAuth2.0 redirect_uri
+ *    * an OAuth2.0 client_id
+ *
+ * This feature is used by portals that have been vetted to show a 
+ * 'consent to release attributes' on their site (since this is usually
+ * handled by the 'Select an Identity Provider' page). It replaces the
+ * complex skin configuration which required a combination of 
+ * <forceinitialidp>, <allowforceinitialidp>, and <portallist> which was
+ * previously configured in the 'allowbypass' skin.
+ * 
+ * NOTE: If a matching redirect_url / client_id is found in the
+ *       BYPASS_IDP_ARRAY, that IdP takes precedence over a match in
+ *       ALLOW_BYPASS_ARRAY.
+ */
+define('ALLOW_BYPASS_ARRAY', array(
+    '%cilogon:/client_id/3cbc990448f1ea8df6ebe128b101d84c%',
+));
+
+/**
  * This array contains IdPs and Portals that should have a skin
  * applied by force. Each array key/value pair has the following format:
  *
@@ -230,5 +262,4 @@ define('FORCE_SKIN_ARRAY', array(
     '%^cilogon:/client_id/112d2f5ffcb986660e0e57e7bcf72a4e%' => 'nih',
     '%^cilogon:/client_id/620b5873fda93e285ea48ad5b09568d2%' => 'nih',
     '%^cilogon:/client_id/56727d508077d1402cdcc66714ecf5ef%' => 'orcidfirst',
-    '%^cilogon:/client_id/3cbc990448f1ea8df6ebe128b101d84c%' => 'allowbypass',
 ));
