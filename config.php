@@ -263,3 +263,12 @@ define('FORCE_SKIN_ARRAY', array(
     '%^cilogon:/client_id/620b5873fda93e285ea48ad5b09568d2%' => 'nih',
     '%^cilogon:/client_id/56727d508077d1402cdcc66714ecf5ef%' => 'orcidfirst',
 ));
+
+/**
+ * When a new LIGO user attempts to use cilogon.org, an alert is sent to
+ * both alerts@cilogon.org and cilogon-alerts@ligo.org to let them know that
+ * the new user needs to be added to the LIGO IdP. However, some users are
+ * very persistent and continue to try to log in, generating many emails. To
+ * temporarily disable the alerts@cilogon.org emails, set this to true.
+ */
+define('DISABLE_LIGO_ALERTS', false);
