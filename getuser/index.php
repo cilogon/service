@@ -22,13 +22,13 @@ $responseurl = Util::getSessionVar('responseurl');
 
 if (
     ($submit == 'getuser') &&
-    (!empty($responseurl)) &&
-    (!empty(Util::getGetVar('state')))
+    (strlen($responseurl) > 0) &&
+    (strlen(Util::getGetVar('state')) > 0)
 ) {
     getUserAndRespond();
 } else {
     // If responseurl is empty, simply redirect to main site
-    if (empty($responseurl)) {
+    if (strlen($responseurl) == 0) {
         $responseurl = 'https://' . Util::getHN();
     }
 }

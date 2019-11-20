@@ -37,11 +37,11 @@ function getUserAndRespond()
     if ($state != $lastcsrf) {
         // Verify that response's 'state' equals the last CSRF token
         Util::setSessionVar('logonerror', 'Invalid state parameter.');
-    } elseif (empty($code)) {
+    } elseif (strlen($code) == 0) {
         // Make sure the response has a non-empty 'code'
         $error = Util::getGetVar('error');
         $error_description = Util::getGetVar('error_description');
-        if ((!empty($error)) && (!empty($error_description))) {
+        if ((strlen($error) > 0) && (strlen($error_description) > 0)) {
             Util::setSessionVar('logonerror', $error_description . '. Please try again.');
         } else {
             Util::setSessionVar('logonerror', 'Empty code parameter. Please try again.');
@@ -55,7 +55,7 @@ function getUserAndRespond()
         // Get the client id/secret for the OAuth2 IdP
         $clientid     = constant(strtoupper($prov) . '_OAUTH2_CLIENT_ID');
         $clientsecret = constant(strtoupper($prov) . '_OAUTH2_CLIENT_SECRET');
-        if ((!empty($clientid)) && (!empty($clientsecret))) {
+        if ((strlen($clientid) > 0) && (strlen($clientsecret) > 0)) {
             $oauth2 = new OAuth2Provider($providerName);
             try {
                 $token = $oauth2->provider->getAccessToken(
@@ -66,7 +66,7 @@ function getUserAndRespond()
                 $oidcid = $user->getId();
                 $emailaddr = $user->getEmail();
                 // GitHub email may require special handling
-                if ((empty($emailaddr)) && ($prov == 'github')) {
+                if ((strlen($emailaddr) == 0) && ($prov == 'github')) {
                     $emailaddr = getGitHubEmail($oauth2, $token);
                 }
                 $name = $user->getName();
@@ -94,7 +94,7 @@ function getUserAndRespond()
     // PHP session. If not set, then by default save the user
     // attributes to the database (which also stores the user
     // attributes in the PHP session).
-    if (empty(Util::getSessionVar('logonerror'))) {
+    if (strlen(Util::getSessionVar('logonerror')) == 0) {
         $func = 'CILogon\Service\Util::saveUserToDataStore';
         if (!empty(Util::getSessionVar('storeattributes'))) {
             $func = 'CILogon\Service\Util::setUserAttributeSessionVars';

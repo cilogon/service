@@ -73,12 +73,12 @@ if ($argc >= 7) {
     }
 
     if (
-        (!empty($remoteuser)) &&
-        (!empty($idp)) &&
-        (!empty($idpname)) &&
-        (!empty($firstname)) &&
-        (!empty($lastname)) &&
-        (!empty($emailaddr))
+        (strlen($remoteuser) > 0) &&
+        (strlen($idp) > 0) &&
+        (strlen($idpname) > 0) &&
+        (strlen($firstname) > 0) &&
+        (strlen($lastname) > 0) &&
+        (strlen($emailaddr) > 0)
     ) {
         $dbs = new DBService();
         $dbs->getUser(

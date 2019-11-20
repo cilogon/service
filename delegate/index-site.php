@@ -49,7 +49,7 @@ if (verifyOAuthToken(Util::getGetVar('oauth_token'))) {
             break; // End case 'Proceed'
 
         case 'OK':  // User allows delegation of certificate
-            handleAllowDelegation(!empty(Util::getPostVar('rememberok')));
+            handleAllowDelegation(strlen(Util::getPostVar('rememberok')) > 0);
             break; // End case 'OK'
 
         case 'Cancel': // User denies delegation of certificate
@@ -58,7 +58,7 @@ if (verifyOAuthToken(Util::getGetVar('oauth_token'))) {
             if (Util::getPostVar('previouspage') == 'WAYF') {
                 $failureuri = Util::getSessionVar('failureuri');
                 $location = 'https://www.google.com/';
-                if (!empty($failureuri)) {
+                if (strlen($failureuri) > 0) {
                     $location = $failureuri . "?reason=cancel";
                 }
                 Util::unsetAllUserSessionVars();

@@ -57,13 +57,13 @@ as released by your IdP.
 $emailvalid = filter_var(@$shibarray['Email Address'], FILTER_VALIDATE_EMAIL);
 
 if (
-    (!empty($entityID)) &&
-    (!empty(@$shibarray['User Identifier'])) &&
-    (!empty(@$shibarray['Email Address'])) && ($emailvalid) &&
-    (!empty(@$shibarray['Organization Name'])) &&
-        ((!empty(@$shibarray['Display Name'])) ||
-             ((!empty(@$shibarray['First Name'])) &&
-              (!empty(@$shibarray['Last Name']))))
+    (strlen($entityID) > 0) &&
+    (strlen(@$shibarray['User Identifier']) > 0) &&
+    (strlen(@$shibarray['Email Address']) > 0) && ($emailvalid) &&
+    (strlen(@$shibarray['Organization Name']) > 0) &&
+        ((strlen(@$shibarray['Display Name']) > 0) ||
+             ((strlen(@$shibarray['First Name']) > 0) &&
+              (strlen(@$shibarray['Last Name']) > 0)))
 ) {
     $gotattrs = true;
 }
@@ -121,7 +121,10 @@ below, please enable Javascript in your browser.
     SAML Attributes</a></span>';
 
 // CIL-416 Show warning for missing ePPN
-if ((empty(@$shibarray['ePPN'])) && (!empty(@$shibarray['ePTID']))) {
+if (
+    (strlen(@$shibarray['ePPN']) == 0) &&
+    (strlen(@$shibarray['ePTID']) != 0)
+) {
     Content::printIcon('warn', 'Some CILogon clients (e.g., Globus) require ePPN.');
 }
 
@@ -145,7 +148,7 @@ echo '
         <td>' , $entityID , '</td>
         <td>';
 
-if (empty($entityID)) {
+if (strlen($entityID) == 0) {
     Content::printIcon('error', 'Missing the entityID of the IdP.');
 }
 
@@ -158,7 +161,10 @@ echo '
         <td>' , @$shibarray['ePTID'] , '</td>
         <td>';
 
-if ((empty(@$shibarray['ePPN'])) && (empty(@$shibarray['ePTID']))) {
+if (
+    (strlen(@$shibarray['ePPN']) == 0) &&
+    (strlen(@$shibarray['ePTID']) == 0)
+) {
     Content::printIcon('error', 'Must have either ePPN -OR- ePTID.');
 }
 
@@ -171,8 +177,8 @@ echo '
         <td>' , @$shibarray['ePPN'] , '</td>
         <td>';
 
-if (empty(@$shibarray['ePPN'])) {
-    if (empty(@$shibarray['ePTID'])) {
+if (strlen(@$shibarray['ePPN']) == 0) {
+    if (strlen(@$shibarray['ePTID']) == 0) {
         Content::printIcon('error', 'Must have either ePPN -OR- ePTID.');
     } else {
         Content::printIcon('warn', 'Some CILogon clients (e.g., Globus) require ePPN.');
@@ -188,7 +194,10 @@ echo '
         <td>' , @$shibarray['First Name'] , '</td>
         <td>';
 
-if ((empty(@$shibarray['First Name'])) && (empty(@$shibarray['Display Name']))) {
+if (
+    (strlen(@$shibarray['First Name']) == 0) &&
+    (strlen(@$shibarray['Display Name']) == 0)
+) {
     Content::printIcon('error', 'Must have either givenName + sn -OR- displayName.');
 }
 
@@ -201,7 +210,10 @@ echo '
         <td>' , @$shibarray['Last Name'] , '</td>
         <td>';
 
-if ((empty(@$shibarray['Last Name'])) && (empty(@$shibarray['Display Name']))) {
+if (
+    (strlen(@$shibarray['Last Name']) == 0) &&
+    (strlen(@$shibarray['Display Name']) == 0)
+) {
     Content::printIcon('error', 'Must have either givenName + sn -OR- displayName.');
 }
 
@@ -215,9 +227,9 @@ echo '
         <td>';
 
 if (
-    (empty(@$shibarray['Display Name'])) &&
-    ((empty(@$shibarray['First Name'])) ||
-    (empty(@$shibarray['Last Name'])))
+    (strlen(@$shibarray['Display Name']) == 0) &&
+    ((strlen(@$shibarray['First Name']) == 0) ||
+    (strlen(@$shibarray['Last Name']) == 0))
 ) {
     Content::printIcon('error', 'Must have either displayName -OR- givenName + sn.');
 }
@@ -231,7 +243,7 @@ echo '
         <td>' , @$shibarray['Email Address'] , '</td>
         <td>';
 
-if ((empty(@$shibarray['Email Address'])) || (!$emailvalid)) {
+if ((strlen(@$shibarray['Email Address']) == 0) || (!$emailvalid)) {
     Content::printIcon('error', 'Missing valid email address.');
 }
 
@@ -330,7 +342,7 @@ echo '
         <td>' , @$shibarray['Organization Name'] , '</td>
         <td>';
 
-if (empty(@$shibarray['Organization Name'])) {
+if (strlen(@$shibarray['Organization Name']) == 0) {
     Content::printIcon('error', 'Could not find ' .
         '&lt;OrganizationDisplayName&gt; in InCommon metadata.');
 }
@@ -349,8 +361,8 @@ echo '
         <th>Support Contact:</th>
 ';
 if (
-    (!empty(@$shibarray['Support Name'])) ||
-    (!empty(@$shibarray['Support Address']))
+    (strlen(@$shibarray['Support Name']) > 0) ||
+    (strlen(@$shibarray['Support Address']) > 0)
 ) {
     echo '
         <td>' , @$shibarray['Support Name'] , ' &lt;' ,
@@ -364,8 +376,8 @@ echo '
         <th>Technical Contact:</th>
 ';
 if (
-    (!empty(@$shibarray['Technical Name'])) ||
-    (!empty(@$shibarray['Technical Address']))
+    (strlen(@$shibarray['Technical Name']) > 0) ||
+    (strlen(@$shibarray['Technical Address']) > 0)
 ) {
     echo '
         <td>' , @$shibarray['Technical Name'] , ' &lt;' ,
@@ -379,8 +391,8 @@ echo '
         <th>Administrative Contact:</th>
 ';
 if (
-    (!empty(@$shibarray['Administrative Name'])) ||
-    (!empty(@$shibarray['Administrative Address']))
+    (strlen(@$shibarray['Administrative Name']) > 0) ||
+    (strlen(@$shibarray['Administrative Address']) > 0)
 ) {
     echo '
         <td>' , @$shibarray['Administrative Name'] , ' &lt;' ,
