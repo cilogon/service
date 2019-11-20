@@ -46,7 +46,7 @@ if (verifyOIDCParams()) {
             // (re)authenticate.
             if (isset($clientparams['max_age'])) {
                 $max_age = (int)$clientparams['max_age'];
-                if (strlen(Util::getSessionVar('authntime')) > 0) {
+                if (!empty(Util::getSessionVar('authntime'))) {
                     $authntime = (int)Util::getSessionVar('authntime');
                     $currtime = time();
                     if (

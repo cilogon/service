@@ -62,7 +62,7 @@ function printLogonPage()
 function redirectToTestIdP($providerId = '')
 {
     // If providerId not set, try the cookie value
-    if (strlen($providerId) == 0) {
+    if (empty($providerId)) {
         $providerId = Util::getCookieVar('providerId');
     }
 
@@ -71,7 +71,7 @@ function redirectToTestIdP($providerId = '')
     $redirect =
         'Location: https://' . Util::getHN() . '/Shibboleth.sso/Login?' .
         'target=' . urlencode($testidp_url);
-    if (strlen($providerId) > 0) {
+    if (!empty($providerId)) {
         $redirect .= '&providerId=' . urlencode($providerId);
     }
 

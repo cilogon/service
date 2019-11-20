@@ -22,7 +22,7 @@ use CILogon\Service\DBService;
 if ($argc == 2) {
     $uid = $argv[1];
 
-    if (strlen($uid) > 0) {
+    if (!empty($uid)) {
         $dbs = new DBService();
 
         $dbs->getUser($uid);

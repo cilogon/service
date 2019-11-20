@@ -150,7 +150,7 @@ function printGetCertificate()
         if (!is_null($disabledmsg)) {
             $disabledmsg = trim(html_entity_decode($disabledmsg));
         }
-        if (strlen($disabledmsg) == 0) {
+        if (empty($disabledmsg)) {
             $disabledmsg = "Downloading PKCS12 certificates is " .
                 "restricted. Please try another method or log on " .
                 "with a different Identity Provider.";
@@ -180,11 +180,11 @@ function printGetCertificate()
             $p12link = $match[2];
         }
 
-        if ((strlen($p12link) > 0) && (strlen($p12expire) > 0)) {
+        if ((!empty($p12link)) && (!empty($p12expire))) {
             $p12link = '<a href="' . $p12link .
                 '">&raquo; Click Here To Download Your Certificate &laquo;</a>';
         }
-        if ((strlen($p12expire) > 0) && ($p12expire > 0)) {
+        if ((!empty($p12expire)) && ($p12expire > 0)) {
             $expire = $p12expire - time();
             $minutes = floor($expire % 3600 / 60);
             $seconds = $expire % 60;
@@ -195,16 +195,16 @@ function printGetCertificate()
         }
 
         $p12lifetime = Util::getSessionVar('p12lifetime');
-        if ((strlen($p12lifetime) == 0) || ($p12lifetime == 0)) {
+        if ((empty($p12lifetime)) || ($p12lifetime == 0)) {
             $p12lifetime = Util::getCookieVar('p12lifetime');
         }
         $p12multiplier = Util::getSessionVar('p12multiplier');
-        if ((strlen($p12multiplier) == 0) || ($p12multiplier == 0)) {
+        if ((empty($p12multiplier)) || ($p12multiplier == 0)) {
             $p12multiplier = Util::getCookieVar('p12multiplier');
         }
 
         // Try to read the skin's intiallifetime if not yet set
-        if ((strlen($p12lifetime) == 0) || ($p12lifetime <= 0)) {
+        if ((empty($p12lifetime)) || ($p12lifetime <= 0)) {
             // See if the skin specified an initial value
             $skinlife = $skin->getConfigOption('pkcs12', 'initiallifetime', 'number');
             $skinmult = $skin->getConfigOption('pkcs12', 'initiallifetime', 'multiplier');
@@ -219,7 +219,7 @@ function printGetCertificate()
                 $p12multiplier = 732;
             }
         }
-        if ((strlen($p12multiplier) == 0) || ($p12multiplier <= 0)) {
+        if ((empty($p12multiplier)) || ($p12multiplier <= 0)) {
             $p12multiplier = 732;   // Default to months
             if ($p12lifetime > 13) {
                 $p12lifetime = 13;
@@ -264,7 +264,7 @@ function printGetCertificate()
           ';
 
         $p12error = Util::getSessionVar('p12error');
-        if (strlen($p12error) > 0) {
+        if (!empty($p12error)) {
             echo "<p class=\"logonerror\">$p12error</p>";
             Util::unsetSessionVar('p12error');
         }
@@ -471,10 +471,10 @@ function validateP12()
 
     // Verify that the p12expire and p12link values are valid.
     if (
-        (strlen($p12expire) == 0) ||
+        (empty($p12expire)) ||
         ($p12expire == 0) ||
         (time() > $p12expire) ||
-        (strlen($p12link) == 0)
+        (empty($p12link))
     ) {
         Util::unsetSessionVar('p12');
     }

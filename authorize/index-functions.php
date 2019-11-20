@@ -143,7 +143,7 @@ function printOIDCErrorPage()
 
     $client_error_msg = Util::getSessionVar('client_error_msg');
     Util::unsetSessionVar('client_error_msg');
-    if (strlen($client_error_msg) > 0) {
+    if (!empty($client_error_msg)) {
         echo "<p>$client_error_msg</p>";
     } else {
         echo '
@@ -505,8 +505,8 @@ function verifyOIDCParams()
                                 'returned an HTTP response 200, but either ' .
                                 'the output was not a valid JSON token, or ' .
                                 'there was no "code" in the JSON token. ' .
-                                ((strlen($output) > 0) ?
-                                    "\n\nReturned output =\n$output" : '')) .
+                                ((empty($output)) ?
+                                    '' : "\n\nReturned output =\n$output")) .
                                 "\n\n" .
                                 'curl_getinfo = ' . print_r($info, true) . "\n\n" .
                                 'clientparams = ' . print_r($clientparams, true) .
@@ -516,7 +516,7 @@ function verifyOIDCParams()
                                 'client_error_msg',
                                 'There was an unrecoverable error during the transaction. ' .
                                 'CILogon system administrators have been notified. ' .
-                                (!empty($errortxt) ? "<p><b>Error message: $errortxt</b><p>" : '')
+                                (empty($errortxt) ? '' : "<p><b>Error message: $errortxt</b><p>")
                             );
                             $clientparams = array();
                         }
@@ -601,8 +601,8 @@ function verifyOIDCParams()
                             'OA4MP OIDC authz endpoint error',
                             'The OA4MP OIDC authorization endpoint returned ' .
                             'an HTTP response other than 200 or 302. ' .
-                            ((strlen($output) > 0) ?
-                                "\n\nReturned output =\n$output" : '') .
+                            ((empty($output)) ?
+                                '' : "\n\nReturned output =\n$output") .
                             "\n\n" .
                             'curl_getinfo = ' . print_r($info, true) . "\n\n" .
                             'clientparams = ' . print_r($clientparams, true) .
@@ -640,11 +640,11 @@ function verifyOIDCParams()
                             'client_error_msg',
                             'There was an unrecoverable error during the transaction. ' .
                             'CILogon system administrators have been notified.' .
-                            ((strlen($errstr) > 0) ? $errstr : '') .
-                            ((strlen($output) > 0) ?
-                            '<br/><pre>' .
+                            ((empty($errstr)) ? '' : $errstr) .
+                            ((empty($output)) ?
+                            '' : '<br/><pre>' .
                             preg_replace('/\+/', ' ', $output) .
-                            '</pre>' : '')
+                            '</pre>')
                         );
                         $clientparams = array();
                     }

@@ -38,7 +38,7 @@ function printLogonPage()
     $pc = new PortalCookie();
     $portallifetime = $pc->get('lifetime');
 
-    if ((strlen($portallifetime) == 0) || ($portallifetime == 0)) {
+    if ((empty($portallifetime)) || ($portallifetime == 0)) {
         $needtosetcookie = 0;
 
         // Try to read the skin's initiallifetime
@@ -544,8 +544,8 @@ function handleAllowDelegation($always = false)
                'cilogon_lifetime=' . $lifetime . '&' .
                'cilogon_loa=' . urlencode(Util::getSessionVar('loa')) . '&' .
                'cilogon_uid=' . urlencode(Util::getSessionVar('uid')) .
-               ((strlen($myproxyinfo) > 0) ?
-                   ('&cilogon_info=' . urlencode($myproxyinfo)) : '');
+               ((empty($myproxyinfo)) ?
+                   '' : ('&cilogon_info=' . urlencode($myproxyinfo)));
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 35);
@@ -624,7 +624,7 @@ function handleAllowDelegation($always = false)
     if ($always) {
         $log->info("Automatically returning to portal's " .
             ($success ? 'success' : 'failure') . ' url.');
-        $location = 'Location: ' . ((strlen($responseurl) > 0) ? $responseurl :
+        $location = 'Location: ' . ((!empty($responseurl)) ? $responseurl :
             (Util::getSessionVar($success ? 'successuri' : 'failureuri')));
         if ($success) {
             Util::unsetClientSessionVars();
@@ -660,7 +660,7 @@ function handleAllowDelegation($always = false)
             ';
             // If we got the cert from the 'oauth/authorized' script,
             // output it in an expandable/scrollable <div> for user info.
-            if (strlen($certtext) > 0) {
+            if (!empty($certtext)) {
                 echo '
                 <noscript>
                 <div class="nojs">
@@ -706,7 +706,7 @@ function handleAllowDelegation($always = false)
         echo '
         <div class="returnlink">
           <a href="' ,
-          ((strlen($responseurl) > 0) ? $responseurl :
+          ((!empty($responseurl)) ? $responseurl :
            (Util::getSessionVar($success ? 'successuri' : 'failureuri'))) ,
           '">Return to ' ,
           htmlspecialchars(Util::getSessionVar('portalname')) , '</a>
@@ -744,7 +744,7 @@ function verifyOAuthToken($token = '')
 
     // If passing in the OAuth $token, try to get the associated info
     // from the persistent store and put it into the PHP session.
-    if (strlen($token) > 0) {
+    if (!empty($token)) {
         $dbs = new DBService();
         $dbs->getPortalParameters($token);
         $status = $dbs->status;
@@ -760,11 +760,11 @@ function verifyOAuthToken($token = '')
 
     // Now check to verify all session variables have data
     if (
-        (strlen(Util::getSessionVar('callbackuri')) > 0) &&
-        (strlen(Util::getSessionVar('failureuri')) > 0) &&
-        (strlen(Util::getSessionVar('successuri')) > 0) &&
-        (strlen(Util::getSessionVar('portalname')) > 0) &&
-        (strlen(Util::getSessionVar('tempcred')) > 0) &&
+        (!empty(Util::getSessionVar('callbackuri'))) &&
+        (!empty(Util::getSessionVar('failureuri'))) &&
+        (!empty(Util::getSessionVar('successuri'))) &&
+        (!empty(Util::getSessionVar('portalname'))) &&
+        (!empty(Util::getSessionVar('tempcred'))) &&
         (!(Util::getSessionVar('portalstatus') & 1))
     ) { // STATUS_OK* are even
         $retval = true;

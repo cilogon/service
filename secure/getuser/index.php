@@ -20,7 +20,7 @@ Util::unsetSessionVar('submit');
 // Get the URL to reply to after database query.
 $responseurl = Util::getSessionVar('responseurl');
 
-if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
+if (($submit == 'getuser') && (!empty($responseurl))) {
     getUserAndRespond($responseurl);
 } elseif ($submit == 'pkcs12') {
     getPKCS12();
@@ -36,7 +36,7 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
         outputError('Unable to complete ECP transaction. Either CSRF ' .
                     'check failed, or invalid "submit" command issued.');
     } else { // Redirect to $responseurl or main homepage
-        if (strlen($responseurl) == 0) {
+        if (empty($responseurl)) {
             $responseurl = 'https://' . Util::getHN();
         }
         header('Location: ' . $responseurl);

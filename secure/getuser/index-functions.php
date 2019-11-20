@@ -34,7 +34,7 @@ function getUID()
 
     $firstname = @$shibarray['First Name'];
     $lastname = @$shibarray['Last Name'];
-    if ((strlen($firstname) == 0) || (strlen($lastname) == 0)) {
+    if ((empty($firstname)) || (empty($lastname))) {
         list($firstname, $lastname) = Util::getFirstAndLastName(
             @$shibarray['Display Name'],
             $firstname,
@@ -43,7 +43,7 @@ function getUID()
     }
 
     // Hack for test IdP at boingo.ncsa.uiuc.edu
-    if (strlen(@$shibarray['Organization Name']) == 0) {
+    if (empty(@$shibarray['Organization Name'])) {
         $shibarray['Organization Name'] = 'Unspecified';
     }
 
@@ -150,7 +150,7 @@ function getPKCS12()
 
     // Look for the p12error PHP session variable. If set, return it.
     $p12error = Util::getSessionVar('p12error');
-    if (strlen($p12error) > 0) {
+    if (!empty($p12error)) {
         $log->info('ECP PKCS12 error: ' . $p12error);
         outputError($p12error);
     } else { // Try to read the .p12 file from disk and return it
@@ -162,11 +162,11 @@ function getPKCS12()
             $p12expire = $match[1];
             $p12link = $match[2];
         }
-        if ((strlen($p12link) > 0) && (strlen($p12expire) > 0)) {
+        if ((!empty($p12link)) && (!empty($p12expire))) {
             $p12file = file_get_contents($p12link);
         }
 
-        if (strlen($p12file) > 0) {
+        if (!empty($p12file)) {
             $log->info('ECP PKCS12 success!');
             // CIL-507 Special log message for XSEDE
             $log->info('USAGE email="' . Util::getSessionVar('emailaddr') .
@@ -198,7 +198,7 @@ function getCert()
 
     // Verify that a non-empty certreq <form> variable was posted
     $certreq = Util::getPostVar('certreq');
-    if (strlen($certreq) == 0) {
+    if (empty($certreq)) {
         $log->info('ECP certreq error: Missing certificate request.');
         outputError('Missing certificate request.');
         return; // ERROR means no further processing is necessary
@@ -255,11 +255,11 @@ function getCert()
 
     // Make sure that the user's MyProxy username is available.
     $dn = Util::getSessionVar('dn');
-    if (strlen($dn) > 0) {
+    if (!empty($dn)) {
         // Append extra info, such as 'skin', to be processed by MyProxy.
         $skin->setMyProxyInfo();
         $myproxyinfo = Util::getSessionVar('myproxyinfo');
-        if (strlen($myproxyinfo) > 0) {
+        if (!empty($myproxyinfo)) {
             $dn .= " $myproxyinfo";
         }
         // Attempt to fetch a credential from the MyProxy server
@@ -274,7 +274,7 @@ function getCert()
             $certreq
         );
 
-        if (strlen($cert) > 0) { // Successfully got a certificate!
+        if (!empty($cert)) { // Successfully got a certificate!
             $log->info('ECP getcert success!');
             // CIL-507 Special log message for XSEDE
             $log->info('USAGE email="' . Util::getSessionVar('emailaddr') .
@@ -304,7 +304,7 @@ function getCert()
 function outputError($errstr = '')
 {
     header('Content-type: text/plain', true, 400);
-    if (strlen($errstr) > 0) {
+    if (!empty($errstr)) {
         echo $errstr;
     }
 }
