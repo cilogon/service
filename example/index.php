@@ -3,19 +3,12 @@
 // error_reporting(E_ALL); ini_set('display_errors',1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../config.php';
-include_once __DIR__ . '/../config.secrets.php';
 
-use CILogon\Service\Util;
 use CILogon\Service\Content;
-
-Util::startPHPSession();
 
 Content::printHeader('CILogon Service Example Buttons');
 Content::printPageHeader('Examples of CILogon Service Buttons and Links');
-
 ?>
-
 
 <div class="boxed">
 
@@ -394,7 +387,6 @@ with font-weight <strong>bold</strong>, and font-style <em>italic</em>.
 </table>
 
 </div>
-
 
 <?php
 Content::printFooter();
