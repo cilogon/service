@@ -60,6 +60,28 @@ define('DEFAULT_IDP_JSON', __DIR__ . '/include/idplist.json');
 define('TEST_IDP_XML', __DIR__ . '/include/testidplist.xml');
 
 /**
+ * The default hostname of the service website. This is used as the public-
+ * facing hostname and returned by Util::getHN() in the case that HTTP_HOST
+ * is not set.
+ */
+define('DEFAULT_HOSTNAME', 'cilogon.org');
+
+/**
+ * This array is used by Util::getMachineHostname to determine the public-
+ * facing FQDN for (1) the PKCS12 certificate download link and (2) the
+ * Shibboleth Single Sign-on session initiator URL. It maps the local
+ * machine name (uname) to a 'cilogon.org' name. If no mapping exists,
+ * then DEFAULT_HOSTNAME is used.
+ */
+define('HOSTNAME_ARRAY', array(
+    'poloa.ncsa.illinois.edu' => 'polo1.cilogon.org' ,
+    'polob.ncsa.illinois.edu' => 'polo2.cilogon.org' ,
+    'poloc.ncsa.illinois.edu' => 'test.cilogon.org' ,
+    'polod.ncsa.illinois.edu' => 'dev.cilogon.org' ,
+    'fozzie.nics.utk.edu'     => 'polo3.cilogon.org' ,
+));
+
+/**
  * In order for CILogon to be able to generate X.509 certificates, the
  * myproxy-logon binary must be installed and set in the MYPROXY_LOGON
  * define. If left blank, X.509 certificate functionality will be disabled.
@@ -67,7 +89,7 @@ define('TEST_IDP_XML', __DIR__ . '/include/testidplist.xml');
  * well as the default certifcate lifetime (in hours).
  */
 define('MYPROXY_LOGON', '/usr/bin/myproxy-logon');
-define('MYPROXY_HOST', 'myproxy.cilogon.org');
+define('MYPROXY_HOST', 'myproxy.cilogon.org,myproxy2.cilogon.org');
 define('MYPROXY_PORT', '7512');
 define('MYPROXY_LIFETIME', '12');
 

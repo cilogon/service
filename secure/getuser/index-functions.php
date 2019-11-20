@@ -266,7 +266,7 @@ function getCert()
         $cert = MyProxy::getMyProxyCredential(
             $dn,
             '',
-            'myproxy.cilogon.org,myproxy2.cilogon.org',
+            MYPROXY_HOST,
             $port,
             $certlifetime,
             '/var/www/config/hostcred.pem',
