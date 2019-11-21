@@ -75,7 +75,7 @@ function printMainPage()
     ';
 
     Content::printHelpButton();
-    printCertInfo();
+    Content::printCertInfo();
     printGetCertificate();
     printLogOff();
 
@@ -83,51 +83,6 @@ function printMainPage()
     </div> <!-- boxed -->
     ';
     Content::printFooter();
-}
-
-/**
- * printCertInfo
- *
- * This function prints the certificate information table at the top
- * of the main page.
- */
-function printCertInfo()
-{
-    $dn = Util::getSessionVar('dn');
-    $dn = Content::reformatDN(preg_replace('/\s+email=.+$/', '', $dn));
-
-    echo '
-    <table class="certinfo">
-      <tr>
-        <th>Certificate&nbsp;Subject:</th>
-        <td>' , Util::htmlent($dn) , '</td>
-      </tr>
-      <tr>
-        <th>Identity&nbsp;Provider:</th>
-        <td>' , Util::getSessionVar('idpname') , '</td>
-      </tr>
-      <tr>
-        <th><a target="_blank"
-        href="http://ca.cilogon.org/loa">Level&nbsp;of&nbsp;Assurance:</a></th>
-        <td>
-    ';
-
-    $loa = Util::getSessionVar('loa');
-    if ($loa == 'openid') {
-        echo '<a href="http://ca.cilogon.org/policy/openid"
-              target="_blank">OpenID</a>';
-    } elseif ($loa == 'http://incommonfederation.org/assurance/silver') {
-        echo '<a href="http://ca.cilogon.org/policy/silver"
-              target="_blank">Silver</a>';
-    } else {
-        echo '<a href="http://ca.cilogon.org/policy/basic"
-              target="_blank">Basic</a>';
-    }
-    echo '
-        </td>
-      </tr>
-    </table>
-    ';
 }
 
 /**
