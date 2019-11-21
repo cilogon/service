@@ -8,6 +8,7 @@ include_once __DIR__ . '/../config.secrets.php';
 require_once __DIR__ . '/index-functions.php';
 
 use CILogon\Service\Util;
+use CILogon\Service\Content;
 use CILogon\Service\ShibError;
 
 Util::startPHPSession();
@@ -31,19 +32,35 @@ Util::unsetSessionVar('submit');
 switch ($submit) {
     case 'Log On': // Check for OpenID or InCommon usage.
     case 'Continue': // For OOI
-        $providerIdPost = Util::getPostVar('providerId');
-        if (Util::getIdpList()->exists($providerIdPost)) {
-            // Use InCommon authn
-            Util::setCookieVar('providerId', $providerIdPost);
-            redirectToTestIdP($providerIdPost);
+        $providerId = Util::getPostVar('providerId');
+        $providerName = Util::getAuthzIdP($providerId); // For OAuth2
+        if (Util::getIdpList()->exists($providerId)) {
+            // Use SAML authn
+            Util::setCookieVar('providerId', $providerId);
+            Util::setSessionVar('storeattributes');
+            Content::redirectToGetShibUser($providerId);
+        } elseif (in_array($providerName, Util::$oauth2idps)) {
+            // Use OAuth2 authn
+            Util::setCookieVar('providerId', $providerId);
+            Util::setSessionVar('storeattributes');
+            Content::redirectToGetOAuth2User($providerId);
         } else { // Either providerId not set or not in whitelist
             Util::unsetCookieVar('providerId');
             printLogonPage();
         }
         break; // End case 'Log On'
 
-    case 'Cancel': // Cancel button on WAYF page - go to Google
-        header('Location: https://www.google.com/');
+    case 'gotuser': // Return from the getuser script
+        Content::handleGotUser();
+        break; // End case 'gotuser'
+
+    case 'Go Back': // Return to the Main page
+    case 'Proceed': // Proceed after Error page
+        printMainPage();
+        break; // End case 'Go Back' / 'Proceed'
+
+    case 'Cancel': // Cancel button on WAYF page - go to www.cilogon.org
+        header('Location: https://www.cilogon.org/');
         exit; // No further processing necessary
         break;
 

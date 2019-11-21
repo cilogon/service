@@ -16,9 +16,22 @@ use CILogon\Service\Content;
  * This function prints out the HTML for the IdP Selector page.
  * Explanatory text is shown as well as a button to log in to an IdP
  * and get rerouted to the Shibboleth protected testidp script.
+ *
+ * @param bool $clearcookies True if the Shibboleth cookies and session
+ *        variables  should be cleared out before displaying the page.
+ *        Defaults to false.
  */
-function printLogonPage()
+function printLogonPage($clearcookies = false)
 {
+    Util::setSessionVar('cilogon_skin', 'orcidfirst');
+    Util::getSkin();
+    if ($clearcookies) {
+        Util::removeShibCookies();
+        Util::unsetAllUserSessionVars();
+    }
+
+    Util::setSessionVar('stage', 'logon'); // For Show/Hide Help button clicks
+
     Content::printHeader('Test Your Identity Provider With CILogon');
 
     echo '
@@ -35,7 +48,7 @@ function printLogonPage()
       </p>
     ';
 
-    Content::printWAYF(false, true);
+    Content::printWAYF(false);
 
     echo '
     </div> <!-- End boxed -->
@@ -44,37 +57,108 @@ function printLogonPage()
 }
 
 /**
- * redirectToTestIdP
+ * printMainPage
  *
- * If the first parameter (a whitelisted entityId) is not specified,
- * we check to see if either the providerId PHP session variable or the
- * providerId cookie is set (in that order) and use one if available.
- * Then this function redirects to the "/secure/testidp/" script so as
- * to do a Shibboleth authentication via mod_shib.  When the providerId
- * is non-empty, the SessionInitiator will automatically go to that IdP
- * (i.e. without stopping at a WAYF).
- *
- * @param string $providerId (Optionals) An entityId of the authenticating
- *        IdP. If not specified (or set to the empty string), we check
- *        providerId PHP session variable and providerId cookie (in that
- *        order) for non-empty values.
+ * This function prints the user attributes and IdP metadata after the user 
+ * has logged on.
  */
-function redirectToTestIdP($providerId = '')
+function printMainPage()
 {
-    // If providerId not set, try the cookie value
-    if (strlen($providerId) == 0) {
-        $providerId = Util::getCookieVar('providerId');
+    // If the 'idp' PHP session variable isn't set, then force the user to 
+    // start over by logging in again.
+    $idp = Util::getSessionVar('idp');
+    if (empty($idp)) {
+        printLogonPage(true);
+        exit; // No further processing necessary
     }
 
-    // Set up the "header" string for redirection thru mod_shib
-    $testidp_url = 'https://' . Util::getHN() . '/secure/testidp/';
-    $redirect =
-        'Location: https://' . Util::getHN() . '/Shibboleth.sso/Login?' .
-        'target=' . urlencode($testidp_url);
-    if (strlen($providerId) > 0) {
-        $redirect .= '&providerId=' . urlencode($providerId);
+    Util::setSessionVar('stage', 'main'); // For Show/Hide Help button clicks
+
+    Content::printHeader('Test Identity Provider');
+    Content::printPageHeader('Test Your Organization\'s Identity Provider');
+
+    // CIL-626 Allow browser 'reload page' by adding CSRF to the PHP session
+    Util::setSessionVar('submit', 'Proceed');
+    Util::getCsrf()->setTheSession();
+
+    echo '
+    <div class="boxed">
+    ';
+
+    echo '
+    <div class="boxed">
+      <div class="boxheader">
+        Verify SAML Attribute Release Policy
+      </div>
+
+    <p>
+    Thank you for your interest in the CILogon Service. This page allows
+    the administrator of an Identity Provider (<acronym
+    title="Identity Provider">IdP</acronym>) to verify that all necessary
+    SAML attributes have been released to the CILogon Service Provider
+    (<acronym title="Service Provider">SP</acronym>). Below you will see
+    the various attributes required by the CILogon Service and their values
+    as released by your IdP.
+    </p>
+
+    <div class="summary">
+    <h2>Summary</h2>
+    ';
+
+    $gotattrs = Util::gotUserAttributes();
+
+    if ($gotattrs) {
+        echo '<div class="icon">';
+        Content::printIcon('okay');
+        echo '
+        </div>
+        <div class="summarytext">
+        <p>
+        All required attributes have been released by your <acronym
+        title="Identity Provider">IdP</acronym>. For details of the various
+        attributes utilized by the CILogon Service and their current values,
+        see the sections below.
+        </p>
+        <p class="addsubmit">
+        <a href="/">Proceed to the CILogon Service</a>
+        </p>
+        <p class="addsubmit">
+        <a href="/logout">Logout</a>
+        </p>
+        </div>
+        ';
+    } else {
+        echo '<div class="icon">';
+        Content::printIcon('error', 'Missing one or more attributes.');
+        echo '
+        </div>
+        <div class="summarytext">
+        <p>
+        One or more of the attributes required by the CILogon Service are
+        not available. Please see the sections below for details. Contact
+        <a href="mailto:help@cilogon.org">help&nbsp;@&nbsp;cilogon.org</a>
+        for additional information and assistance.
+        </p>
+        </div>
+        ';
     }
 
-    header($redirect);
-    exit; // No further processing necessary
+    echo '
+    </div> <!-- summary -->
+
+    <noscript>
+    <div class="nojs">
+    Javascript is disabled. In order to expand or collapse the sections
+    below, please enable Javascript in your browser.
+    </div>
+    </noscript>
+    ';
+
+    Content::printUserAttributes();
+    Content::printIdPMetadata();
+
+    echo '
+    </div> <!-- End boxed -->
+    ';
+    Content::printFooter();
 }
