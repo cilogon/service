@@ -37,12 +37,12 @@ switch ($submit) {
         if (Util::getIdpList()->exists($providerId)) {
             // Use SAML authn
             Util::setCookieVar('providerId', $providerId);
-            Util::setSessionVar('storeattributes');
+            Util::setSessionVar('storeattributes', '1');
             Content::redirectToGetShibUser($providerId);
         } elseif (in_array($providerName, Util::$oauth2idps)) {
             // Use OAuth2 authn
             Util::setCookieVar('providerId', $providerId);
-            Util::setSessionVar('storeattributes');
+            Util::setSessionVar('storeattributes', '1');
             Content::redirectToGetOAuth2User($providerId);
         } else { // Either providerId not set or not in whitelist
             Util::unsetCookieVar('providerId');
