@@ -97,7 +97,7 @@ function printGetCertificate()
     // Check if PKCS12 downloading is disabled. If so, print out message.
     $skin = Util::getSkin();
     $pkcs12disabled = $skin->getConfigOption('pkcs12', 'disabled');
-    $disabledbyskin = ((!is_null($disabled)) && ((int)$disabled == 1));
+    $disabledbyskin = ((!is_null($pkcs12disabled)) && ((int)$pkcs12disabled == 1));
     $disabledbyconf = ((!defined('MYPROXY_LOGON')) || (empty(MYPROXY_LOGON)));
     if ($disabledbyskin || $disabledbyconf) {
         $disabledmsg = 'Downloading PKCS12 certificates is disabled.';
