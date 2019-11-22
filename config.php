@@ -196,13 +196,13 @@ define('BYPASS_IDP_ARRAY', array(
  *    * an OAuth2.0 redirect_uri
  *    * an OAuth2.0 client_id
  *
- * This feature is used by portals that have been vetted to show a 
+ * This feature is used by portals that have been vetted to show a
  * 'consent to release attributes' on their site (since this is usually
  * handled by the 'Select an Identity Provider' page). It replaces the
- * complex skin configuration which required a combination of 
+ * complex skin configuration which required a combination of
  * <forceinitialidp>, <allowforceinitialidp>, and <portallist> which was
  * previously configured in the 'allowbypass' skin.
- * 
+ *
  * NOTE: If a matching redirect_url / client_id is found in the
  *       BYPASS_IDP_ARRAY, that IdP takes precedence over a match in
  *       ALLOW_BYPASS_ARRAY.

@@ -59,12 +59,12 @@ function printLogonPage($clearcookies = false)
 /**
  * printMainPage
  *
- * This function prints the user attributes and IdP metadata after the user 
+ * This function prints the user attributes and IdP metadata after the user
  * has logged on.
  */
 function printMainPage()
 {
-    // If the 'idp' PHP session variable isn't set, then force the user to 
+    // If the 'idp' PHP session variable isn't set, then force the user to
     // start over by logging in again.
     $idp = Util::getSessionVar('idp');
     if (empty($idp)) {
