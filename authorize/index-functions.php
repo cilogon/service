@@ -78,7 +78,7 @@ function printLogonPage()
         echo '
           <br/>
           <p style="text-align:center"> <a target="_blank" href="' ,
-          htmlspecialchars($clientparams['client_home_uri']) , '">',
+          htmlspecialchars($clientparams['client_home_url']) , '">',
           htmlspecialchars($clientparams['client_name']) , '</a>' ,
           ' requests access to the following information.
           If you do not approve this request, do not proceed.
@@ -134,7 +134,7 @@ function printOIDCErrorPage()
     <div class="boxed">
       <br class="clear"/>
       <p>
-      You have reached the CILogon OAuth2/OpenID Connect (OIDC) Authorization 
+      You have reached the CILogon OAuth2/OpenID Connect (OIDC) Authorization
       Endpoint. This service is for use by OAuth2/OIDC Relying Parties (RPs)
       to authorize users of the CILogon Service. End users should not normally
       see this page.
@@ -321,7 +321,7 @@ function printPortalInfo($suffix = '')
     <tr class="inforow">
       <th title="' , $helptext , '">Client&nbsp;Home:</th>
       <td title="' , $helptext , '">' ,
-          htmlspecialchars($clientparams['client_home_uri']) , '</td>
+          htmlspecialchars($clientparams['client_home_url']) , '</td>
     ';
 
     if ($showhelp == 'on') {
@@ -432,46 +432,14 @@ function verifyOIDCParams()
                                 (preg_match('/\?/', $clientparams['redirect_uri']) ? '&' : '?') .
                                 http_build_query($json);
                             $clientparams['code'] = $json['code'];
-                            $dbs = new DBService();
-                            if (
-                                ($dbs->getClient(
-                                    $clientparams['client_id']
-                                )) && (!($dbs->status & 1))
-                            ) {
-                                // STATUS_OK is even
-                                $status = $dbs->status;
-                                $clientparams['clientstatus'] = $status;
-                                // STATUS_OK* codes are even-numbered
-                                if (!($status & 1)) {
-                                    $clientparams['client_name'] =
-                                        $dbs->client_name;
-                                    $clientparams['client_home_uri'] =
-                                        $dbs->client_home_uri;
-                                    $clientparams['client_callback_uris'] =
-                                        $dbs->client_callback_uris;
-                                } else { // dbservice error
-                                    $errstr = 'Unknown error.';
-                                    if (!is_null($dbs->status)) {
-                                        $errstr = array_search(
-                                            $dbs->status,
-                                            DBService::$STATUS
-                                        );
-                                    }
-                                    Util::sendErrorAlert(
-                                        'dbService Error',
-                                        'Error calling dbservice ' .
-                                        'action "getClient" in ' .
-                                        'verifyOIDCParams() method. ' .
-                                        $errstr
-                                    );
-                                    $clientparams = array();
-                                }
-                            } else {
+                            // CIL-618 Read OIDC client info from database
+                            if (!getOIDCClientParams($clientparams)) {
                                 Util::sendErrorAlert(
-                                    'dbService Error',
-                                    'Error calling dbservice ' .
-                                    'action "getClient" in ' .
-                                    'verifyOIDCParams() method.'
+                                    'getOIDCClientParams Error',
+                                    'Error getting OIDC client parameters ' .
+                                    'in verifyOIDCParams() function for ' .
+                                    'client_id="' .
+                                    $clientparams['client_id'] . '".'
                                 );
                                 $clientparams = array();
                             }
@@ -716,8 +684,8 @@ function verifyOIDCParams()
         (isset($clientparams['client_id'])) &&
         (isset($clientparams['code'])) &&
         (isset($clientparams['client_name'])) &&
-        (isset($clientparams['client_home_uri'])) &&
-        (isset($clientparams['client_callback_uris'])) &&
+        (isset($clientparams['client_home_url'])) &&
+        (isset($clientparams['client_callback_uri'])) &&
         (isset($clientparams['redirect_url'])) &&
         (isset($clientparams['clientstatus'])) &&
         (!($clientparams['clientstatus'] & 1))
@@ -726,5 +694,58 @@ function verifyOIDCParams()
         Util::setSessionVar('clientparams', json_encode($clientparams));
     }
 
+    return $retval;
+}
+
+/**
+ * getOIDCClientParams
+ *
+ * This function addresses CIL-618 and reads OIDC client information
+ * directly from the database. It is a replacement for
+ * $dbs->getClient($clientparams['client_id']) which calls
+ * '/dbService?action=getClient&client_id=...'. This gives the PHP
+ * '/authorize' endpoint access to additional OIDC client parameters
+ * without having to rewrite the '/dbService?action=getClient' endpoint.
+ *
+ * @param array $clientparams An array of client parameters which gets
+ *              stored in the PHP session.
+ */
+function getOIDCClientParams(&$clientparams)
+{
+    $retval = false;
+    if (strlen(@$clientparams['client_id']) > 0) {
+        $db = new DB();
+        $dsn = array(
+            'phptype'  => 'mysqli',
+            'username' => MYSQLI_USERNAME,
+            'password' => MYSQLI_PASSWORD,
+            'database' => 'ciloa2',
+            'hostspec' => 'localhost'
+        );
+
+        $opts = array(
+            'persistent'  => true,
+            'portability' => DB_PORTABILITY_ALL
+        );
+
+        $db = DB::connect($dsn, $opts);
+        if (!PEAR::isError($db)) {
+            $data = $db->getRow(
+                'SELECT * from clients WHERE client_id = ?',
+                array($clientparams['client_id']),
+                DB_FETCHMODE_ASSOC
+            );
+            if (!DB::isError($data)) {
+                if (!empty($data)) {
+                    foreach ($data as $key => $value) {
+                        $clientparams['client_' . $key] = $value;
+                    }
+                    $clientparams['clientstatus'] = DBService::$STATUS['STATUS_OK'];
+                    $retval = true;
+                }
+            }
+            $db->disconnect();
+        }
+    }
     return $retval;
 }
