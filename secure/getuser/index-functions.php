@@ -138,6 +138,16 @@ function getPKCS12()
         return; // ERROR means no further processing is necessary
     }
 
+    // Verify myproxy-logon binary is configured
+    $disabledbyconf = ((!defined(MYPROXY_LOGON)) || (empty(MYPROXY_LOGON)));
+    if ($disabledbyconf) {
+        $log->info('ECP PKCS12 error: Downloading certificates is ' .
+            'disabled due to myproxy-logon not configured.');
+        outputError('Downloading certificates is disabled.');
+        Util::unsetAllUserSessionVars();
+        return; // ERROR means no further processing is necessary
+    }
+
     $shibarray = Util::getIdpList()->getShibInfo();
     if (Util::isEduGAINAndGetCert(@$shibarray['Identity Provider'], @$shibarray['Organization Name'])) {
         $log->info('ECP PKCS12 error: Failed to get cert due to eduGAIN IdP restriction.');
@@ -214,6 +224,16 @@ function getCert()
         $errstr = array_search(Util::getSessionVar('status'), DBService::$STATUS);
         $log->info('ECP certreq error: ' . $errstr . '.');
         outputError($errstr);
+        Util::unsetAllUserSessionVars();
+        return; // ERROR means no further processing is necessary
+    }
+    //
+    // Verify myproxy-logon binary is configured
+    $disabledbyconf = ((!defined(MYPROXY_LOGON)) || (empty(MYPROXY_LOGON)));
+    if ($disabledbyconf) {
+        $log->info('ECP certreq error: Downloading certificates is ' .
+            'disabled due to myproxy-logon not configured.');
+        outputError('Downloading certificates is disabled.');
         Util::unsetAllUserSessionVars();
         return; // ERROR means no further processing is necessary
     }
