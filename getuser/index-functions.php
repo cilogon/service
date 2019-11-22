@@ -24,7 +24,6 @@ function getUserAndRespond()
     $firstname = '';
     $lastname = '';
     $displayname = '';
-    $fullname = '';
     $emailaddr = '';
     $openidid = '';
     $oidcid = '';
