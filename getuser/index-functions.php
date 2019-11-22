@@ -97,7 +97,6 @@ function getUserAndRespond()
         $func = 'CILogon\Service\Util::saveUserToDataStore';
         if (!empty(Util::getSessionVar('storeattributes'))) {
             $func = 'CILogon\Service\Util::setUserAttributeSessionVars';
-            Util::unsetSessionVar('storeattributes');
         }
         $func(
             $openidid,
