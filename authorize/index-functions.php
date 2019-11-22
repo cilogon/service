@@ -714,7 +714,6 @@ function getOIDCClientParams(&$clientparams)
 {
     $retval = false;
     if (strlen(@$clientparams['client_id']) > 0) {
-        $db = new DB();
         $dsn = array(
             'phptype'  => 'mysqli',
             'username' => MYSQLI_USERNAME,
