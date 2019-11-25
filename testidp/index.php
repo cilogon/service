@@ -26,6 +26,10 @@ $submit = str_replace(
     Util::getCsrf()->verifyCookieAndGetSubmit()
 );
 Util::unsetSessionVar('submit');
+// CIL-410 Don't attempt to save the user to the database. Instead save
+// attributes to the PHP session. This variable should be unset by other
+// flows at the top-level index.php file.
+Util::setSessionVar('storeattributes', '1'); // Used only by /testidp/
 
 // Depending on the value of the clicked 'submit' button or the
 // equivalent PHP session variable, take action or print out HTML.
@@ -37,12 +41,10 @@ switch ($submit) {
         if (Util::getIdpList()->exists($providerId)) {
             // Use SAML authn
             Util::setCookieVar('providerId', $providerId);
-            Util::setSessionVar('storeattributes', '1');
             Content::redirectToGetShibUser($providerId);
         } elseif (in_array($providerName, Util::$oauth2idps)) {
             // Use OAuth2 authn
             Util::setCookieVar('providerId', $providerId);
-            Util::setSessionVar('storeattributes', '1');
             Content::redirectToGetOAuth2User($providerId);
         } else { // Either providerId not set or not in whitelist
             Util::unsetCookieVar('providerId');

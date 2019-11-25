@@ -23,6 +23,7 @@ $submit = str_replace(
     Util::getCsrf()->verifyCookieAndGetSubmit()
 );
 Util::unsetSessionVar('submit');
+Util::unsetSessionVar('storeattributes'); // Used only by /testidp/
 
 $log = new Loggit();
 $log->info('submit="' . $submit . '"');

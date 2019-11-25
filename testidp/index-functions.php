@@ -139,6 +139,9 @@ function printMainPage()
         <a href="mailto:help@cilogon.org">help&nbsp;@&nbsp;cilogon.org</a>
         for additional information and assistance.
         </p>
+        <p class="addsubmit">
+        <a href="/logout">Logout</a>
+        </p>
         </div>
         ';
     }
