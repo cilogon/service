@@ -189,7 +189,7 @@ function printOIDCErrorPage()
 function printMainPage()
 {
     $clientparams = json_decode(Util::getSessionVar('clientparams'), true);
-    $redirect = '';
+    $redirect = 'Location: ' . $clientparams['redirect_url'];
 
     $log = new Loggit();
     $log->info('Calling setTransactionState dbService method...');
@@ -204,7 +204,6 @@ function printMainPage()
             Util::getSessionVar('myproxyinfo')
         )) && (!($dbs->status & 1))
     ) { // STATUS_OK codes are even
-        $redirect = 'Location: ' . $clientparams['redirect_url'];
         // CIL-360 - Check for Response Mode
         // http://openid.net/specs/oauth-v2-multiple-response-types-1_0.html#ResponseModes
         if (isset($clientparams['response_mode'])) {
@@ -499,7 +498,7 @@ function verifyOIDCParams()
                         $redirect_url = '';
                         if (isset($info['redirect_url'])) {
                             $redirect_url = $info['redirect_url'];
-                            $clientparmas['redirect_url'] = $redirect_url;
+                            $clientparams['redirect_url'] = $redirect_url;
                             // CIL-407 - In case of two question marks '?'
                             // in redirect_url (caused by OIDC authz endpoint
                             // blindly appending "?error=..."), change all
@@ -528,7 +527,6 @@ function verifyOIDCParams()
                             }
                             if (isset($params['error'])) {
                                 // Got 'error' - simply return to OIDC client
-                                $clientparams = array();
                                 Util::unsetAllUserSessionVars();
                                 header("Location: $redirect_url");
                                 exit; // No further processing necessary

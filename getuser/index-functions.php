@@ -21,6 +21,8 @@ use League\OAuth2\Client\Token\AccessToken;
  */
 function getUserAndRespond()
 {
+    $providerId= '';
+    $providerName = '';
     $firstname = '';
     $lastname = '';
     $displayname = '';

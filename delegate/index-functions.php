@@ -585,7 +585,7 @@ function handleAllowDelegation($always = false)
                                 $x509out,
                                 $retcode
                             );
-                            if ($retcode == 0) {
+                            if ($retcode === 0) {
                                 $certtext = implode("\n", $x509out);
                             } else {
                                 $certtext = $cert;
