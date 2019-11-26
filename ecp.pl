@@ -5,7 +5,7 @@
 # Script      : ecp.pl                                                  #
 # Authors     : Terry Fleury <tfleury@illinois.edu>                     #
 # Create Date : July 06, 2011                                           #
-# Last Update : November 19, 2019                                       #
+# Last Update : November 26, 2019                                       #
 #                                                                       #
 # This PERL script allows a user to get an end-user X.509 certificate   #
 # or PKCS12 credential from the CILogon Service. It can also get the    #
@@ -68,7 +68,7 @@ use constant {
 # BEGIN MAIN PROGRAM #
 ######################
 
-our $VERSION = "0.029";
+our $VERSION = "0.030";
 $VERSION = eval $VERSION;
 
 use strict;
@@ -1327,7 +1327,7 @@ Specify the name of a CILogon-configured "virtual organization". Note that
 the program does NOT prompt for a virtual organization in interactive mode,
 so you must specify it with the B<--vo> command line option.
 
-=item B<-w> I<password>, B<--password> I<password>
+=item B<-P> I<password>, B<--password> I<password>
 
 Specify a password string to encrypt the private key of the PKCS12
 credential. This password must be at least 12 characters in length.
