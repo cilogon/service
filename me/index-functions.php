@@ -468,8 +468,6 @@ function getTitleText($cookie)
             "delegated certificate." ,
         "portalstatus" => "An internal return code when fetching portal parameters from the datastore." ,
         "providerId" => "The previously selected Identity Provider." ,
-        "requestsilver" => "Set to 1 if attempting to get a 'silver' " .
-            "Level of Assurance from your chosen Identity Provider." ,
         "responsesubmit" => "The name of the 'stage' to return to after " .
             "authentication at your chosen Identity Provider." ,
         "responseurl" => "The URL to return to after authentication at your chosen Identity Provider." ,
