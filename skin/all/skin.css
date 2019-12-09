@@ -1,10 +1,5 @@
-div.logofftextbox {
-  border: 1px solid #888;
-  display: block;
-}
-
-p.p12certificatelifetime {
-  display: block;
+.p12certificatelifetime {
+  display: flex;
 }
 
 div.skincilogonlogo {

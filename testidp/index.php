@@ -66,16 +66,6 @@ switch ($submit) {
         exit; // No further processing necessary
         break;
 
-    case 'Show  Help ': // Toggle showing of help text on and off
-    case 'Hide  Help ':
-        if (Util::getSessionVar('showhelp') == 'on') {
-            Util::unsetSessionVar('showhelp');
-        } else {
-            Util::setSessionVar('showhelp', 'on');
-        }
-        printLogonPage();
-        break; // End case 'Show Help' / 'Hide Help'
-
     default: // No submit button clicked nor PHP session submit variable set
         printLogonPage();
         break; // End default case

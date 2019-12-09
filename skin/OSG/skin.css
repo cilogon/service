@@ -14,29 +14,32 @@ a:hover {
 a:active {
   color: #fdcb25;
 }
-/***** End basic elements *****/
-
-/***** Begin a few misc elements *****/
-input.submit {
+.card-header {
+    background-color: rgb(242,242,242);
+}
+.btn.btn-primary {
   color: #fff;
   background-color: #e07630;
   border: 0;
 }
-input.submit:hover {
+.btn.btn-primary:hover,
+.btn.btn-primary.active,
+.btn.btn-primary.active.focus,
+.btn.btn-primary.active:focus,
+.btn.btn-primary.active:hover,
+.btn.btn-primary:active,
+.btn.btn-primary:active.focus,
+.btn.btn-primary:active:focus,
+.btn.btn-primary:active:hover {
+  color: white;
   background-color: #fdcb25;
 }
-/***** End a few misc element *****/
-
-/***** Begin page footer *****/
-div.footer a:link {
+.footer a:link {
   color: #e07630;
 }
-div.footer a:visited {
+.footer a:visited {
   color: #666;
 }
-/***** End page footer *****/
-
-/***** Begin the "CILogon Service" header at the top of each page *****/
 div.logoheader {
   background: none;
   height: 81px;
@@ -49,20 +52,6 @@ div.logoheader h1 {
   height: 81px;
   float: left;
 }
-/***** End the "CILogon Service" header at the top of each page *****/
-
-/***** Begin skincilogonlogo *****/
 div.skincilogonlogo {
   display: inline;
 }
-/***** End skincilogonlogo *****/
-
-/***** Begin Help-related stuff *****/
-table.helptable td.helpcell div {
-  background-color: #ffffe3;
-  margin-right: 1em;
-}
-tr.inforow td.helpcell {
-  background-color: #ffffe3;
-}
-/***** End Help-related stuff *****/

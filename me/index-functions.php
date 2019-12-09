@@ -31,8 +31,7 @@ function printMainCookiesPage()
     $browsercount = countBrowserCookies();
     $sessioncount = countSessionVariables();
 
-    Content::printHeader('Manage CILogon Cookies', '', false); // Don't set CSRF
-    Content::printPageHeader('Manage CILogon Cookies');
+    Content::printHeader('Manage CILogon Cookies', false); // Don't set CSRF
 
     Content::printFormHead();
 
@@ -58,41 +57,40 @@ function printMainCookiesPage()
  */
 function printAboutThisPage($browsercount, $sessioncount)
 {
-    echo '
-    <div class="boxed">
-      <div class="boxheader">
-      About This Page
-      </div>
-    <p>
-    This page allows you to view and (potentially) delete various cookies
-    associated with the <a target="_blank" href="..">CILogon Service</a>.
-    There are three sections below.
-    </p>
+    Content::printCollapseBegin('aboutme', 'CILogon Attributes', false);
 
-    <ol>
-    <li><b>Browser Cookies</b> - These are &quot;cookies&quot;
-    which are stored in your browser. They are used as preferences for the
-    CILogon Service.
-    </li>
-    <li><b>Session Variables</b> - These are &quot;short-lived&quot;
-    values related to your current CILogon session. Deleting any of these
-    values may require you to re-logon.
-    </li>
-    <li><b>Environment Variables</b> - These are values set by the
-    interaction between your browser and the web server. These are displayed
-    mainly for information purposes.
-    </li>
-    </ol>
+    echo '
+        <div class="card-body px-5">
+          <div class="card-text my-2">
+            This page allows you to view and (potentially) delete various 
+            cookies associated with the <a target="_blank" href="..">CILogon 
+            Service</a>. There are three sections below.
+          </div> <!-- end card-text -->
+          <ol>
+            <li><b>Browser Cookies</b> - These are &quot;cookies&quot;
+            which are stored in your browser. They are used as preferences 
+            for the CILogon Service.
+            </li>
+            <li><b>Session Variables</b> - These are &quot;short-lived&quot;
+            values related to your current CILogon session. Deleting any of 
+            these values may require you to re-logon.
+            </li>
+            <li><b>Environment Variables</b> - These are values set by the
+            interaction between your browser and the web server. These are 
+            displayed
+            mainly for information purposes.
+            </li>
+          </ol>
     ';
 
     // If there are brower cookies or session variables which can be
     // deleted, output the appropriate 'Delete ...' button(s).
     if (($browsercount > 0) || ($sessioncount > 0)) {
         echo '
-        <p>
-        You can delete cookies individually by checking the associated
-        checkbox(es) and clicking the &quot;Delete Checked&quot; button.
-        You can also delete groups of cookies by clicking ';
+          <div class="card-text my-2">
+            You can delete cookies individually by checking the associated
+            checkbox(es) and clicking the &quot;Delete Checked&quot; button.
+            You can also delete groups of cookies by clicking ';
         if ($browsercount > 0) {
             echo 'the &quot;Delete Browser Cookies&quot; button';
         }
@@ -109,28 +107,48 @@ function printAboutThisPage($browsercount, $sessioncount)
     }
 
     echo '
-    </p>
+          </div> <!-- end card-text -->
 
-    <p class="centered">
-    ';
+          <div class="row align-items-center justify-content-center">
+            <div class="col-auto">
+              <a class="btn btn-primary form-control" href="/">Proceed
+              to the CILogon Service</a>
+            </div> <!-- end col-auto -->';
 
     if ($browsercount > 0) {
-        echo '<input type="submit" name="submit" class="submit"
-               value="Delete Browser Cookies" /> ';
+        echo '
+            <div class="col-auto">
+              <input type="submit" name="submit"
+              class="btn btn-primary submit form-control"
+              value="Delete Browser Cookies" />
+            </div> <!-- end col-auto -->';
     }
     if ($sessioncount > 0) {
-        echo '<input type="submit" name="submit" class="submit"
-               value="Delete Session Variables" /> ';
+        echo '
+            <div class="col-auto">
+              <input type="submit" name="submit"
+              class="btn btn-primary submit form-control"
+              value="Delete Session Variables" />
+            </div> <!-- end col-auto -->';
     }
     if (($browsercount > 0) && ($sessioncount > 0)) {
-        echo '<input type="submit" name="submit" class="submit"
-               value="Delete ALL" /> ';
+        echo '
+            <div class="col-auto">
+              <input type="submit" name="submit"
+              class="btn btn-primary submit form-control"
+              value="Delete ALL" />
+            </div> <!-- end col-auto -->';
     }
     echo '
-    <input type="submit" name="submit" class="submit" value="Reload Page" />
-    </p>
-    </div>
-    ';
+            <div class="col-auto">
+              <input type="submit" name="submit"
+              class="btn btn-primary submit form-control"
+              value="Reload Page" />
+            </div> <!-- end col-auto -->
+          </div> <!-- end row align-items-center -->
+        </div> <!-- end card-body --> ';
+
+        Content::printCollapseEnd();
 }
 
 /**
@@ -146,17 +164,13 @@ function printBrowserCookies($browsercount)
 {
     global $hide;
 
-    echo '
-    <p> </p>
-    <div class="boxed">
-      <div class="boxheader">
-        Browser Cookies
-      </div>
-    ';
+    Content::printCollapseBegin('cookies', 'Browser Cookies', false);
 
     if ($browsercount > 0) {
         echo '
-          <table rules="rows" width="100%">
+        <div class="card-body">
+          <table class="table table-striped table-sm table-hover small">
+          <tbody>
         ';
 
         ksort($_COOKIE);
@@ -165,9 +179,9 @@ function printBrowserCookies($browsercount)
                 echo '<tr title="' , getTitleText($key) , '">' ,
                      '<td><input type="checkbox" name="del_browser[]" ',
                      'value="', $key , '"/></td>' ,
-                     '<td style="padding-right:2em"><tt>' ,
+                     '<th scope="row" style="word-break: break-all"><samp>' ,
                      Util::htmlent($key) ,
-                     '</tt></td><td><tt>';
+                     '</samp></th><td><samp>';
                 // Special handling of portalparams cookie
                 if ($key == PortalCookie::COOKIENAME) {
                     $pc = new PortalCookie();
@@ -175,25 +189,36 @@ function printBrowserCookies($browsercount)
                 } else {
                     echo Util::htmlent($value);
                 }
-                echo '</tt></td></tr>';
+                echo '</samp></td></tr>';
             }
         }
 
         echo '
+          </tbody>
           </table>
 
-          <p class="centered">
-          <input type="submit" name="submit" class="submit"
-           value="Delete Checked" />
-          </p>
-        ';
+          <div class="row align-items-center justify-content-center">
+            <div class="col-auto">
+              <input type="submit" name="submit"
+              class="btn btn-primary submit form-control"
+              value="Delete Checked" />
+            </div> <!-- end col-auto -->
+          </div> <!-- end row align-items-center -->';
     } else {
-        echo '<p>No browser cookies found.</p>';
+        echo '
+        <div class="card-body px-5">
+          <div class="row">
+            <div class="col-auto">
+              No browser cookies found.
+            </div>
+          </div>';
     }
 
     echo '
-    </div>
+        </div> <!-- end card-body -->
     ';
+
+    Content::printCollapseEnd();
 }
 
 /**
@@ -209,17 +234,13 @@ function printSessionVariables($sessioncount)
 {
     global $hide;
 
-    echo '
-    <p> </p>
-    <div class="boxed">
-      <div class="boxheader">
-        Session Variables
-      </div>
-    ';
+    Content::printCollapseBegin('session', 'Session Variables', false);
 
     if ($sessioncount > 0) {
         echo '
-          <table rules="rows" width="100%">
+        <div class="card-body">
+          <table class="table table-striped table-sm table-hover small">
+          <tbody>
         ';
 
         ksort($_SESSION);
@@ -228,29 +249,40 @@ function printSessionVariables($sessioncount)
                 echo '<tr title="' , getTitleText($key) , '">' ,
                      '<td><input type="checkbox" name="del_session[]" ',
                      'value="', $key , '"/></td>' ,
-                     '<td style="padding-right:2em"><tt>' ,
+                     '<th scope="row"><samp>' ,
                      Util::htmlent($key) ,
-                     '</tt></td><td><tt>' ,
+                     '</samp></th><td><samp>' ,
                      Util::htmlent($value) ,
-                     '</tt></td></tr>';
+                     '</samp></td></tr>';
             }
         }
 
         echo '
+          </tbody>
           </table>
 
-          <p class="centered">
-          <input type="submit" name="submit" class="submit"
-          value="Delete Checked" />
-          </p>
-        ';
+          <div class="row align-items-center justify-content-center">
+            <div class="col-auto">
+              <input type="submit" name="submit"
+              class="btn btn-primary submit form-control"
+              value="Delete Checked" />
+            </div> <!-- end col-auto -->
+          </div> <!-- end row align-items-center -->';
     } else {
-        echo '<p>No session variables found.</p>';
+        echo '
+        <div class="card-body px-5">
+          <div class="row">
+            <div class="col-auto">
+              No session variables found.
+            </div>
+          </div>';
     }
 
     echo '
-    </div>
+        </div> <!-- end card-body -->
     ';
+
+    Content::printCollapseEnd();
 }
 
 /**
@@ -261,29 +293,30 @@ function printSessionVariables($sessioncount)
  */
 function printEnvironmentVars()
 {
-    echo '
-    <p> </p>
-    <div class="boxed">
-      <div class="boxheader">
-        Environment Variables
-      </div>
+    Content::printCollapseBegin('environment', 'Environment Variables', false);
 
-      <table rules="rows" width="100%">
+    echo '
+        <div class="card-body">
+          <table class="table table-striped table-hover table-sm small">
+          <tbody>
     ';
 
     ksort($_SERVER);
     foreach ($_SERVER as $key => $value) {
-        echo '<tr><td style="padding-right:2em"><tt>' ,
+        echo '<tr><th scope="row"><samp>' ,
              Util::htmlent($key) ,
-             '</tt></td><td><tt>' ,
+             '</samp></th><td><samp>' ,
              Util::htmlent($value) ,
-             '</tt></td></tr>';
+             '</samp></td></tr>';
     }
 
     echo '
-      </table>
-    </div>
+          </tbody>
+          </table>
+        </div> <!-- end card-body -->
     ';
+
+    Content::printCollapseEnd();
 }
 
 /**
@@ -472,7 +505,6 @@ function getTitleText($cookie)
             "authentication at your chosen Identity Provider." ,
         "responseurl" => "The URL to return to after authentication at your chosen Identity Provider." ,
         "_shibsession" => "A shibboleth session token set by an InCommon Identity Provider." ,
-        "showhelp" => "Whether to show help text or not." ,
         "stage" => "The current page displayed." ,
         "status" => "An internal return code when fetching user data from the datastore." ,
         "submit" => "The name of the 'submit' button clicked." ,

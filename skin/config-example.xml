@@ -320,4 +320,23 @@
   <forceauthn>1</forceauthn>
   -->
 
+  <!-- <wayfcancelbutton>
+       If set to 1, show an additional button on the "Select an Identity
+       Provider" page "Cancel", which would either send the user to
+       www.cilogon.org (in the case of PKCS12 certificates) or back to the
+       originating portal (in the case of OAuth).
+  -->
+  <!--
+  <wayfcancelbutton>1</wayfcancelbutton>
+   -->
+
+  <!-- <logofftextbox>
+       If set to 1, do not show the "Log Off" button. Instead, show a text
+       box "To log off, please quit your browser.".
+  -->
+
+  <!--
+  <logofftextbox>1</logofftextbox>
+  -->
+
 </config>

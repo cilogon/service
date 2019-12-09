@@ -17,4 +17,6 @@
 
   <dnformat>rfc2253</dnformat>
 
+  <logofftextbox>1</logofftextbox>
+
 </config>

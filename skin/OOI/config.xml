@@ -18,4 +18,6 @@
     <hideportalinfo>1</hideportalinfo>
   </portallistaction>
 
+  <wayfcancelbutton>1</wayfcancelbutton>
+
 </config>

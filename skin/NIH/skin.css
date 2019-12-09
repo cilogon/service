@@ -30,8 +30,9 @@ div.logoheader h1 {
     margin: 17px 0px 0px 20px;
 }
 
-input#searchlist {
-    font-size: inherit;
+div.skincilogonlogo {
+  display: inline;
+  margin: 5px;
 }
 
 body > div.pagecontent > div.boxed > div.actionbox > table > tbody > tr > td > form > fieldset > p:nth-child(1) {
@@ -49,87 +50,11 @@ select#providerId {
     font-size: 15px;
 }
 
-div.actionbox {
-    width: 500px;
-    height: inherit;
-    margin: 0 auto;
-    pointer-events: all;
-    text-align: center;
-    background: rgb(237,237,237,.9);
-    background: -moz-linear-gradient(45deg, rgba(237,237,237,.9) 0%, rgba(246,246,246,.9) 53%, rgba(255,255,255,.9) 100%);
-    background: -webkit-linear-gradient(45deg, rgba(237,237,237,.9) 0%,rgba(246,246,246,.9) 53%,rgba(255,255,255,.9) 100%);
-    background: linear-gradient(45deg, rgba(237,237,237,.9) 0%,rgba(246,246,246,.9) 53%,rgba(255,255,255,.9) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ffffff',GradientType=1 );
-    border-radius: 10px;
-    padding: 20px;
-    webkit-box-shadow: 0 5px 15px rgba(0,0,0,.5);
-    box-shadow: 0 5px 15px rgba(0,0,0,.5);
+.card-header {
+    background-color: rgb(242,242,242);
 }
 
-table.helptable td.actioncell {
-    width: 500px !important;
-}
-
-div.boxed, div.footer {
-    border: none;
-}
-
-div.skincilogonlogo {
-  display: inline;
-  margin: 5px;
-}
-
-table.helptable td.helpcell div {
-    background: rgb(237,237,237,.9);
-    background: -moz-linear-gradient(45deg, rgba(237,237,237,.9) 0%, rgba(246,246,246,.9) 53%, rgba(255,255,255,.9) 100%);
-    background: -webkit-linear-gradient(45deg, rgba(237,237,237,.9) 0%,rgba(246,246,246,.9) 53%,rgba(255,255,255,.9) 100%);
-    background: linear-gradient(45deg, rgba(237,237,237,.9) 0%,rgba(246,246,246,.9) 53%,rgba(255,255,255,.9) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ffffff',GradientType=1 );
-  margin-right: 1em;
-}
-tr.inforow td.helpcell {
-    background: rgb(237,237,237,.9);
-    background: -moz-linear-gradient(45deg, rgba(237,237,237,.9) 0%, rgba(246,246,246,.9) 53%, rgba(255,255,255,.9) 100%);
-    background: -webkit-linear-gradient(45deg, rgba(237,237,237,.9) 0%,rgba(246,246,246,.9) 53%,rgba(255,255,255,.9) 100%);
-    background: linear-gradient(45deg, rgba(237,237,237,.9) 0%,rgba(246,246,246,.9) 53%,rgba(255,255,255,.9) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ffffff',GradientType=1 );
-}
-
-div.titlebox {
-  border: 3px solid #222;
-  background: rgb(245,245,245,.9);
-}
-div.boxheader {
-  border: 1px solid #222;
-  background: rgb(237,237,237,.9);
-}
-
-div.userchanged table {
-  border: 1px solid #D6DDB9;
-}
-div.userchanged table tr th {
-  border: 1px solid #D6DDB9;
-  background: rgb(237,237,237,.9);
-}
-div.userchanged table tr.headings th {
-  border: 1px solid #D6DDB9;
-  background: rgb(237,237,237,.9);
-}
-div.userchanged table tr td {
-  border: 1px solid #D6DDB9;
-  background: rgb(237,237,237,.9);
-}
-div.userchanged table tr.odd th {
-  border: 1px solid #D6DDB9;
-  background: rgb(245,245,245,.9);
-}
-div.userchanged table tr.odd td {
-  border: 1px solid #D6DDB9;
-  background: rgb(245,245,245,.9);
-}
-
-
-input.submit {
+.btn.btn-primary {
     border: 1px solid #777;
     color: #eee;
     width: 240px;
@@ -159,7 +84,7 @@ input.submit {
     
 }
 
-input.submit:hover {
+.btn.btn-primary:hover {
     color: #ddd;
     border: none;
     border-top: 1px solid #999;
@@ -168,17 +93,14 @@ input.submit:hover {
     border-right: 1px solid #aaa;
     box-shadow: none;
     text-decoration: none;
+    font-weight: normal;
 }
 
-p.privacypolicy {
+.privacypolicy {
     font-size: small;
 }
 
-div.footer {
+.footer {
+    border: none;
     color: #000;
-}
-
-div.footer p {
-    font-size: inherit;
-    line-height: 1.6em;
 }

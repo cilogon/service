@@ -30,29 +30,22 @@ function printLogonPage($clearcookies = false)
         Util::unsetAllUserSessionVars();
     }
 
-    Util::setSessionVar('stage', 'logon'); // For Show/Hide Help button clicks
+    Util::setSessionVar('stage', 'logon');
 
     Content::printHeader('Test Your Identity Provider With CILogon');
+    Content::printCollapseBegin('testidp', 'Test Your Identity Provider', false);
 
     echo '
-    <div class="boxed">
+        <div class="card-body px-5">
+          <div class="card-text my-2">
+            To test that your identity provider works with CILogon, please 
+            select it from the list below and Log On.
+          </div> <!-- end card-text -->
+        </div> <!-- end card-body -->   
     ';
 
-    Content::printHelpButton();
-
-    echo '
-      <br />
-      <p>
-      To test that your identity provider works with CILogon, please select
-      it from the list below and Log On.
-      </p>
-    ';
-
+    Content::printCollapseEnd();
     Content::printWAYF(false);
-
-    echo '
-    </div> <!-- End boxed -->
-    ';
     Content::printFooter();
 }
 
@@ -69,99 +62,81 @@ function printMainPage()
     $idp = Util::getSessionVar('idp');
     if (empty($idp)) {
         printLogonPage(true);
-        exit; // No further processing necessary
+        return; // No further processing necessary
     }
 
     Util::setSessionVar('stage', 'main'); // For Show/Hide Help button clicks
-
-    Content::printHeader('Test Identity Provider');
-    Content::printPageHeader('Test Your Organization\'s Identity Provider');
-
     // CIL-626 Allow browser 'reload page' by adding CSRF to the PHP session
     Util::setSessionVar('submit', 'Proceed');
     Util::getCsrf()->setTheSession();
 
-    echo '
-    <div class="boxed">
-    ';
+    Content::printHeader('Test Identity Provider');
+
+    Content::printCollapseBegin('showidp', 'Verify Attribute Release', false);
 
     echo '
-    <div class="boxed">
-      <div class="boxheader">
-        Verify SAML Attribute Release Policy
-      </div>
-
-    <p>
-    Thank you for your interest in the CILogon Service. This page allows
-    the administrator of an Identity Provider (<acronym
-    title="Identity Provider">IdP</acronym>) to verify that all necessary
-    SAML attributes have been released to the CILogon Service Provider
-    (<acronym title="Service Provider">SP</acronym>). Below you will see
-    the various attributes required by the CILogon Service and their values
-    as released by your IdP.
-    </p>
-
-    <div class="summary">
-    <h2>Summary</h2>
+        <div class="card-body px-5">
+          <div class="card-text my-2">
+            Thank you for your interest in the CILogon Service. This page 
+            enables you to verify that all necessary attributes have been
+            released to the CILogon Service Provider
+            (<abbr title="Service Provider">SP</abbr>) by your selected
+            Identity Provider (<abbr title="Identity Provider">IdP</abbr>).
+            Below you will see the various attributes required by the 
+            CILogon Service and their values as released by your IdP.
+          </div> <!-- end card-text -->
     ';
 
     $gotattrs = Util::gotUserAttributes();
 
+    echo '
+          <div class="row my-3">
+            <div class="col-1 text-center">';
+
     if ($gotattrs) {
-        echo '<div class="icon">';
-        Content::printIcon('okay');
-        echo '
-        </div>
-        <div class="summarytext">
-        <p>
-        All required attributes have been released by your <acronym
-        title="Identity Provider">IdP</acronym>. For details of the various
-        attributes utilized by the CILogon Service and their current values,
-        see the sections below.
-        </p>
-        <p class="addsubmit">
-        <a href="/">Proceed to the CILogon Service</a>
-        </p>
-        <p class="addsubmit">
-        <a href="/logout">Logout</a>
-        </p>
-        </div>
+        echo '<large>' ,
+            Content::getIcon('fa-check-square fa-2x', 'lime'), '</large>
+            </div> <!-- end col-1 -->
+            <div class="col">
+              All required attributes have been released by your
+              IdP. For details of the various attributes utilized
+              by the CILogon Service and their current values,
+              see the sections below.
+            </div>
+          </div> <!-- end row -->
+          <div class="row align-items-center justify-content-center">
+            <div class="col-auto">
+              <a class="btn btn-primary" href="/">Proceed
+              to the CILogon Service</a>
+            </div> <!-- end col-auto -->
         ';
     } else {
-        echo '<div class="icon">';
-        Content::printIcon('error', 'Missing one or more attributes.');
-        echo '
-        </div>
-        <div class="summarytext">
-        <p>
-        One or more of the attributes required by the CILogon Service are
-        not available. Please see the sections below for details. Contact
-        <a href="mailto:help@cilogon.org">help&nbsp;@&nbsp;cilogon.org</a>
-        for additional information and assistance.
-        </p>
-        <p class="addsubmit">
-        <a href="/logout">Logout</a>
-        </p>
-        </div>
+        echo Content::getIcon(
+            'fa-exclamation-circle fa-2x',
+            'red',
+            'Missing one or more attributes.'
+        ), '
+            </div> <!-- end col-1 -->
+            <div class="col">
+              One or more of the attributes required by the CILogon Service 
+              are not available. Please see the sections below for details. 
+              Contact <a href="mailto:help@cilogon.org">help@cilogon.org</a>
+              for additional information and assistance.
+            </div>
+          </div> <!-- end row -->
+          <div class="row align-items-center justify-content-center">
         ';
     }
-
     echo '
-    </div> <!-- summary -->
+            <div class="col-auto">
+               <a class="btn btn-primary" href="/logout">Logout</a>
+            </div> <!-- end col-auto -->
+          </div> <!-- end row align-items-center -->
+        </div> <!-- end card-body --> ';
 
-    <noscript>
-    <div class="nojs">
-    Javascript is disabled. In order to expand or collapse the sections
-    below, please enable Javascript in your browser.
-    </div>
-    </noscript>
-    ';
+    Content::printCollapseEnd();
 
     Content::printUserAttributes();
     Content::printIdPMetadata();
-
-    echo '
-    </div> <!-- End boxed -->
-    ';
     Content::printFooter();
 }

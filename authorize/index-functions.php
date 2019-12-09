@@ -21,8 +21,6 @@ use CILogon\Service\Loggit;
  */
 function printLogonPage()
 {
-    $clientparams = json_decode(Util::getSessionVar('clientparams'), true);
-
     $log = new Loggit();
     $log->info('Welcome page hit.');
 
@@ -32,12 +30,10 @@ function printLogonPage()
         'Welcome To The CILogon OpenID Connect Authorization Service'
     );
 
-    echo '
-    <div class="boxed">
-    ';
+    $clientparams = json_decode(Util::getSessionVar('clientparams'), true);
 
-    // If the <hideportalinfo> option is set, do not show the portal info if
-    // the OIDC redirect_uri or client_id is in the portal list.
+    // If the <hideportalinfo> option is set, do not show the portal info
+    // if the OIDC redirect_uri or client_id is in the portal list.
     $showportalinfo = true;
     $skin = Util::getSkin();
     if (
@@ -51,70 +47,9 @@ function printLogonPage()
     }
 
     if ($showportalinfo) {
-        // Look in the 'scope' OIDC parameter to see which attributes are
-        // being requested. The values we care about are 'email', 'profile'
-        // (for first/last name), and 'edu.uiuc.ncsa.myproxy.getcert'
-        // (which gives a certificate containing first/last name AND email).
-        // CIL-632 Anything else should just be output as-is.
-        $scopes = preg_split("/[\s\+]+/", $clientparams['scope']);
-        $scopes = array_unique($scopes); // Remove any duplicates
-
-        echo '
-          <br/>
-          <p style="text-align:center"> <a target="_blank" href="' ,
-          htmlspecialchars($clientparams['client_home_url']) , '">',
-          htmlspecialchars($clientparams['client_name']) , '</a>' ,
-          ' requests access to the following information.
-          If you do not approve this request, do not proceed.
-          </p>
-          ';
-
-        echo '<ul style="max-width:660px;margin:0 auto">
-          ';
-
-        if (in_array('openid', $scopes)) {
-            echo '<li>Your CILogon user identifier</li>';
-            $scopes = array_diff($scopes, ['openid']);
-        }
-        if (
-            (in_array('profile', $scopes)) ||
-            (in_array('edu.uiuc.ncsa.myproxy.getcert', $scopes))
-        ) {
-            echo '<li>Your name</li>';
-            $scopes = array_diff($scopes, ['profile']);
-        }
-        if (
-            (in_array('email', $scopes)) ||
-            (in_array('edu.uiuc.ncsa.myproxy.getcert', $scopes))
-        ) {
-            echo '<li>Your email address</li>';
-            $scopes = array_diff($scopes, ['email']);
-        }
-        if (in_array('org.cilogon.userinfo', $scopes)) {
-            echo '<li>Your username and affiliation from your identity provider</li>';
-            $scopes = array_diff($scopes, ['org.cilogon.userinfo']);
-        }
-        if (in_array('edu.uiuc.ncsa.myproxy.getcert', $scopes)) {
-            echo '<li>A certificate that allows "' ,
-            htmlspecialchars($clientparams['client_name']) ,
-            '" to act on your behalf</li>';
-            $scopes = array_diff($scopes, ['edu.uiuc.ncsa.myproxy.getcert']);
-        }
-        // Output any remaining scopes as-is
-        foreach ($scopes as $value) {
-            echo '<li>', $value , '</li>';
-        }
-
-        echo '</ul>
-        ';
+        printOIDCConsent();
     }
-
-    Content::printWAYF(true, false);
-
-    echo '
-    </div> <!-- End boxed -->
-    ';
-
+    Content::printWAYF();
     Content::printFooter();
 }
 
@@ -130,47 +65,50 @@ function printOIDCErrorPage()
     $log->warn('Missing or invalid OIDC parameters.');
 
     Content::printHeader('CILogon Authorization Endpoint');
+    Content::printCollapseBegin('oidcdefault', 'CILogon OIDC Authorization Endpoint', false);
 
     echo '
-    <div class="boxed">
-      <br class="clear"/>
-      <p>
-      You have reached the CILogon OAuth2/OpenID Connect (OIDC) Authorization
-      Endpoint. This service is for use by OAuth2/OIDC Relying Parties (RPs)
-      to authorize users of the CILogon Service. End users should not normally
-      see this page.
-      </p>
+        <div class="card-body px-5">
+          <div class="card-text my-2">
+            You have reached the CILogon OAuth2/OpenID Connect (OIDC) 
+            Authorization Endpoint. This service is for use by OAuth2/OIDC 
+            Relying Parties (RPs) to authorize users of the CILogon Service. 
+            End users should not normally see this page.
+          </div> <!-- end row -->
     ';
 
     $client_error_msg = Util::getSessionVar('client_error_msg');
     Util::unsetSessionVar('client_error_msg');
     if (strlen($client_error_msg) > 0) {
-        echo "<p>$client_error_msg</p>";
+        echo '<div class="alert alert-danger" role="alert">', $client_error_msg, '</div>';
     } else {
         echo '
-          <p>
-          Possible reasons for seeing this page include:
-          </p>
-          <ul>
-          <li>You navigated directly to this page.</li>
-          <li>You clicked your browser\'s "Back" button.</li>
-          <li>There was a problem with the OpenID Connect client.</li>
-          </ul>
+          <div class="card-text my-2">
+            Possible reasons for seeing this page include:
+          </div> <!-- end row -->
+          <div class="card-text my-2">
+            <ul>
+              <li>You navigated directly to this page.</li>
+              <li>You clicked your browser\'s "Back" button.</li>
+              <li>There was a problem with the OpenID Connect client.</li>
+            </ul>
+          </div> <!-- end row -->
         ';
     }
 
     echo '
-      <p>
-      For assistance, please contact us at the email address at the
-      bottom of the page.
-      </p>
-      <p>
-      <strong>Note:</strong> You must enable cookies in your web browser to
-      use this site.
-      </p>
-    </div>
+          <div class="card-text my-2">
+            For assistance, please contact us at the email address at the
+            bottom of the page.
+          </div>
+          <div class="card-text my-2">
+            <strong>Note:</strong> You must enable cookies in your web 
+            browser to use this site.
+          </div>
+        </div> <!-- end card-body -->
     ';
 
+    Content::printCollapseEnd();
     Content::printFooter();
 }
 
@@ -286,66 +224,74 @@ function printMainPage()
 }
 
 /**
- * printPortalInfo
+ * printOIDCConsent
  *
- * This function prints out the portal information table at the top of
- * of the page.  The optional parameter $suffix allows you to append
- * a number (for example) to differentiate the portalinfo table on the
- * log in page from the one on the main page.
- *
- * @param string $suffix An optional suffix to append to the 'portalinfo'
- *        table class name.
+ * This function prints out the block showing the scopes requested by the
+ * OIDC client.
  */
-function printPortalInfo($suffix = '')
+function printOIDCConsent()
 {
+    // Look in the 'scope' OIDC parameter to see which attributes are
+    // being requested. The values we care about are 'email', 'profile'
+    // (for first/last name), and 'edu.uiuc.ncsa.myproxy.getcert'
+    // (which gives a certificate containing first/last name AND email).
+    // Anything else should just be output as-is.
     $clientparams = json_decode(Util::getSessionVar('clientparams'), true);
-    $showhelp = Util::getSessionVar('showhelp');
-    $helptext = "The Client Name is provided by the site to CILogon and has not been vetted.";
+    $scopes = preg_split("/[\s\+]+/", $clientparams['scope']);
+    $scopes = array_unique($scopes); // Remove any duplicates
 
+    Content::printCollapseBegin('oidcconsent', 'Consent to Attribute Release', false);
+
+    $clientparams = json_decode(Util::getSessionVar('clientparams'), true);
     echo '
-    <table class="portalinfo' , $suffix , '">
-    <tr class="inforow">
-      <th title="' , $helptext ,'">Client&nbsp;Name:</th>
-      <td title="' , $helptext ,'">' ,
-      htmlspecialchars($clientparams['client_name']) , '</td>
+        <div class="card-body px-5">
+          <div class="card-text my-2">
+            <a target="_blank" href="' ,
+            htmlspecialchars($clientparams['client_home_url']) , '">',
+            htmlspecialchars($clientparams['client_name']) , '</a>' ,
+            ' requests access to the following information.
+            If you do not approve this request, do not proceed.
+          </div> <!-- end row -->
+          <ul>
     ';
 
-    if ($showhelp == 'on') {
-        echo ' <td class="helpcell">' , $helptext , '</td>';
+    if (in_array('openid', $scopes)) {
+        echo '<li>Your CILogon user identifier</li>';
+        $scopes = array_diff($scopes, ['openid']);
     }
-
-    $helptext = "The Client Home is the home page of the client and is provided for your information.";
-
-    echo '
-    </tr>
-    <tr class="inforow">
-      <th title="' , $helptext , '">Client&nbsp;Home:</th>
-      <td title="' , $helptext , '">' ,
-          htmlspecialchars($clientparams['client_home_url']) , '</td>
+    if (
+        (in_array('profile', $scopes)) ||
+        (in_array('edu.uiuc.ncsa.myproxy.getcert', $scopes))
+    ) {
+        echo '<li>Your name</li>';
+        $scopes = array_diff($scopes, ['profile']);
+    }
+    if (
+        (in_array('email', $scopes)) ||
+        (in_array('edu.uiuc.ncsa.myproxy.getcert', $scopes))
+    ) {
+        echo '<li>Your email address</li>';
+        $scopes = array_diff($scopes, ['email']);
+    }
+    if (in_array('org.cilogon.userinfo', $scopes)) {
+        echo '<li>Your username and affiliation from your identity provider</li>';
+        $scopes = array_diff($scopes, ['org.cilogon.userinfo']);
+    }
+    if (in_array('edu.uiuc.ncsa.myproxy.getcert', $scopes)) {
+        echo '<li>A certificate that allows "' ,
+        htmlspecialchars($clientparams['client_name']) ,
+        '" to act on your behalf</li>';
+        $scopes = array_diff($scopes, ['edu.uiuc.ncsa.myproxy.getcert']);
+    }
+    // Output any remaining scopes as-is
+    foreach ($scopes as $value) {
+        echo '<li>', $value , '</li>';
+    }
+    echo '</ul>
+        </div> <!-- end card-body -->
     ';
 
-    if ($showhelp == 'on') {
-        echo '<td class="helpcell">' , $helptext , '</td>';
-    }
-
-    $helptext = "The Redirect URL is the location to which CILogon will send OpenID Connect response messages.";
-
-    echo '
-    </tr>
-    <tr class="inforow">
-      <th title="' , $helptext , '">Redirect&nbsp;URL:</th>
-      <td title="' , $helptext , '">' ,
-          htmlspecialchars($clientparams['redirect_uri']) , '</td>
-      ';
-
-    if ($showhelp == 'on') {
-        echo '<td class="helpcell">' , $helptext , '</td>';
-    }
-
-    echo '
-    </tr>
-    </table>
-    ';
+    Content::printCollapseEnd();
 }
 
 /**
@@ -433,7 +379,7 @@ function verifyOIDCParams()
                                 http_build_query($json);
                             $clientparams['code'] = $json['code'];
                             // CIL-618 Read OIDC client info from database
-                            if (!getOIDCClientParams($clientparams)) {
+                            if (!Util::getOIDCClientParams($clientparams)) {
                                 Util::sendErrorAlert(
                                     'getOIDCClientParams Error',
                                     'Error getting OIDC client parameters ' .
@@ -693,57 +639,5 @@ function verifyOIDCParams()
         Util::setSessionVar('clientparams', json_encode($clientparams));
     }
 
-    return $retval;
-}
-
-/**
- * getOIDCClientParams
- *
- * This function addresses CIL-618 and reads OIDC client information
- * directly from the database. It is a replacement for
- * $dbs->getClient($clientparams['client_id']) which calls
- * '/dbService?action=getClient&client_id=...'. This gives the PHP
- * '/authorize' endpoint access to additional OIDC client parameters
- * without having to rewrite the '/dbService?action=getClient' endpoint.
- *
- * @param array $clientparams An array of client parameters which gets
- *              stored in the PHP session.
- */
-function getOIDCClientParams(&$clientparams)
-{
-    $retval = false;
-    if (strlen(@$clientparams['client_id']) > 0) {
-        $dsn = array(
-            'phptype'  => 'mysqli',
-            'username' => MYSQLI_USERNAME,
-            'password' => MYSQLI_PASSWORD,
-            'database' => 'ciloa2',
-            'hostspec' => 'localhost'
-        );
-
-        $opts = array(
-            'persistent'  => true,
-            'portability' => DB_PORTABILITY_ALL
-        );
-
-        $db = DB::connect($dsn, $opts);
-        if (!PEAR::isError($db)) {
-            $data = $db->getRow(
-                'SELECT * from clients WHERE client_id = ?',
-                array($clientparams['client_id']),
-                DB_FETCHMODE_ASSOC
-            );
-            if (!DB::isError($data)) {
-                if (!empty($data)) {
-                    foreach ($data as $key => $value) {
-                        $clientparams['client_' . $key] = $value;
-                    }
-                    $clientparams['clientstatus'] = DBService::$STATUS['STATUS_OK'];
-                    $retval = true;
-                }
-            }
-            $db->disconnect();
-        }
-    }
     return $retval;
 }

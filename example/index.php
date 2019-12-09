@@ -7,12 +7,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use CILogon\Service\Content;
 
 Content::printHeader('CILogon Service Example Buttons');
-Content::printPageHeader('Examples of CILogon Service Buttons and Links');
 ?>
 
-<div class="boxed">
 
-<h1>Summary</h1>
+<h1>Examples of CILogon Buttons and Links</h1>
 
 <p>
 This page provides several examples of form buttons and links that website
@@ -20,7 +18,7 @@ designers can include in their sites to link to the CILogon Service.  The
 various images may also be included in presentations.
 </p>
 <p>
-CILogon provides two distinct web endpoints. In the examples that follow, be
+CILogon provides several services. In the examples that follow, be
 sure to use the appropriate URL (and any additional parameters) to suit your
 needs.
 </p>
@@ -33,19 +31,27 @@ needs.
   <a target="_blank" href="http://www.nsf.gov/oci">CyberInfrastructure</a>.
   </li>
   <li><strong><a target="_blank"
+  href="https://cilogon.org/.well-known/openid-configuration">https://cilogon.org/.well-known/openid-configuration</a></strong>
+  - The CILogon OpenID Connect (OIDC) Discovery Endpoint is for use by
+    OAuth2 / OIDC clients. In order to use the CILogon OIDC service,
+    you must first register your OIDC client at <a target="_blank"
+    href="https://cilogon.org/oauth2/register">https://cilogon.org/oauth2/register</a>.
+    You will need to know the callback URLs for your OIDC client as well
+    as the scopes/claims used by your application. For more information about
+    the CILogon OIDC Service, see the information on <a target="_blank"
+    href="https://www.cilogon.org/oidc">CILogon OpenID Connect (OIDC)</a>.
+  </li>
+  <li><strong><a target="_blank"
   href="https://cilogon.org/delegate/">https://cilogon.org/delegate/</a></strong>
-  - The CILogon Delegation Service is for use by Community Portals to obtain
-    certificates on behalf of their users. In order to correctly use the
-    CILogon Delegation Service, a Community Portal must pass a parameter
-    "<tt>oauth_token=...</tt>" as part of the URL. For more information
-    about using the CILogon Delegation Service, see the information on <a
-    target="_blank" href="http://www.cilogon.org/portal-delegation">Portal
-    Delegation</a>.
+  - The CILogon Delegation Service is an OAuth 1.0a service used by
+    Community Portals to obtain certificates on behalf of their users.
+    <strong>Note this service is deprecated in favor of the OAuth2/OIDC
+    service</strong>.
   </li>
 </ol>
 
 Where appropriate, the HTML has been stylized using "inline" CSS.  You can
-move the contents of the "<tt>style=...</tt>" parameter to an included
+move the contents of the "<samp>style=...</samp>" parameter to an included
 external CSS file if you are more comfortable with that method of coding.
 
 <hr />
@@ -54,37 +60,29 @@ external CSS file if you are more comfortable with that method of coding.
 
 <p>
 There are several ways a web designer can link to the CILogon site.  In the
-examples below, you will find examples for <tt>&lt;form&gt;</tt> coding and
-for simple hyperlinks (<tt>&lt;a href="..."&gt;</tt>).
+examples below, you will find examples for <samp>&lt;form&gt;</samp> coding and
+for simple hyperlinks (<samp>&lt;a href="..."&gt;</samp>).
 </p>
 <p>
-If you use a <tt>&lt;form&gt;</tt> to route users from your site to the
-CILogon Service, you will need to set the "<tt>action=...</tt>" and
-"<tt>method=...</tt>" parameters appropriately for your site.
-If your site can process <tt>&lt;form&gt;</tt> submission,
-you can set the target for the "<tt>action</tt>" parameter to be one of your
+If you use a <samp>&lt;form&gt;</samp> to route users from your site to the
+CILogon Service, you will need to set the "<samp>action=...</samp>" and
+"<samp>method=...</samp>" parameters appropriately for your site.
+If your site can process <samp>&lt;form&gt;</samp> submission,
+you can set the target for the "<samp>action</samp>" parameter to be one of your
 site's pages, and then redirect to the appropriate CILogon Service URL.
-Otherwise, you can set the target for the "<tt>action</tt>" parameter to be
+Otherwise, you can set the target for the "<samp>action</samp>" parameter to be
 the CILogon Service URL directly.
 </p>
 <p>
-Note that for the CILogon Delegation
-Service, the URL <em>must</em> contain the "<tt>oauth_token=...</tt>"
-parameter, so your website must somehow generate the correct HTML.
-</p>
-<p>
 If you use a hyperlink to route users to the CILogon site, you simply put
-the URL of the CILogon site endpoint into the <tt>href="..."</tt> parameter.
-Again note that for the CILogon Delegation Service, the URL <em>must</em>
-contain the "<tt>oauth_token=...</tt> parameter, so your website will
-probably need to generate the HTML output dynamically (e.g. via PHP or ASP).
+the URL of the CILogon site endpoint into the <samp>href="..."</samp> parameter.
 </p>
 
 <p>
 For the purposes of these examples, we will assume that the current page can
-process forms, so the "<tt>action</tt>" parameter will be "<tt>#</tt>".  For
+process forms, so the "<samp>action</samp>" parameter will be "<samp>#</samp>".  For
 the anchors (hyperlinks), we will use the end-user CILogon Service
-URL (https://cilogon.org) in the "<tt>href</tt>" parameter.
+URL (https://cilogon.org) in the "<samp>href</samp>" parameter.
 </p>
 
 <h2>Text-Only Button</h2>
@@ -129,7 +127,7 @@ background-color:#aca; cursor:help;" /&gt;
 <h2>Image Button</h2>
 
 This example shows another form "submit" button, this time using the type
-"<tt>image</tt>" to show an icon rather than text.  Additional buttons/icons
+"<samp>image</samp>" to show an icon rather than text.  Additional buttons/icons
 are available at the bottm of the page.
 
 <table width="100%" cellspacing="0" cellpadding="10"
@@ -167,8 +165,8 @@ style="cursor:help;" /&gt;
 <h2>Basic Hyperlink</h2>
 
 <p>
-You can put an image and some text inside a standard <tt>&lt;a
-href="..."&gt;</tt> tag if you want a basic link.  Here is one example using
+You can put an image and some text inside a standard <samp>&lt;a
+href="..."&gt;</samp> tag if you want a basic link.  Here is one example using
 a CILogon icon and some CSS stylized text.
 </p>
 
@@ -204,10 +202,10 @@ alt=""&gt;Get Certificate&lt;/a&gt;</textarea>
 
 <p>
 Here is another example putting both the icon image and the associated text
-inside a <tt>&lt;div&gt;</tt> element, and then adding a border/frame
+inside a <samp>&lt;div&gt;</samp> element, and then adding a border/frame
 decoration to make it look like a button.  Notice the addition of the
-<tt>onclick</tt> method (which requires JavaScript to be enabled) to the
-<tt>&lt;div&gt;</tt> to make the entire "button" clickable.
+<samp>onclick</samp> method (which requires JavaScript to be enabled) to the
+<samp>&lt;div&gt;</samp> to make the entire "button" clickable.
 </p>
 
 <table width="100%" cellspacing="0" cellpadding="10"
@@ -386,7 +384,7 @@ with font-weight <strong>bold</strong>, and font-style <em>italic</em>.
   </tr>
 </table>
 
-</div>
+
 
 <?php
 Content::printFooter();

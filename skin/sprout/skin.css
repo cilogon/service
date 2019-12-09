@@ -14,10 +14,7 @@ a:visited {
 a:hover, a:active {
   color: #669;
 }
-/***** End basic elements *****/
-
-/***** Begin a few misc elements *****/
-input.submit {
+.btn.btn-primary {
   font-size: 100%;
   color: #FFF;
   margin: 5px 0.5em;
@@ -32,16 +29,26 @@ input.submit {
   box-shadow: 0 0 1px 1px #858f99;
   font-weight: normal;
 }
-input.submit:hover {
+.btn.btn-primary:hover {
   background: #0079af;
+  font-weight: normal;
+  color: white;
 }
-input.submit:active {
+.btn.btn-primary.active,
+.btn.btn-primary.active.focus,
+.btn.btn-primary.active:focus,
+.btn.btn-primary.active:hover,
+.btn.btn-primary:active,
+.btn.btn-primary:active.focus,
+.btn.btn-primary:active:focus,
+.btn.btn-primary:active:hover {
   background: #025c99;
+  font-weight: normal;
+  color: white;
 }
-
-/***** End a few misc element *****/
-
-/***** Begin the "CILogon Service" header at the top of each page *****/
+.card-header {
+  background-color: #eee;
+}
 div.logoheader {
   background: #FFF;
   height: 104px;
@@ -56,74 +63,23 @@ div.logoheader h1 {
   height: 100px;
   float: left;
 }
-
-/***** End the "CILogon Service" header at the top of each page *****/
-
-/***** Begin actionbox containing action buttons and WAYF *****/
-div.actionbox,
-div.p12actionbox,
-div.logoffactionbox {
-  border: 1px solid #333;
-  border-radius: 4px;
-  display: block;
-  color: #124272;
-  background-color: #eee;
-}
-/***** End actionbox *****/
-
-/***** Begin certinfo / portalinfo table *****/
-table.certinfo,
-table.portalinfo1,
-table.portalinfo2 {
-  background-color: #eee;
-}
-/***** End certinfo / portalinfo table *****/
-
-
-/***** Begin skincilogonlogo *****/
 div.skincilogonlogo {
   margin: 3px;
   margin-top: 18px;
   display: inline;
 }
-/***** End skincilogonlogo *****/
-
-/***** Begin Help-related stuff *****/
-table.helptable td.helpcell div {
-  background-color: #eee;
-  margin-right: 1em;
-}
-tr.inforow td.helpcell {
-  background-color: #eee;
-}
-/***** End Help-related stuff *****/
-
-/***** Begin page footer *****/
-div.footer {
+.footer {
   color: #222;
 }
-div.footer a:link {
+.footer a:link {
   color: #2079D2;
 }
-div.footer a:visited {
+.footer a:visited {
   color: #2079D2;
 }
-div.footer a:hover {
+.footer a:hover {
   color: #1961A9;
 }
-div.footer a:active {
+.footer a:active {
   color: #1961A9;
-}
-/***** End page footer *****/
-
-/* CIL-465 Bigger text in Select IdP List and hide "Remember this selection" */
-option {
-  font-size: 14px!important;
-  font-weight: normal!important;
-}
-select {
-}
-select#providerId {
-  width: 320px;
-  overflow: hidden;
 }

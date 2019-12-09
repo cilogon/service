@@ -1,4 +1,3 @@
-/***** Begin basic elements *****/
 body {
   font-family: Arial, Helvetica, Verdana, sans-serif;
   color: #000;
@@ -16,18 +15,14 @@ a:hover, a:active {
   text-decoration: none;
   color: #06c;
 }
-/***** End basic elements *****/
-
-/***** Begin a few misc elements *****/
-div.boxed {
+.card {
   border: 1px solid #c0c2c5;
+  background-color: #f4f6f8;
 }
-div.boxheader {
-  border: 1px solid #57595a;
-  background-color: #4e5051;
-  color: #fff;
+.card-header {
+  background-color: #fff;
 }
-input.submit {
+.btn.btn-primary {
   font-weight: bold;
   font-size: 1em;
   color: #fff;
@@ -37,12 +32,22 @@ input.submit {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
 }
-input.submit:active, input.submit:hover {
+.btn.btn-primary:hover {
   background-color: #020509;
+  color: #fff;
 }
-/***** End a few misc element *****/
+.btn.btn-primary.active,
+.btn.btn-primary.active.focus,
+.btn.btn-primary.active:focus,
+.btn.btn-primary.active:hover,
+.btn.btn-primary:active,
+.btn.btn-primary:active.focus,
+.btn.btn-primary:active:focus,
+.btn.btn-primary:active:hover {
+  background-color: #020509;
+  color: #06c;
+}
 
-/***** Begin the "CILogon Service" header at the top of each page *****/
 div.logoheader {
   background: #eef0f2;
   height: 89px;
@@ -55,131 +60,19 @@ div.logoheader h1 {
   height: 74px;
   float: left;
 }
-/***** End the "CILogon Service" header at the top of each page *****/
-
-/***** Begin PageHeader titlebox *****/
-div.titlebox {
-  border: 3px ridge #c0c2c5;
-  background-color: #fff;
-}
-/***** End PageHeader titlebox *****/
-
-/***** Begin page footer *****/
-div.footer {
-  border: 1px solid #c0c2c5;
-}
-div.footer a:link, div.footer a:visited {
-  color: #5b677d;
-  text-decoration: underline;
-}
-div.footer a:hover, div.footer a:active {
-  text-decoration: none;
-  color: #06c;
-}
-/***** End page footer *****/
-
-/***** Begin actionbox containing action buttons and WAYF *****/
-div.actionbox,
-div.p12actionbox,
-div.logoffactionbox,
-div.logofftextbox {
-  border: 1px solid #c0c2c5;
-}
-/***** End actionbox *****/
-
-/***** Begin certinfo / portalinfo table *****/
-table.certinfo,
-table.portalinfo1,
-table.portalinfo2 {
-  border: 1px solid #c0c2c5;
-}
-table.certinfo a:link, table.certinfo a:visited,
-table.portalinfo1 a:link, table.portalinfo1 a:visited,
-table.portalinfo2 a:link, table.portalinfo2 a:visited {
-  color: #5b677d;
-  text-decoration: underline;
-}
-table.certinfo a:hover, table.certinfo a:active,
-table.portalinfo1 a:hover, table.portalinfo1 a:active,
-table.portalinfo2 a:hover, table.portalinfo2 a:active {
-  text-decoration: none;
-  color: #06c;
-}
-/***** End certinfo / portalinfo table *****/
-
-/***** Begin summary div on testidp page *****/
-div.summary {
-  border: 1px solid #c0c2c5;
-  background-color: #f4f6f8;
-}
-div.summary a:link, div.summary a:visited {
-  color: #5b677d;
-  text-decoration: underline;
-}
-div.summary a:hover, div.summary a:active {
-  text-decoration: none;
-  color: #06c;
-}
-div.summary table tr th {
-  background-color: #f8f9fa;
-}
-div.summary table tr td {
-  background-color: #f8f9fa;
-}
-div.summary table tr.odd th {
-  background-color: #fff;
-}
-div.summary table tr.odd td {
-  background-color: #fff;
-}
-div.summarytext a:link, div.summarytext a:visited {
-  color: #5b677d;
-  text-decoration: underline;
-}
-div.summarytext a:hover, div.summarytext a:active {
-  text-decoration: none;
-  color: #06c;
-}
-/***** End summary div on testidp page *****/
-
-/***** Begin userchanged div and table *****/
-div.userchanged table {
-  border: 1px solid #c0c2c5;
-}
-div.userchanged table tr th {
-  border: 1px solid #c0c2c5;
-  background-color: #f8f9fa;
-}
-div.userchanged table tr.headings th {
-  border: 1px solid #c0c2c5;
-  background-color: #f8f9fa;
-}
-div.userchanged table tr td {
-  border: 1px solid #c0c2c5;
-  background-color: #f8f9fa;
-}
-div.userchanged table tr.odd th {
-  border: 1px solid #c0c2c5;
-  background-color: #fff;
-}
-div.userchanged table tr.odd td {
-  border: 1px solid #c0c2c5;
-  background-color: #fff;
-}
-/***** End userchanged div and table *****/
-
-/***** Begin skincilogonlogo *****/
 div.skincilogonlogo {
   display: inline;
   margin-top: 12px;
 }
-/***** End skincilogonlogo *****/
+.footer {
+  border: 1px solid #c0c2c5;
+}
+.footer a:link, .footer a:visited {
+  color: #5b677d;
+  text-decoration: underline;
+}
+.footer a:hover, .footer a:active {
+  text-decoration: none;
+  color: #06c;
+}
 
-/***** Begin Help-related stuff *****/
-table.helptable td.helpcell div {
-  background-color: #f8f9fa;
-}
-tr.inforow td.helpcell {
-  background-color: #f8f9fa;
-}
-/***** End Help-related stuff *****/

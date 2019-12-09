@@ -1,6 +1,3 @@
-/* Global variables used by cacheOptions, addOption, and searchOptions */
-var idpstext, idpsvalue, idps;
-
 /***************************************************************************
  * Function  : partial                                                     *
  * Parameters: Any parameters to be passed to the partial function.        *
@@ -55,53 +52,6 @@ function addLoadEvent(func)
 }
 
 /***************************************************************************
- * Function  : showHideDiv                                                 *
- * Parameters: (1) the id string of the <div> to show or hide.             *
- *             (2) 1=>show, 0=>hide, -1=>toggle state                      *
- * This function can show, hide, or toggle a <div> section.  When 'shown'  *
- * the style 'display' is set to 'inline' so you will have to use <br> or  *
- * <p> to insert line breaks.  A typical <div> section will look like:     *
- *     <div id="step01" style="display:none"> ... </div>                   *
- * This <div> is named "step01" and is initially hidden.  You can make it  *
- * initially displayed by doing "display:inline".  To show/hide this <div> *
- * you would have a link like:                                             *
- *     <a href="javascript:showHideDiv('step01',-1)">Show/hide Step 1</a>  *
- * Since this function uses the 'match' string comparison function, you    *
- * can do a sort of wildcard matching for showing/hiding a group of        *
- * <div>s.  For example, if you did "showHideDiv('step',-1)", every <div>  *
- * that had "step" in the "id" string would toggle its display state.      *
- ***************************************************************************/
-function showHideDiv(whichDiv, showhide)
-{
-    var divs = document.getElementsByTagName('div');
-    var i;
-    var style2;
-    for (i = 0; i < divs.length; i = i + 1) {
-        if (divs[i].id.match(whichDiv)) {
-            if (document.getElementById) { // Current browsers, i.e. IE5, NS6
-                style2 = divs[i].style;
-            } else if (document.layers) { // NS4
-                style2 = document.layers[divs[i]].style;
-            } else { // IE4
-                style2 = document.all[divs[i]].style;
-            }
-
-            if (showhide === 1) { // show div
-                style2.display = "inline";
-            } else if (showhide === 0) { // hide div
-                style2.display = "none";
-            } else { // toggle div
-                if (style2.display === "inline") {
-                    style2.display = "none";
-                } else {
-                    style2.display = "inline";
-                }
-            }
-        }
-    }
-}
-
-/***************************************************************************
  * Function  : countdown                                                   *
  * Parameters: (1) Prefix to prepend to "expire" and "value" ids.          *
  *             (2) Label to prepend to "Expires:" time.                    *
@@ -119,7 +69,7 @@ function countdown(which, expirelabel)
         var expiretext = expire.innerHTML;
         if ((expiretext !== null) && (expiretext.length > 0)) {
             var matches = expiretext.match(/\d+/g);
-            if (matches.length === 2) {
+            if ((matches !== null) && (matches.length === 2)) {
                 var minutes = parseInt(matches[0], 10);
                 var seconds = parseInt(matches[1], 10);
                 if ((minutes > 0) || (seconds > 0)) {
@@ -150,171 +100,39 @@ function countdown(which, expirelabel)
 }
 
 /***************************************************************************
- * Function  : cacheOptions                                                *
- * This function is called when the WAYF loads. It reads in the list of    *
- * IdPs and saves them in the global idpstext and idpsvalue arrays.  These *
- * are used later by the searchOptions function.  Also, the "Search" box   *
- * on the WAYF page is hidden by default.  If JavaScript is enabled, this  *
- * function "unhides" it.                                                  *
+ * Function  : enterKeySubmit                                              *
+ * This function catches when the <Enter> key is pressed on the bootstrap- *
+ * select element and clicks the "Log On" button.                          *
  ***************************************************************************/
-function cacheOptions()
+function enterKeySubmit()
 {
-    var i;
-    var ls;
-    var sl;
-    var total = 0;
-    idpstext = [];
-    idpsvalue = [];
-    idps = document.getElementById("providerId");
-    /* Populate the idpstext and idpsvalue arrays from the WAYF's <select> */
-    if (idps !== null) {
-        for (i = 0; i < idps.options.length; i = i + 1) {
-            idpstext[idpstext.length] = idps.options[i].text;
-            idpsvalue[idpsvalue.length] = idps.options[i].value;
-            total = total + 1;
-        }
-        /* If more than one IdP, unhide the initially hidden "Search" box */
-        if (total > 1) {
-            ls = document.getElementById("listsearch");
-            if (ls !== null) {
-                ls.style.display = "block";
-                ls.style.height = "2em";
-                ls.style.width = "auto";
-                ls.style.lineHeight = "normal";
-                ls.style.overflow = "visible";
-            }
-        } else { /* If 1 IdP, make sure the "searchlist" input field is hidden */
-            sl = document.getElementById("searchlist");
-            if (sl !== null) {
-                sl.style.display = "none";
-            }
-        }
-    }
-}
-
-/***************************************************************************
- * Function  : addOption                                                   *
- * Parameters: (1) Text of the <option> to be added.                       *
- *             (2) Value of the <option> to be added.                      *
- * This function is called by searchOptions to dynamically create a new    *
- * <select> list based on the currently entered Search text.               *
- ***************************************************************************/
-function addOption(text, value)
-{
-    var opt;
-    if (idps !== null) {
-        opt = document.createElement("option");
-        opt.text = text;
-        opt.value = value;
-        idps.options.add(opt);
-    }
-}
-
-/***************************************************************************
- * Function  : searchOptions                                               *
- * Parameter : A string entered into the "Search" field on the WAYF page.  *
- * This function is called when the user enters text into the "Search"     *
- * text field on the logon page.  It compares the entered text against     *
- * each of the <option> items in the WAYF list.  If a substring match is   *
- * found, addOption is called to add that IdP to a new sublist of IdPs.    *
- ***************************************************************************/
-function searchOptions(value)
-{
-    var i;
-    var idpsselected;
-    var seltext;
-    var selindex;
-    var lowval;
-    if (idps !== null) {
-        /* Figure out which (if any) IdP was previously highlighted */
-        idpsselected = idps.selectedIndex;
-        seltext = "";
-        if (idpsselected >= 0) {
-            seltext = idps.options[idpsselected].text;
-        }
-
-        /* Scan thru the <options> for substrings matching the "Search" field */
-        idps.options.length = 0;
-        lowval = value.normalize('NFD').replace(/[\u0300-\u036f]/g,"").toLowerCase();
-        for (i = 0; i < idpstext.length; i = i + 1) {
-            if ((idpstext[i].normalize('NFD').replace(/[\u0300-\u036f]/g,"").toLowerCase().indexOf(lowval) !== -1) ||
-                (idpsvalue[i].toLowerCase().indexOf(lowval) !== -1)) {
-                addOption(idpstext[i], idpsvalue[i]);
-            }
-        }
-        if (idps.options.length === 0) {  /* No items in new sublist */
-            addOption("No matches", "");
-        } else {
-            /* Find the previously highlighted option, if in new sublist, */
-            /* or default to the first item in the new sublist.           */
-            selindex = 0;
-            for (i = 0; i < idps.options.length; i = i + 1) {
-                if (seltext === idps.options[i].text) {
-                    selindex = i;
-                    break;
+    var logonbutton = document.getElementById("wayflogonbutton");
+    var elems = document.getElementsByClassName("dropdown bootstrap-select");
+    if ((logonbutton !== null) && (elems !== null)) {
+        document.addEventListener("keyup", function onPress(event) {
+            if (event.key === "Enter") {
+                if (
+                    document.hasFocus() &&
+                    document.activeElement !== null &&
+                    document.activeElement.parentNode !== null &&
+                    elems.length > 0 &&
+                    elems[0].firstChild !== null &&
+                    elems[0].firstChild.parentNode !== null &&
+                    document.activeElement.parentNode === (elems[0].firstChild.parentNode)
+                   ) 
+                {
+                    logonbutton.click();
                 }
             }
-            idps.selectedIndex = selindex;
-            idps.options[selindex].selected = true;
-        }
-    }
-}
-
-/***************************************************************************
- * Function  : enterKeySubmit                                              *
- * Parameters: The event that occurred when this function was called.      *
- * This function is called on the keyup event in the WAYF's <select>       *
- * element.  It's purpose is to allow the user to press the <enter> key    *
- * to submit the form when the <select> element has focus.                 *
- ***************************************************************************/
-function enterKeySubmit(event)
-{
-    var code = event.keyCode;
-    var logonbutton;
-    if (code === 13) {
-        logonbutton = document.getElementById("wayflogonbutton");
-        if (logonbutton !== null) {
-            logonbutton.click();
-        }
-    }
-}
-
-/***************************************************************************
- * Function  : doubleClickSubmit                                           *
- * This function is called when the user double-clicks on the WAYF's       *
- * <select> list.  It checks to see if the user is running Safari on       *
- * Mac OS X.  If not, then it "clicks" the WAYF's "submit" button.  This   *
- * extra check is necessary because Safari on Mac sends a double-click     *
- * event even on the arrow scroll buttons.  This is bad behavior by the    *
- * browser, so we simply ignore the double-click.                          *
- ***************************************************************************/
-function doubleClickSubmit()
-{
-    var vendor;
-    var platform;
-    var logonbutton = document.getElementById("wayflogonbutton");
-    if (logonbutton !== null) {
-        vendor = navigator.vendor;
-        platform = navigator.platform;
-        /* Don't click the "Submit" button for Safari on Mac OS X */
-        if ((vendor === null) ||
-            (platform === null) ||
-            (vendor === undefined) ||
-            (platform === undefined) ||
-            (vendor.length === 0) ||
-            (platform.length === 0) ||
-            (vendor.indexOf('Apple') === -1) ||
-            (platform.indexOf('Mac') === -1)) {
-            logonbutton.click();
-        }
+        });
     }
 }
 
 /***************************************************************************
  * Function  : doFocus                                                     *
- * Parameter : The id of a text input element to focus on.                 *
+ * Parameter : The id of an input element to focus on.                     *
  * Returns:  : True if text input element got focus, false otherwise.      *
- * This function is a helper function called by textInputFocus.  It        *
+ * This function is a helper function called by focusOnElement.  It        *
  * attempts to find the passed-in text input element by id.  If found, it  *
  * tries to set focus.  If successful, it returns true.  If any step       *
  * fails, it returns false.                                                *
@@ -324,8 +142,34 @@ function doFocus(id)
     var success = false;
     var elem = document.getElementById(id);
     if (elem !== null) {
+        // Ignore hidden elements due to Bootstrap 'collapse'
+        var box = elem.getBoundingClientRect();
+        if ((box !== null) && (box.width > 0) && (box.height > 0)) {
+            try {
+                elem.focus();
+                success = true;
+            } catch (e) {
+            }
+        }
+    }
+    return success;
+}
+
+/***************************************************************************
+ * Function  : focusBootstrapSelect                                        *
+ * Returns:  : True if bootstrap-select element got focus, else false      *
+ * This function is a helper function called by focusOnElement.  It        *
+ * attempts to find the bootstrap-select element by class name. If found,  *
+ * tries to set focus.  If successful, it returns true.  If any step       *
+ * fails, it returns false.                                                *
+ ***************************************************************************/
+function focusBootstrapSelect()
+{
+    var success = false;
+    var elems = document.getElementsByClassName("dropdown bootstrap-select");
+    if ((elems !== null) && (elems.length > 0)) {
         try {
-            elem.focus();
+            (elems[0]).firstChild.focus();
             success = true;
         } catch (e) {
         }
@@ -334,31 +178,16 @@ function doFocus(id)
 }
 
 /***************************************************************************
- * Function  : textInputFocus                                              *
+ * Function  : focusOnElement                                              *
  * This function looks for one of several text fields on the current page  *
  * and attempts to give text field focuts to each field, in order.         *
  ***************************************************************************/
-function textInputFocus()
+function focusOnElement()
 {
-    return doFocus("searchlist") || doFocus("password1") ||
-           doFocus("lifetime") || doFocus("gacode");
-}
-
-/***************************************************************************
- * Function  : setPasswordIcon                                             *
- * Parameters: (1) The <img> element for the "check password" icon.        *
- *             (2) The new icon to show; one of "blank", "error", "okay".  *
- *             (3) The "title" hover text to display on the icon.          *
- *             (4) The hover cursor for the icon; one of "auto" or "help". *
- * This is a convenience function called by checkPassword().               *
- ***************************************************************************/
-function setPasswordIcon(pwicon, iconname, title, cursor)
-{
-    if (pwicon !== null) {
-        pwicon.src = "/images/" + iconname + "Icon.png";
-        pwicon.title = title;
-        pwicon.style.cursor = cursor;
-    }
+    return doFocus("password1") ||
+           doFocus("heading-gencert") ||
+           doFocus("lifetime") ||
+           focusBootstrapSelect();
 }
 
 /***************************************************************************
@@ -381,22 +210,17 @@ function checkPassword()
         pw1text = pw1input.value;
         pw2text = pw2input.value;
         if ((pw1text.length === 0) && (pw2text.length === 0)) {
-            setPasswordIcon(pw1icon, "blank", "", "auto");
-            setPasswordIcon(pw2icon, "blank", "", "auto");
+            pw1icon.className = "fa fa-fw";
+            pw2icon.className = "fa fa-fw";
         } else if (pw1text.length < 12) {
-            setPasswordIcon(
-                pw1icon,
-                "error",
-                "Password must be at least 12 characters in length.",
-                "help"
-            );
-            setPasswordIcon(pw2icon, "blank", "", "auto");
+            pw1icon.className = "fa fa-fw fa-exclamation-circle";
+            pw2icon.className = "fa fa-fw";
         } else if (pw1text !== pw2text) {
-            setPasswordIcon(pw1icon, "okay", "", "auto");
-            setPasswordIcon(pw2icon, "error", "The two passwords must match.", "help");
+            pw1icon.className = "fa fa-fw fa-check-square";
+            pw2icon.className = "fa fa-fw fa-exclamation-circle";
         } else {
-            setPasswordIcon(pw1icon, "okay", "", "auto");
-            setPasswordIcon(pw2icon, "okay", "", "auto");
+            pw1icon.className = "fa fa-fw fa-check-square";
+            pw2icon.className = "fa fa-fw fa-check-square";
         }
     }
 }
@@ -413,12 +237,41 @@ function showHourglass(which)
 {
     var thehourglass = document.getElementById(which + 'hourglass');
     if (thehourglass !== null) {
-        thehourglass.style.display = 'inline';
+        var pw1 = document.getElementById('password1');
+        var pw2 = document.getElementById('password2');
+        if ((pw1 !== null) && 
+            (pw2 !== null) && 
+            (pw1.value.length >= 12) &&
+            (pw2.value.length >= 12)
+           )
+        {
+            thehourglass.style.display = 'inline';
+        }
     }
 }
 
-addLoadEvent(cacheOptions);
+/***************************************************************************
+ * Function  : validateForm                                                *
+ * This function is taken straight from the Bootstrap Forms "Custom        *
+ * Styles" example:                                                        *
+ * https://getbootstrap.com/docs/4.4/components/forms/#custom-styles       *
+ ***************************************************************************/
+function validateForm()
+{
+    var forms = document.getElementsByClassName('needs-validation');
+    var validation = Array.prototype.filter.call(forms, function(form) {
+        form.addEventListener('submit', function(event) {
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+}
+
 var fp12 = partial(countdown, 'p12', 'Link');
 addLoadEvent(fp12);
-addLoadEvent(textInputFocus);
-
+addLoadEvent(focusOnElement);
+addLoadEvent(enterKeySubmit);
+addLoadEvent(validateForm);

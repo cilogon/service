@@ -56,8 +56,8 @@ switch ($submit) {
         Util::verifySessionAndCall('printMainPage');
         break; // End case 'Go Back' / 'Proceed'
 
-    case 'Cancel': // Cancel button on WAYF page - go to Google
-        header('Location: https://www.google.com/');
+    case 'Cancel': // Cancel button on WAYF page - go to CILogon Info Page
+        header('Location: https://www.cilogon.org');
         exit; // No further processing necessary
         break;
 
@@ -66,11 +66,6 @@ switch ($submit) {
             printMainPage();
         }
         break; // End case 'Get New Certificate'
-
-    case 'Show  Help ': // Toggle showing of help text on and off
-    case 'Hide  Help ':
-        Content::handleHelpButtonClicked();
-        break; // End case 'Show Help' / 'Hide Help'
 
     default: // No submit button clicked nor PHP session submit variable set
         Content::handleNoSubmitButtonClicked();

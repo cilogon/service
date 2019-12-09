@@ -265,7 +265,7 @@ function getCert()
     }
 
     // Make sure lifetime is within acceptable range. 277 hrs = 1000000 secs.
-    list($minlifetime, $maxlifetime) = Content::getMinMaxLifetimes('ecp', 277);
+    list($minlifetime, $maxlifetime) = Util::getMinMaxLifetimes('ecp', 277);
     if ($certlifetime < $minlifetime) {
         $certlifetime = $minlifetime;
     } elseif ($certlifetime > $maxlifetime) {

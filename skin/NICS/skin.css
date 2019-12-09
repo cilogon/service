@@ -18,18 +18,10 @@ a:hover {
   text-decoration: underline;
   color: #0776bc;
 }
-/***** End basic elements *****/
-
-/***** Begin a few misc elements *****/
-div.boxed {
-  border: 0;
+.card-header {
+    background-color: rgb(242,242,242);
 }
-div.boxheader {
-  color: #fff;
-  border: 1px solid #999;
-  background-color: #444;
-}
-input.submit {
+.btn.btn-primary {
   color: #000;
   font-size: 12px;
   font-weight: 400;
@@ -41,16 +33,40 @@ input.submit {
   text-decoration: none;
   background: #bbb;
 }
-
-div.noticebanner {
+.btn.btn-primary:hover {
   color: #000;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  padding-top: 5px;
+  padding-right: 10px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  text-decoration: none;
+  background: #bbb;
 }
-/***** End a few misc element *****/
-
-/***** Begin the "CILogon Service" header at the top of each page *****/
+.btn.btn-primary.active,
+.btn.btn-primary.active.focus,
+.btn.btn-primary.active:focus,
+.btn.btn-primary.active:hover,
+.btn.btn-primary:active,
+.btn.btn-primary:active.focus,
+.btn.btn-primary:active:focus,
+.btn.btn-primary:active:hover {
+  color: #000;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  padding-top: 5px;
+  padding-right: 10px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  text-decoration: none;
+  background: #bbb;
+}
 div.logoheader {
   background: #f2efea;
-  height: 86px;
+  height: 120px;
   width: 100%;
   min-width: 600px;
   border-top: 7px solid #6d6d6b;
@@ -64,60 +80,23 @@ div.logoheader h1 {
   height: 73px;
   float: left;
 }
-/***** End the "CILogon Service" header at the top of each page *****/
-
-
-/***** Begin page footer *****/
-div.footer {
-  border: 0;
-  color: #aaa;
-}
-div.footer a:link {
-  color: #ccc;
-}
-div.footer a:visited {
-  color: #999;
-}
-div.footer a:hover {
-  color: #fff;
-}
-div.footer a:active {
-  color: #000;
-}
-/***** End page footer *****/
-
-/***** Begin actionbox containing action buttons and WAYF *****/
-div.actionbox,
-div.p12actionbox,
-div.logoffactionbox {
-  border: 1px solid #333;
-  display: block;
-  background-color: #fff;
-}
-/***** End actionbox *****/
-
-/***** Begin certinfo / portalinfo table *****/
-table.certinfo,
-table.portalinfo1,
-table.portalinfo2 {
-  background-color: #fff;
-}
-/***** End certinfo / portalinfo table *****/
-
-
-/***** Begin skincilogonlogo *****/
 div.skincilogonlogo {
   margin-top: 17px;
   display: inline;
 }
-/***** End skincilogonlogo *****/
-
-/***** Begin Help-related stuff *****/
-table.helptable td.helpcell div {
-  background-color: #fff;
-  margin-right: 1em;
+.footer {
+  border: 0;
+  color: #aaa;
 }
-tr.inforow td.helpcell {
-  background-color: #fff;
+.footer a:link {
+  color: #ccc;
 }
-/***** End Help-related stuff *****/
+.footer a:visited {
+  color: #999;
+}
+.footer a:hover {
+  color: #fff;
+}
+.footer a:active {
+  color: #000;
+}

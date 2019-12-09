@@ -15,13 +15,7 @@ Util::startPHPSession();
 
 // Check the csrf cookie against either a hidden <form> element or a
 // PHP session variable, and get the value of the 'submit' element.
-// Note: replace CR/LF with space for 'Show/Hide Help' buttons.
-$retchars = array("\r\n","\n","\r");
-$submit = str_replace(
-    $retchars,
-    " ",
-    Util::getCsrf()->verifyCookieAndGetSubmit()
-);
+$submit = Util::getCsrf()->verifyCookieAndGetSubmit();
 Util::unsetSessionVar('submit');
 Util::unsetSessionVar('storeattributes'); // Used only by /testidp/
 
@@ -74,25 +68,23 @@ if (verifyOIDCParams()) {
         case 'Cancel': // User denies release of attributes
             // If user clicked the 'Cancel' button, return to the
             // OIDC client with an error message.
-            $redirect = 'Location: ' . $clientparams['redirect_uri'] .
-                (preg_match('/\?/', $clientparams['redirect_uri']) ? '&' : '?') .
-                'error=access_denied&error_description=' .
-                'User%20denied%20authorization%20request' .
-                ((isset($clientparams['state'])) ?
-                    '&state=' . $clientparams['state'] : '');
+            $redirect = 'https://www.cilogon.org'; // If no redirect_uri
+            $redirect_uri = @$clientparams['redirect_uri'];
+            if (strlen($redirect_uri) > 0) {
+                $redirect = 'Location: ' . $redirect_uri .
+                    (preg_match('/\?/', $redirect_uri) ? '&' : '?') .
+                    'error=access_denied&error_description=' .
+                    'User%20denied%20authorization%20request' .
+                    ((isset($clientparams['state'])) ?
+                        '&state=' . $clientparams['state'] : '');
+            }
             Util::unsetAllUserSessionVars();
             header($redirect);
             exit; // No further processing necessary
             break; // End case 'Cancel'
 
-        case 'Show  Help ': // Toggle showing of help text on and off
-        case 'Hide  Help ':
-            Content::handleHelpButtonClicked();
-            break; // End case 'Show Help' / 'Hide Help'
-
         default: // No submit button clicked nor PHP session submit variable set
             Content::handleNoSubmitButtonClicked();
-
             break; // End default case
     } // End switch ($submit)
 } else { // Failed to verify OIDC client parameters in PHP session

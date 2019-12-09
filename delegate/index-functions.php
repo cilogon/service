@@ -25,7 +25,7 @@ function printLogonPage()
     $log = new Loggit();
     $log->info('Welcome page hit.');
 
-    Util::setSessionVar('stage', 'logon'); // For Show/Hide Help button clicks
+    Util::setSessionVar('stage', 'logon');
 
     // Check if this is the first time the user has visited the site from
     // the current portal.  We do this by checking the portal cookie's
@@ -36,39 +36,32 @@ function printLogonPage()
     // to the next page (where the cookie is actually read).
     $skin = Util::getSkin();
     $pc = new PortalCookie();
-    $portallifetime = $pc->get('lifetime');
+    $portallife = $pc->get('lifetime');
 
-    if ((strlen($portallifetime) == 0) || ($portallifetime == 0)) {
+    if ((strlen($portallife) == 0) || ($portallife == 0)) {
         $needtosetcookie = 0;
 
         // Try to read the skin's initiallifetime
-        $initiallifetime = $skin->getConfigOption(
-            'delegate',
-            'initiallifetime'
-        );
-        if ((!is_null($initiallifetime)) && ((int)$initiallifetime > 0)) {
+        $initlife = $skin->getConfigOption('delegate', 'initiallifetime');
+        if ((!is_null($initlife)) && ((int)$initlife > 0)) {
             $needtosetcookie = 1;
-            $initiallifetime = (int)$initiallifetime;
+            $initlife = (int)$initlife;
         } else { // Set a default lifetime value in case initialremember is set
-            $initiallifetime = 12;
+            $initlife = 12;
         }
 
         // Make sure initiallifetime is within [minlifetime..maxlifetime]
-        list($minlifetime, $maxlifetime) =
-            Content::getMinMaxLifetimes('delegate', 240);
-        if ($initiallifetime < $minlifetime) {
+        list($minlife, $maxlife) = Util::getMinMaxLifetimes('delegate', 240);
+        if ($initlife < $minlife) {
             $needtosetcookie = 1;
-            $initiallifetime = $minlifetime;
-        } elseif ($initiallifetime > $maxlifetime) {
+            $initlife = $minlife;
+        } elseif ($initlife > $maxlife) {
             $needtosetcookie = 1;
-            $initiallifetime = $maxlifetime;
+            $initlife = $maxlife;
         }
 
         // Next, try to read the skin's initialremember
-        $initialremember = $skin->getConfigOption(
-            'delegate',
-            'initialremember'
-        );
+        $initialremember = $skin->getConfigOption('delegate', 'initialremember');
         if ((!is_null($initialremember)) && ((int)$initialremember > 0)) {
             $needtosetcookie = 1;
             $initialremember = (int)$initialremember;
@@ -78,108 +71,84 @@ function printLogonPage()
 
         if ($needtosetcookie) {
             $pc->set('remember', $initialremember);
-            $pc->set('lifetime', $initiallifetime);
+            $pc->set('lifetime', $initlife);
             $pc->write();
         }
     }
 
     Content::printHeader('Welcome To The CILogon Delegation Service');
 
-    echo '
-    <div class="boxed">
-    ';
-
-    Content::printHelpButton();
-
-    echo '
-      <br />
-    ';
-
     // If the <hideportalinfo> option is set, do not show the portal info if
     // the callback uri is in the portal list.
     $showportalinfo = true;
     if (
-        ((int)$skin->getConfigOption(
-            'portallistaction',
-            'hideportalinfo'
-        ) == 1) &&
+        ((int)$skin->getConfigOption('portallistaction', 'hideportalinfo') == 1) &&
         ($skin->inPortalList(Util::getSessionVar('callbackuri')))
     ) {
         $showportalinfo = false;
     }
 
     if ($showportalinfo) {
-        echo '
-          <br/>
-          <p>"' ,
-          htmlspecialchars(Util::getSessionVar('portalname')) ,
-          '" requests that you select an Identity Provider and click "' ,
-          Content::getLogOnButtonText() ,
-          '". If you do not approve this request, do not proceed.
-          </p>
-          <p><em>By proceeding you agree to share your name and
-          email address with "' ,
-          htmlspecialchars(Util::getSessionVar('portalname')) ,
-          '"</em>.</p>
-        ';
-
-        printPortalInfo('1');
+        printOAuth1Consent();
     }
 
     Content::printWAYF();
-
-    echo '
-    </div> <!-- End boxed -->
-    ';
-
     Content::printFooter();
 }
 
 /**
- * printBadOAuthTokenPage
+ * printOAuth1BadTokenPage
  *
  * This function prints out the HTML for the page when the oauth_token
  * (tempcred) or associated OAuth information is missing, bad, or expired.
  */
-function printBadOAuthTokenPage()
+function printOAuth1ErrorPage()
 {
     $log = new Loggit();
     $log->warn('Missing or invalid oauth_token.');
 
     Content::printHeader('CILogon Delegation Service');
+    Content::printCollapseBegin(
+        'oauth1default',
+        'CILogon OAuth1 Delegation Endpoint',
+        false
+    );
 
     echo '
-    <div class="boxed">
-      <br class="clear"/>
-      <p>
-      You have reached the CILogon Delegation Service.  This service is for
-      use by third parties to obtain certificates for their users.
-      End users should not normally see this page.
-      </p>
-      <p>
+    <div class="card-body px-5">
+      <div class="card-text my-2">
+        You have reached the CILogon Delegation Service.  This service is for
+        use by third parties to obtain certificates for their users.
+        End users should not normally see this page.
+      </div>
+      <div class="card-text my-2">
       Possible reasons for seeing this page include:
-      </p>
-      <ul>
-      <li>You navigated directly to this page.</li>
-      <li>You clicked your browser\'s "Back" button.</li>
-      <li>There was a problem with the delegation process.</li>
-      </ul>
-      <p>
-      Please return to the previous site and try again.  If the error persists,
-      please contact us at the email address at the bottom of the page.
-      </p>
-      <p>
-      If you are an individual wishing to download a certificate to your
-      local computer, please try the <a target="_blank"
-      href="https://' , Util::getHN() , '/">CILogon Service</a>.
-      </p>
-      <p>
-      <strong>Note:</strong> You must enable cookies in your web browser to
-      use this site.
-      </p>
-    </div>
+      </div>
+      <div class="card-text my-2">
+        <ul>
+          <li>You navigated directly to this page.</li>
+          <li>You clicked your browser\'s "Back" button.</li>
+          <li>There was a problem with the delegation process.</li>
+        </ul>
+      </div>
+      <div class="card-text my-2">
+        Please return to the previous site and try again. If the error
+        persists, please contact us at the email address at the bottom of
+        the page.
+      </div>
+      <div class="card-text my-2">
+        If you are an individual wishing to download a certificate to your
+        local computer, please try the <a target="_blank"
+        href="https://' , Util::getHN() , '/">CILogon Service</a>.
+      </div>
+      <div class="card-text my-2">
+        <strong>Note:</strong> You must enable cookies in your web
+        browser to use this site.
+      </div>
+    </div> <!-- end card-body -->
     ';
 
+    Content::printCollapseEnd();
     Content::printFooter();
 }
 
@@ -198,36 +167,30 @@ function printMainPage()
     $log = new Loggit();
     $log->info('Allow Or Deny Delegation page hit.');
 
-    Util::setSessionVar('stage', 'main'); // For Show/Hide Help button clicks
+    Util::setSessionVar('stage', 'main');
 
     $remember = 0;   // Default value for remember checkbox is unchecked
-    $lifetime = 12;  // Default value for lifetime is 12 hours
+    $life = 12;      // Default value for lifetime is 12 hours
 
     // Check the skin for forceremember and forcelifetime
     $skin = Util::getSkin();
-    $forceremember = $skin->getConfigOption(
-        'delegate',
-        'forceremember'
-    );
+    $forceremember = $skin->getConfigOption('delegate', 'forceremember');
     if ((!is_null($forceremember)) && ((int)$forceremember == 1)) {
         $forceremember = 1;
     } else {
         $forceremember = 0;
     }
-    $forcelifetime = $skin->getConfigOption(
-        'delegate',
-        'forcelifetime'
-    );
-    if ((!is_null($forcelifetime)) && ((int)$forcelifetime > 0)) {
-        $forcelifetime = (int)$forcelifetime;
+    $forcelife = $skin->getConfigOption('delegate', 'forcelifetime');
+    if ((!is_null($forcelife)) && ((int)$forcelife > 0)) {
+        $forcelife = (int)$forcelife;
     } else {
-        $forcelifetime = 0;
+        $forcelife = 0;
     }
 
     // Try to read the portal coookie for the remember and lifetime values.
     $pc = new PortalCookie();
     $portalremember = $pc->get('remember');
-    $portallifetime = $pc->get('lifetime');
+    $portallife = $pc->get('lifetime');
 
     // If skin's forceremember or portal cookie's remember is set,
     // then we bypass the Allow/Deny delegate page.
@@ -238,17 +201,16 @@ function printMainPage()
     // If skin's forcelifetime or portal cookie's lifetime is set,
     // set lifetime accordingly and make sure value is between the
     // configured minlifetime and maxlifetime.
-    if ($forcelifetime > 0) {
-        $lifetime = $forcelifetime;
-    } elseif ($portallifetime > 0) {
-        $lifetime = $portallifetime;
+    if ($forcelife > 0) {
+        $life = $forcelife;
+    } elseif ($portallife > 0) {
+        $life = $portallife;
     }
-    list($minlifetime, $maxlifetime) =
-        Content::getMinMaxLifetimes('delegate', 240);
-    if ($lifetime < $minlifetime) {
-        $lifetime = $minlifetime;
-    } elseif ($lifetime > $maxlifetime) {
-        $lifetime = $maxlifetime;
+    list($minlife, $maxlife) = Util::getMinMaxLifetimes('delegate', 240);
+    if ($life < $minlife) {
+        $life = $minlife;
+    } elseif ($life > $maxlife) {
+        $life = $maxlife;
     }
 
     // If 'remember' is set, then auto-click the 'OK' button for the user.
@@ -257,174 +219,257 @@ function printMainPage()
     } else {
         // User did not check 'Remember OK' before, so show the
         // HTML to prompt user for OK or Cancel delegation.
-
-        $lifetimetext = "Specify the lifetime of the certificate to " .
-            "be issued. Acceptable range is between $minlifetime and " .
-            "$maxlifetime hours.";
-        $remembertext = "Check this box to automatically approve " .
-            "certificate issuance to the site on future visits. " .
-            "The certificate lifetime will be remembered. You will " .
-            "need to clear your browser's cookies to return here.";
-
         Content::printHeader('Confirm Allow Delegation');
-
-        echo '
-        <div class="boxed">
-        ';
-
-        Content::printHelpButton();
-
-        echo '
-        <br />
-        <p>"' ,
-        htmlspecialchars(Util::getSessionVar('portalname')) ,
-        '" is requesting a certificate for you.
-        If you approve, then "OK" the request.
-        Otherwise, "Cancel" the request or navigate away from this page.
-        </p>
-        ';
-
-        printPortalInfo('2');
-
-        echo '
-        <div class="actionbox"';
-
-        if (Util::getSessionVar('showhelp') == 'on') {
-            echo ' style="width:92%;"';
-        }
-
-        echo '>
-        <table class="helptable">
-        <tr>
-        <td class="actioncell">
-        ';
-
-        Content::printFormHead();
-
-        echo '
-        <fieldset>
-        <p>
-        <label for="lifetime" title="' , $lifetimetext , '"
-        class="helpcursor">Certificate Lifetime (in hours):</label>
-        <input type="text" name="lifetime" id="lifetime" title="' ,
-        $lifetimetext , '" size="3" maxlength="3" value="' ,
-        $lifetime , '" ' ,
-        (($forcelifetime > 0) ? 'disabled="disabled" ' : 'class="helpcursor" ') ,
-        '/>
-<!--[if IE]><input type="text" style="display:none;" disabled="disabled" size="1"/><![endif]-->
-        </p>
-        <p>
-        <label for="rememberok" title="', $remembertext , '"
-        class="helpcursor">Remember my OK for the site:</label>
-        <input type="checkbox" name="rememberok" id="rememberok"
-        title="', $remembertext, '" class="helpcursor" />
-        </p>
-        <p>
-        <input type="submit" name="submit" class="submit" value="OK" />
-        &nbsp;
-        <input type="submit" name="submit" class="submit" value="Cancel" />
-        </p>
-        </fieldset>
-        </form>
-        </td>
-        ';
-
-        if (Util::getSessionVar('showhelp') == 'on') {
-            echo '
-            <td class="helpcell">
-            <div>
-            <p>
-            Please enter the lifetime of the certificate to be issued.
-            Acceptable range is between ' , $minlifetime, ' and ' ,
-            $maxlifetime , ' hours.
-            </p>
-            <p>
-            If you check the "Remember my OK for the site" checkbox,
-            certificates will be issued automatically to this site on future
-            visits, using the lifetime you specify here.  You will need to
-            clear your browser\'s cookies to return to see this page again.
-            </p>
-            </div>
-            </td>
-            ';
-        }
-
-
-
-        echo '
-        </tr>
-        </table>
-        </div> <!-- actionbox -->
-        ';
-
-        echo '
-        </div> <!-- boxed -->
-        ';
+        printOAuth1Certificate($life, $minlife, $maxlife, $forcelife);
         Content::printFooter();
     }
 }
 
 /**
- * printPortalInfo
+ * printOAuth1Consent
  *
- * This function prints out the portal information table at the top of
- * of the page.  The optional parameter $suffix allows you to append
- * a number (for example) to differentiate the portalinfo table on the
- * log in page from the one on the main page.
- *
- * @param string $suffix An optional suffix to append to the 'portalinfo'
- *        table class name.
+ * This function prints out the 'consent' block showing the portal name and
+ * callback uris just above the 'Select an Identity Provider' block.
  */
-function printPortalInfo($suffix = '')
+function printOAuth1Consent()
 {
-    $showhelp = Util::getSessionVar('showhelp');
-    $helptext = "The Site Name is provided by the site to CILogon and has not been vetted.";
+    Content::printCollapseBegin(
+        'oauth2consent',
+        'Consent to Attribute Release',
+        false
+    );
 
     echo '
-    <table class="portalinfo' , $suffix , '">
-    <tr class="inforow">
-      <th title="' , $helptext ,'">Site&nbsp;Name:</th>
-      <td title="' , $helptext ,'">' ,
-      htmlspecialchars(Util::getSessionVar('portalname')) , '</td>
+        <div class="card-body px-5">
+          <div class="card-row">
+            "', htmlspecialchars(Util::getSessionVar('portalname')), '"
+            requests that you select an Identity Provider and click
+            "', Content::getLogOnButtonText(), '".
+            If you do not approve this request, do not proceed.
+          </div>
+          <div class="card-row">
+            By proceeding you agree to share your <em>name</em> and
+            <em>email address</em> with
+            "', htmlspecialchars(Util::getSessionVar('portalname')), '".
+          </div>
     ';
 
-    if ($showhelp == 'on') {
-        echo ' <td class="helpcell">' , $helptext , '</td>';
-    }
-
-    $helptext = "The Site URL is the location to which the site requests you to return upon completion.";
+    printOAuth1PortalInfo();
 
     echo '
-    </tr>
-    <tr class="inforow">
-      <th title="' , $helptext , '">Site&nbsp;URL:</th>
-      <td title="' , $helptext , '">' ,
-          htmlspecialchars(Util::getSessionVar('successuri')) , '</td>
+        </div> <!-- end card-body -->
     ';
 
-    if ($showhelp == 'on') {
-        echo '<td class="helpcell">' , $helptext , '</td>';
-    }
+    Content::printCollapseEnd();
+}
 
-    $helptext = "The Service URL is the location to which CILogon " .
+/**
+ * printOAuth1Certificate
+ *
+ * This function prints out the block showing the portal name and callback
+ * uris, as well as a text input for the user to set the lifetime of the
+ * certificate to be delegated to the OAuth1 client.
+ *
+ * @param int $life The lifetime (in hours) for the delegated certificate.
+ * @param int $minlife The minimum lifetime for the cert.
+ * @param int $maxlife The maximum lifetime for the cert.
+ * @param int $force The forced-set lifetime for the cert.
+ */
+function printOAuth1Certificate($life, $minlife, $maxlife, $force)
+{
+    $lifehelp = 'Certificate lifetime range is between ' .
+        $minlife . ' and ' . $maxlife . ' hours.';
+    $rememberhelp = "Check this box to automatically approve " .
+        "certificate issuance to the site on future visits. " .
+        "The certificate lifetime will be remembered. You will " .
+        "need to clear your browser's cookies to return here.";
+
+    Content::printCollapseBegin(
+        'oauth1cert',
+        'Confirm Certificate Delegation',
+        false
+    );
+
+    echo '
+        <div class="card-body px-5">
+          <div class="row mb-3">
+            "', htmlspecialchars(Util::getSessionVar('portalname')) , '"
+            is requesting a certificate for you. If you approve, then
+            "OK" the request. Otherwise, "Cancel" the request or
+            navigate away from this page.
+          </div>
+    ';
+
+    printOAuth1PortalInfo();
+
+    Content::printFormHead();
+
+    echo '
+          <div class="container col-lg-6 offset-lg-3
+          col-md-8 offset-md-2 col-sm-10 offset-sm-1">
+            <div class="form-group">
+              <div class="form-row">
+                <label for="lifetime">Certificate Lifetime (in hours):</label>
+                <input type="number" name="lifetime" id="lifetime"
+                min="', $minlife, '"
+                max="', $maxlife, '"
+                value="', $life , '" ' ,
+                (($force > 0) ? 'disabled="disabled" ' : ' ') , '
+                class="form-control" required="required"
+                aria-describedby="lifetime1help" />
+                <small id="lifetime1help" class="form-text text-muted">',
+                $lifehelp, '
+                </small>
+<!--[if IE]><input type="text" style="display:none;" disabled="disabled" size="1"/><![endif]-->
+              </div> <!-- end form-row -->
+            </div> <!-- end form-group -->
+
+            <div class="form-group">
+              <div class="form-row align-items-center justify-content-center">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox"
+                  name="rememberok" id="rememberok" />
+                  <label class="form-check-label"
+                  for="rememberok">Remember my OK for the site</label>
+                  <a href="#" tabindex="0" data-trigger="hover click"
+                  class="helpcursor"
+                  data-toggle="popover" data-html="true"
+                  data-content="', $rememberhelp, '"><i class="fa
+                  fa-question-circle"></i></a>
+                </div> <!-- end form-check -->
+              </div> <!-- end form-row -->
+            </div> <!-- end form-group -->
+
+            <div class="form-group">
+              <div class="form-row align-items-center justify-content-center">
+                <div class="col-auto">
+                  <input type="submit" name="submit"
+                  class="btn btn-primary submit form-control" value="OK" />
+                </div>
+                <div class="col-auto">
+                  <input type="submit" name="submit"
+                  class="btn btn-primary submit form-control" value="Cancel" />
+                </div>
+              </div> <!-- end form-row align-items-center -->
+            </div> <!-- end form-group -->
+          </div> <!-- end container -->
+
+        </form>
+        </div> <!-- end card-body -->
+    ';
+
+    Content::printCollapseEnd();
+}
+
+/**
+ * printOAuth1PortalInfo
+ *
+ * This function prints the portal name, success uri (i.e., the uri to
+ * redirect to upon successful delegation of the certificate), and the
+ * callback uri used by the OAuth1 protocol.
+ */
+function printOAuth1PortalInfo()
+{
+    echo '
+    <table class="table table-striped table-sm">
+    <tbody>
+      <tr>
+        <th>Site Name:</th>
+        <td></td>
+        <td>', htmlspecialchars(Util::getSessionVar('portalname')), '</td>';
+
+    $helptext = "The location where you will be redirected upon completion.";
+
+    echo '
+      </tr>
+      <tr>
+        <th>Site URL:</th>
+        <td><a href="#" tabindex="0" data-trigger="hover click"
+          class="helpcursor" data-toggle="popover" data-html="true"
+          data-content="', $helptext, '"><i class="fa
+          fa-question-circle"></i></a></td>
+        <td>', htmlspecialchars(Util::getSessionVar('successuri')), '</td>';
+
+    $helptext = "The location where CILogon " .
         "will send a certificate containing your identity information.";
 
     echo '
-    </tr>
-    <tr class="inforow">
-      <th title="' , $helptext , '">Service&nbsp;URL:</th>
-      <td title="' , $helptext , '">' ,
-          htmlspecialchars(Util::getSessionVar('callbackuri')) , '</td>
-      ';
+      </tr>
+      <tr>
+        <th>Service URL:</th>
+        <td><a href="#" tabindex="0" data-trigger="hover click"
+          class="helpcursor" data-toggle="popover" data-html="true"
+          data-content="', $helptext, '"><i class="fa
+          fa-question-circle"></i></a></td>
+        <td>', htmlspecialchars(Util::getSessionVar('callbackuri')), '</td>
+      </tr>
+    </tbody>
+    </table>
+    ';
+}
 
-    if ($showhelp == 'on') {
-        echo '<td class="helpcell">' , $helptext , '</td>';
+/**
+ * printOAuth1DelegationDone
+ *
+ * This function prints out the block after generation of the certificate.
+ * The $success parameter indicates if the cert was generated successfully
+ * or not. If so, the $responseurl will contain the link to redirect the
+ * user to, and the $certtext will contain the contents of the cert.
+ *
+ * @param bool $success True if the certificate was successfully generated
+ *        and delegated to the OAuth1 client.
+ * @param string $responseurl The url to redirect the user to. If this is
+ *        empty, then the PHP session success/failure uris will be used as
+ *        determined by the $success value.
+ * @param string $certtext The contents of the generated cert.
+ */
+function printOAuth1DelegationDone($success, $responseurl, $certtext)
+{
+    Content::printCollapseBegin(
+        'oauth1done',
+        'Certificate Delegation ' . ($success ? 'Success' : 'Failure'),
+        false
+    );
+
+    echo '
+        <div class="card-body px-5">
+    ';
+
+    if ($success) {
+        echo '
+          <div class="card-text my-2">
+            The CILogon Service has issued a certificate to "' ,
+            htmlspecialchars(Util::getSessionVar('portalname')) , '".
+            Below is a link to return to
+            the site to use the issued certificate.
+          </div>
+          ';
+        Content::printCollapseBegin('certdetails', 'Certificate Details');
+        echo '<div class="card-body px-5">
+                <pre>', htmlspecialchars($certtext), '</pre>
+              </div>
+        ';
+        Content::printCollapseEnd();
+    } else {
+        echo '
+          <div class="card-text my-2">
+            We were unable to issue a certificate to "' ,
+            htmlspecialchars(Util::getSessionVar('portalname')) , '".
+            Below is a link to return to the site.
+          </div> <!-- end card-text -->';
     }
 
     echo '
-    </tr>
-    </table>
-    ';
+          <div class="card-text my-2 text-center">
+            <a class="btn btn-primary"
+            href="' , ((strlen($responseurl) > 0) ? $responseurl :
+            (Util::getSessionVar($success ? 'successuri' : 'failureuri'))),
+            '">Return to ' ,
+            htmlspecialchars(Util::getSessionVar('portalname')) , '</a>
+          </div> <!-- end card-text -->
+        </div> <!-- end card-body -->';
+
+    Content::printCollapseEnd();
 }
 
 /**
@@ -439,30 +484,36 @@ function printCancelPage()
     $portalname = Util::getSessionVar('portalname');
 
     Content::printHeader('Delegation Denied');
+    Content::printCollapseBegin(
+        'oauth1cancel',
+        'Certificate Delegation Cancelled',
+        false
+    );
 
     echo '
-    <div class="boxed">
-    <br class="clear"/>
-    <p>
-    You have canceled delegation of a certificate to "' ,
-    htmlspecialchars($portalname) , '".
-    Below is a link to return to the
-    portal.  This link has been provided by the portal to be used when
-    delegation of a certificate fails.
-    </p>
-    <p>
-    <strong>Note:</strong> If you do not trust the information provided by
-    the portal, <strong>do not</strong> click on the link below.  Instead,
-    please contact your portal administrators or contact us at the email
-    address at the bottom of the page.
-    </p>
-
-    <div class="returnlink">
-      <a href="' , Util::getSessionVar('failureuri') , '">Return to ' ,
-      htmlspecialchars($portalname) , '</a>
-    </div>
-    </div>
+        <div class="card-body px-5">
+          <div class="card-text my-2">
+            You have canceled delegation of a certificate to "' ,
+            htmlspecialchars($portalname) , '".
+            Below is a link to return to the portal.
+            This link has been provided by the portal to be used when
+            delegation of a certificate fails.
+          </div>
+          <div class="card-text my-2">
+            <strong>Note:</strong> If you do not trust the information
+            provided by the portal, <strong>do not</strong> click on the
+            link below.  Instead, please contact your portal administrators
+            or contact us at the email address at the bottom of the page.
+          </div>
+          <div class="card-text my-2 text-center">
+            <a class="btn btn-primary"
+            href="' , Util::getSessionVar('failureuri') , '">Return to ' ,
+            htmlspecialchars($portalname) , '</a>
+          </div>
+        </div> <!-- end card-body -->
     ';
+
+    Content::printCollapseEnd();
     Content::printFooter();
 }
 
@@ -481,7 +532,7 @@ function printCancelPage()
  * presented with a page showing the result of the attempted
  * certificate delegation as well as a link to 'return to your portal'.
  *
- * @param bool True if the user selected to always allow delegation.
+ * @param bool $always True if the user selected to always allow delegation.
  */
 function handleAllowDelegation($always = false)
 {
@@ -492,42 +543,38 @@ function handleAllowDelegation($always = false)
     $log = new Loggit();
     $log->info('Attempting to delegate a certificate to a portal...');
 
-    $lifetime = 0;
+    $life = 0;
     // Check the skin's forcelifetime and use it if it is configured.
-    $forcelifetime = Util::getSkin()->getConfigOption(
-        'delegate',
-        'forcelifetime'
-    );
-    if ((!is_null($forcelifetime)) && ((int)$forcelifetime > 0)) {
-        $lifetime = (int)$forcelifetime;
+    $forcelife = Util::getSkin()->getConfigOption('delegate', 'forcelifetime');
+    if ((!is_null($forcelife)) && ((int)$forcelife > 0)) {
+        $life = (int)$forcelife;
     }
 
     // Next, try to get the certificate lifetime from a submitted <form>
-    if ($lifetime == 0) {
-        $lifetime = (int)(trim(Util::getPostVar('lifetime')));
+    if ($life == 0) {
+        $life = (int)(trim(Util::getPostVar('lifetime')));
     }
 
     // If we couldn't get lifetime from the <form>, try the cookie
     $pc = new PortalCookie();
-    if ($lifetime == 0) {
-        $lifetime = (int)($pc->get('lifetime'));
+    if ($life == 0) {
+        $life = (int)($pc->get('lifetime'));
     }
 
     // Default lifetime to 12 hours. And then make sure lifetime is in
     // acceptable range.
-    if ($lifetime == 0) {
-        $lifetime = 12;
+    if ($life == 0) {
+        $life = 12;
     }
-    list($minlifetime, $maxlifetime) =
-        Content::getMinMaxLifetimes('delegate', 240);
-    if ($lifetime < $minlifetime) {
-        $lifetime = $minlifetime;
-    } elseif ($lifetime > $maxlifetime) {
-        $lifetime = $maxlifetime;
+    list($minlife, $maxlife) = Util::getMinMaxLifetimes('delegate', 240);
+    if ($life < $minlife) {
+        $life = $minlife;
+    } elseif ($life > $maxlife) {
+        $life = $maxlife;
     }
 
     $pc->set('remember', (int)$always);
-    $pc->set('lifetime', $lifetime);
+    $pc->set('lifetime', $life);
     $pc->write();
 
     $success = false;  // Assume delegation of certificate failed
@@ -541,7 +588,7 @@ function handleAllowDelegation($always = false)
         $tempcred = Util::getSessionVar('tempcred');
         $url = OAUTH1_AUTHORIZED_URL . '?' .
                'oauth_token=' . urlencode($tempcred) . '&' .
-               'cilogon_lifetime=' . $lifetime . '&' .
+               'cilogon_lifetime=' . $life . '&' .
                'cilogon_loa=' . urlencode(Util::getSessionVar('loa')) . '&' .
                'cilogon_uid=' . urlencode(Util::getSessionVar('uid')) .
                ((strlen($myproxyinfo) > 0) ?
@@ -635,88 +682,11 @@ function handleAllowDelegation($always = false)
         header($location);
         exit; // No further processing necessary
     } else {
-        Content::printHeader('Delegation ' .
-            ($success ? 'Successful' : 'Failed'));
-
-        echo '
-        <div class="boxed">
-        <div>
-        <div class="icon">
-        ';
-        Content::printIcon(($success ? 'okay' : 'error'));
-        echo '
-        </div>
-        <h2>' , ($success ? 'Success!' : 'Failure!') , '</h2>
-        </div>
-        ';
-        if ($success) {
-            echo '
-            <p>
-            The CILogon Service has issued a certificate to "' ,
-            htmlspecialchars(Util::getSessionVar('portalname')) , '".
-            Below is a link to return to
-            the site to use the issued certificate.
-            </p>
-            ';
-            // If we got the cert from the 'oauth/authorized' script,
-            // output it in an expandable/scrollable <div> for user info.
-            if (strlen($certtext) > 0) {
-                echo '
-                <noscript>
-                <div class="nojs">
-                Javascript is disabled. In order to expand the "Certificate
-                Details" section below, please enable Javascript in your
-                browser.
-                </div>
-                </noscript>
-
-                <div class="summary">
-                <div id="certtext1" style="display:inline"><span
-                class="expander"><a
-                href="javascript:showHideDiv(\'certtext\',-1)"><img
-                src="/images/triright.gif" alt="&rArr;" width="14"
-                height="14" />
-                Certificate Details</a></span>
-                </div>
-                <div id="certtext2" style="display:none"><span
-                class="expander"><a
-                href="javascript:showHideDiv(\'certtext\',-1)"><img
-                src="/images/tridown.gif" alt="&dArr;" width="14"
-                height="14" />
-                Certificate Details</a></span>
-                </div>
-                <br class="clear" />
-                <div id="certtext3" style="display:none">
-                  <div class="portalinfo">
-                  <pre>' , htmlspecialchars($certtext) , '</pre>
-                  </div>
-                </div>
-                </div>
-                ';
-            }
-        } else {
-            echo '
-            <p>
-            We were unable to issue a certificate to "' ,
-            htmlspecialchars(Util::getSessionVar('portalname')) , '".
-            Below is a link to return to the site.
-            </p>
-            ';
-        }
-        echo '
-        <div class="returnlink">
-          <a href="' ,
-          ((strlen($responseurl) > 0) ? $responseurl :
-           (Util::getSessionVar($success ? 'successuri' : 'failureuri'))) ,
-          '">Return to ' ,
-          htmlspecialchars(Util::getSessionVar('portalname')) , '</a>
-        </div>
-        </div>
-        ';
+        Content::printHeader('Delegation ' . ($success ? 'Successful' : 'Failed'));
+        printOAuth1DelegationDone($success, $responseurl, $certtext);
         Content::printFooter();
         if ($success) {
             Util::unsetClientSessionVars();
-            // Util::unsetAllUserSessionVars();
         } else {
             Util::unsetAllUserSessionVars();
         }

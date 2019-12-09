@@ -1,4 +1,6 @@
-/***** Begin the "CILogon Service" header at the top of each page *****/
+a:hover, a:active {
+  color: #666;
+}
 div.logoheader {
   background-color: #fff;
   background-position: center top;
@@ -15,10 +17,17 @@ div.logoheader {
 div.logoheader h1 {
   background: transparent;
 }
-/***** End the "CILogon Service" header at the top of each page *****/
-
-/***** Begin a few misc elements *****/
-input.submit {
+div.skincilogonlogo {
+  display: inline;
+  margin-top: 46px;
+}
+div.skincilogonlogo a {
+  border-bottom: 0px;
+}
+.card-header {
+    background-color: rgb(244,244,244);
+}
+.btn.btn-primary {
   border-color: rgba(0,0,0,0.4);
   color: rgb(255,255,255);
   text-shadow: 0px -1px 0px rgba(0,0,0,0.25);
@@ -36,40 +45,33 @@ input.submit {
   border-radius: 4px 4px 4px 4px;
   box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.2) inset, 0px 1px 2px rgba(0, 0, 0, 0.05);
 }
-
-input.submit:active {
-  background-color: rgb(0,49,205);
-  color: #000;
-}
-
-input.submit:hover {
-  background-color: rgb(0,49,205);
+.btn.btn-primary:hover {
   text-decoration: none;
-  background-position: 0px -15px;
+  color: white;
   transition: background-position 0.1s linear 0s;
+  font-weight: normal;
 }
-
-input.submit:focus {
+.btn.btn-primary:focus {
   outline: thin dotted rgb(51,51,51);
   outline-offset: -2px;
+  font-weight: normal;
+}
+.btn.btn-primary.active,
+.btn.btn-primary.active.focus,
+.btn.btn-primary.active:focus,
+.btn.btn-primary.active:hover,
+.btn.btn-primary:active,
+.btn.btn-primary:active.focus,
+.btn.btn-primary:active:focus,
+.btn.btn-primary:active:hover {
+  background-color: rgb(0,49,205);
+  color: #000;
+  font-weight: normal;
 }
 
-/***** End a few misc element *****/
 
-/***** Begin skincilogonlogo *****/
-div.skincilogonlogo {
-  display: inline;
-  margin-top: 46px;
-}
-div.skincilogonlogo a {
-  border-bottom: 0px;
-}
-/***** End skincilogonlogo *****/
-
-/***** Begin page footer *****/
-div.footer a:link, div.footer a:visited {
+.footer a:link, div.footer a:visited {
   color: #888;
   text-decoration: underline;
 }
-/***** End page footer *****/
 

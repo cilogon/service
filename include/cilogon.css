@@ -1,7 +1,8 @@
-/***** Begin basic elements *****/
 html {
   margin: 0;
   padding: 0;
+  position: relative;
+  min-height: 100%;
 }
 body {
   font-family: Arial,sans-serif;
@@ -9,18 +10,10 @@ body {
   background: #fff;
   margin: 0;
   padding: 0;
-}
-p {
-  margin-top: 0;
-  text-align: justify;
+  margin-bottom: 80px;
 }
 img {
   border-style: none;
-}
-img.floatrightclear {
-  float: right;
-  clear: right;
-  margin: 4px;
 }
 a {
   color: #363;
@@ -37,86 +30,53 @@ a:hover, a:active {
   text-decoration: underline;
   color: #696;
 }
-acronym {
-  border-bottom: none;
+.helpcursor {
+  cursor: help;
 }
-/***** End basic elements *****/
-
-/***** Begin a few misc elements *****/
-div.pagecontent {
-  margin-left: 2px;
-  margin-right: 2px;
-  min-width: 600px
+.btn.btn-primary {
+    font-weight: bold;
+    color: #030;
+    background-color: #aca;
+    border-color: #999;
 }
-div.boxed {
-  border: 1px solid #888;
-  min-width: 350px;
-  padding: 2px;
+.btn.btn-primary:hover {
+    font-weight: bold;
+    color: #030;
+    background-color: #8a8;
+    border-color: #030;
 }
-div.boxheader {
-  border: 1px solid #696;
-  text-align: center;
-  background-color: #cfc;
-  font-weight: bold;
-  padding-top: 2px;
-  padding-bottom: 2px;
+.btn.btn-primary.active,
+.btn.btn-primary.active.focus,
+.btn.btn-primary.active:focus,
+.btn.btn-primary.active:hover,
+.btn.btn-primary:active,
+.btn.btn-primary:active.focus,
+.btn.btn-primary:active:focus,
+.btn.btn-primary:active:hover {
+    font-weight: bold;
+    color: #030;
+    background-color: #cec;
+    border-color: #999;
 }
-.nojs {
-  border: 1px solid #933;
-  text-align: center;
-  background-color: #fcc;
-  margin: 1em 5em 1em 5em;
+.card.col-lg-6,
+.card.col-md-8,
+.card.col-sm-10,
+.card.col-12 {
+    padding-right: 0px;
+    padding-left: 0px;
 }
-br.clear {
-  clear: both;
+.card-header {
+    background-color: rgba(0,192,0,.02);
 }
-input.submit {
-  font-weight: bold;
-  font-size: 110%;
-  color: #030;
-  background-color: #aca;
+.card-header .fa {
+    transition: .3s transform ease-in-out;
 }
-div.portalinfo {
-  margin-left: 3em;
-  margin-right: 3em;
-  border: 1px dashed #888;
-  overflow-x: auto;
-  overflow-y: hidden;
+.card-header .collapsed .fa {
+    transform: rotate(90deg);
 }
-div.returnlink {
-  text-align: center;
-  font-weight: bold;
-  margin: 2em 5em;
+.card-header .collapsed .nocollapse {
+    transform: none;
 }
-div.noticebanner {
-  border: 5px ridge orange;
-  text-align: center;
-  font-weight: bolder;
-  background-color: #fa6;
-  padding: 0.5em;
-  margin: 1em 3em;
-}
-.centered {
-  padding-left: 0;
-  padding-right: 0;
-  text-align: center;
-  vertical-align: middle;
-}
-.smaller {
-  font-size: x-small;
-}
-.zeroheight {
-  display: block;
-  width: 0;
-  height: 0;
-  line-height:0;
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
-}
-/***** End a few misc element *****/
-
-/***** Begin the "CILogon Service" header at the top of each page *****/
 div.logoheader {
   background: transparent url("/images/cilogon-gradient.jpg") repeat-y top right;
   height: 80px;
@@ -135,263 +95,6 @@ div.logoheader h1 {
 div.logoheader h1 span {
   display: none;
 }
-/***** End the "CILogon Service" header at the top of each page *****/
-
-/***** Begin PageHeader titlebox *****/
-div.titlebox {
-  margin: 10px 10%;
-  padding: 20px;
-  border: 3px ridge #696;
-  text-align: center;
-  font-size: x-large;
-  background-color: #f5fff5;
-}
-/***** End PageHeader titlebox *****/
-
-/***** Begin page footer *****/
-div.footer {
-  border: 1px solid #888;
-  color: #888;
-  margin-top: 2px;
-  margin-bottom: 2px;
-}
-div.footer p {
-  text-align: center;
-  font-size: small;
-  margin: 0;
-}
-div.footer a:link {
-  color: #696;
-  text-decoration: none;
-}
-div.footer a:visited {
-  color: #696;
-  text-decoration: none;
-}
-/***** End page footer *****/
-
-/***** Begin actionbox containing action buttons and WAYF *****/
-div.actionbox,
-div.p12actionbox,
-div.certactionbox,
-div.tokenactionbox,
-div.logoffactionbox,
-div.logofftextbox {
-  border: 1px solid #888;
-  display: block;
-  text-align: center;
-  width: 375px;
-  margin: 0 auto 1em auto;
-  padding: 1em 0 0 0;
-  line-height: 1em;
-}
-div.actionbox fieldset,
-div.p12actionbox fieldset,
-div.certactionbox fieldset,
-div.tokenactionbox fieldset,
-div.logoffactionbox fieldset {
-  border: none;
-  padding: 0;
-  margin: 0;
-}
-div.actionbox p,
-div.p12actionbox p,
-div.certactionbox p,
-div.tokenactionbox p,
-div.logoffactionbox p,
-div.logofftextbox p {
-  text-align: center;
-}
-div.p12actionbox label {
-  width: 10em;
-  float: left;
-  text-align: right;
-  display: block;
-}
-div.certactionbox,
-div.tokenactionbox,
-div.logofftextbox {
-  display: none;
-}
-select#providerId {
-  font-size: 8pt;
-  width: 300px;
-}
-input#searchlist {
-  font-size: 8pt;
-}
-p.logonerror {
-  border: 3px double red;
-  text-align: center;
-  background-color: #fcc;
-  margin: 1em;
-}
-p.privacypolicy {
-  font-size: x-small;
-}
-p.p12certificatelifetime {
-  display: none;
-}
-img.hourglass {
-  display: none;
-  position: absolute;
-  margin-left: 2em;
-}
-#wayfcancelbutton {
-  display: none;
-}
-/***** End actionbox *****/
-
-/***** Begin certinfo / portalinfo table *****/
-table.certinfo,
-table.portalinfo1,
-table.portalinfo2 {
-  margin: 1em;
-  width: 92%;
-  border: 1px solid #888;
-  border-spacing: 0;
-  border-collapse: collapse;
-}
-table.certinfo a:link,
-table.portalinfo1 a:link,
-table.portalinfo2 a:link {
-  text-decoration: none;
-}
-table.certinfo a:visited,
-table.portalinfo1 a:visited,
-table.portalinfo2 a:visited {
-  text-decoration: none;
-}
-table.certinfo th,
-table.portalinfo1 th,
-table.portalinfo2 th {
-  text-align: right;
-  padding-right: 1em;
-}
-table.certinfo td,
-table.portalinfo1 td,
-table.portalinfo2 td {
-  padding-right: 1em;
-}
-/***** End certinfo / portalinfo table *****/
-
-/***** Begin summary div on testidp page *****/
-div.summary {
-  border: 1px solid #888;
-  margin: 2em;
-  padding: 2px;
-  background-color: #efe;
-}
-div.summary h2 {
-  margin-top: 0;
-  margin-bottom: 0.5em;
-}
-div.summary h3 {
-  margin-top: 2px;
-  margin-left: 2em;
-  margin-bottom: 0;
-}
-div.icon {
-  float: left;
-  margin-right: 1em;
-}
-div.summary form {
-  text-align: center;
-  margin-bottom: 0.5em;
-}
-div.summary a:link {
-  color: #030;
-  text-decoration: none;
-}
-div.summary a:visited {
-  color: #030;
-  text-decoration: none;
-}
-div.summary span.expander {
-  font-size: large;
-  font-weight: bold;
-}
-div.summary table {
-  margin: 0.5em 3em 0.5em;
-  border-width: 0;
-  border-spacing: 0;
-  border-style: solid;
-  border-collapse: collapse;
-}
-div.summary table tr th {
-  background-color: #efe;
-  text-align: right;
-}
-div.summary table tr td {
-  background-color: #efe;
-}
-div.summary table tr.odd th {
-  background-color: #fafffa;
-  text-align: right;
-}
-div.summary table tr.odd td {
-  background-color: #fafffa;
-}
-div.summarytext a:link {
-  text-decoration: underline;
-}
-div.summarytext a:visited {
-  text-decoration: underline;
-}
-div.summarytext p.addsubmit {
-  text-align: center;
-  font-weight: bold;
-}
-/***** End summary div on testidp page *****/
-
-/***** Begin errorbox and associated icon/text *****/
-div.errorbox {
-  margin: 1em;
-  padding: 1em;
-  border: 3px double red;
-}
-div.errorbox table {
-  border-width: 0;
-  border-spacing: 0;
-  border-style: solid;
-  border-collapse: collapse;
-}
-/***** End errorbox and associated icon/text *****/
-
-/***** Begin userchanged div and table *****/
-div.userchanged table {
-  margin: 1em 3em;
-  border: 1px solid #696;
-  border-spacing: 0;
-  border-collapse: collapse;
-  width: inherit;
-}
-div.userchanged table tr th {
-  border: 1px solid #696;
-  background-color: #efe;
-  text-align: right;
-}
-div.userchanged table tr.headings th {
-  border: 1px solid #696;
-  background-color: #efe;
-  text-align: center;
-}
-div.userchanged table tr td {
-  border: 1px solid #696;
-  background-color: #efe;
-}
-div.userchanged table tr.odd th {
-  border: 1px solid #696;
-  background-color: #fafffa;
-  text-align: right;
-}
-div.userchanged table tr.odd td {
-  border: 1px solid #696;
-  background-color: #fafffa;
-}
-/***** End userchanged div and table *****/
-
-/***** Begin skincilogonlogo *****/
 div.skincilogonlogo {
   float: right;
   top: 0;
@@ -399,44 +102,60 @@ div.skincilogonlogo {
   margin: 5px;
   display: none;
 }
-/***** End skincilogonlogo *****/
-
-/***** Begin Help-related stuff *****/
-.helpcursor {
-  cursor: help;
+div.skincilogonlogo a,
+div.skincilogonlogo a:link,
+div.skincilogonlogo a:visited,
+div.skincilogonlogo a:hover,
+div.skincilogonlogo a:active {
+    border-bottom: 0px;
+    text-decoration: none;
 }
-input.helpbutton {
-  font-weight: bold;
-  font-size: x-small;
-  color: #fff;
-  background: url('/images/blackflash.gif') repeat top left;
-  padding: 1px 0px;
-  margin: 2px 2px 0 1em;
-  width: 3.5em;
-  float: right;
-  white-space: normal;
+.footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  /* line-height: 60px; */
+  border: 1px solid #888;
+  color: #888;
+  /* margin: 0; */
+  /* margin-top: 2px */
+  /* margin-bottom: 2px; */
 }
-table.helptable {
-  border: none;
-  border-width: 0;
-  border-spacing: 0;
-  border-collapse: collapse;
-  padding: 0;
+.footer p {
+  text-align: center;
+  font-size: small;
+  margin: 0;
 }
-table.helptable td.actioncell {
-  width: auto !important;
-  width: 375px;
-  min-width: 375px;
+.footer a:link {
+  color: #696;
+  text-decoration: none;
 }
-table.helptable td.helpcell p {
-  vertical-align: middle;
-  text-align: justify;
+.footer a:visited {
+  color: #696;
+  text-decoration: none;
 }
-table.helptable td.helpcell div {
-  background-color: #f3fff3;
-  margin-right: 1em;
+.privacypolicy {
+  margin-top: 2em;
+  margin-bottom: -1em;
+  font-size: small;
 }
-tr.inforow td.helpcell {
-  background-color: #f3fff3;
+.p12certificatelifetime {
+  display: none;
 }
-/***** End Help-related stuff *****/
+#p12hourglass {
+  display: none;
+  position: absolute;
+  margin-left: 2em;
+}
+table tr th {
+  text-align: right;
+  word-wrap: break-word;
+}
+table tr td {
+  text-align: left;
+  word-wrap: break-word;
+  word-break: break-all;
+}

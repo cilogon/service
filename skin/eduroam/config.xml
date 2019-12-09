@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 
-  <initialidp>urn:mace:incommon:idp.protectnetwork.org</initialidp>
+  <initialidp>urn:mace:incommon:uiuc.edu</initialidp>
 
   <idpblacklist>
     <idp>https://accounts.google.com/o/oauth2/auth</idp>

@@ -18,22 +18,13 @@ a:hover, a:active {
   text-decoration: underline;
   color: #1961A9;
 }
-/***** End basic elements *****/
-
-/***** Begin a few misc elements *****/
-div.boxed {
-  border: 2px solid #d0d0d1;
-  border-radius: 4px;
-  margin-right: 6px;
-  margin-left: 6px;
-  background-color: #FFF;
+.card {
+    background-color: #eee;
 }
-div.boxheader {
-  color: #fff;
-  border: 1px solid #999;
-  background-color: #708090;
+.card-header {
+    background-color: white;
 }
-input.submit {
+.btn.btn-primary {
   font-size: 100%;
   color: #2079D2;
   margin: 5px 0.5em;
@@ -48,19 +39,22 @@ input.submit {
   box-shadow: 0 0 1px 1px #858f99;
   font-weight: normal;
 }
-input.submit:hover, input.submit:active {
+.btn.btn-primary:hover,
+.btn.btn-primary.active,
+.btn.btn-primary.active.focus,
+.btn.btn-primary.active:focus,
+.btn.btn-primary.active:hover,
+.btn.btn-primary:active,
+.btn.btn-primary:active.focus,
+.btn.btn-primary:active:focus,
+.btn.btn-primary:active:hover {
   color: #2079D2;
   -webkit-box-shadow: 0 0 2px 2px #2079D2;
   -moz-box-shadow: 0 0 2px 2px #2079D2;
   box-shadow: 0 0 2px 2px #2079D2;
+  font-weight: normal;
 }
 
-div.noticebanner {
-  color: #000;
-}
-/***** End a few misc element *****/
-
-/***** Begin the "CILogon Service" header at the top of each page *****/
 div.logoheader {
   background: #e7e8e9;
   height: 68px;
@@ -75,62 +69,23 @@ div.logoheader h1 {
   height: 48px;
   float: left;
 }
-/***** End the "CILogon Service" header at the top of each page *****/
-
-
-/***** Begin page footer *****/
-div.footer {
-  border: 0;
-  color: #222;
-}
-div.footer a:link {
-  color: #2079D2;
-}
-div.footer a:visited {
-  color: #2079D2;
-}
-div.footer a:hover {
-  color: #1961A9;
-}
-div.footer a:active {
-  color: #1961A9;
-}
-/***** End page footer *****/
-
-/***** Begin actionbox containing action buttons and WAYF *****/
-div.actionbox,
-div.p12actionbox,
-div.logoffactionbox {
-  border: 1px solid #333;
-  border-radius: 4px;
-  display: block;
-  color: #124272;
-  background-color: #eee;
-}
-/***** End actionbox *****/
-
-/***** Begin certinfo / portalinfo table *****/
-table.certinfo,
-table.portalinfo1,
-table.portalinfo2 {
-  background-color: #eee;
-}
-/***** End certinfo / portalinfo table *****/
-
-
-/***** Begin skincilogonlogo *****/
 div.skincilogonlogo {
   margin: 3px;
   display: inline;
 }
-/***** End skincilogonlogo *****/
-
-/***** Begin Help-related stuff *****/
-table.helptable td.helpcell div {
-  background-color: #eee;
-  margin-right: 1em;
+.footer {
+  border: 0;
+  color: #222;
 }
-tr.inforow td.helpcell {
-  background-color: #eee;
+.footer a:link {
+  color: #2079D2;
 }
-/***** End Help-related stuff *****/
+.footer a:visited {
+  color: #2079D2;
+}
+.footer a:hover {
+  color: #1961A9;
+}
+.footer a:active {
+  color: #1961A9;
+}

@@ -15,13 +15,7 @@ Util::startPHPSession();
 
 // Check the csrf cookie against either a hidden <form> element or a
 // PHP session variable, and get the value of the 'submit' element.
-// Note: replace CR/LF with space for 'Show/Hide Help' buttons.
-$retchars = array("\r\n","\n","\r");
-$submit = str_replace(
-    $retchars,
-    " ",
-    Util::getCsrf()->verifyCookieAndGetSubmit()
-);
+$submit = Util::getCsrf()->verifyCookieAndGetSubmit();
 Util::unsetSessionVar('submit');
 Util::unsetSessionVar('storeattributes'); // Used only by /testidp/
 
@@ -57,28 +51,23 @@ if (verifyOAuthToken(Util::getGetVar('oauth_token'))) {
             // If user clicked 'Cancel' on the WAYF page, return to the
             // portal's failure URL (or Google if failure URL not set).
             if (Util::getPostVar('previouspage') == 'WAYF') {
+                $redirect = 'https://www.cilogon.org/'; // If no failureuri
                 $failureuri = Util::getSessionVar('failureuri');
-                $location = 'https://www.google.com/';
                 if (strlen($failureuri) > 0) {
-                    $location = $failureuri . "?reason=cancel";
+                    $redirect = $failureuri . "?reason=cancel";
                 }
                 Util::unsetAllUserSessionVars();
-                header('Location: ' . $location);
+                header('Location: ' . $redirect);
                 exit; // No further processing necessary
             } else { // 'Cancel' button on certificate delegate page clicked
                 printCancelPage();
             }
             break; // End case 'Cancel'
 
-        case 'Show  Help ': // Toggle showing of help text on and off
-        case 'Hide  Help ':
-            Content::handleHelpButtonClicked();
-            break; // End case 'Show Help' / 'Hide Help'
-
         default: // No submit button clicked nor PHP session submit variable set
             Content::handleNoSubmitButtonClicked();
             break; // End default case
     } // End switch ($submit)
 } else { // Failed to verify oauth_token info in PHP session
-    printBadOAuthTokenPage();
+    printOAuth1ErrorPage();
 }
