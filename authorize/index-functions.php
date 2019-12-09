@@ -55,25 +55,9 @@ function printLogonPage()
         // being requested. The values we care about are 'email', 'profile'
         // (for first/last name), and 'edu.uiuc.ncsa.myproxy.getcert'
         // (which gives a certificate containing first/last name AND email).
-        $attrs = array();
-        $scope = $clientparams['scope'];
-        if (preg_match('/openid/', $scope)) {
-            $attrs['openid'] = true;
-        }
-        if (preg_match('/email/', $scope)) {
-            $attrs['email'] = true;
-        }
-        if (preg_match('/profile/', $scope)) {
-            $attrs['name'] = true;
-        }
-        if (preg_match('/org.cilogon.userinfo/', $scope)) {
-            $attrs['cilogon'] = true;
-        }
-        if (preg_match('/edu.uiuc.ncsa.myproxy.getcert/', $scope)) {
-            $attrs['email'] = true;
-            $attrs['name'] = true;
-            $attrs['cert'] = true;
-        }
+        // CIL-632 Anything else should just be output as-is.
+        $scopes = preg_split("/[\s\+]+/", $clientparams['scope']);
+        $scopes = array_unique($scopes); // Remove any duplicates
 
         echo '
           <br/>
@@ -87,23 +71,40 @@ function printLogonPage()
 
         echo '<ul style="max-width:660px;margin:0 auto">
           ';
-        if (isset($attrs['openid'])) {
-            echo '<li>Your CILogon username</li>';
+
+        if (in_array('openid', $scopes)) {
+            echo '<li>Your CILogon user identifier</li>';
+            $scopes = array_diff($scopes, ['openid']);
         }
-        if (isset($attrs['name'])) {
+        if (
+            (in_array('profile', $scopes)) ||
+            (in_array('edu.uiuc.ncsa.myproxy.getcert', $scopes))
+        ) {
             echo '<li>Your name</li>';
+            $scopes = array_diff($scopes, ['profile']);
         }
-        if (isset($attrs['email'])) {
+        if (
+            (in_array('email', $scopes)) ||
+            (in_array('edu.uiuc.ncsa.myproxy.getcert', $scopes))
+        ) {
             echo '<li>Your email address</li>';
+            $scopes = array_diff($scopes, ['email']);
         }
-        if (isset($attrs['cilogon'])) {
+        if (in_array('org.cilogon.userinfo', $scopes)) {
             echo '<li>Your username and affiliation from your identity provider</li>';
+            $scopes = array_diff($scopes, ['org.cilogon.userinfo']);
         }
-        if (isset($attrs['cert'])) {
+        if (in_array('edu.uiuc.ncsa.myproxy.getcert', $scopes)) {
             echo '<li>A certificate that allows "' ,
             htmlspecialchars($clientparams['client_name']) ,
             '" to act on your behalf</li>';
+            $scopes = array_diff($scopes, ['edu.uiuc.ncsa.myproxy.getcert']);
         }
+        // Output any remaining scopes as-is
+        foreach ($scopes as $value) {
+            echo '<li>', $value , '</li>';
+        }
+
         echo '</ul>
         ';
     }
