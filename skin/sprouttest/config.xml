@@ -1,13 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config>
-
-  <initialidp>https://sts.windows.net/06219a4a-a835-44d5-afaf-3926343bfb89/</initialidp>
-
-  <idplistsize>2</idplistsize>
-
-  <idpwhitelist>
-    <idp>https://idp.ncsa.illinois.edu/idp/shibboleth</idp>
-    <idp>https://sts.windows.net/06219a4a-a835-44d5-afaf-3926343bfb89/</idp>
-  </idpwhitelist>
-
-</config>
+../sprout/config.xml
