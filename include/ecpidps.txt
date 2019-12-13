@@ -12,6 +12,7 @@ https://idp.ncsa.illinois.edu/idp/profile/SAML2/SOAP/ECP National Center for Sup
 https://webauth.service.ohio-state.edu/idp/profile/SAML2/SOAP/ECP Ohio State University
 https://as1.fim.psu.edu/idp/profile/SAML2/SOAP/ECP Penn State University
 https://shibboleth-test.techservices.illinois.edu/idp/profile/SAML2/SOAP/ECP UIUC Test
+https://authentication.ubc.ca/idp/profile/SAML2/SOAP/ECP University of British Columbia
 https://shibboleth2.uchicago.edu/idp/profile/SAML2/SOAP/ECP University of Chicago
 https://shibboleth.illinois.edu/idp/profile/SAML2/SOAP/ECP University of Illinois at Urbana-Champaign
 https://shibboleth.umich.edu/idp/profile/SAML2/SOAP/ECP University of Michigan
