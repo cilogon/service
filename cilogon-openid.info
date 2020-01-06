@@ -4,5 +4,6 @@ ca_url = https://cilogon.org/cilogon-openid.pem
 crl_url = http://crl-cilogon.ncsa-security.net/cilogon-openid.crl;http://crl.cilogon.org/cilogon-openid.crl
 email = ca@cilogon.org
 status = experimental
-version = @VERSION@
-sha1fp.0 = @SHA1FP.0@
+version = 1.0
+sha1fp.0 = 3C:D3:32:8E:A9:02:D8:FD:E8:BA:44:5C:40:46:4C:09:03:26:F5:4C
+subjectdn = "/DC=org/DC=cilogon/C=US/O=CILogon/CN=CILogon OpenID CA 1"
