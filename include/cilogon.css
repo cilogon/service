@@ -58,6 +58,13 @@ a:hover, a:active {
     background-color: #cec;
     border-color: #999;
 }
+a.btn.btn-primary,
+a.btn.btn-primary:link,
+a.btn.btn-primary:visited,
+a.btn.btn-primary:hover,
+a.btn.btn-primary:active {
+    text-decoration: none;
+}
 .card.col-lg-6,
 .card.col-md-8,
 .card.col-sm-10,
