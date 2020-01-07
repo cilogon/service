@@ -339,4 +339,13 @@
   <logofftextbox>1</logofftextbox>
   -->
 
+  <!-- <expandcreatecert>
+       If set to 1, automatically expand the "Create Password-Protected
+       Certificate" collapsible card. (The default is collapsed.)
+  -->
+
+  <!--
+  <expandcreatecert>1</expandcreatecert>
+  -->
+
 </config>

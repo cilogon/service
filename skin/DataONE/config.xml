@@ -19,4 +19,6 @@
 
   <logofftextbox>1</logofftextbox>
 
+  <expandcreatecert>1</expandcreatecert>
+
 </config>
