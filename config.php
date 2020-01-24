@@ -245,7 +245,7 @@ define('FORCE_SKIN_ARRAY', array(
     '%^https://simpl-dev.ncsa.illinois.edu/clowder/authenticate/cilogon%' => 'sprouttest',
     '%^https://sprout.ncsa.illinois.edu/authenticate/cilogon%' => 'sprouttest',
     '%^https://sprout.ncsa.illinois.edu/clowder/authenticate/cilogon%' => 'sprouttest',
-    '%^https://fairdata.sdsc.edu/openid-connect/generic%' => 'fairdata',
+    '%^myproxy:oa4mp,2012:/client_id/63408f84f8ba20d1446336ee1f330a0e%' => 'fairdata',
     '%^https://identity.lsst.org/cilogon-result%' => 'LSST',
     '%^https://registry.gw-astronomy.org/secure/redirect%' => 'gwastro',
     '%^https://registry-test.gw-astronomy.org/secure/redirect%' => 'gwastro',
