@@ -75,4 +75,6 @@ function printUser($dbs)
     echo "acr = $dbs->acr\n";
     echo "entitlement = $dbs->entitlement\n";
     echo "itrustuin = $dbs->itrustuin\n";
+    echo "subject_id = $dbs->subject_id\n";
+    echo "pairwise_id = $dbs->pairwise_id\n";
 }

@@ -85,7 +85,9 @@ function getUID()
         @$shibarray['Member'],
         @$shibarray['Authn Context'],
         @$shibarray['Entitlement'],
-        @$shibarray['iTrustUIN']
+        @$shibarray['iTrustUIN'],
+        @$shibarray['Subject ID'],
+        @$shibarray['Pairwise ID']
     );
 }
 
