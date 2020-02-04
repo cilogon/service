@@ -140,7 +140,7 @@ function getPKCS12()
     }
 
     // Verify myproxy-logon binary is configured
-    $disabledbyconf = ((!defined(MYPROXY_LOGON)) || (empty(MYPROXY_LOGON)));
+    $disabledbyconf = ((!defined('MYPROXY_LOGON')) || (empty(MYPROXY_LOGON)));
     if ($disabledbyconf) {
         $log->info('ECP PKCS12 error: Downloading certificates is ' .
             'disabled due to myproxy-logon not configured.');
@@ -230,7 +230,7 @@ function getCert()
     }
     //
     // Verify myproxy-logon binary is configured
-    $disabledbyconf = ((!defined(MYPROXY_LOGON)) || (empty(MYPROXY_LOGON)));
+    $disabledbyconf = ((!defined('MYPROXY_LOGON')) || (empty(MYPROXY_LOGON)));
     if ($disabledbyconf) {
         $log->info('ECP certreq error: Downloading certificates is ' .
             'disabled due to myproxy-logon not configured.');
