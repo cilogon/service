@@ -139,7 +139,7 @@ function printMainPage()
             $clientparams['code'],
             Util::getSessionVar('uid'),
             Util::getSessionVar('authntime'),
-            Util::getSessionVar('loa'),
+            Util::getLOA(),
             Util::getSessionVar('myproxyinfo')
         )) && (!($dbs->status & 1))
     ) { // STATUS_OK codes are even

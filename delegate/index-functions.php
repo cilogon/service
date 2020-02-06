@@ -589,7 +589,7 @@ function handleAllowDelegation($always = false)
         $url = OAUTH1_AUTHORIZED_URL . '?' .
                'oauth_token=' . urlencode($tempcred) . '&' .
                'cilogon_lifetime=' . $life . '&' .
-               'cilogon_loa=' . urlencode(Util::getSessionVar('loa')) . '&' .
+               'cilogon_loa=' . urlencode(Util::getLOA()) . '&' .
                'cilogon_uid=' . urlencode(Util::getSessionVar('uid')) .
                ((strlen($myproxyinfo) > 0) ?
                    ('&cilogon_info=' . urlencode($myproxyinfo)) : '');

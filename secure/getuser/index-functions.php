@@ -246,15 +246,6 @@ function getCert()
         return; // ERROR means no further processing is necessary
     }
 
-    // Set the port based on the Level of Assurance
-    $port = 7512;
-    $loa = Util::getSessionVar('loa');
-    if ($loa == 'http://incommonfederation.org/assurance/silver') {
-        $port = 7514;
-    } elseif ($loa == 'openid') {
-        $port = 7516;
-    }
-
     // Get the certificate lifetime. Set to a default value if not set.
     $certlifetime = (int)(Util::getPostVar('certlifetime'));
     if ($certlifetime == 0) {  // If not specified, set to default value
@@ -288,7 +279,7 @@ function getCert()
             $dn,
             '',
             MYPROXY_HOST,
-            $port,
+            Util::getLOAPort(),
             $certlifetime,
             '/var/www/config/hostcred.pem',
             '',
