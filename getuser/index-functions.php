@@ -70,15 +70,11 @@ function getUserAndRespond()
                 if ((strlen($emailaddr) == 0) && ($prov == 'github')) {
                     $emailaddr = getGitHubEmail($oauth2, $token);
                 }
-                $name = $user->getName();
-                $first = '';
-                $last = '';
+                $displayname = $user->getName();
                 if ($prov != 'github') { // No first/last for GitHub
-                    $first = $user->getFirstName();
-                    $last = $user->getLastName();
+                    $firstname = $user->getFirstName();
+                    $lastname = $user->getLastName();
                 }
-                list($firstname, $lastname) =
-                    Util::getFirstAndLastName($name, $first, $last);
             } catch (Exception $e) {
                 Util::setSessionVar('logonerror', $e->getMessage());
             }
