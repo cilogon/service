@@ -32,16 +32,6 @@ function getUID()
 {
     $shibarray = Util::getIdpList()->getShibInfo();
 
-    $firstname = @$shibarray['First Name'];
-    $lastname = @$shibarray['Last Name'];
-    if ((strlen($firstname) == 0) || (strlen($lastname) == 0)) {
-        list($firstname, $lastname) = Util::getFirstAndLastName(
-            @$shibarray['Display Name'],
-            $firstname,
-            $lastname
-        );
-    }
-
     // Hack for test IdP at boingo.ncsa.uiuc.edu
     if (strlen(@$shibarray['Organization Name']) == 0) {
         $shibarray['Organization Name'] = 'Unspecified';
@@ -71,8 +61,8 @@ function getUID()
         @$shibarray['User Identifier'],
         @$shibarray['Identity Provider'],
         @$shibarray['Organization Name'],
-        $firstname,
-        $lastname,
+        @$shibarray['First Name'],
+        @$shibarray['Last Name'],
         @$shibarray['Display Name'],
         @$shibarray['Email Address'],
         @$shibarray['Level of Assurance'],
@@ -297,9 +287,9 @@ function getCert()
             $log->info('ECP certreq error: MyProxy unable to create certificate.');
             outputError('Error! MyProxy unable to create certificate.');
         }
-    } else { // Couldn't find the 'dn' PHP session value - shouldn't happen!
+    } else { // Couldn't find the 'dn' PHP session value
         $log->info('ECP certreq error: Missing \'dn\' session value.');
-        outputError('Missing username. Please enable cookies.');
+        outputError('Cannot create certificate due to missing attributes.');
     }
 }
 
