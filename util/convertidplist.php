@@ -44,7 +44,7 @@ if ($argc == 4) {
 
     $idplist->setFilename($file2);
     if (!$idplist->write($writetype)) {
-        fprint(STDERR, "Unable to write to $file2\n");
+        fwrite(STDERR, "Unable to write to $file2\n");
         exit(1);
     }
 } else {
