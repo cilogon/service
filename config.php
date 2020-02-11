@@ -209,6 +209,7 @@ define('BYPASS_IDP_ARRAY', array(
  */
 define('ALLOW_BYPASS_ARRAY', array(
     '%cilogon:/client_id/3cbc990448f1ea8df6ebe128b101d84c%',
+    '%cilogon:/client_id/d00f2e2f70cbcd8ea1cab897f946e3a%',
 ));
 
 /**
