@@ -340,6 +340,7 @@ function verifyOIDCParams()
                 foreach ($_GET as $key => $value) {
                     if ($key == 'scope') {
                         $_GET[$key] = preg_replace('/\+/', ' ', $value);
+                        break;
                     }
                 }
                 $url .= (preg_match('/\?/', $url) ? '&' : '?') .
