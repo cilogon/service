@@ -336,6 +336,12 @@ function verifyOIDCParams()
         if ($ch !== false) {
             $url = OAUTH2_CREATE_TRANSACTION_URL;
             if (count($_GET) > 0) {
+                // CIL-658 Look for double-encoded spaces in 'scope'
+                foreach ($_GET as $key => $value) {
+                    if ($key == 'scope') {
+                        $_GET[$key] = preg_replace('/\+/', ' ', $value);
+                    }
+                }
                 $url .= (preg_match('/\?/', $url) ? '&' : '?') .
                     http_build_query($_GET);
             }
