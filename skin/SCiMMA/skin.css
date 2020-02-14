@@ -1,0 +1,119 @@
+// Elements taken from Bootswatch Flatly theme
+body {
+ margin:0;
+ font-family:"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+ font-size:0.9375rem;
+ font-weight:400;
+ line-height:1.5;
+ color:#212529;
+ text-align:left;
+ background-color:#fff
+}
+a {
+ color:#18BC9C;
+ text-decoration:none;
+ background-color:transparent;
+ -webkit-text-decoration-skip:objects
+}
+a:hover {
+ color:#0f7864;
+ text-decoration:underline
+}
+a:not([href]):not([tabindex]) {
+ color:inherit;
+ text-decoration:none
+}
+a:not([href]):not([tabindex]):hover,
+a:not([href]):not([tabindex]):focus {
+ color:inherit;
+ text-decoration:none
+}
+a:not([href]):not([tabindex]):focus {
+ outline:0
+}
+.btn.btn-primary{
+    color:#fff;
+    background-color:#2C3E50;
+    border-color:#2C3E50;
+}
+.btn.btn-primary:hover{
+    color:#fff;
+    background-color:#1e2b37;
+    border-color:#1a252f;
+}
+.btn.btn-primary:focus,.btn.btn-primary.focus{
+    color:#fff;
+    background-color:#1e2b37;
+    border-color:#1a252f;
+    -webkit-box-shadow:0 0 0 0.2rem rgba(76,91,106,0.5);
+    box-shadow:0 0 0 0.2rem rgba(76,91,106,0.5);
+}
+.btn.btn-primary.disabled,.btn.btn-primary:disabled{
+    color:#fff;
+    background-color:#2C3E50;
+    border-color:#2C3E50;
+}
+.btn.btn-primary:not(:disabled):not(.disabled):active,.btn.btn-primary:not(:disabled):not(.disabled).active,.show>.btn-primary.dropdown-toggle{
+    color:#fff;
+    background-color:#1a252f;
+    border-color:#151e27;
+}
+.btn.btn-primary:not(:disabled):not(.disabled):active:focus,.btn.btn-primary:not(:disabled):not(.disabled).active:focus,.show>.btn-primary.dropdown-toggle:focus{
+    -webkit-box-shadow:0 0 0 0.2rem rgba(76,91,106,0.5);
+    box-shadow:0 0 0 0.2rem rgba(76,91,106,0.5);
+}
+.card-header {
+ padding:0.75rem 1.25rem;
+ margin-bottom:0;
+ background-color:rgba(0,0,0,0.03);
+ border-bottom:1px solid rgba(0,0,0,0.125)
+}
+.card-header:first-child {
+ border-radius:calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0
+}
+.card-header+.list-group .list-group-item:first-child {
+ border-top:0
+}
+.card-footer {
+ padding:0.75rem 1.25rem;
+ background-color:rgba(0,0,0,0.03);
+ border-top:1px solid rgba(0,0,0,0.125)
+}
+.card-footer:last-child {
+ border-radius:0 0 calc(0.25rem - 1px) calc(0.25rem - 1px)
+}
+
+.fa.fa-question-circle {
+  color: #212529;
+}
+div.logoheader {
+  background: #2C3E50;
+  height: 74px;
+  width: 100%;
+  min-width: 600px;
+}
+div.logoheader h1 {
+  background: transparent url("/skin/SCiMMA/logo_scimma.png") no-repeat top left;
+  margin-top: 23px;
+  margin-left: 16px;
+  width: 120px;
+  height: 30px;
+  float: left;
+}
+div.skincilogonlogo {
+  display: inline;
+  margin-top: 5px;
+  margin-right: 5px;
+}
+.footer a:link {
+  color: #18bc9c;
+}
+.footer a:visited {
+  color: #18bc9c;
+}
+.footer a:hover {
+  color: #0f7864;
+}
+.footer a:active {
+  color: #0f7864;
+}
