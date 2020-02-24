@@ -3,6 +3,10 @@
 
   <initialidp>https://login.ligo.org/idp/shibboleth</initialidp>
 
+  <idpblacklist>
+    <idp>https://idp.itsligo.ie/idp/shibboleth</idp>
+  </idpblacklist>
+
   <pkcs12>
     <disabled>1</disabled>
     <disabledmessage>
