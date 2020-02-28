@@ -177,6 +177,8 @@ define('BYPASS_IDP_ARRAY', array(
         'https://icarus.sdstate.edu/idp/shibboleth',
     '%^https://iam.scigap.org/auth/realms/pfec-hydro/broker/cilogon/endpoint%' =>
         'urn:mace:incommon:iu.edu',
+    '%^cilogon:/client_id/5b8f6c5e89b58adf254a2cece1254b13%' =>
+        'https://idp.xsede.org/idp/shibboleth',
 ));
 
 /**
