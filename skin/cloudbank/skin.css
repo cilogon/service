@@ -1,0 +1,74 @@
+/***** Begin basic elements *****/
+body {
+    font-family: "PorximaNova-Light",sans-serif;
+    color: rgb(77,77,77);
+}
+a {
+  color: #0288d0;
+  text-decoration: none;
+  outline: none;
+}
+a:visited {
+  color: #0288d0;
+}
+a:hover, a:active {
+  color: #08a7fd;
+  text-decoration: none;
+}
+.btn.btn-primary {
+  color: #0288d0;
+  background-color: #fff;
+  border: 1px solid #08a7fd;
+  transition: 0.3s;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+.card-header {
+    background-color: rgb(229,246,255);
+}
+.btn.btn-primary:hover,
+.btn.btn-primary.active,
+.btn.btn-primary.active.focus,
+.btn.btn-primary.active:focus,
+.btn.btn-primary.active:hover,
+.btn.btn-primary:active,
+.btn.btn-primary:active.focus,
+.btn.btn-primary:active:focus,
+.btn.btn-primary:active:hover {
+  transition: 0.3s;
+  background-color: #08a7fd;
+  border: 1px solid #08a7fd;
+  color: white;
+}
+div.logoheader {
+  background: none;
+  height: 70px;
+  width: 100%;
+  min-width: 600px;
+}
+div.logoheader h1 {
+  background: transparent url("/skin/cloudbank/logo.png") no-repeat top left;
+  background-size: 68%;
+  margin-top: 13px;
+  margin-left: 12%;
+  width: 411px;
+  height: 70px;
+  float: left;
+}
+div.skincilogonlogo {
+  display: inline;
+  margin-top: 12px;
+  margin-right: 8px;
+}
+.footer {
+  border: 1px solid #c0c2c5;
+  background: #fff;
+}
+.footer a:link, .footer a:visited {
+  color: #0288d0;
+  text-decoration: underline;
+}
+.footer a:hover, .footer a:active {
+  text-decoration: none;
+  color: #08a7fd;
+}
