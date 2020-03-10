@@ -163,6 +163,8 @@ define('BYPASS_IDP_ARRAY', array(
         'urn:mace:incommon:uab.edu',
     '%^https://iam.scigap.org/auth/realms/utah/broker/cilogon/endpoint%' =>
         'urn:mace:incommon:utah.edu',
+    '%^https://bhr-test.internal.ncsa.edu/oidc/callback/%' =>
+        'https://idp.ncsa.illinois.edu/idp/shibboleth',
     '%^https://bhr.security.ncsa.illinois.edu/oidc/callback/%' =>
         'https://idp.ncsa.illinois.edu/idp/shibboleth',
     '%^https://portal-dev.security.internal.ncsa.edu/oidc/callback/%' =>
