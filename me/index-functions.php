@@ -103,12 +103,11 @@ function printAboutThisPage($browsercount, $sessioncount)
                 echo ', or the &quot;Delete ALL&quot; button';
             }
         }
-        echo '.';
+        echo '.
+          </div> <!-- end card-text -->';
     }
 
     echo '
-          </div> <!-- end card-text -->
-
           <div class="row align-items-center justify-content-center">
             <div class="col-auto">
               <a class="btn btn-primary form-control" href="/">Proceed
