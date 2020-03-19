@@ -80,14 +80,14 @@ function getUID()
         @$shibarray['ePTID'],
         '', // OpenID 2.0 ID
         '', // OpenID Connect ID
+        @$shibarray['Subject ID'],
+        @$shibarray['Pairwise ID'],
         @$shibarray['Affiliation'],
         @$shibarray['OU'],
         @$shibarray['Member'],
         @$shibarray['Authn Context'],
         @$shibarray['Entitlement'],
-        @$shibarray['iTrustUIN'],
-        @$shibarray['Subject ID'],
-        @$shibarray['Pairwise ID']
+        @$shibarray['iTrustUIN']
     );
 }
 

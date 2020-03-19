@@ -66,6 +66,8 @@ function printUser($dbs)
     echo "eptid = $dbs->eptid\n";
     echo "open_id = $dbs->open_id\n";
     echo "oidc = $dbs->oidc\n";
+    echo "subject_id = $dbs->subject_id\n";
+    echo "pairwise_id = $dbs->pairwise_id\n";
     echo "distinguished_name = $dbs->distinguished_name\n";
     echo "serial_string = $dbs->serial_string\n";
     echo "two_factor = $dbs->two_factor\n";
@@ -75,6 +77,4 @@ function printUser($dbs)
     echo "acr = $dbs->acr\n";
     echo "entitlement = $dbs->entitlement\n";
     echo "itrustuin = $dbs->itrustuin\n";
-    echo "subject_id = $dbs->subject_id\n";
-    echo "pairwise_id = $dbs->pairwise_id\n";
 }

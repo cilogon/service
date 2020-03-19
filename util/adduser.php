@@ -32,14 +32,14 @@ if ($argc >= 7) {
     $eptid = '';
     $open_id = '';
     $oidc = '';
+    $subjectid = '';
+    $pairwiseid = '';
     $affiliation = '';
     $ou = '';
     $memberof = '';
     $acr = '';
     $entitlement = '';
     $itrustuin = '';
-    $subjectid = '';
-    $pairwiseid = '';
     if ($argc >= 8) {
         $displayname = $argv[7];
     }
@@ -56,28 +56,28 @@ if ($argc >= 7) {
         $oidc = $argv[11];
     }
     if ($argc >= 13) {
-        $affiliation = $argv[12];
+        $subjectid = $argv[12];
     }
     if ($argc >= 14) {
-        $ou = $argv[13];
+        $pairwiseid = $argv[13];
     }
     if ($argc >= 15) {
-        $memberof = $argv[14];
+        $affiliation = $argv[14];
     }
     if ($argc >= 16) {
-        $acr = $argv[15];
+        $ou = $argv[15];
     }
     if ($argc >= 17) {
-        $entitlement = $argv[16];
+        $memberof = $argv[16];
     }
     if ($argc >= 18) {
-        $itrustuin = $argv[17];
+        $acr = $argv[17];
     }
     if ($argc >= 19) {
-        $subjectid = $argv[18];
+        $entitlement = $argv[18];
     }
     if ($argc >= 20) {
-        $pairwiseid = $argv[19];
+        $itrustuin = $argv[19];
     }
 
     if (
@@ -101,14 +101,14 @@ if ($argc >= 7) {
             $eptid,
             $open_id,
             $oidc,
+            $subjectid,
+            $pairwiseid,
             $affiliation,
             $ou,
             $memberof,
             $acr,
             $entitlement,
-            $itrustuin,
-            $subjectid,
-            $pairwiseid
+            $itrustuin
         );
 
         printInfo($dbs);
@@ -129,10 +129,10 @@ if ($argc >= 7) {
 
 function printUsage()
 {
-    echo "Usage: adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME " ,
-         "       EMAIL DISPLAYNAME EPPN EPTID OPENID OIDC AFFILIATION " ,
-         "       OU MEMBER AUTHNCONTEXTCLASSREF ENTITLEMENT ITRUSTUIN" ,
-         "       SUBJECTID PAIRWISEID\n",
+    echo "Usage: adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME EMAIL" ,
+         "       DISPLAYNAME EPPN EPTID OPENID OIDC SUBJECTID PAIRWISEID",
+         "       AFFILIATION OU MEMBER AUTHNCONTEXTCLASSREF",
+         "       ENTITLEMENT ITRUSTUIN\n",
          "Note: The first six parameters must be specified for both " ,
          "InCommon and OpenID. The rest are optional.\n";
 }
