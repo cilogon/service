@@ -120,7 +120,7 @@ function printMainPage()
             <div class="col">
               One or more of the attributes required by the CILogon Service 
               are not available. Please see the sections below for details. 
-              Contact <a href="mailto:help@cilogon.org">help@cilogon.org</a>
+              Contact <a href="mailto:', EMAIL_HELP, '">', EMAIL_HELP, '</a>
               for additional information and assistance.
             </div>
           </div> <!-- end row -->

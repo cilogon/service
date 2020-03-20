@@ -82,6 +82,12 @@ define('HOSTNAME_ARRAY', array(
 ));
 
 /**
+ * The destination email addresses for "help" and "alerts" mails.
+ */
+define('EMAIL_HELP', 'help@' . DEFAULT_HOSTNAME);
+define('EMAIL_ALERTS', 'alerts@' . DEFAULT_HOSTNAME);
+
+/**
  * In order for CILogon to be able to generate X.509 certificates, the
  * myproxy-logon binary must be installed and set in the MYPROXY_LOGON
  * define. If left blank, X.509 certificate functionality will be disabled.
@@ -273,9 +279,9 @@ define('FORCE_SKIN_ARRAY', array(
 
 /**
  * When a new LIGO user attempts to use cilogon.org, an alert is sent to
- * both alerts@cilogon.org and cilogon-alerts@ligo.org to let them know that
+ * both EMAIL_ALERTS and cilogon-alerts@ligo.org to let them know that
  * the new user needs to be added to the LIGO IdP. However, some users are
- * very persistent and continue to try to log in, generating many emails. To
- * temporarily disable the alerts@cilogon.org emails, set this to true.
+ * very persistent and continue to try to log in, generating many emails.
+ * To temporarily disable the EMAIL_ALERTS emails, set this to true.
  */
 define('DISABLE_LIGO_ALERTS', false);
