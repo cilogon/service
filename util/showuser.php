@@ -70,7 +70,6 @@ function printUser($dbs)
     echo "pairwise_id = $dbs->pairwise_id\n";
     echo "distinguished_name = $dbs->distinguished_name\n";
     echo "serial_string = $dbs->serial_string\n";
-    echo "two_factor = $dbs->two_factor\n";
     echo "affiliation = $dbs->affiliation\n";
     echo "ou = $dbs->ou\n";
     echo "member_of = $dbs->member_of\n";
