@@ -274,6 +274,8 @@ define('FORCE_SKIN_ARRAY', array(
     '%^cilogon:/client_id/1ca80460249331360475a24b81079e68%' => 'nih',
     '%^cilogon:/client_id/4a4fed754f3bcfdb2c75ab850be8c2c4%' => 'nih',
     '%^cilogon:/client_id/40da4844bd5bf5baf29b4c252c49ee7c%' => 'nih',
+    '%^cilogon:/client_id/730421ec502c1384a99cc439e412d7a7%' => 'nih',
+    '%^cilogon:/client_id/38afed60f24d0f627a23edf10314e097%' => 'nih',
     '%^cilogon:/client_id/56727d508077d1402cdcc66714ecf5ef%' => 'orcidfirst',
     '%^cilogon:/client_id/3176b0133ec1efa8090dcf11ad96877f%' => 'MIT',
     '%^cilogon:/client_id/47fabe917b37f4969efe93ffaa4e510a%' => 'oauthonly',
