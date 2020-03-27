@@ -15,9 +15,9 @@ Util::startPHPSession();
 $log = new Loggit();
 $log->info('Logout page hit.');
 
-$idp     = Util::getSessionVar('idp');
-$idpname = Util::getSessionVar('idpname');
-$skin    = Util::getSessionVar('cilogon_skin'); // Preserve the skin
+$idp              = Util::getSessionVar('idp');
+$idp_display_name = Util::getSessionVar('idp_display_name');
+$skin             = Util::getSessionVar('cilogon_skin'); // Preserve the skin
 
 Util::removeShibCookies();
 Util::unsetUserSessionVars();
@@ -79,15 +79,15 @@ if ($idp == 'https://accounts.google.com/o/oauth2/auth') {
       </div> <!-- end row align-items-center -->
     ';
 } elseif (!empty($idp)) {
-    if (empty($idpname)) {
-        $idpname = 'your Identity Provider';
+    if (empty($idp_display_name)) {
+        $idp_display_name = 'your Identity Provider';
     }
     $idplist = Util::getIdpList();
     $logout = $idplist->getLogout($idp);
     if (empty($logout)) {
         echo '
       <div class="card-text my-2">
-        You may still be logged in to ', $idpname , '.
+        You may still be logged in to ', $idp_display_name , '.
         Close your web browser or <a target="_blank"
         href="https://www.lifewire.com/how-to-delete-cookies-2617981">clear
         your cookies</a> to clear your authentication session.
@@ -96,7 +96,7 @@ if ($idp == 'https://accounts.google.com/o/oauth2/auth') {
     } else {
         echo '
       <div class="card-text my-2">
-        You can optionally click the link below to log out of ' , $idpname , '.
+        You can optionally click the link below to log out of ' , $idp_display_name , '.
         Note that some Identity Providers do not support log out. If you
         receive an error, close your web browser or <a target="_blank"
         href="https://www.lifewire.com/how-to-delete-cookies-2617981">clear
@@ -105,7 +105,7 @@ if ($idp == 'https://accounts.google.com/o/oauth2/auth') {
       <div class="row align-items-center justify-content-center mt-3">
         <div class="col-auto">
           <a class="btn btn-primary"
-          href="' , $logout , '">(Optional) Logout from ' , $idpname , '</a>
+          href="' , $logout , '">(Optional) Logout from ' , $idp_display_name , '</a>
         </div> <!-- end col-auto -->
       </div> <!-- end row align-items-center -->
       ';

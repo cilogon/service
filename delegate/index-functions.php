@@ -590,7 +590,7 @@ function handleAllowDelegation($always = false)
                'oauth_token=' . urlencode($tempcred) . '&' .
                'cilogon_lifetime=' . $life . '&' .
                'cilogon_loa=' . urlencode(Util::getLOA()) . '&' .
-               'cilogon_uid=' . urlencode(Util::getSessionVar('uid')) .
+               'cilogon_uid=' . urlencode(Util::getSessionVar('user_uid')) .
                ((strlen($myproxyinfo) > 0) ?
                    ('&cilogon_info=' . urlencode($myproxyinfo)) : '');
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -660,7 +660,7 @@ function handleAllowDelegation($always = false)
     $log->info('Delegation of certificate to portal ' .
                ($success ? 'succeeded.' : 'failed.'));
     //CIL-507 Special log message for XSEDE
-    $log->info('USAGE email="' . Util::getSessionVar('emailaddr') .
+    $log->info('USAGE email="' . Util::getSessionVar('email') .
                '" client="' . Util::getSessionVar('portalname') . '"');
 
 

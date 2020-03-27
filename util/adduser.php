@@ -20,106 +20,59 @@ require_once 'IdpList.php';
 
 use CILogon\Service\DBService;
 
-if ($argc >= 7) {
-    $remoteuser = $argv[1];
-    $idp = $argv[2];
-    $idpname = $argv[3];
-    $firstname = $argv[4];
-    $lastname = $argv[5];
-    $emailaddr = $argv[6];
-    $displayname = '';
-    $eppn = '';
-    $eptid = '';
-    $open_id = '';
-    $oidc = '';
-    $subjectid = '';
-    $pairwiseid = '';
-    $affiliation = '';
-    $ou = '';
-    $memberof = '';
-    $acr = '';
-    $entitlement = '';
-    $itrustuin = '';
-    if ($argc >= 8) {
-        $displayname = $argv[7];
-    }
-    if ($argc >= 9) {
-        $eppn = $argv[8];
-    }
-    if ($argc >= 10) {
-        $eptid = $argv[9];
-    }
-    if ($argc >= 11) {
-        $open_id = $argv[10];
-    }
-    if ($argc >= 12) {
-        $oidc = $argv[11];
-    }
-    if ($argc >= 13) {
-        $subjectid = $argv[12];
-    }
-    if ($argc >= 14) {
-        $pairwiseid = $argv[13];
-    }
-    if ($argc >= 15) {
-        $affiliation = $argv[14];
-    }
-    if ($argc >= 16) {
-        $ou = $argv[15];
-    }
-    if ($argc >= 17) {
-        $memberof = $argv[16];
-    }
-    if ($argc >= 18) {
-        $acr = $argv[17];
-    }
-    if ($argc >= 19) {
-        $entitlement = $argv[18];
-    }
-    if ($argc >= 20) {
-        $itrustuin = $argv[19];
+if ($argc >= 7) { // Program name + 6 arguments minimum
+    $idx = 0;
+    foreach ($argv as $value) {
+        // The 6th (display_name) and 7th (email) arguments need to be
+        // swapped in the DBService::$user_attrs since display_name
+        // used to be an optional parameter, and thus email is
+        // listed first in the argv list.
+        if ($idx == 5) {
+            ${DBService::$user_attrs[6]} = $value;
+        } elseif ($idx == 6) {
+            ${DBService::$user_attrs[5]} = $value;
+        } else {
+            ${DBService::$user_attrs[$idx]} = $value;
+        }
+        $idx++;
     }
 
     if (
-        (strlen($remoteuser) > 0) &&
+        ((strlen($remote_user) > 0) ||
+         (strlen($eppn) > 0) ||
+         (strlen($eptid) > 0) ||
+         (strlen($open_id) > 0) ||
+         (strlen($oidc) > 0) ||
+         (strlen($subject_id) > 0) ||
+         (strlen($pairwiseid) > 0)) &&
         (strlen($idp) > 0) &&
-        (strlen($idpname) > 0) &&
-        (strlen($firstname) > 0) &&
-        (strlen($lastname) > 0) &&
-        (strlen($emailaddr) > 0)
+        (strlen($idp_display_name) > 0)
     ) {
         $dbs = new DBService();
         $dbs->getUser(
-            $remoteuser,
+            $remote_user,
             $idp,
-            $idpname,
-            $firstname,
-            $lastname,
-            $displayname,
-            $emailaddr,
+            $idp_display_name,
+            $first_name,
+            $last_name,
+            $display_name,
+            $email,
+            $loa,
             $eppn,
             $eptid,
             $open_id,
             $oidc,
-            $subjectid,
-            $pairwiseid,
+            $subject_id,
+            $pairwise_id,
             $affiliation,
             $ou,
-            $memberof,
+            $member_of,
             $acr,
             $entitlement,
             $itrustuin
         );
 
         printInfo($dbs);
-
-        if ($dbs->status == DBService::$STATUS['STATUS_USER_UPDATED']) {
-            echo "-------------- USER UPDATED --------------\n";
-            echo "----- Last Archived User Information -----\n";
-            $uid = $dbs->user_uid;
-            $dbs->getLastArchivedUser($uid);
-            printInfo($dbs);
-        }
     } else {
         printUsage();
     }
@@ -130,7 +83,7 @@ if ($argc >= 7) {
 function printUsage()
 {
     echo "Usage: adduser.php REMOTEUSER IDP IDPNAME FIRSTNAME LASTNAME EMAIL" ,
-         "       DISPLAYNAME EPPN EPTID OPENID OIDC SUBJECTID PAIRWISEID",
+         "       LOA DISPLAYNAME EPPN EPTID OPENID OIDC SUBJECTID PAIRWISEID",
          "       AFFILIATION OU MEMBER AUTHNCONTEXTCLASSREF",
          "       ENTITLEMENT ITRUSTUIN\n",
          "Note: The first six parameters must be specified for both " ,
@@ -139,7 +92,7 @@ function printUsage()
 
 function printInfo($dbs)
 {
-    echo "uid = $dbs->user_uid\n";
+    echo "user_uid = $dbs->user_uid\n";
     $status = $dbs->status;
     echo "status = $status = " . array_search($status, DBService::$STATUS) . "\n";
     echo "dn = $dbs->distinguished_name\n";

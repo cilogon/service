@@ -23,12 +23,12 @@ function getUserAndRespond()
 {
     $providerId = '';
     $providerName = '';
-    $firstname = '';
-    $lastname = '';
-    $displayname = '';
-    $emailaddr = '';
-    $openidid = '';
-    $oidcid = '';
+    $first_name = '';
+    $last_name = '';
+    $display_name = '';
+    $email = '';
+    $open_id = '';
+    $oidc = '';
 
     Util::unsetSessionVar('logonerror');
 
@@ -64,16 +64,16 @@ function getUserAndRespond()
                     [ 'code' => $code ]
                 );
                 $user = $oauth2->provider->getResourceOwner($token);
-                $oidcid = $user->getId();
-                $emailaddr = $user->getEmail();
+                $oidc = $user->getId();
+                $email = $user->getEmail();
                 // GitHub email may require special handling
-                if ((strlen($emailaddr) == 0) && ($prov == 'github')) {
-                    $emailaddr = getGitHubEmail($oauth2, $token);
+                if ((strlen($email) == 0) && ($prov == 'github')) {
+                    $email = getGitHubEmail($oauth2, $token);
                 }
-                $displayname = $user->getName();
+                $display_name = $user->getName();
                 if ($prov != 'github') { // No first/last for GitHub
-                    $firstname = $user->getFirstName();
-                    $lastname = $user->getLastName();
+                    $first_name = $user->getFirstName();
+                    $last_name = $user->getLastName();
                 }
             } catch (Exception $e) {
                 Util::setSessionVar('logonerror', $e->getMessage());
@@ -97,18 +97,18 @@ function getUserAndRespond()
             $func = 'CILogon\Service\Util::setUserAttributeSessionVars';
         }
         $func(
-            $openidid,
+            $open_id,
             $providerId,
             $providerName,
-            $firstname,
-            $lastname,
-            $displayname,
-            $emailaddr,
+            $first_name,
+            $last_name,
+            $display_name,
+            $email,
             'openid',
             '', // ePPN
             '', // ePTID
-            $openidid,
-            $oidcid
+            $open_id,
+            $oidc
         );
     } else {
         Util::unsetSessionVar('submit');

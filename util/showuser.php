@@ -20,24 +20,15 @@ require_once 'Util.php';
 use CILogon\Service\DBService;
 
 if ($argc == 2) {
-    $uid = $argv[1];
+    $user_uid = $argv[1];
 
-    if (strlen($uid) > 0) {
+    if (strlen($user_uid) > 0) {
         $dbs = new DBService();
 
-        $dbs->getUser($uid);
+        $dbs->getUser($user_uid);
         $status = $dbs->status;
         printStatus($status);
         if (!($status & 1)) { // STATUS_OK codes are even
-            printUser($dbs);
-        }
-
-        $dbs->clear();
-        $dbs->getLastArchivedUser($uid);
-        $status = $dbs->status;
-        if (!($status & 1)) { // STATUS_OK codes are even
-            echo "----- Last Archived User Information -----\n";
-            printStatus($status);
             printUser($dbs);
         }
     }
@@ -54,26 +45,11 @@ function printStatus($status)
 
 function printUser($dbs)
 {
-    echo "uid = $dbs->user_uid\n";
-    echo "first_name = $dbs->first_name\n";
-    echo "last_name = $dbs->last_name\n";
-    echo "display_name = $dbs->display_name\n";
-    echo "remote_user = $dbs->remote_user\n";
-    echo "idp = $dbs->idp\n";
-    echo "idp_display_name = $dbs->idp_display_name\n";
-    echo "email = $dbs->email\n";
-    echo "eppn = $dbs->eppn\n";
-    echo "eptid = $dbs->eptid\n";
-    echo "open_id = $dbs->open_id\n";
-    echo "oidc = $dbs->oidc\n";
-    echo "subject_id = $dbs->subject_id\n";
-    echo "pairwise_id = $dbs->pairwise_id\n";
+    echo "user_uid = $dbs->user_uid\n";
+    foreach (DBService::$user_attrs as $value) {
+        echo "$value = " . $dbs->$value . "\n";
+    }
     echo "distinguished_name = $dbs->distinguished_name\n";
     echo "serial_string = $dbs->serial_string\n";
-    echo "affiliation = $dbs->affiliation\n";
-    echo "ou = $dbs->ou\n";
-    echo "member_of = $dbs->member_of\n";
-    echo "acr = $dbs->acr\n";
-    echo "entitlement = $dbs->entitlement\n";
-    echo "itrustuin = $dbs->itrustuin\n";
+    echo "create_time = $dbs->create_time\n";
 }

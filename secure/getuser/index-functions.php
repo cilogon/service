@@ -21,18 +21,18 @@ use CILogon\Service\Loggit;
  * database (via the dbservice) to get the userid assoicated with
  * those attributes.  It sets several PHP session variables such as the
  * status code returned by the dbservice, the uid (if found), the
- * username to be passed to MyProxy ('dn'), etc.  If there is some kind
- * of error with the database call, an email is sent showing which
- * SAML attributes were missing.
+ * username to be passed to MyProxy ('distinguished_name'), etc.  If
+ * there is some kind of error with the database call, an email is
+ * sent showing which SAML attributes were missing.
  *
  * All 'returned' variables are stored in various  PHP session variables
- * (e.g. 'uid', 'dn', 'status').
+ * (e.g. 'user_uid', 'distinguished_name', 'status').
  */
 function getUID()
 {
     $shibarray = Util::getIdpList()->getShibInfo();
 
-    // Hack for test IdP at boingo.ncsa.uiuc.edu
+    // Don't allow Organization Name to be empty
     if (strlen(@$shibarray['Organization Name']) == 0) {
         $shibarray['Organization Name'] = 'Unspecified';
     }
@@ -170,7 +170,7 @@ function getPKCS12()
         if (strlen($p12file) > 0) {
             $log->info('ECP PKCS12 success!');
             // CIL-507 Special log message for XSEDE
-            $log->info('USAGE email="' . Util::getSessionVar('emailaddr') .
+            $log->info('USAGE email="' . Util::getSessionVar('email') .
                        '" client="ECP"');
             header('Content-type: application/x-pkcs12');
             echo $p12file;
@@ -256,7 +256,7 @@ function getCert()
     }
 
     // Make sure that the user's MyProxy username is available.
-    $dn = Util::getSessionVar('dn');
+    $dn = Util::getSessionVar('distinguished_name');
     if (strlen($dn) > 0) {
         // Append extra info, such as 'skin', to be processed by MyProxy.
         $skin->setMyProxyInfo();
@@ -279,7 +279,7 @@ function getCert()
         if (strlen($cert) > 0) { // Successfully got a certificate!
             $log->info('ECP getcert success!');
             // CIL-507 Special log message for XSEDE
-            $log->info('USAGE email="' . Util::getSessionVar('emailaddr') .
+            $log->info('USAGE email="' . Util::getSessionVar('email') .
                        '" client="ECP"');
             header('Content-type: text/plain');
             echo $cert;
@@ -287,8 +287,8 @@ function getCert()
             $log->info('ECP certreq error: MyProxy unable to create certificate.');
             outputError('Error! MyProxy unable to create certificate.');
         }
-    } else { // Couldn't find the 'dn' PHP session value
-        $log->info('ECP certreq error: Missing \'dn\' session value.');
+    } else { // Couldn't find the 'distinguished_name' PHP session value
+        $log->info('ECP certreq error: Missing \'distinguished_name\' session value.');
         outputError('Cannot create certificate due to missing attributes.');
     }
 }

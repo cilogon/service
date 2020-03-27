@@ -137,7 +137,7 @@ function printMainPage()
     if (
         ($dbs->setTransactionState(
             $clientparams['code'],
-            Util::getSessionVar('uid'),
+            Util::getSessionVar('user_uid'),
             Util::getSessionVar('authntime'),
             Util::getLOA(),
             Util::getSessionVar('myproxyinfo')
@@ -194,7 +194,7 @@ function printMainPage()
         }
         $log->info('setTransactionState succeeded, redirect to ' . $redirect);
         // CIL-507 Special log message for XSEDE
-        $log->info('USAGE email="' . Util::getSessionVar('emailaddr') .
+        $log->info('USAGE email="' . Util::getSessionVar('email') .
                    '" client="' . $clientparams['client_name'] . '"');
     } else { // dbservice error
         $errstr = '';
