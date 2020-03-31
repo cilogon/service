@@ -49,7 +49,7 @@ function getUserAndRespond()
         }
     } else {
         // When using OAuth or OIDC, check portalcookie for providerId
-        $providerId = Util::getPortalOrNormalCookieVar('providerId');
+        $providerId = Util::getPortalOrCookieVar('providerId');
         $providerName = Util::getAuthzIdP($providerId);
         $prov = strtolower($providerName); // IdP name all lowercase
 
