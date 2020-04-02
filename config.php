@@ -279,7 +279,7 @@ define('FORCE_SKIN_ARRAY', array(
     '%^cilogon:/client_id/56727d508077d1402cdcc66714ecf5ef%' => 'orcidfirst',
     '%^cilogon:/client_id/3176b0133ec1efa8090dcf11ad96877f%' => 'MIT',
     '%^cilogon:/client_id/47fabe917b37f4969efe93ffaa4e510a%' => 'oauthonly',
-    '%https://.*\.scimma\.org/.*$' => 'SCiMMA',
+    '%^https://.*\.scimma\.org/.*$%' => 'SCiMMA',
 ));
 
 /**
