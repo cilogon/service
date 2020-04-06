@@ -87,9 +87,6 @@ function printMainPage()
           </div> <!-- end card-text -->
     ';
 
-    $gotattrs = Util::gotUserAttributes();
-    $gotattrs = false;
-
     echo '
           <div class="row my-3">
             <div class="col-1 text-center">';
