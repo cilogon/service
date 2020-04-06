@@ -38,10 +38,10 @@ function printLogonPage($clearcookies = false)
     echo '
         <div class="card-body px-5">
           <div class="card-text my-2">
-            To test that your identity provider works with CILogon, please 
+            To test that your identity provider works with CILogon, please
             select it from the list below and Log On.
           </div> <!-- end card-text -->
-        </div> <!-- end card-body -->   
+        </div> <!-- end card-body -->
     ';
 
     Content::printCollapseEnd();
@@ -77,23 +77,34 @@ function printMainPage()
     echo '
         <div class="card-body px-5">
           <div class="card-text my-2">
-            Thank you for your interest in the CILogon Service. This page 
+            Thank you for your interest in the CILogon Service. This page
             enables you to verify that all necessary attributes have been
             released to the CILogon Service Provider
             (<abbr title="Service Provider">SP</abbr>) by your selected
             Identity Provider (<abbr title="Identity Provider">IdP</abbr>).
-            Below you will see the various attributes required by the 
+            Below you will see the various attributes required by the
             CILogon Service and their values as released by your IdP.
           </div> <!-- end card-text -->
     ';
 
     $gotattrs = Util::gotUserAttributes();
+    $gotattrs = false;
 
     echo '
           <div class="row my-3">
             <div class="col-1 text-center">';
 
-    if ($gotattrs) {
+    if (
+        ((strlen(Util::getSessionVar('remote_user')) > 0) ||
+            (strlen(Util::getSessionVar('eppn')) > 0) ||
+            (strlen(Util::getSessionVar('eptid')) > 0) ||
+            (strlen(Util::getSessionVar('subject_id')) > 0) ||
+            (strlen(Util::getSessionVar('pairwise_id')) > 0) ||
+            (strlen(Util::getSessionVar('open_id')) > 0) ||
+            (strlen(Util::getSessionVar('oidc')) > 0)) &&
+        (strlen(Util::getSessionVar('idp')) > 0) &&
+        (strlen(Util::getSessionVar('idp_display_name')) > 0)
+    ) {
         echo '<large>' ,
             Content::getIcon('fa-check-square fa-2x', 'lime'), '</large>
             </div> <!-- end col-1 -->
@@ -118,8 +129,8 @@ function printMainPage()
         ), '
             </div> <!-- end col-1 -->
             <div class="col">
-              One or more of the attributes required by the CILogon Service 
-              are not available. Please see the sections below for details. 
+              One or more of the attributes required by the CILogon Service
+              are not available. Please see the sections below for details.
               Contact <a href="mailto:', EMAIL_HELP, '">', EMAIL_HELP, '</a>
               for additional information and assistance.
             </div>
