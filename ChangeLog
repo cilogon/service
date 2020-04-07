@@ -1,3 +1,146 @@
+ad9ccc6 2020-04-06 For testidp endpoint, check for the bare minimum of user attributes.
+fab1f02 2020-04-06 For testidp endpoint, check for the bare minimum of user attributes.
+720d6c5 2020-04-02 CIL-677 Add closing search delimiter.
+804a9c5 2020-04-02 CIL-677 Force SCiMMA skin for https://.*\.scimma\.org/.*
+9802725 2020-04-02 CIL-677 Force SCiMMA skin for https://.*\.scimma\.org/.*
+2f51ed1 2020-03-31 Rename a couple of functions to make get/set pair.
+488e216 2020-03-27 CIL-540 Remove the adduser.php util since nobody uses it and it's a pain to maintain.
+04958f3 2020-03-27 CIL-540 Rename PHP session variables for user attributes to match those used by the dbService?action=getUser webapp. Also (re)set these session attributes after calling the dbService so the PHP session matches what is in the database.
+4bd14ce 2020-03-26 Force two more ICPC clients to use the NIH skin.
+91f5288 2020-03-25 Remove reference to two_factor from showuser.php.
+142095f 2020-03-25 Allow idphint bypass for 'Birmingham BEAR: Advanced Research Computing'.
+c7fb8b2 2020-03-20 CIL-672 Define help@/alerts@cilogon.org in top-level config.php file.
+87a7e8a 2020-02-07 CIL-540 Stop splitting display name into first/last name when first/last name is not present.
+ab4c862 2020-03-19 CIL-649 Make subject_id and pairwise_id distinct parameters to the dbService rather than part of attr_json.
+ad6c0ca 2020-02-07 CIL-540 Stop splitting display name into first/last name when first/last name is not present.
+0128f2e 2020-03-13 BUG - Move ending </div> tag into previous if..then block.
+8378ddf 2020-02-07 CIL-540 Stop splitting display name into first/last name when first/last name is not present.
+786a1ae 2020-03-10 Make bhr-test.internal.ncsa.edu use NCSA IdP by default.
+af69e5e 2020-02-07 CIL-540 Stop splitting display name into first/last name when first/last name is not present.
+7680975 2020-03-05 CIL-670 Force Flywheel OIDC client to use 'oauthonly' skin.
+949b72f 2020-03-05 CIL-670 Create new skin 'oauthonly' for social IdPs.
+0782f4a 2020-02-07 CIL-540 Stop splitting display name into first/last name when first/last name is not present.
+9ea5655 2020-02-28 CIL-669 Configure "Comet Test Gateway" to force XSEDE IdP.
+0b95006 2020-02-07 CIL-540 Stop splitting display name into first/last name when first/last name is not present.
+69b27d3 2020-02-28 CIL-668 Add skin for cloudbank.
+9719991 2020-02-07 CIL-540 Stop splitting display name into first/last name when first/last name is not present.
+8d8f328 2020-02-28 CIL-667 Blacklist "Institute of Technology Sligo" in gwastro skin.
+63ab2e8 2020-02-07 CIL-540 Stop splitting display name into first/last name when first/last name is not present.
+2e0c34a 2020-02-24 CIL-664 Prevent "Institute of Technology Sligo" IdP from appearing with the LIGO skin.
+5cc776f 2020-02-07 CIL-540 Stop splitting display name into first/last name when first/last name is not present.
+6ba592a 2020-02-14 CIL-661 Create skin for SCiMMA
+f0c05a6 2020-02-13 CIL-658 Break out of loop after finding 'scope' parameter.
+41f7db9 2020-02-13 CIL-658 Handle double-encoded sapces in 'scope' parameter.
+6e7f2f6 2020-02-11 Allow John Hopkins Galaxy OIDC client to bypass CILogon page.
+2b33fd6 2020-02-09 Change 'fprint' to 'fwrite'.
+6a0fb0d 2020-02-09 Change 'fprint' to 'fwrite'.
+5d5f50c 2020-02-07 CIL-540 Stop splitting display name into first/last name when first/last name is not present.
+24290f3 2020-02-06 CIL-655 Display actual LOA (assurance) instead of InCommon "silver".
+51adf2f 2020-02-04 defined() requires quoted string.
+b514557 2020-02-03 Rob Kooper wanted a specific client_id to use the 'sprout' skin rather than specifying the redirect_uris in the skin configuration.
+6f2d910 2020-01-29 CIL-649 Add support for subject-id and pairwise-id SAML attributes.
+caf07b3 2020-01-28 CIL-650 Limit Satori Portal to use MIT IdP only
+c17fee5 2020-01-28 CIL-651 Use NIH skin for several CSSI clients.
+3340995 2020-01-24 Update 'force skin' for fairdata to use client_id rather than redirect_uri.
+abeb4e0 2020-01-07 Add skin option to always expand the "Create Password-Protected Certificate" collapsible card. Update DataONE skin to use the new option.
+9fdd8bf 2020-01-07 Don't underline <a> links inside a button.
+b5c69a6 2020-01-06 CIL-636 Remove Globus and OSG files from cilogon-ca-certificates.tar.gz.
+92a7895 2020-01-06 CIL-636 Replace macros with actual values in cilogon-{basic,openid,silver}.info files.
+f239fe5 2019-12-13 As requested by Hari Mailvaganam <hari.mailvaganam@ubc.ca>, add University of British Columbia to ecpidps.txt .
+3a0846a 2019-12-09 CIL-175, CIL-615, CIL-616, CIL-620 - Bootstrap CSS redesign (MAJOR UPDATE). Use bootstrap-select for "Select an Identity Provider" dropdown. Show cert DN, user attributes, IdP attributes on X509 page.  Remove "Show Help" button.
+1a0f387 2019-12-09 CIL-632 Allow arbitrary scopes (i.e., other than 'openid', 'email', 'profile', etc.) to be shown in the OIDC 'consent' block on /authorize/ to support SciTokens in the future.
+e0022aa 2019-12-09 Make 'sprouttest' skin files symlinks to 'sprout' files.
+65f9790 2019-12-09 Bamboo project completed in 2012. Remove corresponding 'bamboo' skin.
+b8d3791 2019-12-09 CIL-577 - Since GridShib CA is retired, no need for the 'jws' skin.
+46b9c35 2019-12-02 Add space for PSR-12 compliance.
+878d68a 2019-12-02 CIL-629 Remove "Request Silver" checkbox on "Select an IdP" page.
+da90a4c 2019-11-26 Fix help text for "password|P" option.
+a29dfdf 2019-11-25 Fix bugs as suggested by scrutinizer-ci.com .
+00c2408 2019-11-25 CIL-410 For /testidp/ use 'standard' flow when getting user attributes.
+ce7ac93 2019-11-22 Move unset 'storeattributes' to a different function.
+ee73786 2019-11-22 Need to set value for storeattributes session var.
+be3fd2b 2019-11-22 Remove unused code.
+b41a6b5 2019-11-22 Remove unused code.
+23b4a38 2019-11-22 CIL-618 Read OIDC client info from database rather than using '/dbService?action=getClient'.
+b37becf 2019-11-21 CIL-624 Fix typo - $disabled should be $pkcs12disabled.
+2424cad 2019-11-21 CIL-624 if MYPROXY_LOGON binary is not configured, show error message that downloading certificates is disabled.
+fe373dc 2019-11-21 Remove spaces at end of line.
+d8f226b 2019-11-21 CIL-410 Refactor /testidp/ to use standard 'getuser' flow for both SAML and OAuth2 IdPs.
+2b88151 2019-11-21 Move getCertInfo() to Content.php.
+d2b1470 2019-11-20 Revert "Change strlen() to empty() where appropriate."
+d6c0da4 2019-11-20 Move $disableligoalerts config to DISABLE_LIGO_ALERTS in top-level config.php.
+e6aa0cb 2019-11-20 Change strlen() to empty() where appropriate.
+5ecb17a 2019-11-20 CIL-613 Replace 'allowbypass' skin with ALLOW_BYPASS_ARRAY in config.php.
+0859a28 2019-11-20 CIL-625 Move hostname mapping to config.php .
+4a76074 2019-11-20 Update cilogon.xml to match InCommon Metadata.
+b3502c5 2019-11-20 Remove unnecessary require statements.
+6531ca6 2019-11-19 Add extra '/../' for directory includes.
+96c1cae 2019-11-19 Fix constant names in command line utilities.
+768ba8e 2019-11-19 CIL-611 and CIL-622 - Move various config options/files to 'define()' statements in top-level config.php and config.secrets.php.
+f1982d6 2019-11-19 CIL-577 GridShib-CA is gone, so no need for deployJava.js.
+3dd348d 2019-11-19 Remove creation of symlink to Duo JavaScript.
+eaa09a8 2019-11-19 CIL-614 Remove CILogon 2FA capability (i.e., local Google Authenticator / Duo).
+8eeafe5 2019-11-18 CIL-621 Move "function" definitions out of top-level index.php files for PSR12 compliance (https://www.php-fig.org/psr/psr-12/).
+5a053ec 2019-11-18 CIL-626 Allow browser 'reload page' on "Get New Certificate" page.
+01b6168 2019-11-18 Need to delete one line from Javascript.
+2a88ca7 2019-11-18 CIL-577 Retire CILogon GridShibCA. Remove no-longer-needed PHP code pertaining to GridShib CA.
+6936598 2019-11-13 Add libraries needed by adduser.php script.
+7ba6687 2019-11-07 CIL-610 Create new skin 'allowbypass' which will allow specific client_ids to pass "idphint"/"selected_idp" to bypass the "Select an Identity Provider" screen.
+0ff2746 2019-11-07 CIL-610 Create new skin 'allowbypass' which will allow specific client_ids to pass "idphint"/"selected_idp" to bypass the "Select an Identity Provider" screen.
+5321f7f 2019-10-01 CIL-577 Also remove 'gsca' configurations from skins.
+e4a22e9 2019-10-01 CIL-577 When removing GridShibCA, also need to remove "Get New Activation Code" (tokenactionbox) since that relies on GridShibCA.
+9a12c63 2019-10-01 CIL-577 Quick-and-dirty removal of GridShibCA. This was done by updating skins to no longer show the "certactionbox" and removing the gridshib-ca directory containing the GridShibCA.jar. Still need to go through the PHP code and remove all references to GridShibCA.
+58032ff 2019-09-19 Add Cardiff University to ECP IdP list.
+dd7c180 2019-09-17 CIL-598 Add skin config option for IdPs registered by InCommon.
+3beb5ae 2019-09-17 Make code compliant with PSR-12 (https://www.php-fig.org/psr/psr-12/).
+7a11d61 2019-08-28 CIL-577 Set DataONE skin PKCS lifetime to 18 hours.
+b056e2c 2019-08-27 CIL-590 Output error message for eduGAIN IdP restriction.
+c911082 2019-08-26 CIL-593 Disable Download Certificate (JWS) on 2019-10-01.
+d520d6d 2019-08-21 Remove spurious comma.
+c8ab134 2019-08-20 Remove 'token' and 'id_token' from reponse_types_supported in /.well-known/openid-configuration .
+11d0a1d 2019-08-20 CIL-590 Forgot to get $shibarray first.
+f75b37c 2019-08-20 CIL-590 Check for eduGAIN IdPs without REFEDS R&S and SIRTFI attempting to get certs via ECP.
+f777422 2019-08-19 CIL-589 Add response_modes_supported to /.well-known/openid-configuration .
+e4501f8 2019-08-19 Redirect https://iam.scigap.org/auth/realms/pfec-hydro/broker/cilogon/endpoint to the IU IdP (urn:mace:incommon:iu.edu).
+2f59737 2019-07-24 CIL-587 Create new skin which has ORCID set as <initialidp>. Use this skin for NEON in forceskin.txt.
+871b36f 2019-07-18 Match all gray colors.
+c0fc3a8 2019-07-18 CIL-580 Add University of Illinois skin 'illinois'.
+309883d 2019-07-02 CIL-575 Better handling of OAuth2 createTransaction errors.
+454fc03 2019-06-25 As requested by Robert Guthridge <robert.guthridge@nih.gov>, force the 'NIH' skin for client cilogon:/client_id/620b5873fda93e285ea48ad5b09568d2 .
+d4df6dd 2019-06-10 Force cilogon:/client_id/112d2f5ffcb986660e0e57e7bcf72a4e to use NIH skin.
+853cd99 2019-06-06 Force 'TOP Staging' and 'TOP Production' to use NIH skin.
+ef7647b 2019-05-29 Update favicon.ico to be 48x48 to adhere to Google guidelines (https://support.google.com/webmasters/answer/9290858).
+24227a6 2019-05-22 IL-568 Add iTrustUIN claim for Rokwire client.
+1460581 2019-05-03 CIL-467 Eliminate 'init' endpoint. Use 'dbService?action=createTransation' instead.
+12599d1 2019-04-26 Add new ECP IdPs.
+5b2e8ec 2019-04-26 CIL-410 In preparation for overhauling /testidp endpoint, allow for saving user attributes to PHP session or to database.
+db325f4 2019-04-10 CIL-555 Create '/logout' endpoint to clear CILogon user session.
+9b2aa57 2019-04-01 Add SDSU to bypass.txt for iam.scigap.org.
+a2e780c 2019-03-22 CIL-555 If query string "nooutput" is given, return 204.
+d5948b7 2019-03-22 Remove end-of-line space.
+9213acf 2019-03-22 CIL-555 Allow for "Delete..." buttons to be virtually clicked by passing submit="Delete..." query parameter.
+92b34d4 2019-03-19 For travis testing, don't test /vendor/ directory.
+b43def6 2019-03-19 For parallel-lint, use current directory rather than 'src'.
+a53abb1 2019-03-19 Add --dev switch for composer.
+1f00111 2019-03-19 For travis, add parallel-lint to composer.json.
+8f67cd7 2019-03-19 PHP supported versions are 7.1, 7.2, and 7.3.
+33ab1cd 2019-03-19 For travis, test PHP 7.1, 7.2, and 7.3.
+a8837bc 2019-03-19 For Anney Che's OIDC client, set the skin to 'NIH'.
+d079618 2019-03-05 CIL-549 Better error message when user clicks 'Deny' at ORCID. Use the OIDC 'error_description' message if available rather than 'missing code'.
+0f666c9 2019-02-21 Add IdP Duo 2FA support to ecp.pl. User can now specify a Duo 2FA method (auto, push, call, or CODE) if the user's IdP account is configured to require Duo. Thanks to Paul B. Henson <henson@cpp.edu> for figuring out how this works and for the code contribution.
+dda855e 2019-02-18 Add Univ of South Dakota to bypass.txt for iamdev.scigap.org.
+96bdc5a 2019-02-18 Add UNC-CH to list of ECP-enabled IdPs.
+46a1bf7 2019-02-14 CIL-536 For NIH skin, let <idplistsize> determine height of IdP listing.
+9de37d3 2019-02-13 CIL-537 Allow client_id to force skin or bypass IdP selection screen.
+e170802 2019-02-13 CIL-536 Create new skin for NIH.
+31b9530 2019-02-01 CIL-533 Allow ORCID for all gw-astronomy sites.
+2b3be6d 2019-01-25 CIL-533 Add new gwastroorcid skin for testing ORCID with registry-dev and registry-test.
+c41c754 2019-01-16 CIL-533 For gw-astronomy, blacklist GitHub and ORCID.
+825e1e5 2019-01-16 CIL-533 For gw-astronomy, blacklist GitHub and ORCID
+5305cbb 2019-01-10 CIL-532 Add eduPersonEntitlement.
+6295099 2019-01-09 CIL-530 Add skin for gw-astronomy named "gwastro".
+7c4eef0 2018-12-04 CIL-527 - Add available claims "affiliation" and "cert_subject_dn".
+cf9460b 2018-12-03 Update ChangeLog.
 b6ee895 2018-12-03 Update License date to 2018 and replace template name with CILogon.
 e9429e2 2018-11-06 IL-526 Use SHA256withRSA instead of MD5withRSA for pkcs10SigAlgName so that GridShibCA can connect to openssl-1.0.1e-57.el6.
 fec2568 2018-10-26 CIL-524 Force LSST skin for https://identity.lsst.org OIDC client.
