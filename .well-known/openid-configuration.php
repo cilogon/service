@@ -44,6 +44,7 @@ echo '{
   "client_secret_post"
  ],
  "claims_supported" : [
+  "acr",
   "affiliation",
   "aud",
   "auth_time",
@@ -57,11 +58,16 @@ echo '{
   "iat",
   "idp",
   "idp_name",
+  "isMemberOf",
   "iss",
   "name",
+  "nonce",
   "oidc",
   "openid",
   "ou",
-  "sub"
+  "sub",
+  "uid",
+  "uidNumber",
+  "voPersonExternalID"
  ]
 }';
