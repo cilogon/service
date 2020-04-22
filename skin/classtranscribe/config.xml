@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+  <idpwhitelist>
+    <idp>https://accounts.google.com/o/oauth2/auth</idp>
+    <idp>urn:mace:incommon:uiuc.edu</idp>
+    <idp>https://uisshibb1.uis.edu/idp/shibboleth</idp>
+    <idp>https://shibboleth.uic.edu/shibboleth</idp>
+    <idp>https://authentication.ubc.ca</idp>
+    <idp>https://shib-idp.tufts.edu/idp/shibboleth</idp>
+  </idpwhitelist>
+
+</config>

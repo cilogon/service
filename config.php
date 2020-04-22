@@ -283,6 +283,7 @@ define('FORCE_SKIN_ARRAY', array(
     '%^cilogon:/client_id/3176b0133ec1efa8090dcf11ad96877f%' => 'MIT',
     '%^cilogon:/client_id/47fabe917b37f4969efe93ffaa4e510a%' => 'flywheel',
     '%^https://.*\.scimma\.org/.*$%' => 'SCiMMA',
+    '%^cilogon:/client_id/3c7e9528486a4ab9f141cf7379a7f54a%' => 'classtranscribe',
 ));
 
 /**
