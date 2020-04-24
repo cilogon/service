@@ -116,7 +116,7 @@ function printOIDCErrorPage()
  * printMainPage
  *
  * This function is poorly named for the OIDC case, but is called by
- * gotUserSucces, so the name stays. This function is called once the
+ * gotUserSuccess, so the name stays. This function is called once the
  * user has successfully logged on at the selected IdP. In the OIDC
  * case, the user's UID is then paired with the OIDC 'code' and
  * 'authntime' in the datastore so that it can be fetched later when
