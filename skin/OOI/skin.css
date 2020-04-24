@@ -63,7 +63,7 @@ a:active {
 }
 
 div.logoheader {
-  background: transparent url("/skin/OOI/banner.png") no-repeat top left;
+  background: transparent url("/images/ooi-header.png") no-repeat top left;
   height: 70px;
   border-bottom: 1px solid #0079af;
 }

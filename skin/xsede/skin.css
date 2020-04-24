@@ -2,7 +2,7 @@
 body {
   font-family: "helvetica neue",Helvetica,Arial,Verdana,sans-serif;
   color: #333333;
-  background: #000 url("/skin/xsede/background.jpg") no-repeat top center;
+  background: #000 url("/images/xsede-background.jpg") no-repeat top center;
 }
 a,
 a:link,
@@ -78,7 +78,7 @@ div.logoheader {
   height: 94px;
 }
 div.logoheader h1 {
-  background: url("/skin/xsede/logo.png") no-repeat top left;
+  background: url("/images/xsede-logo.png") no-repeat top left;
   margin: 8px 8px;
   width: 250px;
   height: 75px;

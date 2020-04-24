@@ -73,7 +73,7 @@ div.logoheader {
   border-bottom: 27px solid #f58c1e;
 }
 div.logoheader h1 {
-  background: transparent url("/skin/NICS/nicslogo.png") no-repeat top left;
+  background: transparent url("/images/nics-logo.png") no-repeat top left;
   margin-top: 7px;
   margin-left: 10%;
   width: 332px;

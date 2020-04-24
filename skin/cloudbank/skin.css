@@ -47,7 +47,7 @@ div.logoheader {
   min-width: 600px;
 }
 div.logoheader h1 {
-  background: transparent url("/skin/cloudbank/logo.png") no-repeat top left;
+  background: transparent url("/images/cloudbank-logo.png") no-repeat top left;
   background-size: 68%;
   margin-top: 13px;
   margin-left: 12%;

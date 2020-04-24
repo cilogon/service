@@ -2,7 +2,7 @@
 body {
   font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
   color: #000;
-  background: #4e71b9 url("/skin/UCSD/body_gradient.gif") repeat-x top left !important;
+  background: #4e71b9 url("/images/ucsd-body.gif") repeat-x top left !important;
   font-size: 85%;
 }
 a {
@@ -22,7 +22,7 @@ a:hover, a:active {
   font-size: 110%;
   color: #fff;
   border: 2px outset #17205d;
-  background: #3e4a9e url("/skin/UCSD/buttonbg.png") repeat-x top left;
+  background: #3e4a9e url("/images/ucsd-buttonbg.png") repeat-x top left;
 }
 .btn.btn-primary:hover,
 .btn.btn-primary.active,
@@ -34,7 +34,7 @@ a:hover, a:active {
 .btn.btn-primary:active:focus,
 .btn.btn-primary:active:hover {
   color: white;
-  background: #3e4a9e url("/skin/UCSD/buttonbg.png") repeat-x top left;
+  background: #3e4a9e url("/images/ucsd-buttonbg.png") repeat-x top left;
 }
 
 
@@ -43,7 +43,7 @@ div.logoheader {
   height: 100px;
 }
 div.logoheader h1 {
-  background: transparent url("/skin/UCSD/ucsd_logo_screen.gif") no-repeat top left;
+  background: transparent url("/images/ucsd-logo.gif") no-repeat top left;
   margin-top: 35px;
   margin-left: 33px;
   width: 305px;

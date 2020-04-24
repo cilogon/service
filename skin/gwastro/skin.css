@@ -55,7 +55,7 @@ div.logoheader {
   min-width: 600px;
 }
 div.logoheader h1 {
-  background: transparent url("/skin/gwastro/gw-astro-logo.png") no-repeat top left;
+  background: transparent url("/images/gwastro-logo.png") no-repeat top left;
   margin-top: 5px;
   margin-left: 10px;
   width: 80px;

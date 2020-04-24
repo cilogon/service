@@ -56,7 +56,7 @@ div.logoheader {
   min-width: 600px;
 }
 div.logoheader h1 {
-  background: transparent url("/skin/NCSA/logos_ncsa.png") no-repeat top left;
+  background: transparent url("/images/ncsa-logo.png") no-repeat top left;
   margin-top: 2px;
   margin-left: 2px;
   width: 148px;

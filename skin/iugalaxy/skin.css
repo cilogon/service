@@ -9,7 +9,7 @@ div.logoheader {
   background-origin: padding-box;
   background-clip: border-box;
   background-attachment: scroll;
-  background-image: url("/skin/iugalaxy/NCGAS_Logo_Vertical.png");
+  background-image: url("/images/iugalaxy-logo.png");
   margin-top: 3px;
   height: 199px;
 }

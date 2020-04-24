@@ -44,13 +44,13 @@ a:hover, a:active {
   color: white;
 }
 div.logoheader {
-  background-image: url("/skin/illinois/headerbg.jpg");
+  background-image: url("/images/illinois-header.jpg");
   background-repeat: repeat-x;
   height: 157px;
   min-width: 600px;
 }
 div.logoheader h1 {
-  background: transparent url("/skin/illinois/illinois_logo.png") no-repeat top left;
+  background: transparent url("/images/illinois-logo.png") no-repeat top left;
   margin-top: 16px;
   margin-left: 9.8%;
   width: 204px;
