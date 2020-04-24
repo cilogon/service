@@ -251,14 +251,14 @@ define('ALLOW_BYPASS_ARRAY', array(
  * first match in the list above wins. Skinname is case-insensitive.
  */
 define('FORCE_SKIN_ARRAY', array(
-    '%^https://login\d?\.ligo\.org/idp/shibboleth%' => 'LIGO',
-    '%^https://.*\.?seedme\.org%' => 'SeedMe',
+    '%^https://login\d?\.ligo\.org/idp/shibboleth%' => 'ligo',
+    '%^https://.*\.?seedme\.org%' => 'seedme',
     '%^https://redivis\.com/userRequirements/oauth2/authorize%' => 'redivis',
-    '%^https://clowder.ncsa.illinois.edu/clowder/authenticate/cilogon%' => 'NCSA',
+    '%^https://clowder.ncsa.illinois.edu/clowder/authenticate/cilogon%' => 'ncsa',
     '%^cilogon:/client_id/79d280aef88dd3c97bb1cd92f8217286%' => 'sprout',
     '%^https://sprout.ncsa.illinois.edu/authenticate/cilogon%' => 'sprout',
     '%^myproxy:oa4mp,2012:/client_id/63408f84f8ba20d1446336ee1f330a0e%' => 'fairdata',
-    '%^https://identity.lsst.org/cilogon-result%' => 'LSST',
+    '%^https://identity.lsst.org/cilogon-result%' => 'lsst',
     '%^https://registry.gw-astronomy.org/secure/redirect%' => 'gwastro',
     '%^https://registry-test.gw-astronomy.org/secure/redirect%' => 'gwastro',
     '%^https://registry-dev.gw-astronomy.org/secure/redirect%' => 'gwastro',
@@ -280,9 +280,9 @@ define('FORCE_SKIN_ARRAY', array(
     '%^cilogon:/client_id/730421ec502c1384a99cc439e412d7a7%' => 'nih',
     '%^cilogon:/client_id/38afed60f24d0f627a23edf10314e097%' => 'nih',
     '%^cilogon:/client_id/56727d508077d1402cdcc66714ecf5ef%' => 'orcidfirst',
-    '%^cilogon:/client_id/3176b0133ec1efa8090dcf11ad96877f%' => 'MIT',
+    '%^cilogon:/client_id/3176b0133ec1efa8090dcf11ad96877f%' => 'mit',
     '%^cilogon:/client_id/47fabe917b37f4969efe93ffaa4e510a%' => 'flywheel',
-    '%^https://.*\.scimma\.org/.*$%' => 'SCiMMA',
+    '%^https://.*\.scimma\.org/.*$%' => 'scimma',
     '%^cilogon:/client_id/3c7e9528486a4ab9f141cf7379a7f54a%' => 'classtranscribe',
 ));
 
