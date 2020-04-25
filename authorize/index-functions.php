@@ -330,7 +330,7 @@ function verifyOIDCParams()
 
     // CIL-624 If X509 certs are disabled, check for 'getcert' scope.
     // If found, show an error message.
-    $scope = getGetVar('scope');
+    $scope = Util::getGetVar('scope');
     if (
         (defined('DISABLE_X509')) &&
         (DISABLE_X509 === true) &&
