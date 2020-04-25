@@ -1,4 +1,3 @@
-/***** Begin basic elements *****/
 body {
   font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
   color: #000;
@@ -36,8 +35,6 @@ a:hover, a:active {
   color: white;
   background: #3e4a9e url("/images/ucsd-buttonbg.png") repeat-x top left;
 }
-
-
 div.logoheader {
   background: none;
   height: 100px;
@@ -53,7 +50,6 @@ div.logoheader h1 {
 div.skincilogonlogo {
   display: inline;
 }
-
 .footer {
   border: 1px solid #e4c33d;
   border-top: 1px solid #dbaa27;

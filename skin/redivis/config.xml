@@ -9,6 +9,4 @@
     <idp>https://github.com/login/oauth/authorize</idp>
   </idpwhitelist>
 
-  <idplistsize>3</idplistsize>
-
 </config>

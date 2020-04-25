@@ -13,7 +13,6 @@ div.logoheader {
   margin-top: 3px;
   height: 199px;
 }
-
 div.logoheader h1 {
   background: transparent;
 }
@@ -68,10 +67,7 @@ div.skincilogonlogo a {
   color: #000;
   font-weight: normal;
 }
-
-
 .footer a:link, div.footer a:visited {
   color: #888;
   text-decoration: underline;
 }
-

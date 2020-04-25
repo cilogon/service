@@ -1,4 +1,3 @@
-/***** Begin basic elements *****/
 body {
   font-family: Arial, Helvetica, Verdana, sans-serif;
   color: #000;
@@ -15,7 +14,6 @@ a:visited {
 a:hover, a:active {
   color: #5687dc;
   text-decoration: none;
-  //outline: 2px solid #e84a27;
 }
 .btn.btn-primary {
   font-weight: normal;

@@ -10,8 +10,6 @@
     <idp>https://shib.lternet.edu/idp/shibboleth</idp>
     <idp>urn:mace:incommon:mlml.calstate.edu</idp>
     <idp>urn:mace:incommon:mcnc.org</idp>
-    <!-- ProtectNetwork -->
-    <idp>urn:mace:incommon:idp.protectnetwork.org</idp>
     <!-- Google, GitHub, and ORCID -->
     <idp>https://accounts.google.com/o/oauth2/auth</idp>
     <idp>https://github.com/login/oauth/authorize</idp>

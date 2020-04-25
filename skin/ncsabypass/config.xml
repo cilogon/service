@@ -5,8 +5,6 @@
 
   <forceinitialidp>1</forceinitialidp>
 
-  <idplistsize>1</idplistsize>
-
   <idpwhitelist>
     <idp>https://idp.ncsa.illinois.edu/idp/shibboleth</idp>
   </idpwhitelist>

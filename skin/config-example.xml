@@ -38,16 +38,6 @@
   -->
 
 
-  <!-- <idplistsize>
-       This sets the size of the IdP <select> HTML element. If not
-       specified, it defaults to 4 (meaning 4 IdPs are shown at a time).
-       The example below will show an IdP selection list 10 items high.
-  -->
-  <!--
-  <idplistsize>10</idplistsize>
-  -->
-
-
   <!-- <registeredbyincommonidps>
        This restricts the list of SAML-based IdPs to those that have the
       "Registered_By_InCommon" tag. Note that the OAuth2-based IdPs are

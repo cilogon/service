@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 
-  <idplistsize>10</idplistsize>
-
   <logonbuttontext>Continue</logonbuttontext>
 
   <delegate>

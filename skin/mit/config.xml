@@ -3,8 +3,6 @@
 
   <initialidp>urn:mace:incommon:mit.edu</initialidp>
 
-  <idplistsize>1</idplistsize>
-
   <idpwhitelist>
     <idp>urn:mace:incommon:mit.edu</idp>
   </idpwhitelist>

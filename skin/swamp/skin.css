@@ -14,7 +14,6 @@ a:visited {
 .card-header {
     background-color: rgb(242,242,242);
 }
-
 .btn {
   font-size: 16px;
   color: #a2893c;
@@ -38,7 +37,6 @@ a:visited {
   background: -ms-linear-gradient(top, white, #cccccc);
   background: -o-linear-gradient(top, white, #cccccc);
 }
-
 .btn-primary,
 .btn-primary:focus,
 .btn-primary[disabled] {
@@ -98,4 +96,3 @@ div.skincilogonlogo {
   text-decoration: none;
   color: #BFA452;
 }
-

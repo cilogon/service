@@ -82,7 +82,6 @@ a:not([href]):not([tabindex]):focus {
 .card-footer:last-child {
  border-radius:0 0 calc(0.25rem - 1px) calc(0.25rem - 1px)
 }
-
 .fa.fa-question-circle {
   color: #212529;
 }

@@ -1,4 +1,3 @@
-/***** Begin basic elements *****/
 body {
   font-family: Signika Negative, sans-serif;
   color: #ccc;
@@ -18,8 +17,6 @@ a:hover {
 a:active {
   color: #fff;
 }
-/***** End basic elements *****/
-
 .card {
     background-color: #1e1e1e;
 }
@@ -61,7 +58,6 @@ a:active {
   color: #fff;
   font-weight: 400;
 }
-
 div.logoheader {
   background: transparent url("/images/ooi-header.png") no-repeat top left;
   height: 70px;
@@ -74,7 +70,6 @@ div.skincilogonlogo {
   margin-top: 3px;
   display: inline;
 }
-
 .footer {
   border: 0;
 }

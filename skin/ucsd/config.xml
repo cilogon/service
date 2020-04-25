@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This is a comment -->
 <config>
   <initialidp>urn:mace:incommon:ucsd.edu</initialidp>
-  <idplistsize>1</idplistsize>
   <idpwhitelist>
     <idp>urn:mace:incommon:ucsd.edu</idp>
     <!-- <idp>urn:mace:incommon:uiuc.edu</idp> -->

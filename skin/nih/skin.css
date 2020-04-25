@@ -8,18 +8,15 @@ body {
     background: linear-gradient(90deg, rgba(237,237,237,.9) 0%,rgba(246,246,246,.9) 53%,rgba(255,255,255,.9) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ffffff',GradientType=1 );
 }
- 
 a {
     color: #004fba !important;
 }
-
 div.logoheader {
     background: none;
     height: 80px;
     width: 100%;
     min-width: 600px;
 }
-
 div.logoheader h1 {
     background: transparent url("/images/nih-logo.png") no-repeat top left;
     margin-top: 8px;
@@ -29,31 +26,25 @@ div.logoheader h1 {
     float: left;
     margin: 17px 0px 0px 20px;
 }
-
 div.skincilogonlogo {
   display: inline;
   margin: 5px;
 }
-
 body > div.pagecontent > div.boxed > div.actionbox > table > tbody > tr > td > form > fieldset > p:nth-child(1) {
     font-weight: 500;
     font-size: 24px;
     color: #0f3c72 !important;
 }
-
 #wayflogonbutton {
     font-weight: 300;
 }
-
 select#providerId {
     width: 500px;
     font-size: 15px;
 }
-
 .card-header {
     background-color: rgb(242,242,242);
 }
-
 .btn.btn-primary {
     border: 1px solid #777;
     color: #eee;
@@ -81,9 +72,7 @@ select#providerId {
     background-image: -moz-linear-gradient(#2f78c0, #0f4071 70%);
     background-image: -webkit-linear-gradient(#2f78c0, #0f4071 70%);
     background-image: linear-gradient(#2f78c0, #0f4071 70%);
-    
 }
-
 .btn.btn-primary:hover {
     color: #ddd;
     border: none;
@@ -95,11 +84,9 @@ select#providerId {
     text-decoration: none;
     font-weight: normal;
 }
-
 .privacypolicy {
     font-size: small;
 }
-
 .footer {
     border: none;
     color: #000;
