@@ -129,6 +129,15 @@ function getPKCS12()
         return; // ERROR means no further processing is necessary
     }
 
+    // CIL-624 Check if X509 certs are disabled
+    if ((defined('DISABLE_X509')) && (DISABLE_X509 === true)) {
+        $log->info('ECP PKCS12 error: Downloading certificates is ' .
+            'disabled due to DISABLE_X509.');
+        outputError('Downloading certificates is disabled.');
+        Util::unsetAllUserSessionVars();
+        return; // ERROR means no further processing is necessary
+    }
+
     // Verify myproxy-logon binary is configured
     $disabledbyconf = ((!defined('MYPROXY_LOGON')) || (empty(MYPROXY_LOGON)));
     if ($disabledbyconf) {
@@ -218,7 +227,16 @@ function getCert()
         Util::unsetAllUserSessionVars();
         return; // ERROR means no further processing is necessary
     }
-    //
+
+    // CIL-624 Check if X509 certs are disabled
+    if ((defined('DISABLE_X509')) && (DISABLE_X509 === true)) {
+        $log->info('ECP certreq error: Downloading certificates is ' .
+            'disabled due to DISABLE_X509.');
+        outputError('Downloading certificates is disabled.');
+        Util::unsetAllUserSessionVars();
+        return; // ERROR means no further processing is necessary
+    }
+
     // Verify myproxy-logon binary is configured
     $disabledbyconf = ((!defined('MYPROXY_LOGON')) || (empty(MYPROXY_LOGON)));
     if ($disabledbyconf) {

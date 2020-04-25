@@ -105,7 +105,6 @@ function printLogonPage()
 function printOAuth1ErrorPage()
 {
     $log = new Loggit();
-    $log->warn('Missing or invalid oauth_token.');
 
     Content::printHeader('CILogon Delegation Service');
     Content::printCollapseBegin(
@@ -114,39 +113,60 @@ function printOAuth1ErrorPage()
         false
     );
 
-    echo '
-    <div class="card-body px-5">
-      <div class="card-text my-2">
-        You have reached the CILogon Delegation Service.  This service is for
-        use by third parties to obtain certificates for their users.
-        End users should not normally see this page.
-      </div>
-      <div class="card-text my-2">
-      Possible reasons for seeing this page include:
-      </div>
-      <div class="card-text my-2">
-        <ul>
-          <li>You navigated directly to this page.</li>
-          <li>You clicked your browser\'s "Back" button.</li>
-          <li>There was a problem with the delegation process.</li>
-        </ul>
-      </div>
-      <div class="card-text my-2">
-        Please return to the previous site and try again. If the error
-        persists, please contact us at the email address at the bottom of
-        the page.
-      </div>
-      <div class="card-text my-2">
-        If you are an individual wishing to download a certificate to your
-        local computer, please try the <a target="_blank"
-        href="https://' , Util::getHN() , '/">CILogon Service</a>.
-      </div>
-      <div class="card-text my-2">
-        <strong>Note:</strong> You must enable cookies in your web
-        browser to use this site.
-      </div>
-    </div> <!-- end card-body -->
-    ';
+    // CIL-624 If X509 certs are disabled, show a suitable error message
+    // to the end user.
+    if ((defined('DISABLE_X509')) && (DISABLE_X509 === true)) {
+        $log->warn('OAuth1 transaction failed due to DISABLE_X509 set.');
+        echo '
+        <div class="card-body px-5">
+          <div class="card-text my-2">
+            You have reached the CILogon Delegation Service. This service is
+            for use by third parties to obtain certificates for their users.
+            <strong>However, downloading X.509 certificates has been
+            disabled.</strong>
+          </div>
+          <div class="card-text my-2">
+            Please direct questions to the email address at the bottom of
+            the page.
+          </div>
+        </div> <!-- end card-body -->
+        ';
+    } else {
+        $log->warn('Missing or invalid oauth_token.');
+        echo '
+        <div class="card-body px-5">
+          <div class="card-text my-2">
+            You have reached the CILogon Delegation Service. This service is
+            for use by third parties to obtain certificates for their users.
+            End users should not normally see this page.
+          </div>
+          <div class="card-text my-2">
+          Possible reasons for seeing this page include:
+          </div>
+          <div class="card-text my-2">
+            <ul>
+              <li>You navigated directly to this page.</li>
+              <li>You clicked your browser\'s "Back" button.</li>
+              <li>There was a problem with the delegation process.</li>
+            </ul>
+          </div>
+          <div class="card-text my-2">
+            Please return to the previous site and try again. If the error
+            persists, please contact us at the email address at the bottom of
+            the page.
+          </div>
+          <div class="card-text my-2">
+            If you are an individual wishing to download a certificate to your
+            local computer, please try the <a target="_blank"
+            href="https://' , Util::getHN() , '/">CILogon Service</a>.
+          </div>
+          <div class="card-text my-2">
+            <strong>Note:</strong> You must enable cookies in your web
+            browser to use this site.
+          </div>
+        </div> <!-- end card-body -->
+        ';
+    }
 
     Content::printCollapseEnd();
     Content::printFooter();
@@ -711,6 +731,12 @@ function handleAllowDelegation($always = false)
 function verifyOAuthToken($token = '')
 {
     $retval = false; // Assume OAuth session info is not valid
+
+    // CIL-624 If X509 certs are disabled, prevent the OAuth1 endpoint
+    // from running since OAuth1 always generates an X.509 cert.
+    if ((defined('DISABLE_X509')) && (DISABLE_X509 === true)) {
+        return false;
+    }
 
     // If passing in the OAuth $token, try to get the associated info
     // from the persistent store and put it into the PHP session.
