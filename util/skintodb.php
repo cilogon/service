@@ -26,7 +26,7 @@ if ($argc != 2) {
 }
 
 $basedir = $argv[1];
-if ($handle = opendir($basedir)) {
+if ((is_dir($basedir)) && (is_readable($basedir))) {
     $dsn = array(
         'phptype'  => 'mysqli',
         'username' => MYSQLI_USERNAME,
@@ -44,12 +44,12 @@ if ($handle = opendir($basedir)) {
     if (!PEAR::isError($db)) {
         $ins = $db->prepare('INSERT INTO skins VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE config=?, css=?');
 
-        while (($skindir = readdir($handle)) !== false) {
+        foreach (scandir($basedir) as $skindir) {
             if (
                 ($skindir != '.') && ($skindir != '..') &&
                 (is_dir($basedir . '/' . $skindir))
             ) {
-                echo "Processing skin '$skindir'...";
+                echo "Processing skin '$skindir'.";
 
                 // Read in the config XML
                 $xml = '';
@@ -71,10 +71,10 @@ if ($handle = opendir($basedir)) {
                 // Either XML or CSS should be available
                 if ((strlen($xml) > 0) || (strlen($css) > 0)) {
                     if (strlen($xml) > 0) {
-                        echo " Found config.xml...";
+                        echo " Found config.xml.";
                     }
                     if (strlen($css) > 0) {
-                        echo " Found skin.css...";
+                        echo " Found skin.css.";
                     }
                     $data = array($skindir, $xml, $css, $xml, $css);
                     $db->execute($ins, $data);
@@ -88,7 +88,6 @@ if ($handle = opendir($basedir)) {
                 }
             }
         }
-        closedir($handle);
         $db->disconnect();
     } else {
         echo "Error: Unable to connect to database!\n";
