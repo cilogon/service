@@ -334,7 +334,7 @@ function verifyOIDCParams()
     if (
         (defined('DISABLE_X509')) &&
         (DISABLE_X509 === true) &&
-        (preg_match('/edu\.ncsa\.uiuc\.myproxy\.getcert/', $scope))
+        (preg_match('/edu.uiuc.ncsa.myproxy.getcert/', $scope))
     ) {
         Util::sendErrorAlert(
             'CILogon OIDC authz endpoint error',
