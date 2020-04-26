@@ -93,16 +93,18 @@ function printAboutThisPage($browsercount, $sessioncount)
             You can also delete groups of cookies by clicking ';
         if ($browsercount > 0) {
             echo 'the &quot;Delete Browser Cookies&quot; button';
+            if ($sessioncount > 0) {
+                echo ', ';
+            }
         }
+
         if ($sessioncount > 0) {
+            echo 'the &quot;Delete Session Variables&quot; button';
             if ($browsercount > 0) {
                 echo ', ';
             }
-            echo 'the &quot;Delete Session Variables&quot; button';
-            if ($browsercount > 0) {
-                echo ', or the &quot;Delete ALL&quot; button';
-            }
         }
+        echo ' or the &quot;Delete ALL&quot; button';
         echo '.
           </div> <!-- end card-text -->';
     }
@@ -130,7 +132,7 @@ function printAboutThisPage($browsercount, $sessioncount)
               value="Delete Session Variables" />
             </div> <!-- end col-auto -->';
     }
-    if (($browsercount > 0) && ($sessioncount > 0)) {
+    if (($browsercount > 0) || ($sessioncount > 0)) {
         echo '
             <div class="col-auto">
               <input type="submit" name="submit"
