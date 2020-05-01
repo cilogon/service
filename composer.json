@@ -21,10 +21,6 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/pear/Config"
-        },
-        {
-            "type": "vcs",
             "url": "https://github.com/pear/DB"
         }
     ],

@@ -6,7 +6,6 @@ set_include_path(
     '/var/www/html/vendor/pear/pear_exception' . PATH_SEPARATOR .
     '/var/www/html/vendor/pear/log' . PATH_SEPARATOR .
     '/var/www/html/vendor/pear/db' . PATH_SEPARATOR .
-    '/var/www/html/vendor/pear/config' . PATH_SEPARATOR .
     '/var/www/html/vendor/pear/net_ldap2' . PATH_SEPARATOR .
     '/var/www/html/vendor/cilogon/service-lib/src/Service' . PATH_SEPARATOR .
     '.'
