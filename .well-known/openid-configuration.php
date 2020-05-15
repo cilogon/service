@@ -17,6 +17,7 @@ echo '{
  "token_endpoint": "https://' , $hostname , '/oauth2/token",
  "userinfo_endpoint": "https://' , $hostname , '/oauth2/userinfo",
  "jwks_uri": "https://' , $hostname , '/oauth2/certs",
+ "service_documentation": "https://www.cilogon.org/oidc",
  "response_types_supported": [
   "code"
  ],
@@ -24,6 +25,11 @@ echo '{
   "query",
   "fragment",
   "form_post"
+ ],
+ "grant_types_supported": [
+  "authorization_code",
+  "refresh_token",
+  "urn:ietf:params:grant_type:token_exchange"
  ],
  "subject_types_supported": [
   "public"
