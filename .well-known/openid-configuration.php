@@ -65,7 +65,10 @@ echo '{
   "oidc",
   "openid",
   "ou",
+  "pairwise_id",
   "sub",
+  "subject_id",
+  "token_id",
   "uid",
   "uidNumber",
   "voPersonExternalID"
