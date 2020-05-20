@@ -295,6 +295,7 @@ define('FORCE_SKIN_ARRAY', array(
     '%^cilogon:/client_id/47fabe917b37f4969efe93ffaa4e510a%' => 'flywheel',
     '%^https://.*\.scimma\.org/.*$%' => 'scimma',
     '%^cilogon:/client_id/3c7e9528486a4ab9f141cf7379a7f54a%' => 'classtranscribe',
+    '%^cilogon:/client_id/3d39b5d80d2b72ca8a447fd5c7dc5192%' => 'scimma',
 ));
 
 /**
