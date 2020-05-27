@@ -338,4 +338,17 @@
   <expandcreatecert>1</expandcreatecert>
   -->
 
+  <!-- <banner>
+       Text to be shown in an informational banner for this skin at the top
+       of each page. Note that HTML tags should be HTML-escaped (e.g., use 
+       &lt; and &gt; in place of '<' and '>').
+  -->
+
+  <!--
+  <banner>
+  If you are experiencing issues, please contact your project manager
+  at &lt;a href="mailto:help@project.org"&gt;help@project.org&lt;/a&gt;.
+  </banner>
+  -->
+
 </config>
