@@ -254,7 +254,7 @@ function showHourglass(which)
  * Function  : validateForm                                                *
  * This function is taken straight from the Bootstrap Forms "Custom        *
  * Styles" example:                                                        *
- * https://getbootstrap.com/docs/4.4/components/forms/#custom-styles       *
+ * https://getbootstrap.com/docs/4.5/components/forms/#custom-styles       *
  ***************************************************************************/
 function validateForm()
 {
