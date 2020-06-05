@@ -88,9 +88,9 @@ define('EMAIL_HELP', 'help@' . DEFAULT_HOSTNAME);
 define('EMAIL_ALERTS', 'alerts@' . DEFAULT_HOSTNAME);
 
 /**
- * If you want to completely disable the ability to fetch X509 certificates, 
- * set DISABLE_X509 to true. (Defaults to false.) This is similiar to 
- * setting MYPROXY_LOGON below to empty string, but completely hides the 
+ * If you want to completely disable the ability to fetch X509 certificates,
+ * set DISABLE_X509 to true. (Defaults to false.) This is similiar to
+ * setting MYPROXY_LOGON below to empty string, but completely hides the
  * "Create Password-Protected Certificate" box, and also checks if the
  * OIDC transaction has the edu.ncsa.uiuc.myproxy.getcert scope.
  *
