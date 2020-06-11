@@ -127,6 +127,7 @@ define('BLACKLIST_IDP_ARRAY', array(
     'https://shibboleth.csupomona.edu/idp/shibboleth',
     'https://idp.pitt.edu/idp/shibboleth',
     'https://shib.mdanderson.org/idp/shibboleth',
+    'https://idp.itsligo.ie/idp/shibboleth',
 ));
 
 /**
