@@ -47,6 +47,7 @@ echo '{
   "edu.uiuc.ncsa.myproxy.getcert"
  ],
  "token_endpoint_auth_methods_supported": [
+  "client_secret_basic",
   "client_secret_post"
  ],
  "claims_supported" : [
