@@ -238,6 +238,7 @@ define('ALLOW_BYPASS_ARRAY', array(
     '%cilogon:/client_id/2aa1d47daf2964397668e3a64c9ec287%',
     '%cilogon:/client_id/6cbd814fd631ce99a95436705822cb2%',
     '%cilogon:/client_id/d37bc71195aafc638cfc083250cb802%',
+    '%cilogon:/client_id/599ebdd631fca76a8d88850dab8569c3%',
 ));
 
 /**
