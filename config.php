@@ -239,6 +239,8 @@ define('ALLOW_BYPASS_ARRAY', array(
     '%cilogon:/client_id/6cbd814fd631ce99a95436705822cb2%',
     '%cilogon:/client_id/d37bc71195aafc638cfc083250cb802%',
     '%cilogon:/client_id/599ebdd631fca76a8d88850dab8569c3%',
+    '%^https://flywheel-(dev|prod)\.auth0\.com/.*$%',
+    '%^https://.*\.flywheel.io/.*$%',
 ));
 
 /**
@@ -300,6 +302,7 @@ define('FORCE_SKIN_ARRAY', array(
     '%^cilogon:/client_id/3c7e9528486a4ab9f141cf7379a7f54a%' => 'classtranscribe',
     '%^cilogon:/client_id/3d39b5d80d2b72ca8a447fd5c7dc5192%' => 'scimma',
     '%^https://flywheel-(dev|prod)\.auth0\.com/.*$%' => 'flywheel',
+    '%^https://.*\.flywheel.io/.*$%' => 'flywheel',
 ));
 
 /**
