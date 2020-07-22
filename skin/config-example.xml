@@ -373,20 +373,21 @@
 
   <!-- <footertext>
        The full HTML to show at the bottom of each page. The default HTML is
-       shown below.
+       shown below. Note that '<', '>', and '&' must be HTML-escaped as &lt; ,
+       &gt; , and &amp; in order to be processed correctly.
   -->
 
   <!--
   <footertext>
-    <p>For questions about this site, please see the <a target="_blank"
-       href="http://www.cilogon.org/faq">FAQs</a> or send email to <a
-       href="mailto:help@cilogon.org">help@cilogon.org</a>.</p>
-    <p>Know <a target="_blank"
-       href="http://ca.cilogon.org/responsibilities">your responsibilities</a>
-       for using the CILogon Service.</p>
-    <p>See <a target="_blank"
-       href="http://ca.cilogon.org/acknowledgements">acknowledgements</a> of
-       support for this site.</p>
+    &lt;p&gt;For questions about this site, please see the &lt;a target="_blank"
+    href="http://www.cilogon.org/faq"&gt;FAQs&lt;/a&gt; or send email to &lt;a
+    href="mailto:help@cilogon.org"&gt;help@cilogon.org&lt;/a&gt;.&lt;/p&gt;
+    &lt;p&gt;Know &lt;a target="_blank"
+    href="http://ca.cilogon.org/responsibilities"&gt;your responsibilities&lt;/a&gt;
+    for using the CILogon Service.&lt;/p&gt;
+    &lt;p&gt;See &lt;a target="_blank"
+    href="http://ca.cilogon.org/acknowledgements"&gt;acknowledgements&lt;/a&gt;
+    of support for this site.&lt;/p&gt;
   </footertext>
   -->
 
