@@ -116,14 +116,14 @@ define('MYPROXY_LIFETIME', '12');
 define('STORAGE_PHPSESSIONS', 'mysqli');
 
 /**
- * This array contains IdPs that are globally blacklisted for the
+ * This array contains IdPs that are globally redlit (disabled) for the
  * CILogon service. Each entry contains an IdP's entityId (as shown
  * in the InCommon metadata).
  *
  * NOTE: After modifying this array, run /etc/cron.hourly/idplist.cron so that
- * /var/www/html/include/idplist.xml is updated to remove <Whitelisted> tags.
+ * /var/www/html/include/idplist.xml is updated to remove these IdPs.
  */
-define('BLACKLIST_IDP_ARRAY', array(
+define('REDLIT_IDP_ARRAY', array(
     'https://shibboleth.csupomona.edu/idp/shibboleth',
     'https://idp.pitt.edu/idp/shibboleth',
     'https://shib.mdanderson.org/idp/shibboleth',

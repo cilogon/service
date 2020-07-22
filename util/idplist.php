@@ -79,7 +79,7 @@ if (($argc >= 2) && ($argc <= 4)) {
 
     // If we successfully read in a 'good' idplist.{json.xml} file from
     // /var/www/html/include, use that as the list of currently
-    // 'whitelisted' IdPs and check to see if any new IdP were added to
+    // 'greenlit' IdPs and check to see if any new IdP were added to
     // the InCommon metadata.
     $newIdPList = array();
     if (!empty($oldEntityIDList)) {

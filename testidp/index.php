@@ -46,7 +46,7 @@ switch ($submit) {
             // Use OAuth2 authn
             Util::setCookieVar('providerId', $providerId);
             Content::redirectToGetOAuth2User($providerId);
-        } else { // Either providerId not set or not in whitelist
+        } else { // Either providerId not set or not greenlit
             Util::unsetCookieVar('providerId');
             printLogonPage();
         }

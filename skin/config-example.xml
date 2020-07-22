@@ -3,6 +3,28 @@
      of all of the available program options. Simply copy this file to the
      appropriate skin subdirectory, rename it to 'config.xml', and uncomment
      and configure the desired sections.
+
+     Note that most skins are now stored in the database:
+
+     # mysql -u cilogon -p -e 'describe ciloa2.skins;'
+     Enter password: <password in config.secrets.php>
+     +========+==============+======+=====+=========+=======+
+     | Field  | Type         | Null | Key | Default | Extra |
+     +========+==============+======+=====+=========+=======+
+     | name   | varchar(255) | NO   | PRI | NULL    |       |
+     | config | text         | YES  |     | NULL    |       |
+     | css    | text         | YES  |     | NULL    |       |
+     +========+==============+======+=====+=========+=======+
+
+     However, you can still create a subdirectory in /var/www/html/skin
+     with corresponding config.xml and skin.css files and use it with the
+     "?skin=..." parameter. This is primarily for testing skins and adding
+     new skins. When you are satisified with the new skin, you can write it
+     to the database using /var/www/html/util/skintodb.php which reads all
+     subdirectories in the 'skin' directory and writes them to the database.
+     Note that the filesystem skin configs are preferred over the dataabase
+     configs, so be sure to delete the filesystem configs after you have
+     loaded them into the database.
 -->
 <config>
 
@@ -45,45 +67,39 @@
   <!-- <registeredbyincommonidps>
        This restricts the list of SAML-based IdPs to those that have the
       "Registered_By_InCommon" tag. Note that the OAuth2-based IdPs are
-       still included unless explicitly put in the <idpblacklist>.
+       still included unless explicitly put in <idpredlit>.
   -->
   <!--
   <registeredbyincommonidps>1</registeredbyincommonidps>
   -->
 
 
-  <!-- <idpwhitelist>
+  <!-- <idpgreenlit>
        The cilogon.org service maintains a global list of available IdPs in
-       the file /var/www/html/include/idplist.xml. The whitelisted IdPs
-       (indicated by the <whitelisted> tag in the XML file) are typically
-       shown to the user on the "Log On" page. You can cull this list down
+       the file /var/www/html/include/idplist.xml. The IdPs are shown
+       to the user on the "Log On" page. You can cull this list down
        to a subset by listing only those IdPs you want shown for the skin.
-       Basically, the resulting list is an intersection of the global
-       whitelist and the list of IdPs below. (Use the entityIds for
-       InCommon, IdP endpoint URLs for OpenID.) In this example, we show
-       only IdPs starting with the letter 'P'.
+       (Use the entityIds for InCommon, IdP endpoint URLs for OpenID.)
+       In this example, we show only IdPs starting with the letter 'P'.
   -->
   <!--
-  <idpwhitelist>
+  <idpgreenlit>
     <idp>urn:mace:incommon:psu.edu</idp>
     <idp>urn:mace:incommon:idp.protectnetwork.org</idp>
     <idp>https://idp.purdue.edu/idp/shibboleth</idp>
-  </idpwhitelist>
+  </idpgreenlit>
   -->
 
 
-  <!-- <idpblacklist>
-       The cilogon.org service maintains a global list of available IdPs in
-       the file /var/www/html/include/whitelist.txt. This full list is
-       typically shown to the user on the "Log On" page. You can remove
-       IdPs from the list by specifying them in the blacklist below. (Use
+  <!-- <idpredlit>
+       You can remove IdPs from the list by specifying them below. (Use
        the entityIds for InCommon, IdP endpoint URLs for OpenID.) In this
        example, we remove the Google OIDC provider from the list.
   -->
   <!--
-  <idpblacklist>
+  <idpredlit>
     <idp>https://accounts.google.com/o/oauth2/auth</idp>
-  </idpblacklist>
+  </idpredlit>
   -->
 
 

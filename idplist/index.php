@@ -5,7 +5,7 @@
  *
  * The '/idplist/' endpoint prints out the list of available IdPs as a
  * JSON object. The endpoint supports the 'skin=..." URL query string
- * parameter so that the blacklisted/whitelisted IdPs are returned as
+ * parameter so that the greenlit/redlit IdPs are returned as
  * appropriate. Note that if there is a problem reading the idplist.xml
  * file, the returned JSON is simply an empty array '[]'.
  */
