@@ -12,6 +12,10 @@
        change this behavior by specifying a different initial IdP. (Use the
        entityId for InCommon, IdP endpoint URL for OpenID.) In the example
        here, ProtectNetwork is selected initially.
+
+       Note there is also a query parameter "?initialidp=..." which does the
+       same thing without having to specify a skin. However, the query
+       parameter overrides the skin value if one is configured.
   -->
   <!--
   <initialidp>urn:mace:incommon:idp.protectnetwork.org</initialidp>
