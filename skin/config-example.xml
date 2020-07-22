@@ -340,7 +340,7 @@
 
   <!-- <banner>
        Text to be shown in an informational banner for this skin at the top
-       of each page. Note that HTML tags should be HTML-escaped (e.g., use 
+       of each page. Note that HTML tags should be HTML-escaped (e.g., use
        &lt; and &gt; in place of '<' and '>').
   -->
 
@@ -349,6 +349,25 @@
   If you are experiencing issues, please contact your project manager
   at &lt;a href="mailto:help@project.org"&gt;help@project.org&lt;/a&gt;.
   </banner>
+  -->
+
+  <!-- <footertext>
+       The full HTML to show at the bottom of each page. The default HTML is
+       shown below.
+  -->
+
+  <!--
+  <footertext>
+    <p>For questions about this site, please see the <a target="_blank"
+       href="http://www.cilogon.org/faq">FAQs</a> or send email to <a
+       href="mailto:help@cilogon.org">help@cilogon.org</a>.</p>
+    <p>Know <a target="_blank"
+       href="http://ca.cilogon.org/responsibilities">your responsibilities</a>
+       for using the CILogon Service.</p>
+    <p>See <a target="_blank"
+       href="http://ca.cilogon.org/acknowledgements">acknowledgements</a> of
+       support for this site.</p>
+  </footertext>
   -->
 
 </config>
