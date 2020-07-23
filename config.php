@@ -199,6 +199,8 @@ define('BYPASS_IDP_ARRAY', array(
         'urn:mace:incommon:iu.edu',
     '%^cilogon:/client_id/5b8f6c5e89b58adf254a2cece1254b13%' =>
         'https://idp.xsede.org/idp/shibboleth',
+    '%^cilogon:/client_id/79d280aef88dd3c97bb1cd92f8217286%' =>
+        'https://sts.windows.net/06219a4a-a835-44d5-afaf-3926343bfb89/',
 ));
 
 /**
@@ -271,8 +273,6 @@ define('FORCE_SKIN_ARRAY', array(
     '%^https://.*\.?seedme\.org%' => 'seedme',
     '%^https://redivis\.com/userRequirements/oauth2/authorize%' => 'redivis',
     '%^https://clowder.ncsa.illinois.edu/clowder/authenticate/cilogon%' => 'ncsa',
-    '%^cilogon:/client_id/79d280aef88dd3c97bb1cd92f8217286%' => 'sprout',
-    '%^https://sprout.ncsa.illinois.edu/authenticate/cilogon%' => 'sprout',
     '%^myproxy:oa4mp,2012:/client_id/63408f84f8ba20d1446336ee1f330a0e%' => 'fairdata',
     '%^https://identity.lsst.org/cilogon-result%' => 'lsst',
     '%^https://registry.gw-astronomy.org/secure/redirect%' => 'gwastro',
