@@ -124,8 +124,6 @@ define('STORAGE_PHPSESSIONS', 'mysqli');
  * /var/www/html/include/idplist.xml is updated to remove these IdPs.
  */
 define('REDLIT_IDP_ARRAY', array(
-    'https://shibboleth.csupomona.edu/idp/shibboleth',
-    'https://idp.pitt.edu/idp/shibboleth',
     'https://shib.mdanderson.org/idp/shibboleth',
     'https://idp.itsligo.ie/idp/shibboleth',
     'https://idp.login.iu.edu/idp/shibboleth',
