@@ -20,7 +20,8 @@ if ($argc != 2) {
     echo "Usage: " . $argv[0] . " SKINDIR\n";
     echo "    where SKINDIR is a directory containing skin subdirectories\n";
     echo "    each containing config.xml and/or skin.css\n";
-    echo "    (typically /var/www/html/skin)\n";
+    echo "    (typically /var/www/html/skin). Read the skins stored in\n";
+    echo "    SKINDIR and write them to the database.\n";
     exit;
 }
 
