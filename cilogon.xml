@@ -25,7 +25,7 @@
         <mdui:DisplayName xml:lang="en">CILogon</mdui:DisplayName>
         <mdui:Description xml:lang="en">CILogon facilitates secure access to CyberInfrastructure (CI).</mdui:Description>
         <mdui:InformationURL xml:lang="en">http://www.cilogon.org/faq</mdui:InformationURL>
-        <mdui:PrivacyStatementURL xml:lang="en">https://ca.cilogon.org/policy/privacy</mdui:PrivacyStatementURL>
+        <mdui:PrivacyStatementURL xml:lang="en">https://www.cilogon.org/privacy</mdui:PrivacyStatementURL>
         <mdui:Logo height="80" width="380" xml:lang="en">https://cilogon.org/logo</mdui:Logo>
       </mdui:UIInfo>
     </Extensions>
