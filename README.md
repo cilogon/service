@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/cilogon/service.svg?branch=master)](https://travis-ci.org/cilogon/service)
 [![Coverage Status](https://coveralls.io/repos/github/cilogon/service/badge.svg?branch=master)](https://coveralls.io/github/cilogon/service?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/cilogon/service/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/cilogon/service/?branch=master)
+[![NSF-1547268](https://img.shields.io/badge/NSF-1547268-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1547268)
+
 
 This package contains the CILogon Service Web Front-end.
 
