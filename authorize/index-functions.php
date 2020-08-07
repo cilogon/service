@@ -70,9 +70,9 @@ function printOIDCErrorPage()
     echo '
         <div class="card-body px-5">
           <div class="card-text my-2">
-            You have reached the CILogon OAuth2/OpenID Connect (OIDC) 
-            Authorization Endpoint. This service is for use by OAuth2/OIDC 
-            Relying Parties (RPs) to authorize users of the CILogon Service. 
+            You have reached the CILogon OAuth2/OpenID Connect (OIDC)
+            Authorization Endpoint. This service is for use by OAuth2/OIDC
+            Relying Parties (RPs) to authorize users of the CILogon Service.
             End users should not normally see this page.
           </div> <!-- end row -->
     ';
@@ -102,7 +102,7 @@ function printOIDCErrorPage()
             bottom of the page.
           </div>
           <div class="card-text my-2">
-            <strong>Note:</strong> You must enable cookies in your web 
+            <strong>Note:</strong> You must enable cookies in your web
             browser to use this site.
           </div>
         </div> <!-- end card-body -->
@@ -240,6 +240,13 @@ function printOIDCConsent()
     $scopes = preg_split("/[\s\+]+/", $clientparams['scope']);
     $scopes = array_unique($scopes); // Remove any duplicates
 
+    // CIL-779 Show only those scopes which have been registered, i.e.,
+    // compute the set intersection of requested and registered scopes.
+    $client_scopes = json_decode($clientparams['client_scopes'], true);
+    if (!is_null($client_scopes)) {
+        $scopes = array_intersect($scopes, $client_scopes);
+    }
+
     Content::printCollapseBegin('oidcconsent', 'Consent to Attribute Release', false);
 
     $clientparams = json_decode(Util::getSessionVar('clientparams'), true);
@@ -302,14 +309,13 @@ function printOIDCConsent()
  * client has passed appropriate parameters to the authorization
  * endpoint. If so, we call the 'real' OA4MP OIDC authorization
  * endpoint and let it verify the client parameters. Upon successful
- * return, we call the getClient() function of the dbService to get
- * the OIDC client name and homepage for display to the user. All
- * client parameters (including the ones passed in) are saved to the
- * 'clientparams' PHP session variable, which is encoded as a JSON
- * token to preserve arrays. If there are any errors, false is returned
- * and an email is sent. In some cases the session variable
- * 'client_error_msg' is set so it can be displayed by the
- * printOIDCErrorPage() function.
+ * return, we read the database to get the OIDC client information
+ * to display to the user. All client parameters (including the ones
+ * passed in) are saved to the 'clientparams' PHP session variable,
+ * which is encoded as a JSON token to preserve arrays. If there are
+ * any errors, false is returned and an email is sent. In some cases
+ * the session variable 'client_error_msg' is set so it can be
+ * displayed by the printOIDCErrorPage() function.
  *
  * @return bool True if the various parameters related to the OIDC
  *         session are present. False otherwise.
@@ -401,9 +407,9 @@ function verifyOIDCParams()
                         // such as the 'code'.
                         $json = json_decode($output, true);
                         if (isset($json['code'])) {
-                            // Got 'code' - save to session and call
-                            // dbService 'getClient' to get info about
-                            // OIDC client to display to user
+                            // Got 'code' - save to session and read OIDC
+                            // client info from the database to display
+                            // to the user
                             $clientparams['redirect_url'] =
                                 $clientparams['redirect_uri'] .
                                 (preg_match('/\?/', $clientparams['redirect_uri']) ? '&' : '?') .
@@ -662,6 +668,7 @@ function verifyOIDCParams()
         (isset($clientparams['client_name'])) &&
         (isset($clientparams['client_home_url'])) &&
         (isset($clientparams['client_callback_uri'])) &&
+        (isset($clientparams['client_scopes'])) & 
         (isset($clientparams['redirect_url'])) &&
         (isset($clientparams['clientstatus'])) &&
         (!($clientparams['clientstatus'] & 1))
