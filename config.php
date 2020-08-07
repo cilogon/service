@@ -301,6 +301,7 @@ define('FORCE_SKIN_ARRAY', array(
     '%^cilogon:/client_id/3d39b5d80d2b72ca8a447fd5c7dc5192%' => 'scimma',
     '%^https://flywheel-(dev|prod)\.auth0\.com/.*$%' => 'flywheel',
     '%^https://.*\.flywheel.io/.*$%' => 'flywheel',
+    '%^cilogon:/client_id/4b370b40d53f6e5df260655f865d7a2b%' => 'jupyterhubnautilus',
 ));
 
 /**
