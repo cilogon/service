@@ -126,7 +126,6 @@ define('STORAGE_PHPSESSIONS', 'mysqli');
 define('REDLIT_IDP_ARRAY', array(
     'https://shib.mdanderson.org/idp/shibboleth',
     'https://idp.itsligo.ie/idp/shibboleth',
-    'https://idp.login.iu.edu/idp/shibboleth',
 ));
 
 /**
