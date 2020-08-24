@@ -75,6 +75,22 @@ function getUserAndRespond()
                     $first_name = $user->getFirstName();
                     $last_name = $user->getLastName();
                 }
+
+                // CIL-793 - Calculate missing first/last name for OAuth1
+                $callbackuri = Util::getSessionVar('callbackuri'); // OAuth 1.0a
+                if (
+                    (strlen($callbackuri) > 0) &&
+                    ((strlen($first_name) == 0) ||
+                     (strlen($last_name) == 0))
+                ) {
+                    list($first, $last) = Util::getFirstAndLastName(
+                        $display_name,
+                        $first_name,
+                        $last_name
+                    );
+                    $first_name = $first;
+                    $last_name = $last;
+                }
             } catch (Exception $e) {
                 Util::setSessionVar('logonerror', $e->getMessage());
             }

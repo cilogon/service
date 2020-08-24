@@ -57,13 +57,33 @@ function getUID()
     if (!empty(Util::getSessionVar('storeattributes'))) {
         $func = 'CILogon\Service\Util::setUserAttributeSessionVars';
     }
+
+    // CIL-793 - Calculate missing first/last name for OAuth1
+    $first_name = @$shibarray['First Name'];
+    $last_name = @$shibarray['Last Name'];
+    $display_name = @$shibarray['Display Name'];
+    $callbackuri = Util::getSessionVar('callbackuri'); // OAuth 1.0a
+    if (
+        (strlen($callbackuri) > 0) &&
+        ((strlen($first_name) == 0) ||
+         (strlen($last_name) == 0))
+    ) {
+        list($first, $last) = Util::getFirstAndLastName(
+            $display_name,
+            $first_name,
+            $last_name
+        );
+        $first_name = $first;
+        $last_name = $last;
+    }
+
     $func(
         @$shibarray['User Identifier'],
         @$shibarray['Identity Provider'],
         @$shibarray['Organization Name'],
-        @$shibarray['First Name'],
-        @$shibarray['Last Name'],
-        @$shibarray['Display Name'],
+        $first_name,
+        $last_name,
+        $display_name,
         @$shibarray['Email Address'],
         @$shibarray['Level of Assurance'],
         @$shibarray['ePPN'],
