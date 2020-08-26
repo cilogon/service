@@ -186,7 +186,7 @@ function printBrowserCookies($browsercount)
                 // Special handling of portalparams cookie
                 if ($key == PortalCookie::COOKIENAME) {
                     $pc = new PortalCookie();
-                    echo Util::htmlent($pc);
+                    echo preg_replace('/\nportal=/', '<br/>portal=/', Util::htmlent($pc));
                 } else {
                     echo Util::htmlent($value);
                 }
