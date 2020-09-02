@@ -10,6 +10,7 @@
 use CILogon\Service\Util;
 use CILogon\Service\OAuth2Provider;
 use League\OAuth2\Client\Token\AccessToken;
+use Lcobucci\JWT\Parser;
 
 /**
  * getUserAndRespond
@@ -29,6 +30,7 @@ function getUserAndRespond()
     $email = '';
     $open_id = '';
     $oidc = '';
+    $amr = '';
 
     Util::unsetSessionVar('logonerror');
 
@@ -74,6 +76,10 @@ function getUserAndRespond()
                 if ($prov != 'github') { // No first/last for GitHub
                     $first_name = $user->getFirstName();
                     $last_name = $user->getLastName();
+                }
+                // CIL-799 Get the 'amr' claim from the ORCID id_token
+                if ($prov == 'orcid') {
+                    $amr = getORCIDAMR($token);
                 }
 
                 // CIL-793 - Calculate missing first/last name for OAuth1
@@ -124,7 +130,14 @@ function getUserAndRespond()
             '', // ePPN
             '', // ePTID
             $open_id,
-            $oidc
+            $oidc,
+            '', // subject_id
+            '', // pairwise_id
+            '', // affiliation
+            '', // ou
+            '', // member_of
+            '', // acr
+            $amr
         );
     } else {
         Util::unsetSessionVar('submit');
@@ -164,4 +177,33 @@ function getGitHubEmail($oauth2, $token)
     }
 
     return $oauth2_email;
+}
+
+/**
+ * getORCIDAMR
+ *
+ * CIL-799
+ * Return the 'amr' claim (Authentication Method Reference) from an
+ * ORCID id_token using the method suggested at 
+ * https://github.com/thephpleague/oauth2-google#accessing-token-jwt .
+ */
+function getORCIDAMR($token)
+{
+    $amr = '';
+
+    $values = @$token->getValues();
+    if (
+        (isset($values)) &&
+        (array_key_exists('id_token', $values))
+    ) {
+        $jwt = $values['id_token'];
+        try {
+            $idtoken = (new Parser())->parse((string) $jwt);
+            $idtoken->getClaims();
+            $amr = @$idtoken->getClaim('amr');
+        } catch (Exception $e) {
+        }
+    }
+
+    return $amr;
 }

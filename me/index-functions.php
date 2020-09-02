@@ -462,6 +462,7 @@ function getTitleText($cookie)
     // 'p12 error' appears before 'p12'.
     $explain = array(
         "acr" => "Authentication Context Class Ref",
+        "amr" => "Authentication Method Ref",
         "affiliation" => "A list of attributes describing your affiliations at your Identity Provider." ,
         "authntime" => "The Unix timestamp of the last successful user authentication." ,
         "callbackuri" => "The URL of the callback servlet used by portals connecting to the CILogon Delegate service." ,
