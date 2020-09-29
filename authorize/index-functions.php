@@ -683,6 +683,7 @@ function verifyOIDCParams()
  */
 function getErrorStatusText($output, $clientparams)
 {
+    $errstr = '';
     $errtxt = '';
 
     // CIL-575 Check the $output for a "status=..." line and convert
@@ -696,7 +697,12 @@ function getErrorStatusText($output, $clientparams)
     // CIL-831 The OA4MP code returns a STATUS_INTERNAL_ERROR when there is
     // weirdness in the incoming client parameters. Look for some special
     // error conditions and set the error text appropriately.
-    if ($errstr == 'STATUS_INTERNAL_ERROR') {
+    if (
+        (strlen($errstr) == 0) ||
+        ($errstr == 'STATUS_INTERNAL_ERROR') ||
+        ($errstr == 'STATUS_CREATE_TRANSACTION_FAILED') ||
+        ($errstr == 'STATUS_MISSING_PARAMETER_ERROR')
+    ) {
         $params = [
             'redirect_uri',
             'scope',
@@ -710,26 +716,26 @@ function getErrorStatusText($output, $clientparams)
         }
 
         if (empty($scope)) {
-            $errtxt = "Missing or empty 'scope' parameter.";
+            $errtxt = "Missing or empty scope parameter.";
         } elseif (empty($client_id)) {
-            $errtxt = "Missing or empty 'client_id' parameter.";
+            $errtxt = "Missing or empty client_id parameter.";
         } elseif (empty($response_type)) {
-            $errtxt = "Missing or empty 'response_type' parameter.";
+            $errtxt = "Missing or empty response_type parameter.";
         } elseif (preg_match('/[\+%"\']/', $scope)) {
-            $errtxt = "Invalid characters found in 'scope' parameter, may be URL encoded twice.";
+            $errtxt = "Invalid characters found in scope parameter, may be URL encoded twice.";
         } elseif (preg_match('/[A-Z]/', $scope)) {
-            $errtxt = "Upper case characters found in 'scope' parameter.";
+            $errtxt = "Upper case characters found in scope parameter.";
         } elseif ($response_type != 'code') {
-            $errtxt = "Unsupported 'response_type' parameter. Only 'code' is supported.";
+            $errtxt = "Unsupported response_type parameter. Only code is supported.";
         } elseif ((!empty($prompt)) && ($prompt != 'login') && ($prompt != 'select_account')) {
-            $errtxt = "Unsupported 'prompt' parameter. Only 'login' and 'select_account' are supported.";
+            $errtxt = "Unsupported prompt parameter. Only login and select_account are supported.";
         } elseif (
             (!empty($response_mode)) &&
             ($response_mode != 'query') &&
             ($response_mode != 'fragment') &&
             ($response_mode != 'form_post')
         ) {
-            $errtxt = "Unsupported 'response_mode' parameter.";
+            $errtxt = "Unsupported response_mode parameter.";
         }
     }
 
