@@ -371,7 +371,7 @@ function verifyOIDCParams()
             if (count($_GET) > 0) {
                 // CIL-658 Look for double-encoded spaces in 'scope'
                 if (strlen($scope) > 0) {
-                    $_GET['scope'] = preg_replace('/\+/', ' ', $scope);
+                    $_GET['scope'] = preg_replace('/(\+|%2B)/', ' ', $scope);
                 }
                 $url .= (preg_match('/\?/', $url) ? '&' : '?') .
                     http_build_query($_GET);
@@ -430,24 +430,7 @@ function verifyOIDCParams()
                             // Either the output returned was not a valid
                             // JSON token, or there was no 'code' found in
                             // the returned JSON token.
-                            // CIL-575 Check for a "status=..." line in the
-                            // returned $output to print a useful error
-                            // message to the user (and in the error email).
-                            $errortxt = '';
-                            if (
-                                preg_match(
-                                    '/status=(\d+)/',
-                                    $output,
-                                    $matches
-                                )
-                            ) {
-                                $errornum = $matches[1];
-                                $errstr = array_search(
-                                    $errornum,
-                                    DBService::$STATUS
-                                );
-                                $errortxt = @DBService::$STATUS_TEXT[$errstr];
-                            }
+                            $errortxt = getErrorStatusText($output, $clientparams);
 
                             Util::sendErrorAlert(
                                 'OA4MP OIDC authz endpoint error',
@@ -628,15 +611,19 @@ function verifyOIDCParams()
     // request. Note that since we don't have a redirect_uri, we cannot
     // return code flow back to the OIDC client.
     } elseif (
+        (isset($clientparams['client_id'])) ||
         (isset($clientparams['scope'])) ||
-        (isset($clientparams['response_type'])) ||
-        (isset($clientparams['client_id']))
+        (isset($clientparams['response_type']))
     ) {
+        $missing = 'redirect_uri' .
+            ((isset($clientparams['client_id'])) ? '' : ', client_id') .
+            ((isset($clientparams['scope'])) ? '' : ', scope') .
+            ((isset($clientparams['response_type'])) ? '' : ', response_type');
         Util::sendErrorAlert(
             'CILogon OIDC authz endpoint error',
             'The CILogon OIDC authorization endpoint received a request ' .
             'from an OIDC client, but at least one of the required ' .
-            'parameters (redirect_uri) was missing. ' .
+            'parameters (' . $missing . ') was missing. ' .
             "\n\n" .
             'clientparams = ' . print_r($clientparams, true) .
             "\n"
@@ -645,8 +632,8 @@ function verifyOIDCParams()
             'client_error_msg',
             'It appears that an OpenID Connect client attempted to ' .
             'initiate a session with the CILogon Service, but at least ' .
-            'one of the requried parameters was missing. CILogon ' .
-            'system administrators have been notified.'
+            'one of the requried parameters (' . $missing . ') ' .
+            'was missing. CILogon system administrators have been notified.'
         );
         $clientparams = array();
 
@@ -668,7 +655,7 @@ function verifyOIDCParams()
         (isset($clientparams['client_name'])) &&
         (isset($clientparams['client_home_url'])) &&
         (isset($clientparams['client_callback_uri'])) &&
-        (isset($clientparams['client_scopes'])) & 
+        (isset($clientparams['client_scopes'])) &&
         (isset($clientparams['redirect_url'])) &&
         (isset($clientparams['clientstatus'])) &&
         (!($clientparams['clientstatus'] & 1))
@@ -678,4 +665,80 @@ function verifyOIDCParams()
     }
 
     return $retval;
+}
+
+/**
+ * getErrorStatusText
+ *
+ * This function is called when the OA4MP OIDC authz endpoint responds with
+ * a 200 (success), but the returned output was not a valid JSON token, or
+ * there was no 'code' found in the returned JSON token. So attempt to scan
+ * the returned $output for error messages that can be returned to the end
+ * user and added to the alert email sent to admins.
+ *
+ * @param string $output The returned text from the OA4MP authz endpoint.
+ * @param array $clientparams An array of the incoming OIDC client parameters.
+ * @return string Error text to be displayed to the end user and added to
+ *         the alert email sent to admins.
+ */
+function getErrorStatusText($output, $clientparams)
+{
+    $errtxt = '';
+
+    // CIL-575 Check the $output for a "status=..." line and convert
+    // the error number to an error message defined in CILogon\Service\Util.
+    if (preg_match('/status=(\d+)/', $output, $matches)) {
+        $errnum = $matches[1];
+        $errstr = array_search($errnum, DBService::$STATUS);
+        $errtxt = @DBService::$STATUS_TEXT[$errstr];
+    }
+
+    // CIL-831 The OA4MP code returns a STATUS_INTERNAL_ERROR when there is
+    // weirdness in the incoming client parameters. Look for some special
+    // error conditions and set the error text appropriately.
+    if ($errstr == 'STATUS_INTERNAL_ERROR') {
+        $params = [
+            'redirect_uri',
+            'scope',
+            'response_type',
+            'client_id',
+            'prompt',
+            'response_mode',
+        ];
+        foreach ($params as $value) {
+            $$value = @$clientparams[$value];
+        }
+
+        if (empty($scope)) {
+            $errtxt = "Missing or empty 'scope' parameter.";
+        } elseif (empty($client_id)) {
+            $errtxt = "Missing or empty 'client_id' parameter.";
+        } elseif (empty($response_type)) {
+            $errtxt = "Missing or empty 'response_type' parameter.";
+        } elseif (preg_match('/[\+%"\']/', $scope)) {
+            $errtxt = "Invalid characters found in 'scope' parameter, may be URL encoded twice.";
+        } elseif (preg_match('/[A-Z]/', $scope)) {
+            $errtxt = "Upper case characters found in 'scope' parameter.";
+        } elseif ($response_type != 'code') {
+            $errtxt = "Unsupported 'response_type' parameter. Only 'code' is supported.";
+        } elseif ((!empty($prompt)) && ($prompt != 'login') && ($prompt != 'select_account')) {
+            $errtxt = "Unsupported 'prompt' parameter. Only 'login' and 'select_account' are supported.";
+        } elseif (
+            (!empty($response_mode)) &&
+            ($response_mode != 'query') &&
+            ($response_mode != 'fragment') &&
+            ($response_mode != 'form_post')
+        ) {
+            $errtxt = "Unsupported 'response_mode' parameter.";
+        }
+    }
+
+    // CIL-697 The OA4MP code should eventually return an
+    // "error_description=..." field that can give detailed error text to
+    // replace the default text associated with STATUS_INTERNAL_ERROR.
+    if (preg_match('/error_description=([^\r\n]+)/', $output, $matches)) {
+        $errtxt = $matches[1];
+    }
+
+    return $errtxt;
 }
