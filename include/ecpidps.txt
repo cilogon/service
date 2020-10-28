@@ -5,6 +5,7 @@ https://idp.clemson.edu/idp/profile/SAML2/SOAP/ECP Clemson University
 https://ecp-prod.fnal.gov/idp/profile/SAML2/SOAP/ECP Fermi National Accelerator Laboratory
 https://ecp-prod.fnal.gov/idp-krb/profile/SAML2/SOAP/ECP Fermi National Accelerator Laboratory (Kerberos)
 https://origin.internet2.edu/idp/profile/SAML2/SOAP/ECP Internet2
+https://shibbi.pki.itc.u-tokyo.ac.jp/idp/profile/SAML2/SOAP/ECP KAGRA
 https://login.ligo.org/idp/profile/SAML2/SOAP/ECP LIGO Scientific Collaboration
 https://shib.lternet.edu/idp/profile/SAML2/SOAP/ECP LTER Network
 https://idp.marshall.edu/idp/profile/SAML2/SOAP/ECP Marshall University
