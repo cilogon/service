@@ -64,7 +64,7 @@ define('TEST_IDP_XML', __DIR__ . '/include/testidplist.xml');
 
 /**
  * The full path of the directory containing temporary directories
- * for generated PKCS12 files. 
+ * for generated PKCS12 files.
  */
 define('DEFAULT_PKCS12_DIR', __DIR__ . '/pkcs12/');
 
