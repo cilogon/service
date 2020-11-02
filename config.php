@@ -48,6 +48,9 @@ define('DEFAULT_INCOMMON_XML', '/var/cache/shibboleth/InCommon-metadata.xml');
 /**
  * The full path/filename of the generated list of IdPs in JSON format.
  * It should have read/write permissions for apache (via either owner or group).
+ * Note: the default idplist.xml file is in the same directory. The filename
+ * is calculated by replacing '.json' with '.xml', so no need to define a
+ * separate DEFAULT_IDP_XML constant.
  */
 define('DEFAULT_IDP_JSON', __DIR__ . '/include/idplist.json');
 
@@ -58,6 +61,12 @@ define('DEFAULT_IDP_JSON', __DIR__ . '/include/idplist.json');
  * for apache (either owner or group).
  */
 define('TEST_IDP_XML', __DIR__ . '/include/testidplist.xml');
+
+/**
+ * The full path of the directory containing temporary directories
+ * for generated PKCS12 files. 
+ */
+define('DEFAULT_PKCS12_DIR', __DIR__ . '/pkcs12/');
 
 /**
  * The default hostname of the service website. This is used as the public-
