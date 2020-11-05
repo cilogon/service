@@ -27,7 +27,7 @@ $check_filename = '.last_checked';
 $lastcheck = file_get_contents(DEFAULT_PKCS12_DIR . $check_filename);
 $difftime = abs(time() - (int)$lastcheck);
 if ($difftime < $check_timeout) {
-    echo "<p>Please wait $difftime seconds.</p>";
+    echo "<p>Please wait " . $check_timeout - $difftime . " seconds.</p>";
     return;
 }
 
