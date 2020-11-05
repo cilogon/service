@@ -42,7 +42,7 @@ $httphost = Util::getHN();
 $lastcheck = file_get_contents($idplist_dir . '/' . $check_filename);
 $difftime = abs(time() - (int)$lastcheck);
 if ($difftime < $check_timeout) {
-    echo "<p>Please wait " . ($check_timeout - $difftime) . " seconds.</p>";
+    echo "<p>Please wait " . ($check_timeout - $difftime) . " seconds.</p>\n";
     return;
 }
 
@@ -53,7 +53,7 @@ $tmpdir = '';
 $tmpincommon = '';
 if (($incommon_xml = file_get_contents($incommon_url)) === false) {
     $errmsg = "Error: Unable to download InCommon-metadata.xml.";
-    echo "<p>$errmsg</p>";
+    echo "<p>$errmsg</p>\n";
     mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
     http_response_code(500);
     return;
@@ -62,7 +62,7 @@ if (($incommon_xml = file_get_contents($incommon_url)) === false) {
     $tmpincommon = $tmpdir . '/InCommon-metadata.xml';
     if ((file_put_contents($tmpincommon, $incommon_xml)) === false) {
         $errmsg = "Error: Unable to save InCommon-metadata.xml to temporary directory.";
-        echo "<p>$errmsg</p>";
+        echo "<p>$errmsg</p>\n";
         mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
         http_response_code(500);
         Util::deleteDir($tmpdir);
@@ -77,7 +77,7 @@ $idplist = new IdpList($tmpxml, $tmpincommon, false, 'xml');
 $idplist->create();
 if (!$idplist->write('xml')) {
     $errmsg = "Error: Unable to create temporary idplist.xml file.";
-    echo "<p>$errmsg</p>";
+    echo "<p>$errmsg</p>\n";
     mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
     http_response_code(500);
     Util::deleteDir($tmpdir);
@@ -87,7 +87,7 @@ $tmpjson = $tmpdir . '/idplist.json';
 $idplist->setFilename($tmpjson);
 if (!$idplist->write('json')) {
     $errmsg = "Error: Unable to create temporary idplist.json file.";
-    echo "<p>$errmsg</p>";
+    echo "<p>$errmsg</p>\n";
     mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
     http_response_code(500);
     Util::deleteDir($tmpdir);
@@ -174,7 +174,7 @@ if (!empty($oldidplist->idparray)) {
 if (strlen($newidpemail) > 0) {
     echo "<xmp>\n";
     echo $newidpemail;
-    echo "</xmp>";
+    echo "</xmp>\n";
 
     if (($httphost == 'cilogon.org') || ($httphost == 'polo1.cilogon.org')) {
         mail(
@@ -191,7 +191,7 @@ if ($oldidplistdiff) {
     $idpdiff = `diff -u $idpxml_filename $tmpxml 2>&1`;
     echo "<xmp>\n\n";
     echo $idpdiff;
-    echo "</xmp>";
+    echo "</xmp>\n";
 
     mail(
         $mailto,
@@ -208,7 +208,7 @@ if ($oldidplistempty || $oldidplistdiff) {
         chgrp($idpxml_filename, 'apache');
     } else {
         $errmsg = "Error: Unable to copy idplist.xml to destination.";
-        echo "<p>$errmsg</p>";
+        echo "<p>$errmsg</p>\n";
         mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
         http_response_code(500);
         Util::deleteDir($tmpdir);
@@ -219,7 +219,7 @@ if ($oldidplistempty || $oldidplistdiff) {
         chgrp(DEFAULT_IDP_JSON, 'apache');
     } else {
         $errmsg = "Error: Unable to copy idplist.json to destination.";
-        echo "<p>$errmsg</p>";
+        echo "<p>$errmsg</p>\n";
         mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
         http_response_code(500);
         Util::deleteDir($tmpdir);
@@ -227,12 +227,12 @@ if ($oldidplistempty || $oldidplistdiff) {
     }
 
     if ($oldidplistempty) {
-        echo "<h3>New idplist.{json,xml} files were created.</h3>";
+        echo "<h3>New idplist.{json,xml} files were created.</h3>\n";
     } else {
-        echo "<h3>Existing idplist.{json,xml} files were updated.</h3>";
+        echo "<h3>Existing idplist.{json,xml} files were updated.</h3>\n";
     }
 } else {
-    echo "<p>No change detected in InCommon metadata.</p>";
+    echo "<p>No change detected in InCommon metadata.</p>\n";
 }
 
 // Final clean up. Delete the tempdir for the InCommon-metadata.xml and

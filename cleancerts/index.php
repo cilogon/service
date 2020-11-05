@@ -27,12 +27,12 @@ $check_filename = '.last_checked';
 $lastcheck = file_get_contents(DEFAULT_PKCS12_DIR . $check_filename);
 $difftime = abs(time() - (int)$lastcheck);
 if ($difftime < $check_timeout) {
-    echo "<p>Please wait " . ($check_timeout - $difftime) . " seconds.</p>";
+    echo "<p>Please wait " . ($check_timeout - $difftime) . " seconds.</p>\n";
     return;
 }
 
 $numdel = Util::cleanupPKCS12();
-echo "<p>$numdel certificate(s) cleaned up.</p>";
+echo "<p>$numdel certificate(s) cleaned up.</p>\n";
 
 // Final clean up. Write the current time to .last_checked.
 file_put_contents(DEFAULT_PKCS12_DIR . $check_filename, time());
