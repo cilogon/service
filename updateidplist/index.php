@@ -3,14 +3,14 @@
 /**
  * /updateidplist/
  *
- * The '/updateidplist/' endpoint updates the CILogon idplist.xml and 
+ * The '/updateidplist/' endpoint updates the CILogon idplist.xml and
  * idplist.json files. These are 'pared down' versions of the IdP-specific
  * InCommon-metadata.xml file, extracting just the useful portions of XML
- * for display on CILogon. This endpoint downloads the InCommon metadata and 
- * creates both idplist.xml and idplist.json. It then looks for existing 
+ * for display on CILogon. This endpoint downloads the InCommon metadata and
+ * creates both idplist.xml and idplist.json. It then looks for existing
  * idplist.{json,xml} files and sees if there are any differences. If so,
  * it prints out the differences and sends email. It also checks for newly
- * added IdPs and sends email. Finally, it copies the newly created idplist 
+ * added IdPs and sends email. Finally, it copies the newly created idplist
  * files to the old location.
  */
 
@@ -27,10 +27,8 @@ use CILogon\Service\IdpList;
 Util::startPHPSession();
 
 // Declare a few configuration constants
-// $mailto = EMAIL_ALERTS;
-// $mailtoidp = EMAIL_ALERTS . ',idp-updates@cilogon.org';
-$mailto = 'tfleury@illinois.edu';
-$mailtoidp = 'tfleury@illinois.edu';
+$mailto = EMAIL_ALERTS;
+$mailtoidp = EMAIL_ALERTS . ',' . EMAIL_IDP_UPDATES;
 $mailfrom = 'From: ' . EMAIL_ALERTS . "\r\n" . 'X-Mailer: PHP/' . phpversion();
 $check_timeout = 300; // in seconds
 $check_filename = '.last_checked';
@@ -48,7 +46,7 @@ if ($difftime < $check_timeout) {
     return;
 }
 
-// Download InCommon metadata to a new temporary directory in /tmp/. 
+// Download InCommon metadata to a new temporary directory in /tmp/.
 // Be sure to delete the temporary directory before script exit.
 $incommon_url = 'https://mdq.incommon.org/entities/idps/all';
 $tmpdir = '';
@@ -96,7 +94,7 @@ if (!$idplist->write('json')) {
     return;
 }
 
-// Try to read in an existing idplist.xml file so we can do a 'diff' later. 
+// Try to read in an existing idplist.xml file so we can do a 'diff' later.
 $idpxml_filename = preg_replace('/\.json$/', '.xml', DEFAULT_IDP_JSON);
 $oldidplist = new IdpList($idpxml_filename, '', false, 'xml');
 
@@ -111,16 +109,16 @@ if (!empty($oldidplist->idparray)) {
     // Check for differences using weird json_encode method found at
     // https://stackoverflow.com/a/42530586/12381604
     $diffarray = array_map(
-        'json_decode', 
-        array_merge(            
+        'json_decode',
+        array_merge(
             array_diff(
                 array_map('json_encode', $idplist->idparray),
                 array_map('json_encode', $oldidplist->idparray)
-            ),             
+            ),
             array_diff(
                 array_map('json_encode', $oldidplist->idparray),
                 array_map('json_encode', $idplist->idparray)
-            )         
+            )
         )
     );
 
@@ -181,7 +179,7 @@ if (strlen($newidpemail) > 0) {
     if (($httphost == 'cilogon.org') || ($httphost == 'polo1.cilogon.org')) {
         mail(
             $mailtoidp,
-            "CILogon Service on $httphost - New IdP Automatically Added", 
+            "CILogon Service on $httphost - New IdP Automatically Added",
             $newidpemail,
             $mailfrom
         );
@@ -190,7 +188,7 @@ if (strlen($newidpemail) > 0) {
 
 // If other differences were found, do an actual 'diff' and send email.
 if ($oldidplistdiff) {
-    $idpdiff = `diff -u ${idpxml_filename} ${tmpxml} 2>&1`;
+    $idpdiff = `diff -u $idpxml_filename $tmpxml 2>&1`;
     echo "<xmp>\n\n";
     echo $idpdiff;
     echo "</xmp>";
@@ -198,7 +196,7 @@ if ($oldidplistdiff) {
     mail(
         $mailto,
         "idplist.xml changed on $httphost",
-        "idplist.xml changed on $httphost\n\n${idpdiff}",
+        "idplist.xml changed on $httphost\n\n" . $idpdiff,
         $mailfrom
     );
 }
@@ -237,7 +235,7 @@ if ($oldidplistempty || $oldidplistdiff) {
     echo "<p>No change detected in InCommon metadata.</p>";
 }
 
-// Final clean up. Delete the tempdir for the InCommon-metadata.xml and 
+// Final clean up. Delete the tempdir for the InCommon-metadata.xml and
 // write the current time to .last_checked.
 Util::deleteDir($tmpdir);
 file_put_contents($idplist_dir . '/' . $check_filename, time());
