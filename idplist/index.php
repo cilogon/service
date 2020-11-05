@@ -1,7 +1,7 @@
 <?php
 
 /**
- * idplist.php
+ * /idplist/
  *
  * The '/idplist/' endpoint prints out the list of available IdPs as a
  * JSON object. The endpoint supports the 'skin=..." URL query string
