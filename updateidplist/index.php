@@ -28,7 +28,8 @@ Util::startPHPSession();
 
 // Declare a few configuration constants
 $mailto = EMAIL_ALERTS;
-$mailtoidp = EMAIL_ALERTS . ',' . EMAIL_IDP_UPDATES;
+$mailtoidp = defined('EMAIL_IDP_UPDATES') ?
+    EMAIL_ALERTS . ',' . EMAIL_IDP_UPDATES : '';
 $mailfrom = 'From: ' . EMAIL_ALERTS . "\r\n" . 'X-Mailer: PHP/' . phpversion();
 $check_timeout = 300; // in seconds
 $check_filename = '.last_checked';
@@ -176,13 +177,19 @@ if (strlen($newidpemail) > 0) {
     echo $newidpemail;
     echo "</xmp>\n";
 
-    if (($httphost == 'cilogon.org') || ($httphost == 'polo1.cilogon.org')) {
-        mail(
-            $mailtoidp,
-            "CILogon Service on $httphost - New IdP Automatically Added",
-            $newidpemail,
-            $mailfrom
-        );
+    if (strlen($mailtoidp) > 0) {
+        // Send "New IdPs Added" email only from production server
+        if (
+            ($httphost == 'cilogon.org') ||
+            ($httphost == 'polo1.cilogon.org')
+        ) {
+            mail(
+                $mailtoidp,
+                "CILogon Service on $httphost - New IdP Automatically Added",
+                $newidpemail,
+                $mailfrom
+            );
+        }
     }
 }
 

@@ -95,6 +95,7 @@ define('HOSTNAME_ARRAY', array(
  */
 define('EMAIL_HELP', 'help@' . DEFAULT_HOSTNAME);
 define('EMAIL_ALERTS', 'alerts@' . DEFAULT_HOSTNAME);
+// Comment out the following line to prevent "New IdPs Added" emails
 define('EMAIL_IDP_UPDATES', 'idp-updates@' . DEFAULT_HOSTNAME);
 
 /**
