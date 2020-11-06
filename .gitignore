@@ -8,3 +8,4 @@ include/idplist.xml
 pkcs12/
 getoidc/
 config.secrets.php
+.last_checked
