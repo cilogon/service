@@ -18,12 +18,6 @@
         "authorization",
         "cilogon"
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/pear/DB"
-        }
-    ],
     "minimum-stability": "dev",
     "require": {
         "cilogon/service-lib": "dev-master",
