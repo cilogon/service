@@ -217,6 +217,8 @@ define('BYPASS_IDP_ARRAY', array(
         'https://idp.ncsa.illinois.edu/idp/shibboleth',
     '%^cilogon:/client_id/3633784886da46c030a882afccad399d%' =>
         'https://idp.ncsa.illinois.edu/idp/shibboleth',
+    '%^cilogon:/client_id/64d029bb7ea79ffcb29314be1edda9f0%' =>
+        'https://idp.ncsa.illinois.edu/idp/shibboleth',
 ));
 
 /**
