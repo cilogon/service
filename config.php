@@ -127,6 +127,11 @@ define('MYPROXY_LIFETIME', '12');
 define('STORAGE_PHPSESSIONS', 'mysqli');
 
 /**
+ * When saving PHP sessions to file, optionally set the storage directory.
+ */
+define('STORAGE_PHPSESSIONS_DIR', '');
+
+/**
  * This array contains IdPs that are globally redlit (disabled) for the
  * CILogon service. Each entry contains an IdP's entityId (as shown
  * in the InCommon metadata).
