@@ -737,13 +737,18 @@ function getErrorStatusText($output, $clientparams)
         ) {
             $errtxt = "Unsupported response_mode parameter.";
         }
-    }
 
-    // CIL-697 The OA4MP code should eventually return an
-    // "error_description=..." field that can give detailed error text to
-    // replace the default text associated with STATUS_INTERNAL_ERROR.
-    if (preg_match('/error_description=([^\r\n]+)/', $output, $matches)) {
-        $errtxt = $matches[1];
+        // CIL-697 The OA4MP code should eventually return an
+        // "error_description=..." field that can give detailed error text to
+        // replace the default text associated with STATUS_INTERNAL_ERROR.
+        // CIL-909 Use the error_description field only if $errtxt is still
+        // empty at this point.
+        if (
+            (strlen($errtxt) == 0) &&
+            (preg_match('/error_description=([^\r\n]+)/', $output, $matches))
+        ) {
+            $errtxt = urldecode($matches[1]);
+        }
     }
 
     return $errtxt;
