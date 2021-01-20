@@ -742,9 +742,11 @@ function getErrorStatusText($output, $clientparams)
         // "error_description=..." field that can give detailed error text to
         // replace the default text associated with STATUS_INTERNAL_ERROR.
         // CIL-909 Use the error_description field only if $errtxt is still
-        // empty at this point.
+        // empty, OR if the $errstr was STATUS_CREATE_TRANSACTION_FAILED
+        // (i.e., "Failed to initialize OIDC flow.").
         if (
-            (strlen($errtxt) == 0) &&
+            ((strlen($errtxt) == 0) ||
+             ($errstr == 'STATUS_CREATE_TRANSACTION_FAILED')) &&
             (preg_match('/error_description=([^\r\n]+)/', $output, $matches))
         ) {
             $errtxt = urldecode($matches[1]);
