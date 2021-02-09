@@ -320,6 +320,7 @@ define('FORCE_SKIN_ARRAY', array(
     '%^cilogon:/client_id/38afed60f24d0f627a23edf10314e097%' => 'nih',
     '%^cilogon:/client_id/1c1d1a81042a9bf082450c40e11c8de5%' => 'nih',
     '%^cilogon:/client_id/9ee5d18fb1b2c41994ddefff65f2cb0%' => 'nih',
+    '%^cilogon:/client_id/3c8751d0ad6e3e8e3ec49db87334510b%' => 'nih',
     '%^cilogon:/client_id/56727d508077d1402cdcc66714ecf5ef%' => 'orcidfirst',
     '%^cilogon:/client_id/3176b0133ec1efa8090dcf11ad96877f%' => 'mit',
     '%^cilogon:/client_id/47fabe917b37f4969efe93ffaa4e510a%' => 'flywheel',
