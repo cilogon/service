@@ -26,21 +26,28 @@ use CILogon\Service\IdpList;
 
 Util::startPHPSession();
 
+// Use a semaphore to prevent multiple processes running at the same time
+$idplist_dir = dirname(DEFAULT_IDP_JSON);
+$last_checked = $idplist_dir . '/.last_checked';
+$key = ftok($last_checked, '1');
+$semaphore = sem_get($key, 1);
+if (@sem_acquire($semaphore, 1) === false) {
+    echo "<p>Another process is running.</p>\n";
+    return;
+}
+
 // Declare a few configuration constants
 $mailto = EMAIL_ALERTS;
 $mailtoidp = defined('EMAIL_IDP_UPDATES') ?
     EMAIL_ALERTS . ',' . EMAIL_IDP_UPDATES : '';
 $mailfrom = 'From: ' . EMAIL_ALERTS . "\r\n" . 'X-Mailer: PHP/' . phpversion();
 $check_timeout = 300; // in seconds
-$check_filename = '.last_checked';
-
-$idplist_dir = dirname(DEFAULT_IDP_JSON);
 $httphost = Util::getHN();
 
 // Load the '.last_checked' file and find the last time the endpoint
 // was hit. If the file doesn't exist, then this is the first time.
 // If the last time checked is less than a timeout, do nothing.
-$lastcheck = file_get_contents($idplist_dir . '/' . $check_filename);
+$lastcheck = file_get_contents($last_checked);
 $difftime = abs(time() - (int)$lastcheck);
 if ($difftime < $check_timeout) {
     echo "<p>Please wait " . ($check_timeout - $difftime) . " seconds.</p>\n";
@@ -245,4 +252,5 @@ if ($oldidplistempty || $oldidplistdiff) {
 // Final clean up. Delete the tempdir for the InCommon-metadata.xml and
 // write the current time to .last_checked.
 Util::deleteDir($tmpdir);
-file_put_contents($idplist_dir . '/' . $check_filename, time());
+file_put_contents($last_checked, time());
+@sem_release($semaphore);
