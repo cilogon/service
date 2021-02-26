@@ -119,6 +119,7 @@ define('MYPROXY_LOGON', '/usr/bin/myproxy-logon');
 define('MYPROXY_HOST', 'myproxy.cilogon.org,myproxy2.cilogon.org');
 define('MYPROXY_PORT', '7512');
 define('MYPROXY_LIFETIME', '12');
+define('MYPROXY_CLIENT_CRED', '/var/www/config/hostcred.pem');
 
 /**
  * Storage type for PHP sessions.

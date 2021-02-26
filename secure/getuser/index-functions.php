@@ -310,7 +310,7 @@ function getCert()
             MYPROXY_HOST,
             Util::getLOAPort(),
             $certlifetime,
-            '/var/www/config/hostcred.pem',
+            MYPROXY_CLIENT_CRED,
             '',
             $certreq
         );
