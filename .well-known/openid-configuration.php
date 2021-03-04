@@ -13,7 +13,7 @@ header('Content-Type:application/json;charset=utf-8');
 echo '{
  "issuer": "https://' , $hostname , '",
  "authorization_endpoint": "https://' , $hostname , '/authorize",
- "registration_endpoint": "https://' , $hostname , '/oauth2/register",
+ "registration_endpoint": "https://' , $hostname , '/oauth2/oidc-cm",
  "token_endpoint": "https://' , $hostname , '/oauth2/token",
  "userinfo_endpoint": "https://' , $hostname , '/oauth2/userinfo",
  "jwks_uri": "https://' , $hostname , '/oauth2/certs",
