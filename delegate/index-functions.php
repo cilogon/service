@@ -25,8 +25,6 @@ function printLogonPage()
     $log = new Loggit();
     $log->info('Welcome page hit.');
 
-    Util::setSessionVar('stage', 'logon');
-
     // Check if this is the first time the user has visited the site from
     // the current portal.  We do this by checking the portal cookie's
     // lifetime for a positive value.  If the portal cookie has NOT YET been
@@ -186,8 +184,6 @@ function printMainPage()
 {
     $log = new Loggit();
     $log->info('Allow Or Deny Delegation page hit.');
-
-    Util::setSessionVar('stage', 'main');
 
     $remember = 0;   // Default value for remember checkbox is unchecked
     $life = 12;      // Default value for lifetime is 12 hours

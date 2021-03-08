@@ -504,11 +504,10 @@ function getTitleText($cookie)
             "delegated certificate." ,
         "portalstatus" => "An internal return code when fetching portal parameters from the datastore." ,
         "providerId" => "The previously selected Identity Provider." ,
-        "responsesubmit" => "The name of the 'stage' to return to after " .
+        "responsesubmit" => "The name of the page to return to after " .
             "authentication at your chosen Identity Provider." ,
         "responseurl" => "The URL to return to after authentication at your chosen Identity Provider." ,
         "_shibsession" => "A shibboleth session token set by an InCommon Identity Provider." ,
-        "stage" => "The current page displayed." ,
         "status" => "An internal return code when fetching user data from the datastore." ,
         "subject_id" => "The subject identifier provided by the Identity Provider",
         "submit" => "The name of the 'submit' button clicked." ,
