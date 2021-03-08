@@ -250,12 +250,6 @@ function showHourglass(which)
     }
 }
 
-/***************************************************************************
- * Function  : validateForm                                                *
- * This function is taken straight from the Bootstrap Forms "Custom        *
- * Styles" example:                                                        *
- * https://getbootstrap.com/docs/4.5/components/forms/#custom-styles       *
- ***************************************************************************/
 function validateForm()
 {
     var forms = document.getElementsByClassName('needs-validation');
@@ -268,6 +262,16 @@ function validateForm()
             form.classList.add('was-validated');
         }, false);
     });
+}
+
+/***************************************************************************
+ * Function  : upperCaseF                                                  *
+ * Transform the input field to all uppercase characters.                  *
+ ***************************************************************************/
+function upperCaseF(a)
+{
+    a.value = a.value.toUpperCase();
+    a.value = a.value.replace(/@.*/, "");
 }
 
 var fp12 = partial(countdown, 'p12', 'Link');
