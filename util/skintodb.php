@@ -31,8 +31,8 @@ if ((is_dir($basedir)) && (is_readable($basedir))) {
         'phptype'  => 'mysqli',
         'username' => MYSQLI_USERNAME,
         'password' => MYSQLI_PASSWORD,
-        'database' => 'ciloa2',
-        'hostspec' => 'localhost'
+        'database' => MYSQLI_DATABASE,
+        'hostspec' => MYSQLI_HOSTSPEC
     );
 
     $opts = array(

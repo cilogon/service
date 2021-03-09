@@ -10,8 +10,7 @@
  */
 
 /**
- * When storing PHP sessions in a database (STORAGE_PHPSESSIONS), configure
- * the username/password and database/hostspec appropriately.
+ * Configure the username/password and database/hostspec appropriately.
  */
 //define('MYSQLI_USERNAME', '');
 //define('MYSQLI_PASSWORD', '');
