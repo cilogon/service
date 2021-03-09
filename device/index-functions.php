@@ -204,12 +204,25 @@ function printMainPage()
     } else {
         echo '
       <div class="card-body px-5">
-        <div class="card-text my-2">
-          You have successfully ' .
-          ($user_code_approved ? 'approved ' : 'denied ') .
-          'the user code. Please return to your device for further
-          instructions.
-        </div> <!-- end row -->
+        <div class="row my-3">
+          <div class="col-1 text-center">
+            <large>
+        ',
+        ($user_code_approved ?
+            Content::getIcon('fa-check-square fa-2x', 'lime') :
+            Content::getIcon('fa-times-circle fa-2x', 'red')
+        ),
+        '    
+            </large>
+          </div>
+          <div class="col">
+            You have successfully ' .
+            ($user_code_approved ? 'approved ' : 'denied ') .
+            'the user code. Please return to your device for further
+            instructions.
+          </div>
+        </div>
+
       </div> <!-- end card-body-->';
     }
 
@@ -266,7 +279,7 @@ function verifyUserCodeParam()
                 // passed-in $clientparams variable.
                 Util::getOIDCClientParams($clientparams);
                 // If no scope was requested, then assume ALL scopes
-                // 'scope' is a space-separated string, while 
+                // 'scope' is a space-separated string, while
                 // client_scopes is a JSON list; need to transform into
                 // space-separated string.
                 if (strlen($clientparams['scope']) == 0) {
