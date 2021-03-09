@@ -253,7 +253,8 @@ function verifyUserCodeParam()
 
     // If idphint/selected_idp were previously set in the clientparams
     // PHP session variable, get them this time around.
-    $clientparams = array_intersect_key(
+    $clientparams = array();
+    $clientparams = @array_intersect_key(
         json_decode(Util::getSessionVar('clientparams'), true),
         ['idphint' => 1, 'selected_idp' => 1]
     );
