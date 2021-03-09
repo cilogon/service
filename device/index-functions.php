@@ -265,6 +265,16 @@ function verifyUserCodeParam()
                 // getOIDCClientParams assumes client_id is stored in the
                 // passed-in $clientparams variable.
                 Util::getOIDCClientParams($clientparams);
+                // If no scope was requested, then assume ALL scopes
+                // 'scope' is a space-separated string, while 
+                // client_scopes is a JSON list; need to transform into
+                // space-separated string.
+                if (strlen($clientparams['scope']) == 0) {
+                    $clientparams['scope'] = implode(
+                        ' ',
+                        json_decode($clientparams['client_scopes'], true)
+                    );
+                }
             } else {
                 Util::setSessionVar('user_code_error_msg', 'Unable to find a client matching the user code.');
             }
