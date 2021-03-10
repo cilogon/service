@@ -93,10 +93,16 @@ define('HOSTNAME_ARRAY', array(
 /**
  * The destination email addresses for "help" and "alerts" mails.
  */
-define('EMAIL_HELP', 'help@' . DEFAULT_HOSTNAME);
-define('EMAIL_ALERTS', 'alerts@' . DEFAULT_HOSTNAME);
+define('EMAIL_HELP', 'help@cilogon.org');
+define('EMAIL_ALERTS', 'alerts@cilogon.org');
 // Comment out the following line to prevent "New IdPs Added" emails
-define('EMAIL_IDP_UPDATES', 'idp-updates@' . DEFAULT_HOSTNAME);
+define('EMAIL_IDP_UPDATES', 'idp-updates@cilogon.org');
+
+/**
+ * Used by PHP Pear Log (in Logger.php), set the default log handler
+ * to one of 'console', 'syslog', or 'file'.
+ */
+define('DEFAULT_LOGTYPE', 'syslog');
 
 /**
  * If you want to completely disable the ability to fetch X509 certificates,
