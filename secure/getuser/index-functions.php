@@ -200,8 +200,10 @@ function getPKCS12()
         if (strlen($p12file) > 0) {
             $log->info('ECP PKCS12 success!');
             // CIL-507 Special log message for XSEDE
-            $log->info('USAGE email="' . Util::getSessionVar('email') .
-                       '" client="ECP"');
+            $email = Util::getSessionVar('email');
+            $log->info("USAGE email=\"$email\" client=\"ECP\"");
+            Util::logXSEDEUsage('ECP', $email);
+
             header('Content-type: application/x-pkcs12');
             echo $p12file;
         } else {
