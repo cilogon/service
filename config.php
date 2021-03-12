@@ -14,6 +14,11 @@ define('BANNER_TEXT',
 */
 
 /**
+ * A local timezone from https://www.php.net/manual/en/timezones.php .
+ */
+define('LOCAL_TIMEZONE', 'America/Chicago');
+
+/**
  * The URL for the OAuth 1.0a dbService.
  */
 define('OAUTH1_DBSERVICE_URL', 'http://localhost:8080/oauth/dbService');
@@ -103,6 +108,13 @@ define('EMAIL_IDP_UPDATES', 'idp-updates@cilogon.org');
  * to one of 'console', 'syslog', or 'file'.
  */
 define('DEFAULT_LOGTYPE', 'syslog');
+
+/**
+ * The directory for XSEDE USAGE CSV files to be uploaded. Comment out or
+ * set to empty string to prevent writing XSEDE USAGE messages. You must
+ * create the directory beforehand and set write permissions appropriately.
+ */
+define('XSEDE_USAGE_DIR', '');
 
 /**
  * If you want to completely disable the ability to fetch X509 certificates,

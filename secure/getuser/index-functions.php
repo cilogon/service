@@ -318,8 +318,10 @@ function getCert()
         if (strlen($cert) > 0) { // Successfully got a certificate!
             $log->info('ECP getcert success!');
             // CIL-507 Special log message for XSEDE
-            $log->info('USAGE email="' . Util::getSessionVar('email') .
-                       '" client="ECP"');
+            $email = Util::getSessionVar('email');
+            $log->info("USAGE email=\"$email\" client=\"ECP\"");
+            Util::logXSEDEUsage('ECP', $email);
+
             header('Content-type: text/plain');
             echo $cert;
         } else { // The myproxy-logon command failed - shouldn't happen!

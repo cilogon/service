@@ -192,8 +192,10 @@ function printMainPage()
         }
         $log->info('setTransactionState succeeded, redirect to ' . $redirect);
         // CIL-507 Special log message for XSEDE
-        $log->info('USAGE email="' . Util::getSessionVar('email') .
-                   '" client="' . $clientparams['client_name'] . '"');
+        $email = Util::getSessionVar('email');
+        $clientname = $clientparams['client_name'];
+        $log->info("USAGE email=\"$email\" client=\"$clientname\"");
+        Util::logXSEDEUsage($clientname, $email);
     } else { // dbservice error
         $errstr = '';
         if (!is_null($dbs->status)) {

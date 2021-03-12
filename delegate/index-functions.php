@@ -676,9 +676,10 @@ function handleAllowDelegation($always = false)
     $log->info('Delegation of certificate to portal ' .
                ($success ? 'succeeded.' : 'failed.'));
     //CIL-507 Special log message for XSEDE
-    $log->info('USAGE email="' . Util::getSessionVar('email') .
-               '" client="' . Util::getSessionVar('portalname') . '"');
-
+    $email = Util::getSessionVar('email');
+    $clientname = Util::getSessionVar('portalname');
+    $log->info("USAGE email=\"$email\" client=\"$clientname\"");
+    Util::logXSEDEUsage($clientname, $email);
 
     // Depending on the result (success or failure), output appropriate
     // HTML to allow the user to return to the portal, or if $always
