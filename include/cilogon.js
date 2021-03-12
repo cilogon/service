@@ -109,7 +109,8 @@ function enterKeySubmit()
     var logonbutton = document.getElementById("wayflogonbutton");
     var elems = document.getElementsByClassName("dropdown bootstrap-select");
     if ((logonbutton !== null) && (elems !== null)) {
-        document.addEventListener("keyup", function onPress(event) {
+        document.addEventListener("keyup", function onPress(event)
+        {
             if (event.key === "Enter") {
                 if (
                     document.hasFocus() &&
@@ -119,8 +120,7 @@ function enterKeySubmit()
                     elems[0].firstChild !== null &&
                     elems[0].firstChild.parentNode !== null &&
                     document.activeElement.parentNode === (elems[0].firstChild.parentNode)
-                   ) 
-                {
+                   ) {
                     logonbutton.click();
                 }
             }
@@ -239,12 +239,11 @@ function showHourglass(which)
     if (thehourglass !== null) {
         var pw1 = document.getElementById('password1');
         var pw2 = document.getElementById('password2');
-        if ((pw1 !== null) && 
-            (pw2 !== null) && 
+        if ((pw1 !== null) &&
+            (pw2 !== null) &&
             (pw1.value.length >= 12) &&
             (pw2.value.length >= 12)
-           )
-        {
+           ) {
             thehourglass.style.display = 'inline';
         }
     }
@@ -253,8 +252,8 @@ function showHourglass(which)
 function validateForm()
 {
     var forms = document.getElementsByClassName('needs-validation');
-    var validation = Array.prototype.filter.call(forms, function(form) {
-        form.addEventListener('submit', function(event) {
+    var validation = Array.prototype.filter.call(forms, function (form) {
+        form.addEventListener('submit', function (event) {
             if (form.checkValidity() === false) {
                 event.preventDefault();
                 event.stopPropagation();

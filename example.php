@@ -1,4 +1,6 @@
-<?php ?>
+<?php
+
+?>
 <html>
 <head>
 <title></title>
