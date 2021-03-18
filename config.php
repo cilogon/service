@@ -105,9 +105,12 @@ define('EMAIL_IDP_UPDATES', 'idp-updates@cilogon.org');
 
 /**
  * Used by PHP Pear Log (in Logger.php), set the default log handler
- * to one of 'console', 'syslog', or 'file'.
+ * to one of 'console', 'syslog', or 'file' (or another type 
+ * supported by https://github.com/pear/Log). If using 'file',
+ * you can also specify the filename using DEFAULT_LOGNAME.
  */
 define('DEFAULT_LOGTYPE', 'syslog');
+define('DEFAULT_LOGNAME', '');
 
 /**
  * The directory for XSEDE USAGE CSV files to be uploaded. Comment out or
