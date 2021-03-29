@@ -356,6 +356,7 @@ define('FORCE_SKIN_ARRAY', array(
     '%^cilogon:/client_id/4c35e35aa6ff277bafdf7940a545a8%' => 'xsede',
     '%^https://.*\.biocommons\.org\.au/.*$%' => 'biocommons',
     '%^cilogon:/client_id/34d5fb28439d1cf2fabdc8172c776722%' => 'mess',
+    '%^cilogon:/client_id/7736935ccc1dfc779013a4206ca405ea%' => 'googlegithub',
 ));
 
 /**
