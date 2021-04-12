@@ -20,7 +20,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "cilogon/service-lib": "dev-master",
+        "cilogon/service-lib": "dev-main",
         "league/oauth2-client": "^2.0",
         "lcobucci/jwt": "^3.3"
     },
