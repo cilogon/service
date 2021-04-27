@@ -288,7 +288,15 @@ function verifyOIDCParams()
     // possible to return an error code to the client.
     } elseif (isset($clientparams['redirect_uri'])) {
         $ch = curl_init();
-        if ($ch !== false) {
+        if (!defined('OAUTH2_CREATE_TRANSACTION_URL')) { // Should not happen
+            Util::sendErrorAlert(
+                'OAuth2 Create Transaction Error',
+                'OAUTH2_CREATE_TRANSACTION_URL has not been defined. ' .
+                "This should never happen. Check config.php.\n\n" .
+                'clientparams = ' . print_r($clientparams, true) . "\n"
+            );
+            $clientparams = array();
+        } else if ($ch !== false) {
             $url = OAUTH2_CREATE_TRANSACTION_URL;
             if (count($_GET) > 0) {
                 // CIL-658 Look for double-encoded spaces in 'scope'

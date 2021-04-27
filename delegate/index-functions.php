@@ -599,8 +599,14 @@ function handleAllowDelegation($always = false)
 
     // Now call out to the 'oauth/authorized' servlet to execute
     // the delegation the credential to the portal.
+    $log = new Loggit();
     $ch = curl_init();
-    if ($ch !== false) {
+    if (!defined('OAUTH1_AUTHORIZED_URL')) {
+        $log->info(
+            'OAUTH1_AUTHORIZED_URL is not defined. ' .
+            'This should never happen. Check config.php.'
+        );
+    } elseif ($ch !== false) {
         $tempcred = Util::getSessionVar('tempcred');
         $url = OAUTH1_AUTHORIZED_URL . '?' .
                'oauth_token=' . urlencode($tempcred) . '&' .
@@ -672,7 +678,6 @@ function handleAllowDelegation($always = false)
         curl_close($ch);
     }
 
-    $log = new Loggit();
     $log->info('Delegation of certificate to portal ' .
                ($success ? 'succeeded.' : 'failed.'));
     //CIL-507 Special log message for XSEDE
