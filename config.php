@@ -30,6 +30,7 @@ define('OAUTH2_DBSERVICE_URL', 'http://localhost:8080/oauth2/dbService');
 
 /**
  * The main URL for the dbService. Defaults to the OAUTH2_DBSERVICE_URL.
+ * Note: The service will fail to run if this value is not defined.
  */
 define('DEFAULT_DBSERVICE_URL', OAUTH2_DBSERVICE_URL);
 
@@ -105,7 +106,7 @@ define('EMAIL_IDP_UPDATES', 'idp-updates@cilogon.org');
 
 /**
  * Used by PHP Pear Log (in Logger.php), set the default log handler
- * to one of 'console', 'syslog', or 'file' (or another type 
+ * to one of 'console', 'syslog', or 'file' (or another type
  * supported by https://github.com/pear/Log). If using 'file',
  * you can also specify the filename using DEFAULT_LOGNAME.
  */
@@ -141,6 +142,11 @@ define('MYPROXY_HOST', 'myproxy.cilogon.org,myproxy2.cilogon.org');
 define('MYPROXY_PORT', '7512');
 define('MYPROXY_LIFETIME', '12');
 define('MYPROXY_CLIENT_CRED', '/var/www/config/hostcred.pem');
+// Define MYPROXY_SERVER_DN_MAP for hostnames that don't match root CA name.
+define('MYPROXY_SERVER_DN_MAP', array(
+    'myproxy3.cilogon.org' =>
+        '/DC=org/DC=cilogon/C=US/O=CILogon/CN=myproxy.cilogon.org'
+));
 
 /**
  * Storage type for PHP sessions.
