@@ -17,11 +17,6 @@
 //define('MYSQLI_DATABASE', '');
 //define('MYSQLI_HOSTSPEC', '');
 
-//define('PGSQL_USERNAME', '');
-//define('PGSQL_PASSWORD', '');
-//define('PGSQL_DATABASE', '');
-//define('PGSQL_HOSTSPEC', '');
-
 /**
  * For Google OAuth 2.0 settings specific to this application,
  * go to https://cloud.google.com/console and sign in as google@cilogon.org .
