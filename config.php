@@ -366,6 +366,16 @@ define('FORCE_SKIN_ARRAY', array(
 ));
 
 /**
+ * CIL-975 This is an array of Active Directory IdP entityIDs which have
+ * trouble dealing with AssertionConsumerServiceURLs containing
+ * polo1/polo2. For these IdPs, use 'cilogon.org' in getMachineHostname().
+ */
+define('ADFS_IDP_ARRAY', array(
+    'https://sts.windows.net/06219a4a-a835-44d5-afaf-3926343bfb89/',
+    'http://adfs.nsf.gov/adfs/services/trust',
+));
+
+/**
  * When a new LIGO user attempts to use cilogon.org, an alert is sent to
  * both EMAIL_ALERTS and cilogon-alerts@ligo.org to let them know that
  * the new user needs to be added to the LIGO IdP. However, some users are
