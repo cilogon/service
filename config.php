@@ -240,6 +240,8 @@ define('BYPASS_IDP_ARRAY', array(
         'urn:mace:incommon:iu.edu',
     '%^cilogon:/client_id/5b8f6c5e89b58adf254a2cece1254b13%' =>
         'https://idp.xsede.org/idp/shibboleth',
+    '%^cilogon:/client_id/7126656af0c274e97e17f3d968faba5e%' =>
+        'https://idp.xsede.org/idp/shibboleth',
     '%^cilogon:/client_id/79d280aef88dd3c97bb1cd92f8217286%' =>
         'https://sts.windows.net/06219a4a-a835-44d5-afaf-3926343bfb89/',
     '%^cilogon:/client_id/5b59cd113d4fe9d6f1454980bf3ab03d%' =>
