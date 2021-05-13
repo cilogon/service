@@ -27,14 +27,23 @@ if ($idplist !== false) { // Verify we read in idplist.xml file
     $idps = Content::getCompositeIdPList(); // Using the 'skin'
     $randsidps = $idplist->getRandSIdPs();
 
-    // Re-sort the $idps by Organization_Name since the default is
-    // to sort by Display_Name.
-    uasort($idps, function ($a, $b) {
-        return strcasecmp(
-            $a['Organization_Name'],
-            $b['Organization_Name']
-        );
-    });
+    // CIL-978 Check for 'idphint' query parameter
+    $idphintlist = Content::getIdphintList($idps);
+    if (!empty($idphintlist)) {
+        $newidps = array();
+        // Update the IdP selection list to show just the idphintlist.
+        foreach ($idphintlist as $value) {
+            $newidps[$value] = $idps[$value];
+        }
+        $idps = $newidps;
+        // Re-sort the $idps by Display_Name for correct alphabetization.
+        uasort($idps, function ($a, $b) {
+            return strcasecmp(
+                $a['Display_Name'],
+                $b['Display_Name']
+            );
+        });
+    }
 
     foreach ($idps as $entityId => $names) {
         $idparray[] = array(
