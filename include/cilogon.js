@@ -249,6 +249,11 @@ function showHourglass(which)
     }
 }
 
+/***************************************************************************
+ * Function  : validateForm                                                *
+ * For form elements that are marked as needing validation, add            *
+ * event listenters for 'submit' to check validity of input data.          *
+ ***************************************************************************/
 function validateForm()
 {
     var forms = document.getElementsByClassName('needs-validation');
@@ -273,8 +278,62 @@ function upperCaseF(a)
     a.value = a.value.replace(/@.*/, "");
 }
 
+/***************************************************************************
+ * Function  : updateIdPList                                               *
+ * Perform an asynchronous 'GET' of the 'idplist' endpoint (respecting     *
+ * any skin and idphint query parameters that may have been specified)     *
+ * and dynamically populate list of Identity providers. The initial HTML   *
+ * will have just a single IdP in the selection list. This function adds   *
+ * the rest of the IdPs as <option> elements and then refreshes the        *
+ * bootstrap-select element.                                               *
+ * NOTE: This method requires jQuery to be loaded beforehand.              *
+ ***************************************************************************/
+function updateIdPList()
+{
+    var providerId = document.getElementById('providerId');
+    if (providerId !== null) {
+        // If skin parameter, 'skinname' is stored in a hidden <input> element
+        var skinid = document.getElementById('skinname');
+        var skinname = '';
+        if (skinid !== null) {
+            skinname = skinid.value;
+        }
+        // If idphint parameter, get hidden <input> element 'idphintlist'
+        var idphintid = document.getElementById('idphintlist');
+        var idphintlist = '';
+        if (idphintid !== null) {
+            idphintlist = idphintid.value;
+        }
+        // Perform async 'GET' of the idplist endpoint (with skin/idphint)
+        $.ajax({
+            url: '/idplist/' + 
+                (skinname.length > 0 || idphintlist.length > 0 ? '?' : '') +
+                (skinname.length > 0 ? 'vo=' + skinname : '') +
+                (skinname.length > 0 && idphintlist.length > 0 ? '&' : '') +
+                (idphintlist.length > 0 ? 'idphint=' + idphintlist : ''),
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                // Loop through the IdPs, adding new <option> elements,
+                // skipping the first one already selected in the list.
+                var sel = providerId.options[0].text;
+                $.each(data, function (index, value) {
+                    if (value.DisplayName !== sel) {
+                        $('.selectpicker').append(
+                            '<option data-tokens="' + value.EntityID + 
+                            '" value="' + value.EntityID + 
+                            '">' + value.DisplayName + '</option>');
+                    }
+                });
+                $('.selectpicker').selectpicker('refresh');
+            }
+        });
+    }
+}
+
 var fp12 = partial(countdown, 'p12', 'Link');
 addLoadEvent(fp12);
+addLoadEvent(updateIdPList);
 addLoadEvent(focusOnElement);
 addLoadEvent(enterKeySubmit);
 addLoadEvent(validateForm);
