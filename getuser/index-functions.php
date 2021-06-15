@@ -30,6 +30,7 @@ function getUserAndRespond()
     $open_id = '';
     $oidc = '';
     $amr = '';
+    $preferred_username = '';
 
     Util::unsetSessionVar('logonerror');
 
@@ -67,15 +68,21 @@ function getUserAndRespond()
                 $user = $oauth2->provider->getResourceOwner($token);
                 $oidc = $user->getId();
                 $email = $user->getEmail();
-                // GitHub email may require special handling
-                if ((strlen($email) == 0) && ($prov == 'github')) {
-                    $email = getGitHubEmail($oauth2, $token);
-                }
                 $display_name = $user->getName();
-                if ($prov != 'github') { // No first/last for GitHub
+
+                if ($prov == 'github') {
+                    // GitHub email may require special handling
+                    if (strlen($email) == 0) {
+                        $email = getGitHubEmail($oauth2, $token);
+                    }
+                    // CIL-1003 Save GitHub 'login' as preferred_username
+                    $preferred_username = $user->getNickname();
+                } else {
+                    // NOTE: No first/last for GitHub
                     $first_name = $user->getFirstName();
                     $last_name = $user->getLastName();
                 }
+
                 // CIL-799 Get the 'amr' claim from the ORCID id_token
                 if ($prov == 'orcid') {
                     $amr = $user->getAmr();
@@ -136,7 +143,8 @@ function getUserAndRespond()
             '', // ou
             '', // member_of
             '', // acr
-            $amr
+            $amr,
+            $preferred_username
         );
     } else {
         Util::unsetSessionVar('submit');

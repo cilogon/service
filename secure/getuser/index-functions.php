@@ -97,6 +97,7 @@ function getUID()
         @$shibarray['Member'],
         @$shibarray['Authn Context'],
         '', // ORCID AMR
+        '', // preferred_username (GitHub 'login')
         @$shibarray['Entitlement'],
         @$shibarray['iTrustUIN']
     );

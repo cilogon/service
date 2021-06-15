@@ -503,6 +503,7 @@ function getTitleText($cookie)
             "Delegate service, this is the saved lifetime of the " .
             "delegated certificate." ,
         "portalstatus" => "An internal return code when fetching portal parameters from the datastore." ,
+        "preferred_username" => "The GitHub login name. Should not be used as a persistent identifier." ,
         "providerId" => "The previously selected Identity Provider." ,
         "responsesubmit" => "The name of the page to return to after " .
             "authentication at your chosen Identity Provider." ,

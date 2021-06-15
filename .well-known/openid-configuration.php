@@ -73,6 +73,7 @@ echo '{
   "openid",
   "ou",
   "pairwise_id",
+  "preferred_username",
   "sub",
   "subject_id",
   "token_id",
