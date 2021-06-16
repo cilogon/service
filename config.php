@@ -296,6 +296,7 @@ define('ALLOW_BYPASS_ARRAY', array(
     '%cilogon:/client_id/6cbd814fd631ce99a95436705822cb2%',
     '%cilogon:/client_id/d37bc71195aafc638cfc083250cb802%',
     '%cilogon:/client_id/599ebdd631fca76a8d88850dab8569c3%',
+    '%cilogon:/client_id/2b78cb3963dd8f5745bd34729d13ecea%',
     '%^https://flywheel-(dev|prod)\.auth0\.com/.*$%',
     '%^https://.*\.flywheel.io/.*$%',
 ));
