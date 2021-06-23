@@ -356,7 +356,6 @@ define('FORCE_SKIN_ARRAY', array(
     '%^cilogon:/client_id/3c8751d0ad6e3e8e3ec49db87334510b%' => 'nih',
     '%^cilogon:/client_id/56727d508077d1402cdcc66714ecf5ef%' => 'orcidfirst',
     '%^cilogon:/client_id/3176b0133ec1efa8090dcf11ad96877f%' => 'mit',
-    '%^cilogon:/client_id/47fabe917b37f4969efe93ffaa4e510a%' => 'flywheel',
     '%^https://.*\.scimma\.org/.*$%' => 'scimma',
     '%^cilogon:/client_id/3c7e9528486a4ab9f141cf7379a7f54a%' => 'classtranscribe',
     '%^cilogon:/client_id/3d39b5d80d2b72ca8a447fd5c7dc5192%' => 'scimma',
