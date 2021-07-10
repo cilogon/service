@@ -261,7 +261,7 @@ function verifyUserCodeParam()
 
     // If a user_code was passed in, use that to get the associated
     // clientparams. Otherwise, get clientparams from the PHP session.
-    $user_code = Util::getGetorPostVar('user_code');
+    $user_code = Util::getGetOrPostVar('user_code');
     if (strlen($user_code) > 0) {
         Util::unsetSessionVar('clientparams'); // Don't use any previous values
         $log->info('Calling checkUserCode dbService method...');
