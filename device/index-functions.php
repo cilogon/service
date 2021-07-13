@@ -154,33 +154,76 @@ function printMainPage()
     $clientparams = json_decode(Util::getSessionVar('clientparams'), true);
     Util::unsetSessionVar('clientparams');
     $user_code = @$clientparams['user_code'];
+    $grant = @$clientparams['grant'];
 
     $errstr = '';
-    if (strlen($user_code) > 0) {
-        $log->info('Calling userCodeApproved dbService method...');
+    if ((strlen($user_code) > 0) && (strlen($grant) > 0)) {
+        // First, need to call setTransactionState to try to associate the
+        // user_uid with the 'grant' (a.k.a., 'code').
+        $log->info('Calling setTransactionState dbService method...');
         $dbs = new DBService();
         if (
-            ($dbs->userCodeApproved($user_code, $user_code_approved)) &&
-            (!($dbs->status & 1))
+            ($dbs->setTransactionState(
+                $grant,
+                Util::getSessionVar('user_uid'),
+                Util::getSessionVar('authntime'),
+                Util::getLOA(),
+                Util::getSessionVar('myproxyinfo')
+            )) && (!($dbs->status & 1))
         ) { // STATUS_OK codes are even
-            // SUCCESSFULLY told database about decision to approve/deny
-        } else { // STATUS_ERROR code returned
-            // There was a problem with the user_code
-            $errstr = 'Error confirming user code.'; // Generic error message
-            if (!is_null($dbs->status)) {
-                $errstr = array_search($dbs->status, DBService::$STATUS);
-                // Customize error messages for Device Authz Grant flow
-                if ($dbs->status == 0x10001) {
-                    $errstr = 'Error confirming user code: Code not found. ' .
-                        'This can happen when the user code has expired and ' .
-                        'is no longer avaiable in the system.';
-                } elseif ($db->status == 0x10003) {
-                    $errstr = 'Error confirming user code: Code expired. ' .
-                        'Please return to your device and start a new request.';
+            // Then call userCodeApproved to complete the transaction.
+            $log->info('Calling userCodeApproved dbService method...');
+            $dbs = new DBService();
+            if (
+                ($dbs->userCodeApproved($user_code, $user_code_approved)) &&
+                (!($dbs->status & 1))
+            ) { // STATUS_OK codes are even
+                // SUCCESSFULLY told database about decision to approve/deny
+            } else { // STATUS_ERROR code returned
+                // There was a problem with the user_code
+                $errstr = 'Error confirming user code.'; // Generic error message
+                if (!is_null($dbs->status)) {
+                    $errstr = array_search($dbs->status, DBService::$STATUS);
+                    // Customize error messages for Device Authz Grant flow
+                    if ($dbs->status == 0x10001) {
+                        $errstr = 'Error confirming user code: Code not found. ' .
+                            'This can happen when the user code has expired and ' .
+                            'is no longer avaiable in the system.';
+                    } elseif ($db->status == 0x10003) {
+                        $errstr = 'Error confirming user code: Code expired. ' .
+                            'Please return to your device and start a new request.';
+                    }
                 }
             }
+
+            // CIL-507 Special log message for XSEDE
+            $email = Util::getSessionVar('email');
+            $clientname = $clientparams['client_name'];
+            $log->info("USAGE email=\"$email\" client=\"$clientname\"");
+            Util::logXSEDEUsage($clientname, $email);
+        } else { // dbService error for setTransactionState
+            $errstr = '';
+            if (!is_null($dbs->status)) {
+                $errstr = array_search($dbs->status, DBService::$STATUS);
+            }
+            $redirect = 'Location: ' . $clientparams['redirect_uri'] .
+                (preg_match('/\?/', $clientparams['redirect_uri']) ? '&' : '?') .
+                'error=server_error&error_description=' .
+                'Unable%20to%20associate%20user%20UID%20with%20OIDC%20code' .
+                ((isset($clientparams['state'])) ?
+                    '&state=' . $clientparams['state'] : '');
+            $log->info("setTransactionState failed $errstr, redirect to $redirect");
+            Util::sendErrorAlert(
+                'dbService Error',
+                'Error calling dbservice action "setTransactionState" in ' .
+                'Device Flow endpoint\'s printMainPage() method. ' .
+                $errstr . ' Redirected to ' . $redirect
+            );
+            Util::unsetUserSessionVars();
         }
-    } else { // No user_code in PHP session - weird error!
+
+        Util::unsetClientSessionVars();
+    } else { // No user_code+grant in PHP session - weird error!
         $errstr = 'Error confirming user code: Code not found. ' .
             'Please enable cookies in your web browser.';
     }
@@ -276,6 +319,7 @@ function verifyUserCodeParam()
                 $clientparams['user_code'] = $dbs->user_code;
                 $clientparams['client_id'] = $dbs->client_id;
                 $clientparams['scope'] = $dbs->scope;
+                $clientparams['grant'] = $dbs->grant;
                 // getOIDCClientParams assumes client_id is stored in the
                 // passed-in $clientparams variable.
                 Util::getOIDCClientParams($clientparams);
@@ -315,6 +359,7 @@ function verifyUserCodeParam()
         (isset($clientparams['user_code'])) &&
         (isset($clientparams['client_id'])) &&
         (isset($clientparams['scope'])) &&
+        (isset($clientparams['grant'])) &&
         (isset($clientparams['client_name'])) &&
         (isset($clientparams['client_home_url'])) &&
         (isset($clientparams['client_callback_uri'])) &&
