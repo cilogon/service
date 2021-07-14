@@ -13,6 +13,7 @@ header('Content-Type:application/json;charset=utf-8');
 echo '{
  "issuer": "https://' , $hostname , '",
  "authorization_endpoint": "https://' , $hostname , '/authorize",
+ "device_authorization_endpoint": "https://' , $hostname , '/oauth2/device_authorization",
  "registration_endpoint": "https://' , $hostname , '/oauth2/oidc-cm",
  "token_endpoint": "https://' , $hostname , '/oauth2/token",
  "userinfo_endpoint": "https://' , $hostname , '/oauth2/userinfo",
@@ -44,7 +45,8 @@ echo '{
   "email",
   "profile",
   "org.cilogon.userinfo",
-  "edu.uiuc.ncsa.myproxy.getcert"
+  "edu.uiuc.ncsa.myproxy.getcert",
+  "offline_access"
  ],
  "token_endpoint_auth_methods_supported": [
   "client_secret_basic",
