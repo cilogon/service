@@ -240,11 +240,13 @@ function printMainPage()
     // Check for any previously generated error message
     if (strlen($errstr) > 0) {
         echo '
-          <div class="alert alert-danger show" role="alert">';
+          <div class="row">
+            <div class="alert alert-danger show" role="alert">';
         echo $errstr;
         echo '
+            </div>
           </div>
-          <div class="col">
+          <div class="row">
             There was a problem completing the transaction.
             Please return to your device and begin a new request.
           </div>';
