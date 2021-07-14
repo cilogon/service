@@ -215,7 +215,7 @@ function printMainPage()
                 $errstr = 'Error confirming user code: Code not found. ' .
                     'This can happen when the user code has expired and ' .
                     'is no longer avaiable in the system.';
-            } elseif ($db->status == 0x10003) {
+            } elseif ($dbs->status == 0x10003) {
                 $errstr = 'Error confirming user code: Code expired. ' .
                     'Please return to your device and start a new request.';
             }
@@ -234,24 +234,18 @@ function printMainPage()
     );
 
     echo '
-      <div class="card-body px-5">
-        <div class="row my-3">';
+      <div class="card-body px-5">';
 
-    // Check for any previously generated error message
     if (strlen($errstr) > 0) {
-        echo '
-          <div class="row">
-            <div class="alert alert-danger show" role="alert">';
-        echo $errstr;
-        echo '
-            </div>
-          </div>
-          <div class="row">
-            There was a problem completing the transaction.
-            Please return to your device and begin a new request.
-          </div>';
+        Content::printErrorBox(
+            '<div class="card-text my-2">' .
+            $errstr . ' ' .
+            'Please return to your device and begin a new request.' .
+            '</div> <!-- end card-text -->'
+        );
     } else {
         echo '
+        <div class="row my-3">
           <div class="col-1 text-center">
             <large>
         ',
@@ -267,11 +261,11 @@ function printMainPage()
             ($user_code_approved ? 'approved ' : 'denied ') .
             'the user code. Please return to your device for further
             instructions.
-          </div>';
+          </div>
+        </div>';
     }
 
     echo '
-        </div>
       </div> <!-- end card-body-->';
 
     Content::printCollapseEnd();
