@@ -72,6 +72,7 @@ switch ($submit) {
         break; // End case 'Cancel'
 
     default: // No submit button clicked nor PHP session submit variable set
+        verifyUserCodeParam(); // Need to scan for query parameters
         Content::handleNoSubmitButtonClicked();
         break; // End default case
 } // End switch ($submit)
