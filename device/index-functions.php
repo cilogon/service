@@ -185,7 +185,7 @@ function printMainPage()
                 $errstr = '';
                 if (!is_null($dbs->status)) {
                     $errstr = 'Error: ' . 
-                        array_search($dbs->status, DBService::$STATUS) . '.';
+                        @DBService::$STATUS_TEXT[array_search($dbs->status, DBService::$STATUS)] . '.';
                 }
                 Util::sendErrorAlert(
                     'dbService Error',
