@@ -173,7 +173,7 @@ function printMainPage()
         ) { // STATUS_OK codes are even
             // Then call userCodeApproved to complete the transaction.
             $log->info('Calling userCodeApproved dbService method...');
-            $dbs = new DBService();
+            $dbs = new DBService(); // FIXME: Is this needed???
             if (
                 ($dbs->userCodeApproved($user_code, $user_code_approved)) &&
                 (!($dbs->status & 1))
@@ -206,18 +206,11 @@ function printMainPage()
             if (!is_null($dbs->status)) {
                 $errstr = array_search($dbs->status, DBService::$STATUS);
             }
-            $redirect = 'Location: ' . $clientparams['redirect_uri'] .
-                (preg_match('/\?/', $clientparams['redirect_uri']) ? '&' : '?') .
-                'error=server_error&error_description=' .
-                'Unable%20to%20associate%20user%20UID%20with%20OIDC%20code' .
-                ((isset($clientparams['state'])) ?
-                    '&state=' . $clientparams['state'] : '');
-            $log->info("setTransactionState failed $errstr, redirect to $redirect");
             Util::sendErrorAlert(
                 'dbService Error',
                 'Error calling dbservice action "setTransactionState" in ' .
                 'Device Flow endpoint\'s printMainPage() method. ' .
-                $errstr . ' Redirected to ' . $redirect
+                ((strlen($errstr) > 0) ? 'Error: ' . $errstr : '')
             );
             Util::unsetUserSessionVars();
         }
@@ -237,17 +230,23 @@ function printMainPage()
         false
     );
 
+    echo '
+      <div class="card-body px-5">
+        <div class="row my-3">';
+
     // Check for any previously generated error message
     if (strlen($errstr) > 0) {
         echo '
-            <div class="alert alert-danger show" role="alert">';
+          <div class="alert alert-danger show" role="alert">';
         echo $errstr;
         echo '
-            </div>';
+          </div>
+          <div class="col">
+            There was a problem completing the transaction.
+            Please return to your device and begin a new request.
+          </div>';
     } else {
         echo '
-      <div class="card-body px-5">
-        <div class="row my-3">
           <div class="col-1 text-center">
             <large>
         ',
@@ -263,11 +262,12 @@ function printMainPage()
             ($user_code_approved ? 'approved ' : 'denied ') .
             'the user code. Please return to your device for further
             instructions.
-          </div>
-        </div>
-
-      </div> <!-- end card-body-->';
+          </div>';
     }
+
+    echo '
+        </div>
+      </div> <!-- end card-body-->';
 
     Content::printCollapseEnd();
     Content::printFooter();
