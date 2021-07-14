@@ -26,7 +26,11 @@ $log->info('submit="' . $submit . '"');
 // equivalent PHP session variable, take action or print out HTML.
 switch ($submit) {
     case 'Enter User Code':
-        printLogonPage();
+        if (!verifyUserCodeParam()) {
+            printUserCodePage();
+        } else {
+            Content::handleNoSubmitButtonClicked();
+        }
         break; // End case 'Enter User Code'
 
     case 'Log On': // Check for OpenID or InCommon usage.

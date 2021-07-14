@@ -29,6 +29,9 @@ function printLogonPage()
         $log = new Loggit();
         $log->info('Welcome page hit.');
 
+        $skin = Util::getSkin();
+        $skin->init();
+
         Content::printHeader(
             'Welcome To The CILogon Device Authorization Service'
         );
@@ -216,8 +219,7 @@ function printMainPage()
                     'This can happen when the user code has been used or ' .
                     'is no longer available in the system.';
             } elseif ($dbs->status == 0x10003) {
-                $errstr = 'Error confirming user code: Code expired. ' .
-                    'Please return to your device and start a new request.';
+                $errstr = 'Error confirming user code: Code expired. ';
             }
         }
     }
