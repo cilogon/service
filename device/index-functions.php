@@ -213,8 +213,8 @@ function printMainPage()
             // Customize error messages for Device Authz Grant flow
             if ($dbs->status == 0x10001) {
                 $errstr = 'Error confirming user code: Code not found. ' .
-                    'This can happen when the user code has expired and ' .
-                    'is no longer avaiable in the system.';
+                    'This can happen when the user code has been used or ' .
+                    'is no longer available in the system.';
             } elseif ($dbs->status == 0x10003) {
                 $errstr = 'Error confirming user code: Code expired. ' .
                     'Please return to your device and start a new request.';
