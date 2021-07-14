@@ -157,69 +157,72 @@ function printMainPage()
     $grant = @$clientparams['grant'];
 
     $errstr = '';
+    $setTransactionSuccess  = false;
     if ((strlen($user_code) > 0) && (strlen($grant) > 0)) {
-        // First, need to call setTransactionState to try to associate the
-        // user_uid with the 'grant' (a.k.a., 'code').
-        $log->info('Calling setTransactionState dbService method...');
-        $dbs = new DBService();
-        if (
-            ($dbs->setTransactionState(
-                $grant,
-                Util::getSessionVar('user_uid'),
-                Util::getSessionVar('authntime'),
-                Util::getLOA(),
-                Util::getSessionVar('myproxyinfo')
-            )) && (!($dbs->status & 1))
-        ) { // STATUS_OK codes are even
-            // Then call userCodeApproved to complete the transaction.
-            $log->info('Calling userCodeApproved dbService method...');
-            $dbs = new DBService(); // FIXME: Is this needed???
+        // If user logged in, call setTransactionState to associate
+        // the user_uid with the 'grant' (a.k.a., 'code').
+        if ($user_code_approved) {
+            $log->info('Calling setTransactionState dbService method...');
+            $dbs = new DBService();
             if (
-                ($dbs->userCodeApproved($user_code, $user_code_approved)) &&
-                (!($dbs->status & 1))
+                ($dbs->setTransactionState(
+                    $grant,
+                    Util::getSessionVar('user_uid'),
+                    Util::getSessionVar('authntime'),
+                    Util::getLOA(),
+                    Util::getSessionVar('myproxyinfo')
+                )) && (!($dbs->status & 1))
             ) { // STATUS_OK codes are even
-                // SUCCESSFULLY told database about decision to approve/deny
-            } else { // STATUS_ERROR code returned
-                // There was a problem with the user_code
-                $errstr = 'Error confirming user code.'; // Generic error message
+                // CIL-507 Special log message for XSEDE
+                $email = Util::getSessionVar('email');
+                $clientname = $clientparams['client_name'];
+                $log->info("USAGE email=\"$email\" client=\"$clientname\"");
+                Util::logXSEDEUsage($clientname, $email);
+            } else { // dbService error for setTransactionState
+                $errstr = '';
                 if (!is_null($dbs->status)) {
                     $errstr = array_search($dbs->status, DBService::$STATUS);
-                    // Customize error messages for Device Authz Grant flow
-                    if ($dbs->status == 0x10001) {
-                        $errstr = 'Error confirming user code: Code not found. ' .
-                            'This can happen when the user code has expired and ' .
-                            'is no longer avaiable in the system.';
-                    } elseif ($db->status == 0x10003) {
-                        $errstr = 'Error confirming user code: Code expired. ' .
-                            'Please return to your device and start a new request.';
-                    }
                 }
+                Util::sendErrorAlert(
+                    'dbService Error',
+                    'Error calling dbservice action "setTransactionState" in ' .
+                    'Device Flow endpoint\'s printMainPage() method. ' .
+                    ((strlen($errstr) > 0) ? 'Error: ' . $errstr : '')
+                );
+                Util::unsetUserSessionVars();
             }
-
-            // CIL-507 Special log message for XSEDE
-            $email = Util::getSessionVar('email');
-            $clientname = $clientparams['client_name'];
-            $log->info("USAGE email=\"$email\" client=\"$clientname\"");
-            Util::logXSEDEUsage($clientname, $email);
-        } else { // dbService error for setTransactionState
-            $errstr = '';
-            if (!is_null($dbs->status)) {
-                $errstr = array_search($dbs->status, DBService::$STATUS);
-            }
-            Util::sendErrorAlert(
-                'dbService Error',
-                'Error calling dbservice action "setTransactionState" in ' .
-                'Device Flow endpoint\'s printMainPage() method. ' .
-                ((strlen($errstr) > 0) ? 'Error: ' . $errstr : '')
-            );
-            Util::unsetUserSessionVars();
         }
-
-        Util::unsetClientSessionVars();
     } else { // No user_code+grant in PHP session - weird error!
         $errstr = 'Error confirming user code: Code not found. ' .
             'Please enable cookies in your web browser.';
     }
+
+    // Then call userCodeApproved to complete the transaction.
+    $log->info('Calling userCodeApproved dbService method...');
+    $dbs = new DBService();
+    if (
+        ($dbs->userCodeApproved($user_code, $user_code_approved)) &&
+        (!($dbs->status & 1))
+    ) { // STATUS_OK codes are even
+        // SUCCESSFULLY told database about decision to approve/deny
+    } else { // STATUS_ERROR code returned
+        // There was a problem with the user_code
+        $errstr = 'Error confirming user code.'; // Generic error message
+        if (!is_null($dbs->status)) {
+            $errstr = array_search($dbs->status, DBService::$STATUS);
+            // Customize error messages for Device Authz Grant flow
+            if ($dbs->status == 0x10001) {
+                $errstr = 'Error confirming user code: Code not found. ' .
+                    'This can happen when the user code has expired and ' .
+                    'is no longer avaiable in the system.';
+            } elseif ($db->status == 0x10003) {
+                $errstr = 'Error confirming user code: Code expired. ' .
+                    'Please return to your device and start a new request.';
+            }
+        }
+    }
+
+    Util::unsetClientSessionVars();
 
     $log->info('User Code Verified page hit.');
 
@@ -254,7 +257,7 @@ function printMainPage()
             Content::getIcon('fa-check-square fa-2x', 'lime') :
             Content::getIcon('fa-times-circle fa-2x', 'red')
         ),
-        '    
+        '
             </large>
           </div>
           <div class="col">
