@@ -299,12 +299,12 @@ function verifyUserCodeParam()
 
     $log = new Loggit();
 
-    // If idphint/selected_idp were previously set in the clientparams
-    // PHP session variable, get them this time around.
+    // If idphint/selected_idp/initialidp were previously set in the
+    // clientparams PHP session variable, get them this time around.
     $clientparams = array();
     $clientparams = @array_intersect_key(
         json_decode(Util::getSessionVar('clientparams'), true),
-        ['idphint' => 1, 'selected_idp' => 1]
+        ['idphint' => 1, 'selected_idp' => 1, 'initialidp' => 1]
     );
 
     // If a user_code was passed in, use that to get the associated
@@ -378,18 +378,24 @@ function verifyUserCodeParam()
         Util::unsetSessionVar('clientparams');
     }
 
-    // Save idphint/selected_idp from query parameters to PHP session
+    // Save idphint/selected_idp/initialidp from query parameters
+    // to PHP session
     $idphint = Util::getGetVar('idphint');
     $selected_idp = Util::getGetVar('selected_idp');
+    $initialidp = Util::getGetVar('initialidp');
     if (
         (strlen($idphint) > 0) ||
-        (strlen($selected_idp) > 0)
+        (strlen($selected_idp) > 0) ||
+        (strlen($initialidp) > 0)
     ) {
         if (strlen($idphint) > 0) {
             $clientparams['idphint'] = $idphint;
         }
         if (strlen($selected_idp) > 0) {
             $clientparams['selected_idp'] = $selected_idp;
+        }
+        if (strlen($initialidp) > 0) {
+            $clientparams['initialidp'] = $initialidp;
         }
         Util::setSessionVar('clientparams', json_encode($clientparams));
     }
