@@ -184,7 +184,8 @@ function printMainPage()
             } else { // dbService error for setTransactionState
                 $errstr = '';
                 if (!is_null($dbs->status)) {
-                    $errstr = array_search($dbs->status, DBService::$STATUS);
+                    $errstr = 'Error: ' . 
+                        array_search($dbs->status, DBService::$STATUS) . '.';
                 }
                 Util::sendErrorAlert(
                     'dbService Error',
