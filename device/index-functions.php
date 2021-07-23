@@ -282,6 +282,7 @@ function getDeviceErrorStr($errnum)
         } elseif ($errnum == 0x10003) {
             $errstr = 'Error: User code expired.';
         }
+    }
     return $errstr;
 }
 
