@@ -185,13 +185,13 @@ function printMainPage()
                 $errstr = '';
                 if (!is_null($dbs->status)) {
                     $errstr = 'Error: ' . 
-                        @DBService::$STATUS_TEXT[array_search($dbs->status, DBService::$STATUS)] . '.';
+                        @DBService::$STATUS_TEXT[array_search($dbs->status, DBService::$STATUS)];
                 }
                 Util::sendErrorAlert(
                     'dbService Error',
                     'Error calling dbservice action "setTransactionState" in ' .
                     'Device Flow endpoint\'s printMainPage() method. ' .
-                    ((strlen($errstr) > 0) ? 'Error: ' . $errstr : '')
+                    ((strlen($errstr) > 0) ? $errstr : '')
                 );
                 Util::unsetUserSessionVars();
             }
@@ -213,7 +213,8 @@ function printMainPage()
         // There was a problem with the user_code
         $errstr = 'Error confirming user code.'; // Generic error message
         if (!is_null($dbs->status)) {
-            $errstr = array_search($dbs->status, DBService::$STATUS);
+            $errstr = 'Error: ' . 
+                @DBService::$STATUS_TEXT[array_search($dbs->status, DBService::$STATUS)];
             // Customize error messages for Device Authz Grant flow
             if ($dbs->status == 0x10001) {
                 $errstr = 'Error confirming user code: Code not found. ' .
@@ -341,12 +342,13 @@ function verifyUserCodeParam()
         } else { // STATUS_ERROR code returned
             $errstr = 'Error checking user code.'; // Generic error message
             if (!is_null($dbs->status)) {
-                $errstr = array_search($dbs->status, DBService::$STATUS);
+                $errstr = 'Error: ' . 
+                    @DBService::$STATUS_TEXT[array_search($dbs->status, DBService::$STATUS)];
                 // Customize error messages for Device Authz Grant flow
                 if ($dbs->status == 0x10001) {
-                    $errstr = 'User code not found.';
+                    $errstr = 'Error: User code not found.';
                 } elseif ($db->status == 0x10003) {
-                    $errstr = 'User code expired.';
+                    $errstr = 'Error: User code expired.';
                 }
             }
             Util::setSessionVar('user_code_error_msg', $errstr);
