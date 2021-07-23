@@ -182,11 +182,7 @@ function printMainPage()
                 $log->info("USAGE email=\"$email\" client=\"$clientname\"");
                 Util::logXSEDEUsage($clientname, $email);
             } else { // dbService error for setTransactionState
-                $errstr = '';
-                if (!is_null($dbs->status)) {
-                    $errstr = 'Error: ' . 
-                        @DBService::$STATUS_TEXT[array_search($dbs->status, DBService::$STATUS)];
-                }
+                $errstr = ((is_null($dbs->status)) ? '' : getDeviceErrorStr($dbs_status));
                 Util::sendErrorAlert(
                     'dbService Error',
                     'Error calling dbservice action "setTransactionState" in ' .
@@ -211,19 +207,7 @@ function printMainPage()
         // SUCCESSFULLY told database about decision to approve/deny
     } else { // STATUS_ERROR code returned
         // There was a problem with the user_code
-        $errstr = 'Error confirming user code.'; // Generic error message
-        if (!is_null($dbs->status)) {
-            $errstr = 'Error: ' . 
-                @DBService::$STATUS_TEXT[array_search($dbs->status, DBService::$STATUS)];
-            // Customize error messages for Device Authz Grant flow
-            if ($dbs->status == 0x10001) {
-                $errstr = 'Error confirming user code: Code not found. ' .
-                    'This can happen when the user code has been used or ' .
-                    'is no longer available in the system.';
-            } elseif ($dbs->status == 0x10003) {
-                $errstr = 'Error confirming user code: Code expired. ';
-            }
-        }
+        $errstr = getDeviceErrorStr($dbs->status);
     }
 
     Util::unsetClientSessionVars();
@@ -274,6 +258,31 @@ function printMainPage()
 
     Content::printCollapseEnd();
     Content::printFooter();
+}
+
+/**
+ * getDeviceErrorStr
+ *
+ * This is a convenience method which returns a customized error string for 
+ * the device code flow. It accepts an error status code (from 
+ * DBService::STATUS) and returns an error string.
+ *
+ * @param int|null $errnum A DBService::STATUS number for the error.
+ * @return string A customized error string for device flow.
+ */
+function getDeviceErrorStr($errnum)
+{
+    $errstr = 'Error with user code.'; // Generic error message
+    if (!is_null($errnum)) {
+        $errstr = 'Error: ' . 
+            @DBService::$STATUS_TEXT[array_search($errnum, DBService::$STATUS)];
+        // Customize error messages for device code flow
+        if ($errnum == 0x10001) {
+            $errstr = 'Error: User code not found.';
+        } elseif ($errnum == 0x10003) {
+            $errstr = 'Error: User code expired.';
+        }
+    return $errstr;
 }
 
 /**
@@ -340,17 +349,7 @@ function verifyUserCodeParam()
                 Util::setSessionVar('user_code_error_msg', 'Unable to find a client matching the user code.');
             }
         } else { // STATUS_ERROR code returned
-            $errstr = 'Error checking user code.'; // Generic error message
-            if (!is_null($dbs->status)) {
-                $errstr = 'Error: ' . 
-                    @DBService::$STATUS_TEXT[array_search($dbs->status, DBService::$STATUS)];
-                // Customize error messages for Device Authz Grant flow
-                if ($dbs->status == 0x10001) {
-                    $errstr = 'Error: User code not found.';
-                } elseif ($dbs->status == 0x10003) {
-                    $errstr = 'Error: User code expired.';
-                }
-            }
+            $errstr = getDeviceErrorStr($dbs->status);
             Util::setSessionVar('user_code_error_msg', $errstr);
         }
     } else { // No user_code passed in, so check the PHP session clientparams
