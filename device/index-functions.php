@@ -347,7 +347,7 @@ function verifyUserCodeParam()
                 // Customize error messages for Device Authz Grant flow
                 if ($dbs->status == 0x10001) {
                     $errstr = 'Error: User code not found.';
-                } elseif ($db->status == 0x10003) {
+                } elseif ($dbs->status == 0x10003) {
                     $errstr = 'Error: User code expired.';
                 }
             }
