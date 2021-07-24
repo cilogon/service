@@ -26,14 +26,14 @@ $log->info('submit="' . $submit . '"');
 // equivalent PHP session variable, take action or print out HTML.
 switch ($submit) {
     case 'Enter User Code':
-        if (!verifyUserCodeParam()) {
+        if (!verifyUserCodeParam()) { // user_code was not valid
             printUserCodePage();
-        } else {
+        } else { // Redirect to 'Select an IdP' page or bypass it if configured
             Content::handleNoSubmitButtonClicked();
         }
         break; // End case 'Enter User Code'
 
-    case 'Log On': // Check for OpenID or InCommon usage.
+    case 'Log On': // Check for OpenID or InCommon usage
     case 'Continue': // For OOI
         // Need to check for 'max_age' OIDC parameter. If elapsed time
         // since last user authentication is greater than max_age, then

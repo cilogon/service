@@ -181,7 +181,7 @@ function printMainPage()
                 $clientname = $clientparams['client_name'];
                 $log->info("USAGE email=\"$email\" client=\"$clientname\"");
                 Util::logXSEDEUsage($clientname, $email);
-            } else { // dbService error for setTransactionState
+            } else { // dbService returned error for setTransactionState
                 $errstr = ((is_null($dbs->status)) ? '' : getDeviceErrorStr($dbs_status));
                 Util::sendErrorAlert(
                     'dbService Error',
@@ -197,17 +197,19 @@ function printMainPage()
             'Please enable cookies in your web browser.';
     }
 
-    // Then call userCodeApproved to complete the transaction.
-    $log->info('Calling userCodeApproved dbService method...');
-    $dbs = new DBService();
-    if (
-        ($dbs->userCodeApproved($user_code, $user_code_approved)) &&
-        (!($dbs->status & 1))
-    ) { // STATUS_OK codes are even
-        // SUCCESSFULLY told database about decision to approve/deny
-    } else { // STATUS_ERROR code returned
-        // There was a problem with the user_code
-        $errstr = getDeviceErrorStr($dbs->status);
+    // If no error so far, call userCodeApproved to complete the transaction
+    if (strlen($errstr) == 0) {
+        $log->info('Calling userCodeApproved dbService method...');
+        $dbs = new DBService();
+        if (
+            ($dbs->userCodeApproved($user_code, $user_code_approved)) &&
+            (!($dbs->status & 1))
+        ) { // STATUS_OK codes are even
+            // SUCCESSFULLY told database about decision to approve/deny
+        } else { // STATUS_ERROR code returned
+            // There was a problem with the user_code
+            $errstr = getDeviceErrorStr($dbs->status);
+        }
     }
 
     Util::unsetClientSessionVars();
@@ -308,7 +310,7 @@ function verifyUserCodeParam()
     $log = new Loggit();
 
     // If idphint/selected_idp/initialidp were previously set in the
-    // clientparams PHP session variable, get them this time around.
+    // clientparams PHP session variable, extract them this time around.
     $clientparams = array();
     $clientparams = @array_intersect_key(
         json_decode(Util::getSessionVar('clientparams'), true),
@@ -336,9 +338,9 @@ function verifyUserCodeParam()
                 // getOIDCClientParams assumes client_id is stored in the
                 // passed-in $clientparams variable.
                 Util::getOIDCClientParams($clientparams);
-                // If no scope was requested, then assume ALL scopes
+                // If no scope was requested, then assume ALL scopes.
                 // 'scope' is a space-separated string, while
-                // client_scopes is a JSON list; need to transform into
+                // 'client_scopes' is a JSON list; need to transform into
                 // space-separated string.
                 if (strlen($clientparams['scope']) == 0) {
                     $clientparams['scope'] = implode(
@@ -378,7 +380,7 @@ function verifyUserCodeParam()
     }
 
     // Save idphint/selected_idp/initialidp from query parameters
-    // to PHP session
+    // to PHP session for next time around
     $idphint = Util::getGetVar('idphint');
     $selected_idp = Util::getGetVar('selected_idp');
     $initialidp = Util::getGetVar('initialidp');
