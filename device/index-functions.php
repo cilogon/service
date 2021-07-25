@@ -265,8 +265,8 @@ function printMainPage()
 /**
  * getDeviceErrorStr
  *
- * This is a convenience method which returns a customized error string for 
- * the device code flow. It accepts an error status code (from 
+ * This is a convenience method which returns a customized error string for
+ * the device code flow. It accepts an error status code (from
  * DBService::STATUS) and returns an error string.
  *
  * @param int|null $errnum A DBService::STATUS number for the error.
@@ -276,7 +276,7 @@ function getDeviceErrorStr($errnum)
 {
     $errstr = 'Error with user code.'; // Generic error message
     if (!is_null($errnum)) {
-        $errstr = 'Error: ' . 
+        $errstr = 'Error: ' .
             @DBService::$STATUS_TEXT[array_search($errnum, DBService::$STATUS)];
         // Customize error messages for device code flow
         if ($errnum == 0x10001) {
