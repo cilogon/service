@@ -41,7 +41,7 @@ CLIENT_ID="cilogon:/client_id/abcdef1234567890"
 CLIENT_SECRET="my_client_secret"
 # HOST is one of cilogon.org, test.cilogon.org, or dev.cilogon.org
 HOST="cilogon.org"
-# Comment out SCOPE to request the registered scopes for the client
+# Comment out SCOPE to request the registered scopes for the CILogon client
 SCOPE="openid email profile"
 # Set GOOGLE_CLIENT=1 to test a Google "TV and Limited-Input Device" client
 # using Google's device and token endpoints
@@ -69,6 +69,10 @@ if [ "${#CLIENT_ID}" -eq "0" ] ; then
 fi
 if [ "${#CLIENT_SECRET}" -eq "0" -a "${#SCOPE}" -gt "0" -a "${SCOPE}" != "openid" ] ; then
     echo "Public clients can request only the 'openid' scope."
+    CHECKFAILED=1
+fi
+if [ "${#SCOPE}" -eq "0" -a "${GOOGLE_CLIENT}" -eq "1" ] ; then
+    echo "Google requires at least one scope. Try SCOPE=\"openid email profile\"."
     CHECKFAILED=1
 fi
 if [ "${#HOST}" -eq "0" -a "${GOOGLE_CLIENT}" -ne "1" ] ; then
