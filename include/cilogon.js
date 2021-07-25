@@ -187,6 +187,7 @@ function focusOnElement()
     return doFocus("password1") ||
            doFocus("heading-gencert") ||
            doFocus("lifetime") ||
+           doFocus("user-code") ||
            focusBootstrapSelect();
 }
 
