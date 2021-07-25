@@ -296,7 +296,7 @@ function verifyOIDCParams()
                 'clientparams = ' . print_r($clientparams, true) . "\n"
             );
             $clientparams = array();
-        } else if ($ch !== false) {
+        } elseif ($ch !== false) {
             $url = OAUTH2_CREATE_TRANSACTION_URL;
             if (count($_GET) > 0) {
                 // CIL-658 Look for double-encoded spaces in 'scope'
@@ -622,6 +622,10 @@ function getErrorStatusText($output, $clientparams)
         $errnum = $matches[1];
         $errstr = array_search($errnum, DBService::$STATUS);
         $errtxt = @DBService::$STATUS_TEXT[$errstr];
+        // Add any error_description to the errtxt.
+        if (preg_match('/error_description=([^\r\n]+)/', $output, $matches)) {
+            $errtxt .= ' ' . urldecode($matches[1]);
+        }
     }
 
     // CIL-831 The OA4MP code returns a STATUS_INTERNAL_ERROR when there is
