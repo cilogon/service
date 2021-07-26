@@ -111,6 +111,16 @@ function printOAuth1ErrorPage()
         false
     );
 
+    // CIL-1045 - Add OAuth1 Retirement banner
+    echo '
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      This service will be retired on October 1. Please migrate to
+      <a target="_blank" href="https://www.cilogon.org/oidc">CILogon OIDC</a>.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>';
+
     // CIL-624 If X509 certs are disabled, show a suitable error message
     // to the end user.
     if ((defined('DISABLE_X509')) && (DISABLE_X509 === true)) {
@@ -254,6 +264,16 @@ function printOAuth1Consent()
         'Consent to Attribute Release',
         false
     );
+
+    // CIL-1045 - Add OAuth1 Retirement banner
+    echo '
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      This service will be retired on October 1. Please migrate to
+      <a target="_blank" href="https://www.cilogon.org/oidc">CILogon OIDC</a>.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>';
 
     echo '
         <div class="card-body px-5">
