@@ -92,7 +92,6 @@ else
     DEVICE_ENDPOINT="https://${HOST}/oauth2/device_authorization"
     TOKEN_ENDPOINT="https://${HOST}/oauth2/token"
 fi
-RE="error=\"(.*)\"\s*error_description=\"(.*)\""
 function urldecode { : "${*//+/ }"; echo -e "${_//%/\\x}"; }
 function jwtdecode { jq -R 'split(".") | .[1] | @base64d | fromjson' <<< "$1" ; }
 
