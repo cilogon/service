@@ -240,8 +240,8 @@ function printMainPage()
             <large>
         ',
         ($user_code_approved ?
-            Content::getIcon('fa-check-square fa-2x', 'lime') :
-            Content::getIcon('fa-times-circle fa-2x', 'red')
+            Content::getIcon('fa-thumbs-up fa-3x', 'green') :
+            Content::getIcon('fa-thumbs-down fa-3x', 'firebrick')
         ),
         '
             </large>
