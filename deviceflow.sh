@@ -26,8 +26,8 @@
 # for details on obtaining credentials. Set CLIENT_ID and            #
 # CLIENT_SECRET appropriately, and also set GOOGLE_CLIENT=1.         #
 #                                                                    #
-# Version: 1.0.0                                                     #
-# Last Update: 2021-07-25                                            #
+# Version: 1.1.0                                                     #
+# Last Update: 2021-07-29                                            #
 # Author: Terry Fleury <tfleury@cilogon.org>                         #
 ######################################################################
 
@@ -183,6 +183,11 @@ echo "Your user code is '${USER_CODE}'."
 echo "Open a web browser and navigate to:"
 if [ "${VERIFICATION_URI_COMPLETE}" != "null" ] ; then
     echo "${VERIFICATION_URI_COMPLETE}"
+    if ! command -v qrencode &> /dev/null ; then
+        echo "Install the 'qrencode' program for QR code output."
+    else
+        qrencode -m 2 -t ansiutf8 <<< "${VERIFICATION_URI_COMPLETE}"
+    fi
 else
     echo "${VERIFICATION_URI}"
 fi
