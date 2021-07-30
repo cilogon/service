@@ -236,7 +236,7 @@ function printMainPage()
     } else {
         echo '
         <div class="row my-3">
-          <div class="col-1 text-center">
+          <div class="col-2 text-center">
             <large>
         ',
         ($user_code_approved ?
