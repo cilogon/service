@@ -265,7 +265,13 @@ define('BYPASS_IDP_ARRAY', array(
 /**
  * This array contains OAuth2/OIDC client URIs that are allowed to bypass
  * the 'Select an Identity Provider' page when passing 'idphint=...'
- * (a.k.a., 'selected_idp=...').
+ * (a.k.a., 'selected_idp=...'). Each array key/value pair has the following 
+ * format:
+ *
+ *     'URI' => '1'
+ *
+ * This is to store the URIs in the 'keys' of the array rather than in 
+ * the 'values'.
  *
  * The URI must be a PHP PCRE (Perl-Compatible Regular Expression). See
  * http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
@@ -291,18 +297,18 @@ define('BYPASS_IDP_ARRAY', array(
  *       ALLOW_BYPASS_ARRAY.
  */
 define('ALLOW_BYPASS_ARRAY', array(
-    '%cilogon:/client_id/3cbc990448f1ea8df6ebe128b101d84c%',
-    '%cilogon:/client_id/d00f2e2f70cbcd8ea1cab897f946e3a%',
-    '%cilogon:/client_id/1883125fe1207b080e5005123bcc0beb%',
-    '%cilogon:/client_id/4f41b3c617a2bee2d538a7d09e801f42%',
-    '%cilogon:/client_id/4b7cd25266231fe4328dd5596d9dd0a3%',
-    '%cilogon:/client_id/2aa1d47daf2964397668e3a64c9ec287%',
-    '%cilogon:/client_id/6cbd814fd631ce99a95436705822cb2%',
-    '%cilogon:/client_id/d37bc71195aafc638cfc083250cb802%',
-    '%cilogon:/client_id/599ebdd631fca76a8d88850dab8569c3%',
-    '%cilogon:/client_id/2b78cb3963dd8f5745bd34729d13ecea%',
-    '%^https://flywheel-(dev|prod)\.auth0\.com/.*$%',
-    '%^https://.*\.flywheel.io/.*$%',
+    '%cilogon:/client_id/3cbc990448f1ea8df6ebe128b101d84c%' => '1',
+    '%cilogon:/client_id/d00f2e2f70cbcd8ea1cab897f946e3a%' => '1',
+    '%cilogon:/client_id/1883125fe1207b080e5005123bcc0beb%' => '1',
+    '%cilogon:/client_id/4f41b3c617a2bee2d538a7d09e801f42%' => '1',
+    '%cilogon:/client_id/4b7cd25266231fe4328dd5596d9dd0a3%' => '1',
+    '%cilogon:/client_id/2aa1d47daf2964397668e3a64c9ec287%' => '1',
+    '%cilogon:/client_id/6cbd814fd631ce99a95436705822cb2%' => '1',
+    '%cilogon:/client_id/d37bc71195aafc638cfc083250cb802%' => '1',
+    '%cilogon:/client_id/599ebdd631fca76a8d88850dab8569c3%' => '1',
+    '%cilogon:/client_id/2b78cb3963dd8f5745bd34729d13ecea%' => '1',
+    '%^https://flywheel-(dev|prod)\.auth0\.com/.*$%' => '1',
+    '%^https://.*\.flywheel.io/.*$%' => '1',
 ));
 
 /**
