@@ -177,10 +177,10 @@ define('REDLIT_IDP_ARRAY', array(
  * 'Select an Identity Provider' screen and go directly to a specific
  * Identity Provider. Each array key/value pair has the following format:
  *
- *   'URI' => 'entityId'
+ *   'URI_Regex' => 'entityId'
  *
- * The URI must be a PHP PCRE (Perl-Compatible Regular Expression). See
- * http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
+ * The URI regex must be a PHP PCRE (Perl-Compatible Regular Expression).
+ * See http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
  * '%' (percent) is a good choice for delimiter so that slashes do not
  * need to be escaped. Note that period '.' matches any character,
  * so if you want to match a dot, prefix with a backslash, e.g., '\.' .
@@ -199,82 +199,28 @@ define('REDLIT_IDP_ARRAY', array(
  * It replaces the complex skin configuration which required a combination
  * of <forceinitialidp>, <allowforceinitialidp>, and <portallist>.
  */
+/*
 define('BYPASS_IDP_ARRAY', array(
-    '%^https://iam.scigap.org/auth/realms/virginaaccord/broker/cilogon/endpoint%' =>
-        'urn:mace:incommon:virginia.edu',
-    '%^https://iam.scigap.org/auth/realms/iugateway/broker/cilogon/endpoint%' =>
-        'urn:mace:incommon:iu.edu',
-    '%^https://iam.scigap.org/auth/realms/georgiastate/broker/cilogon/endpoint%' =>
-        'https://idp.gsu.edu/idp/shibboleth',
-    '%^https://iam.scigap.org/auth/realms/university-of-kentucky-hpc-gateway/broker/cilogon/endpoint%' =>
-        'https://ukidp.uky.edu/idp/shibboleth',
-    '%^https://iam.scigap.org/auth/realms/nanoconfinement/broker/cilogon/endpoint%' =>
-        'urn:mace:incommon:iu.edu',
-    '%^https://iam.scigap.org/auth/realms/new-mexico-state/broker/cilogon/endpoint%' =>
-        'https://myidp.nmsu.edu',
-    '%^https://iam.scigap.org/auth/realms/oscer/broker/cilogon/endpoint%' =>
-        'https://shib.ou.edu/idp/shibboleth',
-    '%^https://iam.scigap.org/auth/realms/southdakota/broker/cilogon/endpoint%' =>
-        'https://usd-shibboleth.usd.edu/idp/shibboleth',
-    '%^https://iam.scigap.org/auth/realms/southill/broker/cilogon/endpoint%' =>
-        'https://shib-idp.siu.edu/idp/shibboleth',
-    '%^https://iam.scigap.org/auth/realms/alabama-birmingham/broker/cilogon/endpoint%' =>
-        'urn:mace:incommon:uab.edu',
-    '%^https://iam.scigap.org/auth/realms/utah/broker/cilogon/endpoint%' =>
-        'urn:mace:incommon:utah.edu',
-    '%^https://bhr-test.internal.ncsa.edu/oidc/callback/%' =>
-        'https://idp.ncsa.illinois.edu/idp/shibboleth',
     '%^https://bhr.security.ncsa.illinois.edu/oidc/callback/%' =>
         'https://idp.ncsa.illinois.edu/idp/shibboleth',
-    '%^https://portal-dev.security.internal.ncsa.edu/oidc/callback/%' =>
-        'https://idp.ncsa.illinois.edu/idp/shibboleth',
-    '%^https://portal.security.ncsa.illinois.edu/oidc/callback/%' =>
-        'https://idp.ncsa.illinois.edu/idp/shibboleth',
-    '%^https://rpz.security.ncsa.illinois.edu/oidc/callback/%' =>
-        'https://idp.ncsa.illinois.edu/idp/shibboleth',
-    '%^https://iamdev.scigap.org/auth/realms/usd/broker/usd/endpoint%' =>
-        'https://usd-shibboleth.usd.edu/idp/shibboleth',
-    '%^https://iam.scigap.org/auth/realms/sdstate/broker/sdsu/endpoint%' =>
-        'https://icarus.sdstate.edu/idp/shibboleth',
-    '%^https://iam.scigap.org/auth/realms/pfec-hydro/broker/cilogon/endpoint%' =>
-        'urn:mace:incommon:iu.edu',
-    '%^cilogon:/client_id/5b8f6c5e89b58adf254a2cece1254b13%' =>
-        'https://idp.xsede.org/idp/shibboleth',
-    '%^cilogon:/client_id/7126656af0c274e97e17f3d968faba5e%' =>
-        'https://idp.xsede.org/idp/shibboleth',
-    '%^cilogon:/client_id/79d280aef88dd3c97bb1cd92f8217286%' =>
-        'https://sts.windows.net/06219a4a-a835-44d5-afaf-3926343bfb89/',
-    '%^cilogon:/client_id/5b59cd113d4fe9d6f1454980bf3ab03d%' =>
-        'https://idp.ncsa.illinois.edu/idp/shibboleth',
-    '%^cilogon:/client_id/12b77745770e646765d4ec35427bd6c6%' =>
-        'https://idp.ncsa.illinois.edu/idp/shibboleth',
-    '%^cilogon:/client_id/115c69b0718c2630ae61e53ae7feef2f%' =>
-        'https://idp.ncsa.illinois.edu/idp/shibboleth',
-    '%^cilogon:/client_id/3633784886da46c030a882afccad399d%' =>
-        'https://idp.ncsa.illinois.edu/idp/shibboleth',
-    '%^cilogon:/client_id/64d029bb7ea79ffcb29314be1edda9f0%' =>
-        'https://idp.ncsa.illinois.edu/idp/shibboleth',
-    '%^cilogon:/client_id/15d9cd833471282ec022b8ba77d6954c%' =>
-        'https://idp.ncsa.illinois.edu/idp/shibboleth',
-    '%^cilogon:/client_id/14e8476b5d25dd7bfbe9d1729553bf85%' =>
-        'https://idp.ncsa.illinois.edu/idp/shibboleth',
-    '%^cilogon:/client_id/4c35e35aa6ff277bafdf7940a545a8%' =>
+    '%^cilogon:/client_id/1234567890%' =>
         'https://idp.xsede.org/idp/shibboleth',
 ));
+*/
 
 /**
  * This array contains OAuth2/OIDC client URIs that are allowed to bypass
  * the 'Select an Identity Provider' page when passing 'idphint=...'
- * (a.k.a., 'selected_idp=...'). Each array key/value pair has the following 
+ * (a.k.a., 'selected_idp=...'). Each array key/value pair has the following
  * format:
  *
- *     'URI' => '1'
+ *     'URI_REGEX' => '1'
  *
- * This is to store the URIs in the 'keys' of the array rather than in 
+ * This is to store the URIs in the 'keys' of the array rather than in
  * the 'values'.
  *
- * The URI must be a PHP PCRE (Perl-Compatible Regular Expression). See
- * http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
+ * The URI regex must be a PHP PCRE (Perl-Compatible Regular Expression).
+ * See http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
  * '%' (percent) is a good choice for delimiter so that slashes do not
  * need to be escaped. Note that period '.' matches any character,
  * so if you want to match a dot, prefix with a backslash, e.g., '\.' .
@@ -296,29 +242,21 @@ define('BYPASS_IDP_ARRAY', array(
  *       BYPASS_IDP_ARRAY, that IdP takes precedence over a match in
  *       ALLOW_BYPASS_ARRAY.
  */
+/*
 define('ALLOW_BYPASS_ARRAY', array(
-    '%cilogon:/client_id/3cbc990448f1ea8df6ebe128b101d84c%' => '1',
-    '%cilogon:/client_id/d00f2e2f70cbcd8ea1cab897f946e3a%' => '1',
-    '%cilogon:/client_id/1883125fe1207b080e5005123bcc0beb%' => '1',
-    '%cilogon:/client_id/4f41b3c617a2bee2d538a7d09e801f42%' => '1',
-    '%cilogon:/client_id/4b7cd25266231fe4328dd5596d9dd0a3%' => '1',
-    '%cilogon:/client_id/2aa1d47daf2964397668e3a64c9ec287%' => '1',
-    '%cilogon:/client_id/6cbd814fd631ce99a95436705822cb2%' => '1',
-    '%cilogon:/client_id/d37bc71195aafc638cfc083250cb802%' => '1',
-    '%cilogon:/client_id/599ebdd631fca76a8d88850dab8569c3%' => '1',
-    '%cilogon:/client_id/2b78cb3963dd8f5745bd34729d13ecea%' => '1',
-    '%^https://flywheel-(dev|prod)\.auth0\.com/.*$%' => '1',
+    '%cilogon:/client_id/1234567890%' => '1',
     '%^https://.*\.flywheel.io/.*$%' => '1',
 ));
+*/
 
 /**
  * This array contains IdPs and Portals that should have a skin
  * applied by force. Each array key/value pair has the following format:
  *
- *    'URI' => 'skinname'
+ *    'URI_Regex' => 'skinname'
  *
- * The URI must be a PHP PCRE (Perl-Compatible Regular Expression). See
- * http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
+ * The URI regex must be a PHP PCRE (Perl-Compatible Regular Expression).
+ * See http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
  * '%' (percent) is a good choice for delimiter so that slashes do not
  * need to be escaped. Note that period '.' matches any character,
  * so if you want to match a dot, prefix with a backslash, e.g., '\.' .
@@ -334,52 +272,12 @@ define('ALLOW_BYPASS_ARRAY', array(
  * In the case that multiple entries match, the skinname for the
  * first match in the list above wins. Skinname is case-insensitive.
  */
+/*
 define('FORCE_SKIN_ARRAY', array(
-    '%^https://login\d?\.ligo\.org/idp/shibboleth%' => 'ligo',
-    '%^https://.*\.?seedme\.org%' => 'seedme',
-    '%^https://redivis\.com/userRequirements/oauth2/authorize%' => 'redivis',
-    '%^https://clowder.ncsa.illinois.edu/clowder/authenticate/cilogon%' => 'ncsa',
-    '%^myproxy:oa4mp,2012:/client_id/63408f84f8ba20d1446336ee1f330a0e%' => 'fairdata',
-    '%^https://identity.lsst.org/cilogon-result%' => 'lsst',
-    '%^https://registry.gw-astronomy.org/secure/redirect%' => 'gwastro',
-    '%^https://registry-test.gw-astronomy.org/secure/redirect%' => 'gwastro',
-    '%^https://registry-dev.gw-astronomy.org/secure/redirect%' => 'gwastro',
-    '%^https://gw-astronomy-dev.cilogon.org/secure/redirect%' => 'gwastro',
-    '%^cilogon:/client_id/35ea6130bd4fea11367ba02fcaf2da48%' => 'nih',
-    '%^cilogon:/client_id/2ce2d2377dc96beb216c08a5e6ef8726%' => 'nih',
-    '%^cilogon:/client_id/5669cffc68ac9b0c2c05275a9499bf64%' => 'nih',
-    '%^cilogon:/client_id/29c11c3e800cfa611eeda42891e52274%' => 'nih',
-    '%^cilogon:/client_id/77b8fe3403f8901a11ed613050e00092%' => 'nih',
-    '%^cilogon:/client_id/78b7ae39b2d4e6190ffa866013ec8ad4%' => 'nih',
-    '%^cilogon:/client_id/4052f88f2de770162e1451873b367a61%' => 'nih',
-    '%^cilogon:/client_id/71998e36fea6792d48234ca38958d48%' => 'nih',
-    '%^cilogon:/client_id/112d2f5ffcb986660e0e57e7bcf72a4e%' => 'nih',
-    '%^cilogon:/client_id/620b5873fda93e285ea48ad5b09568d2%' => 'nih',
-    '%^cilogon:/client_id/5e918a48b3f70beaed24a2c1bb2dbc34%' => 'nih',
-    '%^cilogon:/client_id/1ca80460249331360475a24b81079e68%' => 'nih',
-    '%^cilogon:/client_id/4a4fed754f3bcfdb2c75ab850be8c2c4%' => 'nih',
-    '%^cilogon:/client_id/40da4844bd5bf5baf29b4c252c49ee7c%' => 'nih',
-    '%^cilogon:/client_id/730421ec502c1384a99cc439e412d7a7%' => 'nih',
-    '%^cilogon:/client_id/38afed60f24d0f627a23edf10314e097%' => 'nih',
-    '%^cilogon:/client_id/1c1d1a81042a9bf082450c40e11c8de5%' => 'nih',
-    '%^cilogon:/client_id/9ee5d18fb1b2c41994ddefff65f2cb0%' => 'nih',
-    '%^cilogon:/client_id/3c8751d0ad6e3e8e3ec49db87334510b%' => 'nih',
-    '%^cilogon:/client_id/56727d508077d1402cdcc66714ecf5ef%' => 'orcidfirst',
-    '%^cilogon:/client_id/3176b0133ec1efa8090dcf11ad96877f%' => 'mit',
-    '%^https://.*\.scimma\.org/.*$%' => 'scimma',
-    '%^cilogon:/client_id/3c7e9528486a4ab9f141cf7379a7f54a%' => 'classtranscribe',
-    '%^cilogon:/client_id/3d39b5d80d2b72ca8a447fd5c7dc5192%' => 'scimma',
-    '%^https://flywheel-dev\.auth0\.com/.*$%' => 'flywheeldev',
-    '%^https://flywheel-prod\.auth0\.com/.*$%' => 'flywheel',
-    '%^https://login\.dev\.flywheel.io/.*$%' => 'flywheeldev',
-    '%^https://login\.flywheel.io/.*$%' => 'flywheel',
-    '%^cilogon:/client_id/4b370b40d53f6e5df260655f865d7a2b%' => 'jupyterhubnautilus',
-    '%^cilogon:/client_id/71c3e4838b64770cd0d8d5025ec6957b%' => 'xsede',
-    '%^cilogon:/client_id/4c35e35aa6ff277bafdf7940a545a8%' => 'xsede',
-    '%^https://.*\.biocommons\.org\.au/.*$%' => 'biocommons',
-    '%^cilogon:/client_id/34d5fb28439d1cf2fabdc8172c776722%' => 'mess',
-    '%^cilogon:/client_id/7736935ccc1dfc779013a4206ca405ea%' => 'googlegithub',
+    '%^cilogon:/client_id/1234567890%' => 'xsede',
+    '%^https://.*\.flywheel.io/.*$%' => 'flywheel',
 ));
+*/
 
 /**
  * CIL-975 This is an array of Active Directory IdP entityIDs which have
