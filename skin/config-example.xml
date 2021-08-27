@@ -127,6 +127,21 @@
   -->
 
 
+  <!-- <favicon> and <favicontype>
+       If specified, <favicon> is the web-relative path of the favorite icon
+       which appears in tabs and bookmarks. It is assumed that the file type
+       is .ico which has a type of "image/ico". If the file type is something
+       else such as png or gif, you must also set <favicontype> to be
+       image/ico to let the browser know the different type. Otherwise, the
+       favicon type defaults to image/x-icon which is appropriate for .ico
+       files.
+  -->
+  <!--
+  <favicon>/images/favicon-xsede.ico</favicon>
+  <favicontype>image/ico</favicontype>
+  -->
+
+
   <!-- <pkcs12>
        This block contains options specific to the "Get New Certificate" box
        (i.e. download a PKCS12 credential).
