@@ -93,6 +93,9 @@ define('HOSTNAME_ARRAY', array(
     'polob.ncsa.illinois.edu' => 'polo2.cilogon.org' ,
     'poloc.ncsa.illinois.edu' => 'test.cilogon.org' ,
     'polod.ncsa.illinois.edu' => 'dev.cilogon.org' ,
+    'poloj.ncsa.illinois.edu' => 'polo1.cilogon.org' ,
+    'polok.ncsa.illinois.edu' => 'polo2.cilogon.org' ,
+    'polol.ncsa.illinois.edu' => 'test.cilogon.org' ,
     'fozzie.nics.utk.edu'     => 'polo3.cilogon.org' ,
 ));
 

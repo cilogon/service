@@ -2,7 +2,7 @@
 
 $hostname = 'cilogon.org';
 $localhost = php_uname('n');
-if (in_array($localhost, [ 'poloc.ncsa.illinois.edu' ])) {
+if (in_array($localhost, [ 'poloc.ncsa.illinois.edu', 'polol.ncsa.illinois.edu' ])) {
     $hostname = 'test.cilogon.org';
 } elseif (in_array($localhost, [ 'polod.ncsa.illinois.edu' ])) {
     $hostname = 'dev.cilogon.org';
