@@ -182,7 +182,7 @@ function printMainPage()
                 $log->info("USAGE email=\"$email\" client=\"$clientname\"");
                 Util::logXSEDEUsage($clientname, $email);
             } else { // dbService returned error for setTransactionState
-                $errstr = ((is_null($dbs->status)) ? '' : getDeviceErrorStr($dbs_status));
+                $errstr = ((is_null($dbs->status)) ? '' : getDeviceErrorStr($dbs->status));
                 Util::sendErrorAlert(
                     'dbService Error',
                     'Error calling dbservice action "setTransactionState" in ' .
