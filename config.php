@@ -293,6 +293,18 @@ define('ADFS_IDP_ARRAY', array(
 ));
 
 /**
+ * CIL-1080 This is an array of IdP entityIDs which should not be shown in 
+ * the "Select an Identity Provider" list, but still be present in 
+ * idplist.json/xml. This allows problematic entityIDs to pass the 
+ * "greenlit" test, but not be selectable by end-users (e.g., when the 
+ * Indiana University IdP asserts an Issuer which is different from their 
+ * entityId.
+ */
+define('HIDE_IDP_ARRAY', array(
+    'urn:mace:incommon:iu.edu',
+));
+
+/**
  * When a new LIGO user attempts to use cilogon.org, an alert is sent to
  * both EMAIL_ALERTS and cilogon-alerts@ligo.org to let them know that
  * the new user needs to be added to the LIGO IdP. However, some users are

@@ -46,6 +46,13 @@ if ($idplist !== false) { // Verify we read in idplist.xml file
     }
 
     foreach ($idps as $entityId => $names) {
+        // CIL-1080 If the entityId is in the HIDE_IDP_ARRAY, skip it.
+        if (
+            (defined('HIDE_IDP_ARRAY')) &&
+            (in_array($entityId, HIDE_IDP_ARRAY))
+        ) {
+            continue;
+        }
         $idparray[] = array(
             'EntityID' => $entityId,
             'OrganizationName' => $names['Organization_Name'],
