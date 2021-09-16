@@ -21,7 +21,6 @@ echo '{
   "service_documentation": "https://www.cilogon.org/oidc",
   "response_types_supported": [
     "code",
-    "token",
     "id_token"
   ],
   "response_modes_supported": [
