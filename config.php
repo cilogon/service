@@ -100,6 +100,12 @@ define('HOSTNAME_ARRAY', array(
 ));
 
 /**
+ * If HOSTNAME_FOOTER is defined as 'true', the local hostname will be 
+ * output below the page footer in transparent text.
+ */
+define('HOSTNAME_FOOTER', false);
+
+/**
  * The destination email addresses for "help" and "alerts" mails.
  */
 define('EMAIL_HELP', 'help@cilogon.org');
