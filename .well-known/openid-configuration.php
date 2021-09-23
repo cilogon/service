@@ -31,7 +31,7 @@ echo '{
   "grant_types_supported": [
     "authorization_code",
     "refresh_token",
-    "urn:ietf:params:grant_type:token_exchange",
+    "urn:ietf:params:grant-type:token-exchange",
     "urn:ietf:params:oauth:grant-type:device_code"
   ],
   "subject_types_supported": [
