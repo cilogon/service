@@ -34,4 +34,10 @@
     <forceremember>1</forceremember>
   </delegate>
 
+  <!-- CIL-1032 Block IdPs with name of "idp" or "IdP Proxy" -->
+  <idpredlit>
+    <idp>https://idp.omren.om/idp</idp>
+    <idp>https://discovery.omren.om/simplesaml/saml2/idp/metadata.php</idp>
+  </idpredlit>
+
 </config>
