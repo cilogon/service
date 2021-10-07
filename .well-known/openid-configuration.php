@@ -17,6 +17,7 @@ echo '{
   "registration_endpoint": "https://' , $hostname , '/oauth2/oidc-cm",
   "token_endpoint": "https://' , $hostname , '/oauth2/token",
   "userinfo_endpoint": "https://' , $hostname , '/oauth2/userinfo",
+  "introspection_endpoint": "https://' , $hostname , '/oauth2/introspect",
   "jwks_uri": "https://' , $hostname , '/oauth2/certs",
   "service_documentation": "https://www.cilogon.org/oidc",
   "response_types_supported": [
