@@ -55,6 +55,10 @@ echo '{
     "client_secret_basic",
     "client_secret_post"
   ],
+  "code_challenge_methods_supported": [
+    "plain",
+    "S256"
+  ],
   "claims_supported" : [
     "acr",
     "affiliation",
