@@ -380,10 +380,6 @@ function verifyOIDCParams()
                             // JSON token, or there was no 'code' found in
                             // the returned JSON token.
                             $errortxt = getErrorStatusText($output, $clientparams);
-                            if (preg_match('/status=(\d+)/', $output, $matches)) {
-                                $errnum = $matches[1];
-                            }
-
                             $log->error('Error in verifyOIDCParams(): ' .
                                 (!empty($errortxt) ? $errortxt :
                                 'The OA4MP OIDC authorization endpoint ' .
@@ -394,25 +390,23 @@ function verifyOIDCParams()
                                     "Returned output = $output" : '')) .
                                 ' curl_getinfo = ' . json_encode($info) .
                                 ' clientparams = ' . json_encode($clientparams));
-                            if (
-                                (empty($errortxt)) ||
-                                (!in_array($errnum, DBService::$CLIENT_ERRORS))
-                            ) {
-                                Util::sendErrorAlert(
-                                    'OA4MP OIDC authz endpoint error',
-                                    (!empty($errortxt) ? $errortxt :
-                                    'The OA4MP OIDC authorization endpoint ' .
-                                    'returned an HTTP response 200, but either ' .
-                                    'the output was not a valid JSON token, or ' .
-                                    'there was no "code" in the JSON token. ' .
-                                    ((strlen($output) > 0) ?
-                                        "\n\nReturned output =\n$output" : '')) .
-                                    "\n\n" .
-                                    'curl_getinfo = ' . print_r($info, true) . "\n\n" .
-                                    'clientparams = ' . print_r($clientparams, true) .
-                                    "\n"
-                                );
-                            }
+                            // CIL-1098 Stop sending so many error emails
+                            /*
+                            Util::sendErrorAlert(
+                                'OA4MP OIDC authz endpoint error',
+                                (!empty($errortxt) ? $errortxt :
+                                'The OA4MP OIDC authorization endpoint ' .
+                                'returned an HTTP response 200, but either ' .
+                                'the output was not a valid JSON token, or ' .
+                                'there was no "code" in the JSON token. ' .
+                                ((strlen($output) > 0) ?
+                                    "\n\nReturned output =\n$output" : '')) .
+                                "\n\n" .
+                                'curl_getinfo = ' . print_r($info, true) . "\n\n" .
+                                'clientparams = ' . print_r($clientparams, true) .
+                                "\n"
+                            );
+                            */
                             Util::setSessionVar(
                                 'client_error_msg',
                                 'There was an unrecoverable error during the transaction. ' .
@@ -730,15 +724,9 @@ function getErrorStatusText($output, $clientparams)
             $errtxt = "Unsupported response_mode parameter.";
         }
 
-        // CIL-697 The OA4MP code should eventually return an
-        // "error_description=..." field that can give detailed error text to
-        // replace the default text associated with STATUS_INTERNAL_ERROR.
-        // CIL-909 Use the error_description field only if $errtxt is still
-        // empty, OR if the $errstr was STATUS_CREATE_TRANSACTION_FAILED
-        // (i.e., "Failed to initialize OIDC flow.").
+        // CIL-909 Use the error_description field if $errtxt is still empty.
         if (
-            ((strlen($errtxt) == 0) ||
-             ($errstr == 'STATUS_CREATE_TRANSACTION_FAILED')) &&
+            (strlen($errtxt) == 0) &&
             (preg_match('/error_description=([^\r\n]+)/', $output, $matches))
         ) {
             $errtxt = urldecode($matches[1]);
