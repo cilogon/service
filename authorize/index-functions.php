@@ -410,7 +410,6 @@ function verifyOIDCParams()
                             Util::setSessionVar(
                                 'client_error_msg',
                                 'There was an unrecoverable error during the transaction. ' .
-                                'CILogon system administrators have been notified. ' .
                                 (!empty($errortxt) ? "<p><b>Error message: $errortxt</b><p>" : '')
                             );
                             $clientparams = array();
@@ -615,7 +614,7 @@ function verifyOIDCParams()
             'It appears that an OpenID Connect client attempted to ' .
             'initiate a session with the CILogon Service, but at least ' .
             'one of the requried parameters (' . $missing . ') ' .
-            'was missing. CILogon system administrators have been notified.'
+            'was missing.'
         );
         $clientparams = array();
 
