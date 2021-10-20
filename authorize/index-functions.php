@@ -346,7 +346,7 @@ function verifyOIDCParams()
                 $log->error('Error in verifyOIDCParams(): ' .
                     'cUrl Error = ' .  curl_error($ch) .
                     ', URL Accessed = ' . $url .
-                    'clientparams = ' . print_r($clientparams, true));
+                    'clientparams = ' . json_encode($clientparams));
                 Util::sendErrorAlert(
                     'cUrl Error',
                     'cUrl Error    = ' . curl_error($ch) . "\n" .
@@ -381,13 +381,13 @@ function verifyOIDCParams()
                                 $log->error('Error in verifyOIDCParams(): ' .
                                     'Error getting OIDC client parameters ' .
                                     'for client_id="' .
-                                    $clientparams['client_id'] . '"');
+                                    @$clientparams['client_id'] . '"');
                                 Util::sendErrorAlert(
                                     'getOIDCClientParams Error',
                                     'Error getting OIDC client parameters ' .
                                     'in verifyOIDCParams() function for ' .
                                     'client_id="' .
-                                    $clientparams['client_id'] . '".'
+                                    @$clientparams['client_id'] . '".'
                                 );
                                 $clientparams = array();
                             }
@@ -398,16 +398,15 @@ function verifyOIDCParams()
                             $errortxt = getErrorStatusText($output, $clientparams);
 
                             $log->error('Error in verifyOIDCParams(): ' .
-                                (!empty($errortxt) ? print_r($errortxt, true) :
+                                (!empty($errortxt) ? $errortxt :
                                 'The OA4MP OIDC authorization endpoint ' .
                                 'returned an HTTP response 200, but either ' .
                                 'the output was not a valid JSON token, or ' .
                                 'there was no "code" in the JSON token. ' .
                                 ((strlen($output) > 0) ?
                                     "Returned output = $output" : '')) .
-                                ' curl_getinfo = ' . print_r($info, true) .
-                                ' clientparams = ' .
-                                print_r($clientparams, true));
+                                ' curl_getinfo = ' . json_encode($info) .
+                                ' clientparams = ' . json_encode($clientparams));
                             Util::sendErrorAlert(
                                 'OA4MP OIDC authz endpoint error',
                                 (!empty($errortxt) ? $errortxt :
@@ -515,8 +514,8 @@ function verifyOIDCParams()
                             'an HTTP response other than 200 or 302. ' .
                             ((strlen($output) > 0) ?
                                 "Returned output = $output" : '') .
-                            ' curl_getinfo = ' . print_r($info, true) .
-                            ' clientparams = ' . print_r($clientparams, true));
+                            ' curl_getinfo = ' . json_encode($info) .
+                            ' clientparams = ' . json_encode($clientparams));
                         Util::sendErrorAlert(
                             'OA4MP OIDC authz endpoint error',
                             'The OA4MP OIDC authorization endpoint returned ' .
@@ -612,7 +611,7 @@ function verifyOIDCParams()
             'The CILogon OIDC authorization endpoint received a request ' .
             'from an OIDC client, but at least one of the required ' .
             'parameters (' . $missing . ') was missing. ' .
-            'clientparams = ' . print_r($clientparams, true));
+            'clientparams = ' . json_encodde($clientparams));
         // CIL-1098 Don't send errors for client-initiated errors
         /*
         Util::sendErrorAlert(
