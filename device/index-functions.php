@@ -183,7 +183,7 @@ function printMainPage()
                 Util::logXSEDEUsage($clientname, $email);
             } else { // dbService returned error for setTransactionState
                 $errstr = ((is_null($dbs->status)) ? '' : getDeviceErrorStr($dbs->status));
-                $log->error('In device::printMainPage(): ' .
+                $log->error('Error in device::printMainPage(): ' .
                     'Error calling dbservice action "setTransactionState". ' .
                     $errstr);
                 // CIL-1098 Don't send errors for client-initiated errors

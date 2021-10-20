@@ -207,7 +207,7 @@ function printMainPage()
             'Unable%20to%20associate%20user%20UID%20with%20OIDC%20code' .
             ((isset($clientparams['state'])) ?
                 '&state=' . $clientparams['state'] : '');
-        $log->error('In authorize::printMainPage(): ' .
+        $log->error('Error in authorize::printMainPage(): ' .
             'Error calling dbservice action "setTransactionState". ' .
             $errstr . ' Redirected to ' . $redirect);
         // CIL-1098 Don't send errors for client-initiated errors
@@ -284,7 +284,7 @@ function verifyOIDCParams()
         (DISABLE_X509 === true) &&
         (preg_match('/edu.uiuc.ncsa.myproxy.getcert/', $scope))
     ) {
-        $log->error('In verifyOIDCParams(): The CILogon OIDC ' .
+        $log->error('Error in verifyOIDCParams(): The CILogon OIDC ' .
             'authorization endpoint received a request including the ' .
             '"edu.ncsa.uiuc.myproxy.getcert" scope, but the server ' .
             'is configured with DISABLE_X509 to prevent downloading ' .
@@ -314,7 +314,7 @@ function verifyOIDCParams()
     } elseif (isset($clientparams['redirect_uri'])) {
         $ch = curl_init();
         if (!defined('OAUTH2_CREATE_TRANSACTION_URL')) { // Should not happen
-            $log->error('In verifyOIDCParams(): ' .
+            $log->error('Error in verifyOIDCParams(): ' .
                 'OAUTH2_CREATE_TRANSACTION_URL has not been defined.');
             Util::sendErrorAlert(
                 'OAuth2 Create Transaction Error',
@@ -343,7 +343,7 @@ function verifyOIDCParams()
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false); // Catch redirects
             $output = curl_exec($ch);
             if (curl_errno($ch)) { // Send alert on curl errors
-                $log->error('In verifyOIDCParams(): ' .
+                $log->error('Error in verifyOIDCParams(): ' .
                     'cUrl Error = ' .  curl_error($ch) .
                     ', URL Accessed = ' . $url .
                     'clientparams = ' . print_r($clientparams, true));
@@ -378,7 +378,7 @@ function verifyOIDCParams()
                             $clientparams['code'] = $json['code'];
                             // CIL-618 Read OIDC client info from database
                             if (!Util::getOIDCClientParams($clientparams)) {
-                                $log->error('In verifyOIDCParams(): ' .
+                                $log->error('Error in verifyOIDCParams(): ' .
                                     'Error getting OIDC client parameters ' .
                                     'for client_id="' .
                                     $clientparams['client_id'] . '"');
@@ -397,14 +397,14 @@ function verifyOIDCParams()
                             // the returned JSON token.
                             $errortxt = getErrorStatusText($output, $clientparams);
 
-                            $log->error('In verifyOIDCParams(): ' .
-                                (!empty($errortxt) ? $errortxt :
+                            $log->error('Error in verifyOIDCParams(): ' .
+                                (!empty($errortxt) ? print_r($errortxt, true) :
                                 'The OA4MP OIDC authorization endpoint ' .
                                 'returned an HTTP response 200, but either ' .
                                 'the output was not a valid JSON token, or ' .
                                 'there was no "code" in the JSON token. ' .
                                 ((strlen($output) > 0) ?
-                                    "Returned output =$output" : '')) .
+                                    "Returned output = $output" : '')) .
                                 ' curl_getinfo = ' . print_r($info, true) .
                                 ' clientparams = ' .
                                 print_r($clientparams, true));
@@ -474,7 +474,7 @@ function verifyOIDCParams()
                                 header("Location: $redirect_url");
                                 exit; // No further processing necessary
                             } else { // Weird params - Should never get here!
-                                $log->error('In verifyOIDCParams(): ' .
+                                $log->error('Error in verifyOIDCParams(): ' .
                                     'OA4MP OIDC 302 Error');
                                 Util::sendErrorAlert(
                                     'OA4MP OIDC 302 Error',
@@ -490,7 +490,7 @@ function verifyOIDCParams()
                                 $clientparams = array();
                             }
                         } else { // parse_url($redirect_url) gave error
-                            $log->error('In verifyOIDCParams(): ' .
+                            $log->error('Error in verifyOIDCParams(): ' .
                                 'parse_url(redirect_url) error');
                             Util::sendErrorAlert(
                                 'parse_url(redirect_url) error',
@@ -510,11 +510,11 @@ function verifyOIDCParams()
                         // possibly by outputting HTML. If so, then we
                         // ignore it and output our own error message to the
                         // user.
-                        $log->error('In verifyOIDCParams(): ' .
+                        $log->error('Error in verifyOIDCParams(): ' .
                             'The OA4MP OIDC authorization endpoint returned ' .
                             'an HTTP response other than 200 or 302. ' .
                             ((strlen($output) > 0) ?
-                                "Returned output =$output" : '') .
+                                "Returned output = $output" : '') .
                             ' curl_getinfo = ' . print_r($info, true) .
                             ' clientparams = ' . print_r($clientparams, true));
                         Util::sendErrorAlert(
@@ -569,7 +569,7 @@ function verifyOIDCParams()
                         $clientparams = array();
                     }
                 } else { // curl_getinfo() returned false - should not happen
-                    $log->error('In verifyOIDCParams(): curl_getinfo error');
+                    $log->error('Error in verifyOIDCParams(): curl_getinfo error');
                     Util::sendErrorAlert(
                         'curl_getinfo error',
                         'When attempting to talk to the OA4MP OIDC ' .
@@ -582,7 +582,7 @@ function verifyOIDCParams()
             }
             curl_close($ch);
         } else { // curl_init() returned false - should not happen
-            $log->error('In verifyOIDCParams(): curl_init error');
+            $log->error('Error in verifyOIDCParams(): curl_init error');
             Util::sendErrorAlert(
                 'curl_init error',
                 'When attempting to talk to the OA4MP OIDC authorization ' .
@@ -608,7 +608,7 @@ function verifyOIDCParams()
             ((isset($clientparams['client_id'])) ? '' : ', client_id') .
             ((isset($clientparams['scope'])) ? '' : ', scope') .
             ((isset($clientparams['response_type'])) ? '' : ', response_type');
-        $log->error('In verifyOIDCParams(): ' .
+        $log->error('Error in verifyOIDCParams(): ' .
             'The CILogon OIDC authorization endpoint received a request ' .
             'from an OIDC client, but at least one of the required ' .
             'parameters (' . $missing . ') was missing. ' .
