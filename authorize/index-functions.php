@@ -197,10 +197,7 @@ function printMainPage()
         $log->info("USAGE email=\"$email\" client=\"$clientname\"");
         Util::logXSEDEUsage($clientname, $email);
     } else { // dbservice error
-        $errstr = '';
-        if (!is_null($dbs->status)) {
-            $errstr = @DBService::$STATUS_TEXT[array_search($dbs->status, DBService::$STATUS)];
-        }
+        $errstr = $dbs->statusText();
         $redirect = 'Location: ' . $clientparams['redirect_uri'] .
             (preg_match('/\?/', $clientparams['redirect_uri']) ? '&' : '?') .
             'error=server_error&error_description=' .
@@ -211,20 +208,7 @@ function printMainPage()
             'Error calling dbservice action "setTransactionState". ' .
             $errstr . ' Redirected to ' . $redirect);
         // CIL-1098 Don't send errors for client-initiated errors
-        $clienterrors = array(
-            DBService::$STATUS['STATUS_DUPLICATE_PARAMETER_FOUND'],
-            DBService::$STATUS['STATUS_MALFORMED_INPUT_ERROR'],
-            DBService::$STATUS['STATUS_MISSING_PARAMETER_ERROR'],
-            DBService::$STATUS['STATUS_CLIENT_NOT_FOUND'],
-            DBService::$STATUS['STATUS_TRANSACTION_NOT_FOUND'],
-            DBService::$STATUS['STATUS_EXPIRED_TOKEN'],
-            DBService::$STATUS['STATUS_MISSING_CLIENT_ID'],
-            DBService::$STATUS['STATUS_UNKNOWN_CLIENT'],
-            DBService::$STATUS['STATUS_UNAPPROVED_CLIENT'],
-            DBService::$STATUS['STATUS_NO_SCOPES'],
-            DBService::$STATUS['STATUS_MALFORMED_SCOPE'],
-        );
-        if (!in_array($dbs->status, $clienterrors)) {
+        if (!in_array($dbs->status, DBService::$CLIENT_ERRORS)) {
             Util::sendErrorAlert(
                 'dbService Error',
                 'Error calling dbservice action "setTransactionState" in ' .
@@ -396,6 +380,9 @@ function verifyOIDCParams()
                             // JSON token, or there was no 'code' found in
                             // the returned JSON token.
                             $errortxt = getErrorStatusText($output, $clientparams);
+                            if (preg_match('/status=(\d+)/', $output, $matches)) {
+                                $errnum = $matches[1];
+                            }
 
                             $log->error('Error in verifyOIDCParams(): ' .
                                 (!empty($errortxt) ? $errortxt :
@@ -407,20 +394,25 @@ function verifyOIDCParams()
                                     "Returned output = $output" : '')) .
                                 ' curl_getinfo = ' . json_encode($info) .
                                 ' clientparams = ' . json_encode($clientparams));
-                            Util::sendErrorAlert(
-                                'OA4MP OIDC authz endpoint error',
-                                (!empty($errortxt) ? $errortxt :
-                                'The OA4MP OIDC authorization endpoint ' .
-                                'returned an HTTP response 200, but either ' .
-                                'the output was not a valid JSON token, or ' .
-                                'there was no "code" in the JSON token. ' .
-                                ((strlen($output) > 0) ?
-                                    "\n\nReturned output =\n$output" : '')) .
-                                "\n\n" .
-                                'curl_getinfo = ' . print_r($info, true) . "\n\n" .
-                                'clientparams = ' . print_r($clientparams, true) .
-                                "\n"
-                            );
+                            if (
+                                (empty($errortxt)) ||
+                                (!in_array($errnum, DBService::$CLIENT_ERRORS))
+                            ) {
+                                Util::sendErrorAlert(
+                                    'OA4MP OIDC authz endpoint error',
+                                    (!empty($errortxt) ? $errortxt :
+                                    'The OA4MP OIDC authorization endpoint ' .
+                                    'returned an HTTP response 200, but either ' .
+                                    'the output was not a valid JSON token, or ' .
+                                    'there was no "code" in the JSON token. ' .
+                                    ((strlen($output) > 0) ?
+                                        "\n\nReturned output =\n$output" : '')) .
+                                    "\n\n" .
+                                    'curl_getinfo = ' . print_r($info, true) . "\n\n" .
+                                    'clientparams = ' . print_r($clientparams, true) .
+                                    "\n"
+                                );
+                            }
                             Util::setSessionVar(
                                 'client_error_msg',
                                 'There was an unrecoverable error during the transaction. ' .

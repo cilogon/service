@@ -187,20 +187,7 @@ function printMainPage()
                     'Error calling dbservice action "setTransactionState". ' .
                     $errstr);
                 // CIL-1098 Don't send errors for client-initiated errors
-                $clienterrors = array(
-                    DBService::$STATUS['STATUS_DUPLICATE_PARAMETER_FOUND'],
-                    DBService::$STATUS['STATUS_MALFORMED_INPUT_ERROR'],
-                    DBService::$STATUS['STATUS_MISSING_PARAMETER_ERROR'],
-                    DBService::$STATUS['STATUS_CLIENT_NOT_FOUND'],
-                    DBService::$STATUS['STATUS_TRANSACTION_NOT_FOUND'],
-                    DBService::$STATUS['STATUS_EXPIRED_TOKEN'],
-                    DBService::$STATUS['STATUS_MISSING_CLIENT_ID'],
-                    DBService::$STATUS['STATUS_UNKNOWN_CLIENT'],
-                    DBService::$STATUS['STATUS_UNAPPROVED_CLIENT'],
-                    DBService::$STATUS['STATUS_NO_SCOPES'],
-                    DBService::$STATUS['STATUS_MALFORMED_SCOPE'],
-                );
-                if (!in_array($dbs->status, $clienterrors)) {
+                if (!in_array($dbs->status, DBService::$CLIENT_ERRORS)) {
                     Util::sendErrorAlert(
                         'dbService Error',
                         'Error calling dbservice action "setTransactionState"' .
