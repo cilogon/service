@@ -78,6 +78,21 @@ if ($idp == 'https://accounts.google.com/o/oauth2/auth') {
         </div> <!-- end col-auto -->
       </div> <!-- end row align-items-center -->
     ';
+} elseif ($idp == 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize') {
+    echo '
+      <div class="card-text my-2">
+        You can optionally click the link below to log out of Microsoft.
+        However, this will log you out from ALL of your Microsoft accounts.
+        Any current Microsoft sessions in other tabs/windows may be invalidated.
+      </div>
+      <div class="row align-items-center justify-content-center mt-3">
+        <div class="col-auto">
+          <a class="btn btn-primary"
+          href="https://login.microsoftonline.com/common/oauth2/v2.0/logout">(Optional)
+          Logout from Microsoft</a>
+        </div> <!-- end col-auto -->
+      </div> <!-- end row align-items-center -->
+    ';
 } elseif (!empty($idp)) {
     if (empty($idp_display_name)) {
         $idp_display_name = 'your Identity Provider';
@@ -113,7 +128,7 @@ if ($idp == 'https://accounts.google.com/o/oauth2/auth') {
 }
 
 echo '
-    </div> <!-- end card-body -->   
+    </div> <!-- end card-body -->
 ';
 
 Content::printCollapseEnd();

@@ -67,8 +67,13 @@ function getUserAndRespond()
                 );
                 $user = $oauth2->provider->getResourceOwner($token);
                 $oidc = $user->getId();
-                $email = $user->getEmail();
-                $display_name = $user->getName();
+
+                if ($prov == 'microsoft') {
+                    $email = $user->claim('email');
+                } else {
+                    $email = $user->getEmail();
+                    $display_name = $user->getName();
+                }
 
                 if ($prov == 'github') {
                     // GitHub email may require special handling

@@ -41,6 +41,13 @@
 //define('ORCID_OAUTH2_CLIENT_SECRET', '');
 
 /**
+ * For Microsoft/Azure AD OAuth 2.0 settings specific to this application,
+ * go to https://portal.azure.com .
+ */
+//define('MICROSOFT_OAUTH2_CLIENT_ID', '');
+//define('MICROSOFT_OAUTH2_CLIENT_SECRET', '');
+
+/**
  * Secret key for openssl_encrypt/decrypt of portal cookie. If set, must be
  * 16 bytes (chars) long since AES-128-CBC encryption algorithm is used.
  */
