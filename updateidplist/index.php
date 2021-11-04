@@ -81,9 +81,9 @@ if (($incommon_xml = file_get_contents($incommon_url)) === false) {
 // Now, create new idplist.xml and idplist.json files from the
 // InCommon Metadata.
 $tmpxml = $tmpdir . '/idplist.xml';
-$idplist = new IdpList($tmpxml, $tmpincommon, false, 'xml');
-$idplist->create();
-if (!$idplist->write('xml')) {
+$newidplist = new IdpList($tmpxml, $tmpincommon, false, 'xml');
+$newidplist->create();
+if (!$newidplist->write('xml')) {
     $errmsg = "Error: Unable to create temporary idplist.xml file.";
     echo "<p>$errmsg</p>\n";
     mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
@@ -92,8 +92,8 @@ if (!$idplist->write('xml')) {
     return;
 }
 $tmpjson = $tmpdir . '/idplist.json';
-$idplist->setFilename($tmpjson);
-if (!$idplist->write('json')) {
+$newidplist->setFilename($tmpjson);
+if (!$newidplist->write('json')) {
     $errmsg = "Error: Unable to create temporary idplist.json file.";
     echo "<p>$errmsg</p>\n";
     mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
@@ -110,7 +110,7 @@ $oldidplist = new IdpList($idpxml_filename, '', false, 'xml');
 // check for differences, and also look for newly added IdPs.
 $oldidplistempty = true;
 $oldidplistdiff = false;
-$newidpemail = '';
+$idpemail = '';
 if (!empty($oldidplist->idparray)) {
     $oldidplistempty = false;
 
@@ -120,12 +120,12 @@ if (!empty($oldidplist->idparray)) {
         'json_decode',
         array_merge(
             array_diff(
-                array_map('json_encode', $idplist->idparray),
+                array_map('json_encode', $newidplist->idparray),
                 array_map('json_encode', $oldidplist->idparray)
             ),
             array_diff(
                 array_map('json_encode', $oldidplist->idparray),
-                array_map('json_encode', $idplist->idparray)
+                array_map('json_encode', $newidplist->idparray)
             )
         )
     );
@@ -133,55 +133,103 @@ if (!empty($oldidplist->idparray)) {
     if (!empty($diffarray)) {
         $oldidplistdiff = true;
 
+        $oldIdPs = array();
+        $newIdPs = array();
+        $oldEntityIDs = $oldidplist->getEntityIDs();
+        $newEntityIDs = $newidplist->getEntityIDs();
+
         // Check to see if any new IdPs were added to the InCommon metadata.
-        $newIdPList = array();
-        $oldEntityIDList = $oldidplist->getEntityIDs();
-        if (!empty($oldEntityIDList)) {
-            $entityIDList = $idplist->getEntityIDs();
-            foreach ($entityIDList as $value) {
-                if (!in_array($value, $oldEntityIDList)) {
-                    $newIdPList[$value] = 1;
+        if (!empty($oldEntityIDs)) {
+            foreach ($newEntityIDs as $value) {
+                if (!in_array($value, $oldEntityIDs)) {
+                    $newIdPs[$value] = 1;
                 }
             }
         }
 
-        // If we found some new InCommon metadata entries, save them in a
-        // string to be sent to idp-updates@cilogon.org.
-        if (!empty($newIdPList)) {
-            $plural = (count($newIdPList) > 1);
-            $newidpemail .= ($plural ? 'New' : 'A new') . ' Identity Provider' .
-                 ($plural ? 's were' : ' was') . ' found in metadata ' .
-                 "and added to the \nlist of available IdPs.\n" .
-                 '--------------------------------------------------------------' .
-                 "\n\n";
-            foreach ($newIdPList as $entityID => $value) {
-                $newidpemail .= "EntityId               = $entityID\n";
-                $newidpemail .= "Organization Name      = " .
-                    $idplist->getOrganizationName($entityID) . "\n";
-                $newidpemail .= "Display Name           = " .
-                    $idplist->getDisplayName($entityID) . "\n";
-                if ($idplist->isRegisteredByInCommon($entityID)) {
-                    $newidpemail .= "Registered by InCommon = Yes\n";
+        // Check to see if any old IdPs were removed.
+        if (!empty($newEntityIDs)) {
+            foreach ($oldEntityIDs as $value) {
+                if (!in_array($value, $newEntityIDs)) {
+                    $oldIdPs[$value] = 1;
                 }
-                if ($idplist->isInCommonRandS($entityID)) {
-                    $newidpemail .= "InCommon R & S         = Yes\n";
+            }
+        }
+
+        // If new IdPs were added or old IdPs were removed, save them in
+        // a string to be emailed to idp-updates@cilogon.org.
+        if ((!empty($newIdPs)) || (!empty($oldIdPs))) {
+            // First, show any new IdPs added
+            if (empty($newIdPs)) {
+                $idpemail .= "No new Identity Providers were found in metadata.\n";
+            } else {
+                $plural = (count($newIdPs) > 1);
+                $idpemail .= ($plural ? 'New' : 'A new') . ' Identity Provider' .
+                    ($plural ? 's were' : ' was') . ' found in metadata ' .
+                    "and\nADDED to the list of available IdPs.\n" .
+                    '--------------------------------------------------------------' .
+                    "\n\n";
+                foreach ($newIdPs as $entityID => $value) {
+                    $idpemail .= "EntityId               = $entityID\n";
+                    $idpemail .= "Organization Name      = " .
+                        $newidplist->getOrganizationName($entityID) . "\n";
+                    $idpemail .= "Display Name           = " .
+                        $newidplist->getDisplayName($entityID) . "\n";
+                    if ($newidplist->isRegisteredByInCommon($entityID)) {
+                        $idpemail .= "Registered by InCommon = Yes\n";
+                    }
+                    if ($newidplist->isInCommonRandS($entityID)) {
+                        $idpemail .= "InCommon R & S         = Yes\n";
+                    }
+                    if ($newidplist->isREFEDSRandS($entityID)) {
+                        $idpemail .= "REFEDS R & S           = Yes\n";
+                    }
+                    if ($newidplist->isSIRTFI($entityID)) {
+                        $idpemail .= "SIRTFI                 = Yes\n";
+                    }
+                    $idpemail .= "\n";
                 }
-                if ($idplist->isREFEDSRandS($entityID)) {
-                    $newidpemail .= "REFEDS R & S           = Yes\n";
+            }
+
+            // Then, show any old IdPs removed
+            if (!empty($oldIdPs)) {
+                $idpemail .= "\n" .
+                    '==============================================================' .
+                    "\n\n" .
+                    'One or more Identity Providers were removed from ' .
+                    "metadata and\n" .
+                    "DELETED from the list of available IdPs.\n" .
+                    '--------------------------------------------------------------' .
+                    "\n\n";
+                foreach ($oldIdPs as $entityID => $value) {
+                    $idpemail .= "EntityId               = $entityID\n";
+                    $idpemail .= "Organization Name      = " .
+                        $oldidplist->getOrganizationName($entityID) . "\n";
+                    $idpemail .= "Display Name           = " .
+                        $oldidplist->getDisplayName($entityID) . "\n";
+                    if ($oldidplist->isRegisteredByInCommon($entityID)) {
+                        $idpemail .= "Registered by InCommon = Yes\n";
+                    }
+                    if ($oldidplist->isInCommonRandS($entityID)) {
+                        $idpemail .= "InCommon R & S         = Yes\n";
+                    }
+                    if ($oldidplist->isREFEDSRandS($entityID)) {
+                        $idpemail .= "REFEDS R & S           = Yes\n";
+                    }
+                    if ($oldidplist->isSIRTFI($entityID)) {
+                        $idpemail .= "SIRTFI                 = Yes\n";
+                    }
+                    $idpemail .= "\n";
                 }
-                if ($idplist->isSIRTFI($entityID)) {
-                    $newidpemail .= "SIRTFI                 = Yes\n";
-                }
-                $newidpemail .= "\n";
             }
         }
     }
 }
 
 // If we found new IdPs, print them out and send email (if on prod).
-if (strlen($newidpemail) > 0) {
+if (strlen($idpemail) > 0) {
     echo "<xmp>\n";
-    echo $newidpemail;
+    echo $idpemail;
     echo "</xmp>\n";
 
     if (strlen($mailtoidp) > 0) {
@@ -193,7 +241,7 @@ if (strlen($newidpemail) > 0) {
             mail(
                 $mailtoidp,
                 "CILogon Service on $httphost - New IdP Automatically Added",
-                $newidpemail,
+                $idpemail,
                 $mailfrom
             );
         }
@@ -218,8 +266,8 @@ if ($oldidplistdiff) {
 // Copy temporary idplist.{json,xml} files to production directory.
 if ($oldidplistempty || $oldidplistdiff) {
     if (copy($tmpxml, $idplist_dir . '/idplist.xml')) {
-        chmod($idpxml_filename, 0664);
-        chgrp($idpxml_filename, 'apache');
+        @chmod($idpxml_filename, 0664);
+        @chgrp($idpxml_filename, 'apache');
     } else {
         $errmsg = "Error: Unable to copy idplist.xml to destination.";
         echo "<p>$errmsg</p>\n";
@@ -229,8 +277,8 @@ if ($oldidplistempty || $oldidplistdiff) {
         return;
     }
     if (copy($tmpjson, $idplist_dir . '/idplist.json')) {
-        chmod(DEFAULT_IDP_JSON, 0664);
-        chgrp(DEFAULT_IDP_JSON, 'apache');
+        @chmod(DEFAULT_IDP_JSON, 0664);
+        @chgrp(DEFAULT_IDP_JSON, 'apache');
     } else {
         $errmsg = "Error: Unable to copy idplist.json to destination.";
         echo "<p>$errmsg</p>\n";
