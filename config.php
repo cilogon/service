@@ -154,7 +154,7 @@ define('MYPROXY_CLIENT_CRED', '/var/www/config/hostcred.pem');
 // Define MYPROXY_SERVER_DN_MAP for hostnames that don't match root CA name.
 define('MYPROXY_SERVER_DN_MAP', array(
     'myproxy2.cilogon.org' =>
-        '/DC=org/DC=cilogon/C=US/O=CILogon/CN=myproxy.cilogon.org'
+        '/DC=org/DC=cilogon/C=US/O=CILogon/CN=myproxy.cilogon.org',
     'myproxy3.cilogon.org' =>
         '/DC=org/DC=cilogon/C=US/O=CILogon/CN=myproxy.cilogon.org'
 ));
