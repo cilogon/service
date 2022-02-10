@@ -75,11 +75,19 @@ define('TEST_IDP_XML', __DIR__ . '/include/testidplist.xml');
 define('DEFAULT_PKCS12_DIR', __DIR__ . '/pkcs12/');
 
 /**
- * The default hostname of the service website. This is used as the public-
+ * The default host name of the service website. This is used as the public-
  * facing hostname and returned by Util::getHN() in the case that HTTP_HOST
  * is not set.
  */
 define('DEFAULT_HOSTNAME', 'cilogon.org');
+
+/**
+ * The default domain name of the service website. This is returned by
+ * Util::getDN(). If not defined, the domain name is calculated by
+ * returning the last two parts of the host name (which is incorrect
+ * for UK and Australian domains such as example.org.au).
+ */
+define('DEFAULT_DOMAINNAME', 'cilogon.org');
 
 /**
  * This array is used by Util::getMachineHostname to determine the public-
