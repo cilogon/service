@@ -190,9 +190,9 @@ function getPKCS12()
         $p12expire = '';
         $p12link = '';
         $p12file = '';
-        if (preg_match('/([^\s]*)\s(.*)/', $p12, $match)) {
-            $p12expire = $match[1];
-            $p12link = $match[2];
+        if (preg_match('/([^\s]*)\s(.*)/', $p12, $matches)) {
+            $p12expire = $matches[1];
+            $p12link = $matches[2];
         }
         if ((strlen($p12link) > 0) && (strlen($p12expire) > 0)) {
             $p12file = file_get_contents($p12link);
