@@ -197,23 +197,33 @@ function printMainPage()
         $log->info("USAGE email=\"$email\" client=\"$clientname\"");
         Util::logXSEDEUsage($clientname, $email);
     } else { // dbservice error
+        // CIL-1187 Handle Authn error responses from setTransactionState
         $errstr = $dbs->statusText();
+        $errcode = 'error=' . ($dbs->error ?? 'server_error');
+        $errdesc = 'error_description=' . ($dbs->error_description ??
+            'Unable to associate user UID with OIDC code');
+        $erruri = (strlen($dbs->error_uri) > 0) ?
+            'error_uri=' . $dbs->error_uri : '';
         $redirect = 'Location: ' . $clientparams['redirect_uri'] .
             (preg_match('/\?/', $clientparams['redirect_uri']) ? '&' : '?') .
-            'error=server_error&error_description=' .
-            'Unable%20to%20associate%20user%20UID%20with%20OIDC%20code' .
+            $errcode . '&' . $errdesc .
+            ((strlen($erruri) > 0) ? '&' . $erruri : '') .
             ((isset($clientparams['state'])) ?
                 '&state=' . $clientparams['state'] : '');
         $log->error('Error in authorize::printMainPage(): ' .
             'Error calling dbservice action "setTransactionState". ' .
-            $errstr . ' Redirected to ' . $redirect);
+            $errstr . ', ' . $errcode . ', ' . $errdesc .
+            ((strlen($erruri) > 0) ? ', ' . $erruri : '') .
+            '. Redirected to ' . $redirect);
         // CIL-1098 Don't send errors for client-initiated errors
         if (!in_array($dbs->status, DBService::$CLIENT_ERRORS)) {
             Util::sendErrorAlert(
                 'dbService Error',
                 'Error calling dbservice action "setTransactionState" in ' .
                 'OIDC authorization endpoint\'s printMainPage() method. ' .
-                $errstr . ' Redirected to ' . $redirect
+                $errstr . ', ' . $errcode . ', ' . $errdesc .
+                ((strlen($erruri) > 0) ? ', ' . $erruri : '') .
+                '. Redirected to ' . $redirect
             );
         }
         Util::unsetUserSessionVars();

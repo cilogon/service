@@ -182,17 +182,26 @@ function printMainPage()
                 $log->info("USAGE email=\"$email\" client=\"$clientname\"");
                 Util::logXSEDEUsage($clientname, $email);
             } else { // dbService returned error for setTransactionState
-                $errstr = ((is_null($dbs->status)) ? '' : getDeviceErrorStr($dbs->status));
+                // CIL-1187 Log Authn error responses
+                $errstr = (is_null($dbs->status)) ? '' :
+                    getDeviceErrorStr($dbs->status);
+                $errcode = 'error=' . ($dbs->error ?? 'server_error');
+                $errdesc = 'error_description=' . ($dbs->error_description ??
+                    'Unable to associate user UID with OIDC code');
+                $erruri = (strlen($dbs->error_uri) > 0) ?
+                    'error_uri=' . $dbs->error_uri : '';
                 $log->error('Error in device::printMainPage(): ' .
                     'Error calling dbservice action "setTransactionState". ' .
-                    $errstr);
+                    $errstr . ', ' . $errcode .  ', ' . $errdesc .
+                    ((strlen($erruri) > 0) ? ', ' . $erruri : ''));
                 // CIL-1098 Don't send errors for client-initiated errors
                 if (!in_array($dbs->status, DBService::$CLIENT_ERRORS)) {
                     Util::sendErrorAlert(
                         'dbService Error',
                         'Error calling dbservice action "setTransactionState"' .
                         ' in Device Flow endpoint\'s printMainPage() method. ' .
-                        $errstr
+                        $errstr . ', ' . $errcode .  ', ' . $errdesc .
+                        ((strlen($erruri) > 0) ? ', ' . $erruri : '')
                     );
                 }
                 Util::unsetUserSessionVars();
