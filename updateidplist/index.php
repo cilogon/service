@@ -54,10 +54,12 @@ if ($difftime < $check_timeout) {
     return;
 }
 
+$tmpdir = Util::tempDir('/tmp/');
+register_shutdown_function(['CILogon\Service\Util','deleteDir'], $tmpdir);
+
 // Download InCommon metadata to a new temporary directory in /tmp/.
 // Be sure to delete the temporary directory before script exit.
 $incommon_url = 'https://mdq.incommon.org/entities/idps/all';
-$tmpdir = '';
 $tmpincommon = '';
 if (($incommon_xml = file_get_contents($incommon_url)) === false) {
     $errmsg = "Error: Unable to download InCommon-metadata.xml.";
@@ -66,14 +68,12 @@ if (($incommon_xml = file_get_contents($incommon_url)) === false) {
     http_response_code(500);
     return;
 } else {
-    $tmpdir = Util::tempDir('/tmp/');
     $tmpincommon = $tmpdir . '/InCommon-metadata.xml';
     if ((file_put_contents($tmpincommon, $incommon_xml)) === false) {
         $errmsg = "Error: Unable to save InCommon-metadata.xml to temporary directory.";
         echo "<p>$errmsg</p>\n";
         mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
         http_response_code(500);
-        Util::deleteDir($tmpdir);
         return;
     }
 }
@@ -88,7 +88,6 @@ if (!$newidplist->write('xml')) {
     echo "<p>$errmsg</p>\n";
     mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
     http_response_code(500);
-    Util::deleteDir($tmpdir);
     return;
 }
 $tmpjson = $tmpdir . '/idplist.json';
@@ -98,7 +97,6 @@ if (!$newidplist->write('json')) {
     echo "<p>$errmsg</p>\n";
     mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
     http_response_code(500);
-    Util::deleteDir($tmpdir);
     return;
 }
 
@@ -273,7 +271,6 @@ if ($oldidplistempty || $oldidplistdiff) {
         echo "<p>$errmsg</p>\n";
         mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
         http_response_code(500);
-        Util::deleteDir($tmpdir);
         return;
     }
     if (copy($tmpjson, $idplist_dir . '/idplist.json')) {
@@ -284,7 +281,6 @@ if ($oldidplistempty || $oldidplistdiff) {
         echo "<p>$errmsg</p>\n";
         mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
         http_response_code(500);
-        Util::deleteDir($tmpdir);
         return;
     }
 
@@ -299,6 +295,5 @@ if ($oldidplistempty || $oldidplistdiff) {
 
 // Final clean up. Delete the tempdir for the InCommon-metadata.xml and
 // write the current time to .last_checked.
-Util::deleteDir($tmpdir);
 file_put_contents($last_checked, time());
 @sem_release($semaphore);
