@@ -54,28 +54,31 @@ if ($difftime < $check_timeout) {
     return;
 }
 
-$tmpdir = Util::tempDir('/tmp/');
-register_shutdown_function(['CILogon\Service\Util','deleteDir'], $tmpdir);
-
 // Download InCommon metadata to a new temporary directory in /tmp/.
 // Be sure to delete the temporary directory before script exit.
+$tmpdir = Util::tempDir('/tmp/');
+register_shutdown_function(['CILogon\Service\Util','deleteDir'], $tmpdir);
+$tmpincommon = $tmpdir . '/InCommon-metadata.xml';
 $incommon_url = 'https://mdq.incommon.org/entities/idps/all';
-$tmpincommon = '';
-if (($incommon_xml = file_get_contents($incommon_url)) === false) {
-    $errmsg = "Error: Unable to download InCommon-metadata.xml.";
+$incommondownloaded = false;
+if (($ch = curl_init()) !== false) {
+    if (($fp = fopen($tmpincommon, 'w')) !== false) {
+        curl_setopt($ch, CURLOPT_URL, $incommon_url);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_FILE, $fp);
+        $incommondownloaded = curl_exec($ch);
+        fflush($fp);
+        fclose($fp);
+    }
+    curl_close($ch);
+}
+
+if (!$incommondownloaded) {
+    $errmsg = "Error: Unable to save InCommon-metadata.xml to temporary directory.";
     echo "<p>$errmsg</p>\n";
     mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
     http_response_code(500);
     return;
-} else {
-    $tmpincommon = $tmpdir . '/InCommon-metadata.xml';
-    if ((file_put_contents($tmpincommon, $incommon_xml)) === false) {
-        $errmsg = "Error: Unable to save InCommon-metadata.xml to temporary directory.";
-        echo "<p>$errmsg</p>\n";
-        mail($mailto, "/updateidplist/ failed on $httphost", $errmsg, $mailfrom);
-        http_response_code(500);
-        return;
-    }
 }
 
 // Now, create new idplist.xml and idplist.json files from the
