@@ -108,7 +108,7 @@ define('HOSTNAME_ARRAY', array(
 ));
 
 /**
- * If HOSTNAME_FOOTER is defined as 'true', the local hostname will be 
+ * If HOSTNAME_FOOTER is defined as 'true', the local hostname will be
  * output below the page footer in transparent text.
  */
 define('HOSTNAME_FOOTER', false);
@@ -309,11 +309,11 @@ define('ADFS_IDP_ARRAY', array(
 ));
 
 /**
- * CIL-1080 This is an array of IdP entityIDs which should not be shown in 
- * the "Select an Identity Provider" list, but still be present in 
- * idplist.json/xml. This allows problematic entityIDs to pass the 
- * "greenlit" test, but not be selectable by end-users (e.g., when the 
- * Indiana University IdP asserts an Issuer which is different from their 
+ * CIL-1080 This is an array of IdP entityIDs which should not be shown in
+ * the "Select an Identity Provider" list, but still be present in
+ * idplist.json/xml. This allows problematic entityIDs to pass the
+ * "greenlit" test, but not be selectable by end-users (e.g., when the
+ * Indiana University IdP asserts an Issuer which is different from their
  * entityId.
  */
 define('HIDE_IDP_ARRAY', array(
