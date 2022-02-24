@@ -1,6 +1,11 @@
 <?php
 
+require_once __DIR__ . '/../config.php';
+
 $hostname = 'cilogon.org';
+if (defined('DEFAULT_HOSTNAME')) {
+    $hostname = DEFAULT_HOSTNAME;
+}
 $localhost = php_uname('n');
 if (in_array($localhost, [ 'poloc.ncsa.illinois.edu', 'polol.ncsa.illinois.edu' ])) {
     $hostname = 'test.cilogon.org';
