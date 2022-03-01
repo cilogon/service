@@ -342,7 +342,7 @@ function updateIdPList()
 function statusEmbed()
 {
     var frame = document.createElement('iframe');
-    var mobile = screen.width;
+    var mobile = (screen.width < 450);
     var actions = {
         dismissFrame: function() {
             frame.style.left = '-9999px';
@@ -365,7 +365,7 @@ function statusEmbed()
     frame.style.zIndex = '9999';
     frame.style.transition = 'left 1s ease, bottom 1s ease, right 1s ease';
 
-    if (mobile < 450) {
+    if (mobile) {
         frame.src += '?mobile=true';
         frame.style.height = '20vh';
         frame.style.width = '100vw';
