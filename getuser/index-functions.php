@@ -18,8 +18,11 @@ use League\OAuth2\Client\Token\AccessToken;
  * The function reads client keys/secrets from a local configuration file,
  * and then uses the PHP League OAuth2 client library to extract user
  * parameters from the HTTP response.
+ *
+ * @param string $responseurl The full URL to redirect to after getting
+ *        the userid.
  */
-function getUserAndRespond()
+function getUserAndRespond($responseurl)
 {
     $providerId = '';
     $providerName = '';
@@ -154,6 +157,10 @@ function getUserAndRespond()
     } else {
         Util::unsetSessionVar('submit');
     }
+
+    // Finally, redirect to the calling script.
+    header('Location: ' . $responseurl);
+    exit; // No further processing necessary
 }
 
 /**
