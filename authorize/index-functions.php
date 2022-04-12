@@ -538,13 +538,13 @@ function verifyOIDCParams()
                             <p>Error Message: <b>' .
                             $matches[1] . '</b>.</p>
                             <ul>
-                            <li>Did you <b>register</b> your OAuth2/OIDC client? If not, go
-                            <b><a target="_blank" href="https://' .
+                            <li>Did you <b>register</b> your OAuth2/OIDC client? If not,
+                            go to <b><a target="_blank" href="https://' .
                             Util::getHN()
                             . '/oauth2/register">here</a></b> to do so.</li>
                             <li>Did you receive confirmation that your OAuth2/OIDC client
-                            was <b>approved</b>? If not, please wait up to 48 hours for an
-                            approval email from CILogon administrators.</li>
+                            was <b>approved</b>? If not, please wait up to 48 hours for
+                            an approval email from CILogon administrators.</li>
                             <li>Did you configure your OAuth2/OIDC client with the
                             registered <b>client ID and secret</b>?</li>
                             </ul>
