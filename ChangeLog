@@ -1,3 +1,199 @@
+a91d794 2022-04-12 CIL-1247 and CIL-1252 - Fix OIDC redirect problems
+c7136fb 2022-04-12 Fix minor typos
+729b758 2022-03-01 CIL-1194 Fix logic in statusEmbed
+d35e428 2022-03-01 CIL-1194 Add StatusPage.io embedded popup frame
+0fd46b6 2022-02-24 .well-known/openid-configuration should use DEFAULT_HOSTNAME
+a6dd6f0 2022-02-23 Move several endpoints' code to library functions.
+2f10673 2022-02-21 Use 'curl' to download InCommon metadata file.
+712321b 2022-02-18 CIL-1187 Handle Authn error response from setTransactionState
+07a8749 2022-02-18 Use register_shutdown_funtion to delete tmpdir
+36b25ca 2022-02-14 'match' is a reserved keyword in PHP 8
+f2fc8b3 2022-02-10 CIL-1171 Optionally set domain name
+bd300ba 2022-01-11 Add missing comma.
+185802f 2022-01-11 CACC-391 Migrate polos to myproxy1/2/dev.
+22ce5b9 2021-11-04 CIL-1118 Update 'New IdP Automatically Added' email to include deleted IdPs.
+65c80cc 2021-10-28 CIL-1116 Attempt to get Microsoft Azure Active Directory IdP working.
+69d2ca8 2021-10-20 Do not show 'system admins have been notified' when no email alert was sent.
+bf54b76 2021-10-20 CIL-1098 Don't send email alerts for failed to create OIDC transactions.
+9e304c1 2021-10-20 CIL-1098 Filter out more client-initiated email alerts.
+22c037a 2021-10-20 CIL-1098 For client-initiated errors, use json_encode when logging arrays.
+242caf5 2021-10-20 CIL-1098 Update log messages for client-initiated errors.
+086c0bb 2021-10-19 CIL-1098 Don't send email for client-initiated errors.
+c3972e3 2021-10-15 CIL-646 Advertise revocation_endpoint in well-known endpoint.
+adab346 2021-10-15 CIL-1108 Advertise code_challenge_methods_supported in the .well-known endpoint.
+0daa1c0 2021-10-14 Remove lcobucci/jwt dependency from the top level.
+3f88dbc 2021-10-14 Add lcobucci/jwt dependency back to main service repo.
+23c2fb4 2021-10-14 Remove spurious comma.
+27d9336 2021-10-14 Remove lcobucci/jwt dependency.
+2eb9c43 2021-10-14 Update PHP libraries to latest versions.
+2202091 2021-10-14 Update PHP dependencies to latest versions.
+88dcbe3 2021-10-07 CIL-738 Add introspection endpoint to openid-configuration.
+80ff2e3 2021-10-04 CIL-1032 Block IdPs with name of 'idp' or 'IdP Proxy'.
+21d666d 2021-10-01 CIL-554 Retire support for OAuth 1.0a
+65550fd 2021-09-23 Fix token-exchange value
+dd1eed3 2021-09-23 Change grant_type:token_exchange to grant-type:token-exchange
+5c17f7c 2021-09-20 Define HOSTNAME_FOOTER to print out local hostname below page footer.
+f8d2ce1 2021-09-16 Remove 'token' as supported response type.
+3aacd93 2021-09-10 CIL-1080 1080 Hide problematic IdPs from 'Select an Identity Provider' list.
+01ee0ec 2021-09-02 Bug fix.
+62c52cb 2021-08-31 Add support for new CentOS 7 polos (j/k/l).
+35f020f 2021-08-27 CIL-1068 Add config option for custom favicon. First use case is LIGO.
+d70b3fb 2021-08-10 Comment out 3 *_ARRAYs since they are now stored in the 'ciloa2.bypass' database table.
+a5c5ea1 2021-08-10 Update SQL to create 'bypass' table.
+d8551a4 2021-08-07 CIL-1052 Allow config.php ARRAYs to be stored in the database. For the ALLOW_BYPASS_ARRAY, change from an indexed array to an associative array since we need the client_id/redirect_uri to be in the 'keys' of the array rather than the 'values'.
+b432349 2021-07-30 Make thumbs up/down column a bit wider.
+fab09de 2021-07-29 Use thumbs up/down icons for approve/deny user_code.
+a26a2b7 2021-07-29 Check for 'qrencode' to print out QR code of VERIFICATION_URI_COMPETE.
+7c0de10 2021-07-28 Check for jq v1.6 only if jq is installed.
+546c4cf 2021-07-28 'jq' version 1.6 is needed for 'bash64d'.
+f9b9560 2021-07-26 CIL-1045 Add OAuth1 retirement banner.
+dae67ae 2021-07-25 Regex RE is no longer needed.
+62ca147 2021-07-25 Add check for Google which requires non-empty 'scope' parameter (since no scopes are associated with the Google client).
+a9c16d7 2021-07-25 Initial check-in of deviceflow.sh test script.
+941f897 2021-07-25 Add error_description (if available) to the basic error messages.
+6041e33 2021-07-25 Remove end-of-line whitespace.
+16d1379 2021-07-25 Add response_types_supported and grant_types_supported to match OA4MP.
+6d9f971 2021-07-25 Enable auto-focus for user code text input.
+7d6bf81 2021-07-24 Call userCodeApproved only if no errors previously.
+f678417 2021-07-23 Add missing closing curly bracket.
+a4b4e46 2021-07-23 Move error string calculations to a function.
+4d268fb 2021-07-23 Fix typo.
+11061c2 2021-07-23 Fix error message output.
+627ee72 2021-07-22 CIL-1044 Force XSEDE IdP for "XSEDE Registry TEST" client.
+3657a98 2021-07-14 Tweak generic error text.
+5628fc2 2021-07-14 Tweak generic error string format.
+eae60d4 2021-07-14 When no button is clicked, call verifyUserCodeParam to scan for query parameters such as idphint.
+da3bdb4 2021-07-14 Call code which can auto redirect based on ALLOW_BYPASS_ARRAY and idphint.
+ae7bc7b 2021-07-14 Tweak user_code error message.
+5be696c 2021-07-14 Reformat user_code error output.
+7e7155e 2021-07-14 Attempt to save query parameters selected_idp, idphint, and initialidp across page loads.
+a042d51 2021-07-14 Fix formatting of error box.
+ec51cec 2021-07-14 Call setTransactionState only when if user logged on, not when user clicked 'Cancel' to deny the device user_code.
+d36c144 2021-07-14 Tweak error output for device code flow.
+1652faf 2021-07-14 Add device_authorization_endpoint and scope=offline_access.
+0774b58 2021-07-13 CIL-935 Device flow. Associate authenticated user's user_uid with the transaction with setTransactionState.
+470f15c 2021-07-10 Fix typo.
+1ad2049 2021-07-07 CIL-1028 Make 'mgrstest' client use NCSA IdP.
+77a6e79 2021-06-24 CIL-1017 Create new 'flywheel' skin without any IdP restrictions.
+a6b2f03 2021-06-23 Remove deleted flywheel client_id.
+cb51d97 2021-06-16 Allow "Custos Portal" to bypass logon page.
+9a8e969 2021-06-15 CIL-1003 Capture GitHub 'login' as 'preferred_username' claim.
+810a0e5 2021-06-07 CIL-995 Add images for new 'cybergisx' skin. (CSS is stored in database.)
+78ccb9b 2021-06-03 CIL-994 Force "NCSA Metrics Grafana" client to use NCSA IdP.
+d9fc8a8 2021-05-13 CIL-979 Speed up display of "Select an Identity Provider" page by loading the list of IdPs with an Ajax 'GET' after the page has rendered.
+3b681ab 2021-05-13 CIL-978 Check for 'idphint' query parameter for the /idplist endpoint.
+6c5673b 2021-05-06 Redirect OIDC client 'XSEDE Registry' (client_id='cilogon:/client_id/7126656af0c274e97e17f3d968faba5e') to the XSEDE IdP, bypassing CILogon.
+e1a3428 2021-05-04 CIL-975 Generalize handling of AssertionConsumerServiceURL rewriting for ADFS IdPs (like Syngenta and NSF).
+256fe76 2021-04-27 CIL-951 Add MYPROXY_SERVER_DN_MAP for MyProxy hostnames which do not match the configured MyProxy CA server name.
+c8ba5fe 2021-04-27 Add sanity checks to verify 'defines' exist in config.php.
+a0a37d1 2021-04-27 Remove PGSQL_* defines from config.secrets.example.php since we don't use PostgreSQL anymore.
+cb26844 2021-04-26 CIL-959 Put NSF.gov AD-IdP AMR handling code in IdpList.php instead.
+f1c68d0 2021-04-26 CIL-959 Add support for SAML attribute 'AMR' (authnmethodsreferences) asserted by NSF.gov's new AD-based IdP.
+32b5955 2021-04-12 Use the renamed 'main' branch of service-lib instead of 'master'.
+df4ceb9 2021-03-29 CIL-946 Force 'googlegithub' skin for MistEE client (client_id='cilogon:/client_id/7736935ccc1dfc779013a4206ca405ea').
+49adad4 2021-03-19 CIL-943 Add login2.ligo.org to list of ECP-enabled IdPs.
+8ab4eaa 2021-03-18 Add DEFAULT_LOGNAME for writing logs to file.
+daa4562 2021-03-11 Missed one XSEDE USAGE location.
+09100b4 2021-03-11 CIL-938 Write XSEDE USAGE messages to CVS files in a configurable directory.
+b314263 2021-03-11 Formatting to make phpcs happy.
+b55da10 2021-03-10 Add DEFAULT_LOGTYPE to enable logging to console. Change email addresses to be fully defined (rather than using DEFAULT_HOSTNAME).
+022f2d6 2021-03-09 Ignore error from array_intersect_key().
+b341ab6 2021-03-09 Update database connection to use configured database and host.
+4ac8657 2021-03-09 Put a green checkbox or red times on the code verification page.
+5a90311 2021-03-09 If device request did not include scope, assume same scope as registered client.
+cdb642a 2021-03-08 CIL-935 Initial implementation of user-facing Device Authorization Grant flow to enter user code and select IdP.
+b3d7a10 2021-03-08 Remove 'stage' PHP session variable which was previously used in conjunction with the 'Show/Hide Help' button.
+5f9e290 2021-03-08 Add a JavaScript function to convert input field to uppercase.
+ad7cf96 2021-03-08 Move printOIDCConsent to Util.php.
+42abcbd 2021-03-04 Update dynamic client registration endpoint in /.well-known/openid-configuration.
+daae54b 2021-03-04 Add .well-known/acme-challenge directory for Let's Encrypt.
+9633a0d 2021-02-25 Put MyProxy client credential in config.php.
+0b50bb7 2021-02-25 For /updateidplist/ , add a semaphore check to prevent multiple concurrent processes.
+553e0b3 2021-02-09 As requested by Rob Guthridge, force NIH skin for OCCPR Author Management System.
+fbf714f 2021-01-20 CIL-909 Also check error_description when returned error code is STATUS_CREATE_TRANSACTION_FAILED.
+ba454cd 2021-01-20 CIL-909 Use the error_description returned by OA4MP only for generic error codes such as STATUS_INTERNAL_ERROR.
+126dc19 2021-01-07 CIL-899 Move ORCID 'amr' code from 'service' repo to 'oauth2-orcid' repo.
+93f60af 2020-12-10 IL-895 Config option for PHP session file store directory.
+108baa7 2020-11-16 Force 'mgrs' client to use NCSA IdP.
+0d5c5a2 2020-11-10 Remove pear/DB repo from composer.json
+bb2ce9a 2020-11-06 CIL-865 CIL-866 Ignore .last_checked file generated by new web endpoints
+f855ebc 2020-11-06 Make iforge Open OnDemand use NCSA IdP.
+2841eaa 2020-11-05 If comment out EMAIL_IDP_UPDATES, don't send 'New IdPs Added' email.
+73fe93b 2020-11-05 Add newlines to output HTML messages for wget/curl stdout.
+fd66ba8 2020-11-05 CIL-866 Put idp-update email address in top-level config.php
+b90c1ad 2020-11-05 CIL-866 Add new web endpoint /updateidplist/ to update idplist.json and idplist.xml
+3a1c513 2020-11-05 Add parens for math op.
+cc4d65a 2020-11-05 Delete vim temp file.
+67482cd 2020-11-05 Fix comment in /idplist/ endpoint.
+3dd24a9 2020-11-05 CIL-865 Fix 'Please wait X seconds' output message.
+d65e5c3 2020-11-05 CIL-865 Add '/cleancerts/' endpoint to remove old PKCS12 certificates.
+a51e1cd 2020-11-02 CIL-864 Add config option for PKCS12 directory.
+005ffe3 2020-11-02 CIL-864 Add config option for PKCS12 directory.
+cb934d3 2020-10-29 Force "CPTAC Author Directory" client to use NIH skin.
+29e5aec 2020-10-28 Add KAGRA to list of ECP-enabled IdPs.
+e5d1cea 2020-10-12 Use NCSA IdP for ipam.ncsa.illinois.edu
+f07a424 2020-10-09 Add new skin 'osn' for Jim Culbert at MGHPCC.
+808360b 2020-10-05 Force OIDC client "NCSA Internal (Savannah)" to use NCSA IdP.
+d4d5d3e 2020-10-05 Force NIH skin for Analysis Management Portal (Production), requested by Paul Khouri Saba.
+70e8e65 2020-10-01 Add MESS skin for OneID demo.
+5262a64 2020-09-28 CIL-831 More detailed OIDC error messages.
+5967cbe 2020-09-28 CIL-831 Return more detailed OIDC error messages from PHP code.
+88dd7ea 2020-09-28 CIL-832 Make 'NCSA GitLab' OIDC client use NCSA IdP
+e752256 2020-09-17 CIL-809 Force 'biocommons' skin for biocommons.org.au callback URIs.
+33aa03d 2020-09-17 CIL-809 Add 'biocommons' skin for Australian BioCommons.
+8f83ed9 2020-09-02 Move composer require lcobucci/jwt to top-level CILogon service since it is not used by CILogon service-lib.
+0a9f536 2020-09-02 CIL-799 Get AMR (AuthnMethodRef) from ORCID id_token.
+c0f7fd1 2020-08-26 On the '/me' page, add <br/> in portalparams output.
+e8bd2af 2020-08-24 CIL-793 For the OAuth 1.0a flow, check for missing first_name or last_name. If so, use display_name to split on space like we used to.
+10f060b 2020-08-17 CIL-782 force skin for XSEDE Registry TEST and DEV
+aa54f65 2020-08-10 CIL-730 https://idp.login.iu.edu/idp/shibboleth has been readded to InCommon metadata as "zTest - Indiana University", so remove it from the global "redlit" list.
+858192a 2020-08-07 Update README.md
+1fcbd93 2020-08-07 CIL-779 Display only registered scopes in the OIDC consent box.
+b437783 2020-08-07 CIL-780 Prevent Google for https://jupyterhub.nautilus.optiputer.net .
+17852fa 2020-08-05 CIL-728 Update Privacy Policy link.
+fdb2e51 2020-07-30 Add new script dbtoskin which reads skin configs from the database and writes them to the filesystem.
+0854393 2020-07-30 Add more help text to skintodb script.
+6375500 2020-07-23 Remove two old IdPs from the globally 'redlit' array since they are no longer in InCommon metadata.
+71b222a 2020-07-23 Per Rob Kooper, make SIMPL client redirect to Syngenta IdP, bypassing CILogon 'Select an Identity Provider' page.
+e56bddb 2020-07-22 For <footertext>, HTML entities like '<' must be escaped as &lt; .
+c4a9e5a 2020-07-22 CIL-742 Change whitelisted/blacklisted to greenlit/redlit.
+4086889 2020-07-22 CIL-763 Add query parameter 'initialidp' to set default IdP.
+78e7868 2020-07-22 CIL-767 Add skin option for customized footer HTML.
+016585f 2020-06-29 Allow bypass for flywheel when using idp_hint.
+3661413 2020-06-18 Allow test.galaxyproject.org to bypass CILogon when usind idphint.
+9e45221 2020-06-12 Per Jeff Gaynor, add "client_secret_basic" as an option under "token_endpoint_auth_methods_supported".
+7c38c8a 2020-06-11 CIL-730 Globally blacklist new "Indiana University Login" IdP.
+0da7470 2020-06-11 CIL-731 Globally blacklist "Institute of Technology Sligo" IdP.
+cf90aaa 2020-06-08 Update regex for flywheel to limit to dev|prod.
+700b3f6 2020-06-05 Remove spaces at end of lines.
+3ffca4c 2020-06-05 Force the 'flywheel' skin for clients matching https://flywheel*.auth0.com/* .
+7b66e94 2020-06-02 Update comment to reference Bootstrap CSS v4.5.
+568de81 2020-05-27 CIL-712  Add skin config option to display text in an informational banner at the top of the page.
+a22f15a 2020-05-20 CIL-711 Force Jim Basney's demo client to use SCiMMA skin.
+ab0929b 2020-05-15 Add "grant_types_supported" and "service_documentation" entries to OIDC Discovery endpoint.
+cfbf8a5 2020-05-15 'token_id' is now an asserted claim.
+bc63eec 2020-05-11 Allow CILogon bypass for another Custos client.
+72569fb 2020-05-01 Remove dependency on PEAR Config which was used to read GridShibCA configuration.
+5d5c3d6 2020-04-26 Show the 'Delete ALL' button on the '/me' page when at least one of the 'Delete Brower Cookies' button or 'Delete Session Variables' button is shown (rather than when both are shown).
+959925c 2020-04-26 CIL-690 Since skins are now stored in the database, remove them from the filesystem.
+7a24c15 2020-04-25 Fix regex for myproxy.getcert scope.
+b4efa78 2020-04-25 Add missing 'Util::' to getGetVar().
+7ae14e8 2020-04-25 Add missing closing paren.
+0db328f 2020-04-25 CIL-624 Add config option DISABLE_X509 to prevent downloading of certificates.
+0dd51b7 2020-04-25 Loop through skin directories in alphabetical order.
+4ef43d0 2020-04-25 Clean up skins by deleting blank lines from CSS and removing the <idplistsize> option which is no longer used.
+00d122c 2020-04-25 CIL-690 Create script to move skins on filesystem into a new 'skins' database table.
+14cc76a 2020-04-24 Fix typo in comment block.
+bc254a0 2020-04-24 CIL-690 Make all skin directories lower case for easier searches.
+10e0aa3 2020-04-24 CIL-690 As part of the move of skins from filesystem to database, move all skin images to the top level web '/images/' directory.
+25b0e2d 2020-04-22 CIL-680 Custom IdP list for classtranscribe.
+b1d324f 2020-04-21 Add two more Custos clients to the bypass array.
+01421ec 2020-04-17 Allow IdP bypass for Galaxy OIDC client.
+17dd6a4 2020-04-14 CIL-687 Create skin for flywheel.io.
+e0a1ee2 2020-04-14 List more supported OIDC claims.
+212ef03 2020-04-10 For CloudBank skin, make UCSD the default.
+2daf760 2020-04-10 Blacklist Google for CloudBank skin.
+7650abd 2020-04-07 Update ChangeLog.
 ad9ccc6 2020-04-06 For testidp endpoint, check for the bare minimum of user attributes.
 fab1f02 2020-04-06 For testidp endpoint, check for the bare minimum of user attributes.
 720d6c5 2020-04-02 CIL-677 Add closing search delimiter.
