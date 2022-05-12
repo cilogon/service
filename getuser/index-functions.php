@@ -34,6 +34,7 @@ function getUserAndRespond($responseurl)
     $oidc = '';
     $amr = '';
     $preferred_username = '';
+    $eduPersonOrcid = '';
 
     Util::unsetSessionVar('logonerror');
 
@@ -91,9 +92,11 @@ function getUserAndRespond($responseurl)
                     $last_name = $user->getLastName();
                 }
 
-                // CIL-799 Get the 'amr' claim from the ORCID id_token
                 if ($prov == 'orcid') {
+                    // CIL-799 Get the 'amr' claim from the ORCID id_token
                     $amr = $user->getAmr();
+                    // CIL-1285 Assert eduPersonOrcid claim
+                    $eduPersonOrcid = $oidc;
                 }
 
                 // CIL-793 - Calculate missing first/last name for OAuth1
@@ -152,7 +155,10 @@ function getUserAndRespond($responseurl)
             '', // member_of
             '', // acr
             $amr,
-            $preferred_username
+            $preferred_username,
+            '', // entitlement
+            '', // itrustuin
+            $eduPersonOrcid
         );
     } else {
         Util::unsetSessionVar('submit');

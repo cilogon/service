@@ -472,6 +472,7 @@ function getTitleText($cookie)
         "clientparams" => "A set of cookies for each portal you have used with CILogon." ,
         "display_name" => "Your full name set by your Identity Provider." ,
         "distinguished_name" => "A quasi distinguished name for the X.509 certificate issued by a MyProxy server." ,
+        "eduPersonOrcid" => "ORCID identifier",
         "email" => "Your email address given by your Identity Provider." ,
         "entitlement" => "A list of URIs representing permissions to access a resource or service." ,
         "eppn" => "'eduPerson Principal Name' - a SAML attribute set by your Identity Provider." ,
