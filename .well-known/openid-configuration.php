@@ -74,6 +74,7 @@ echo '{
     "email",
     "eppn",
     "eptid",
+    "eduPersonOrcid",
     "exp",
     "family_name",
     "given_name",
