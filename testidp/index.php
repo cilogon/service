@@ -37,7 +37,7 @@ switch ($submit) {
     case 'Log On': // Check for OpenID or InCommon usage.
     case 'Continue': // For OOI
         $providerId = Util::getPostVar('providerId');
-        $providerName = Util::getAuthzIdP($providerId); // For OAuth2
+        $providerName = Util::getOAuth2IdP($providerId); // For OAuth2
         if (Util::getIdpList()->exists($providerId)) {
             // Use SAML authn
             Util::setCookieVar('providerId', $providerId);

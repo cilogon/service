@@ -56,7 +56,7 @@ function getUserAndRespond($responseurl)
     } else {
         // When using OAuth or OIDC, check portalcookie for providerId
         $providerId = Util::getPortalOrCookieVar('providerId');
-        $providerName = Util::getAuthzIdP($providerId);
+        $providerName = Util::getOAuth2IdP($providerId);
         $prov = strtolower($providerName); // IdP name all lowercase
 
         // Get the client id/secret for the OAuth2 IdP
