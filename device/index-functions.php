@@ -190,10 +190,13 @@ function printMainPage()
                     'Unable to associate user UID with OIDC code');
                 $erruri = (strlen($dbs->error_uri) > 0) ?
                     'error_uri=' . $dbs->error_uri : '';
-                $log->error('Error in device::printMainPage(): ' .
+                $log->error(
+                    'Error in device::printMainPage(): ' .
                     'Error calling dbservice action "setTransactionState". ' .
                     $errstr . ', ' . $errcode .  ', ' . $errdesc .
-                    ((strlen($erruri) > 0) ? ', ' . $erruri : ''));
+                    ((strlen($erruri) > 0) ? ', ' . $erruri : '') .
+                    '. Output from dbService: ' . $dbs->call_output
+                );
                 // CIL-1098 Don't send errors for client-initiated errors
                 if (!in_array($dbs->status, DBService::$CLIENT_ERRORS)) {
                     Util::sendErrorAlert(
@@ -201,7 +204,8 @@ function printMainPage()
                         'Error calling dbservice action "setTransactionState"' .
                         ' in Device Flow endpoint\'s printMainPage() method. ' .
                         $errstr . ', ' . $errcode .  ', ' . $errdesc .
-                        ((strlen($erruri) > 0) ? ', ' . $erruri : '')
+                        ((strlen($erruri) > 0) ? ', ' . $erruri : '') .
+                        ".\n\nOutput from dbService:\n" . $dbs->call_output
                     );
                 }
                 Util::unsetUserSessionVars();

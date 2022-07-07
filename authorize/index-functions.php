@@ -210,11 +210,14 @@ function printMainPage()
             ((strlen($erruri) > 0) ? '&' . $erruri : '') .
             ((isset($clientparams['state'])) ?
                 '&state=' . $clientparams['state'] : '');
-        $log->error('Error in authorize::printMainPage(): ' .
+        $log->error(
+            'Error in authorize::printMainPage(): ' .
             'Error calling dbservice action "setTransactionState". ' .
             $errstr . ', ' . $errcode . ', ' . $errdesc .
             ((strlen($erruri) > 0) ? ', ' . $erruri : '') .
-            '. Redirected to ' . $redirect);
+            '. Redirected to ' . $redirect .
+            '. Output from dbService: ' . $dbs->call_output
+        );
         // CIL-1098 Don't send errors for client-initiated errors
         if (!in_array($dbs->status, DBService::$CLIENT_ERRORS)) {
             Util::sendErrorAlert(
@@ -223,7 +226,8 @@ function printMainPage()
                 'OIDC authorization endpoint\'s printMainPage() method. ' .
                 $errstr . ', ' . $errcode . ', ' . $errdesc .
                 ((strlen($erruri) > 0) ? ', ' . $erruri : '') .
-                '. Redirected to ' . $redirect
+                '. Redirected to ' . $redirect .
+                ".\n\nOutput from dbService:\n" . $dbs->call_output
             );
         }
         Util::unsetUserSessionVars();
