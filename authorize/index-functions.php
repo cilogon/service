@@ -216,7 +216,8 @@ function printMainPage()
             $errstr . ', ' . $errcode . ', ' . $errdesc .
             ((strlen($erruri) > 0) ? ', ' . $erruri : '') .
             '. Redirected to ' . $redirect .
-            '. Output from dbService: ' . $dbs->call_output
+            '. Input to dbService: ' . $dbs->call_input .
+            ', Output from dbService: ' . $dbs->call_output
         );
         // CIL-1098 Don't send errors for client-initiated errors
         if (!in_array($dbs->status, DBService::$CLIENT_ERRORS)) {
@@ -227,7 +228,8 @@ function printMainPage()
                 $errstr . ', ' . $errcode . ', ' . $errdesc .
                 ((strlen($erruri) > 0) ? ', ' . $erruri : '') .
                 '. Redirected to ' . $redirect .
-                ".\n\nOutput from dbService:\n" . $dbs->call_output
+                "\n\nInput to dbService:\n" . $dbs->call_input .
+                "\n\nOutput from dbService:\n" . $dbs->call_output
             );
         }
         Util::unsetUserSessionVars();
