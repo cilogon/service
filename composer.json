@@ -18,7 +18,8 @@
         "authorization",
         "cilogon"
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "cilogon/service-lib": "@dev",
         "league/oauth2-client": "^2.6.0"
