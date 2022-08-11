@@ -341,10 +341,13 @@ function verifyUserCodeParam()
     // If idphint/selected_idp/initialidp were previously set in the
     // clientparams PHP session variable, extract them this time around.
     $clientparams = array();
-    $clientparams = @array_intersect_key(
-        json_decode(Util::getSessionVar('clientparams'), true),
-        ['idphint' => 1, 'selected_idp' => 1, 'initialidp' => 1]
-    );
+    $prevclientparams = json_decode(Util::getSessionVar('clientparams'), true);
+    if (is_array($prevclientparams)) {
+        $clientparams = array_intersect_key(
+            $prevclientparams,
+            ['idphint' => 1, 'selected_idp' => 1, 'initialidp' => 1]
+        );
+    }
 
     // If a user_code was passed in, use that to get the associated
     // clientparams. Otherwise, get clientparams from the PHP session.

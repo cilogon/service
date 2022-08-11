@@ -389,13 +389,17 @@ function verifyOIDCParams()
                                 $log->error('Error in verifyOIDCParams(): ' .
                                     'Error getting OIDC client parameters ' .
                                     'for client_id="' .
-                                    @$clientparams['client_id'] . '"');
+                                    (isset($clientparams['client_id']) ?
+                                    $clientparams['client_id'] : 'UNKNOWN') .
+                                    '"');
                                 Util::sendErrorAlert(
                                     'getOIDCClientParams Error',
                                     'Error getting OIDC client parameters ' .
                                     'in verifyOIDCParams() function for ' .
                                     'client_id="' .
-                                    @$clientparams['client_id'] . '".'
+                                    (isset($clientparams['client_id']) ?
+                                    $clientparams['client_id'] : 'UNKNOWN') .
+                                    '".'
                                 );
                                 $clientparams = array();
                             }

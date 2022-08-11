@@ -39,7 +39,7 @@ if (verifyOIDCParams()) {
             // since last user authentication is greater than max_age, then
             // set 'forceauthn' session variable to force the user to
             // (re)authenticate.
-            if (isset($clientparams['max_age'])) {
+            if (is_array($clientparams) && (isset($clientparams['max_age']))) {
                 $max_age = (int)$clientparams['max_age'];
                 if (strlen(Util::getSessionVar('authntime')) > 0) {
                     $authntime = (int)Util::getSessionVar('authntime');
@@ -68,15 +68,18 @@ if (verifyOIDCParams()) {
         case 'Cancel': // User denies release of attributes
             // If user clicked the 'Cancel' button, return to the
             // OIDC client with an error message.
-            $redirect = 'https://www.cilogon.org'; // If no redirect_uri
-            $redirect_uri = @$clientparams['redirect_uri'];
-            if (strlen($redirect_uri) > 0) {
-                $redirect = 'Location: ' . $redirect_uri .
-                    (preg_match('/\?/', $redirect_uri) ? '&' : '?') .
-                    'error=access_denied&error_description=' .
-                    'User%20denied%20authorization%20request' .
-                    ((isset($clientparams['state'])) ?
-                        '&state=' . $clientparams['state'] : '');
+            $redirect = 'Location: https://www.cilogon.org'; // If no redirect_uri
+            $redirect_uri = '';
+            if (is_array($clientparams) && (isset($clientparams['redirect_uri']))) {
+                $redirect_uri = $clientparams['redirect_uri'];
+                if (strlen($redirect_uri) > 0) {
+                    $redirect = 'Location: ' . $redirect_uri .
+                        (preg_match('/\?/', $redirect_uri) ? '&' : '?') .
+                        'error=access_denied&error_description=' .
+                        'User%20denied%20authorization%20request' .
+                        ((isset($clientparams['state'])) ?
+                            '&state=' . $clientparams['state'] : '');
+                }
             }
             Util::unsetAllUserSessionVars();
             header($redirect);
