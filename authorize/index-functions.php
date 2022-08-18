@@ -198,12 +198,14 @@ function printMainPage()
         Util::logXSEDEUsage($clientname, $email);
     } else { // dbservice error
         // CIL-1342 Redirect to custom error uri on QDL errors
-        if (
-            ($dbs->status == DBService::$STATUS['STATUS_QDL_ERROR']) &&
-            (strlen($dbs->custom_error_uri) > 0)
-        ) {
-            header('Location: ' . $dbs->custom_error_uri);
-            exit; // No further processing necessary
+        if ($dbs->status == DBService::$STATUS['STATUS_QDL_ERROR']) {
+            if (strlen($dbs->custom_error_uri) > 0) {
+                header('Location: ' . $dbs->custom_error_uri);
+                exit; // No further processing necessary
+            } elseif (strlen($dbs->error_uri) > 0) {
+                header('Location: ' . $dbs->error_uri);
+                exit; // No further processing necessary
+            }
         }
         // CIL-1187 Handle Authn error responses from setTransactionState
         $errstr = $dbs->statusText();
