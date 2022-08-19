@@ -198,7 +198,10 @@ function printMainPage()
         Util::logXSEDEUsage($clientname, $email);
     } else { // dbservice error
         // CIL-1342 Redirect to custom error uri on QDL errors
-        if ($dbs->status == DBService::$STATUS['STATUS_QDL_ERROR']) {
+        // Bug: OA4MP always returns STATUS_MISSING_PARAMETER_ERROR,
+        // so for now check error=qdl_error instead.
+        //if ($dbs->status == DBService::$STATUS['STATUS_QDL_ERROR']) {
+        if ($dbs->error == 'qdl_error') {
             if (strlen($dbs->custom_error_uri) > 0) {
                 header('Location: ' . $dbs->custom_error_uri);
                 exit; // No further processing necessary
