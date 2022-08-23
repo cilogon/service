@@ -36,13 +36,13 @@ Util::setSessionVar('storeattributes', '1'); // Used only by /testidp/
 switch ($submit) {
     case 'Log On': // Check for OpenID or InCommon usage.
     case 'Continue': // For OOI
-        $providerId = Util::getPostVar('providerId');
+        $providerId = Util::normalizeOAuth2IdP(Util::getPostVar('providerId'));
         $providerName = Util::getOAuth2IdP($providerId); // For OAuth2
         if (Util::getIdpList()->exists($providerId)) {
             // Use SAML authn
             Util::setCookieVar('providerId', $providerId);
             Content::redirectToGetShibUser($providerId);
-        } elseif (in_array($providerName, Util::$oauth2idps)) {
+        } elseif (array_key_exists($providerName, Util::$oauth2idps)) {
             // Use OAuth2 authn
             Util::setCookieVar('providerId', $providerId);
             Content::redirectToGetOAuth2User($providerId);
