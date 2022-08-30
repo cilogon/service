@@ -18,6 +18,16 @@
 //define('MYSQLI_HOSTSPEC', '');
 
 /**
+ * Set the database parameters for ACCESS COmanage Registry. These are used
+ * to check if a client has the ACCESS Named Configuration set. Comment out
+ * these values if you don't want to check.
+ */
+//define('ACCESS_MYSQLI_USERNAME', '');
+//define('ACCESS_MYSQLI_PASSWORD', '');
+//define('ACCESS_MYSQLI_DATABASE', '');
+//define('ACCESS_MYSQLI_HOSTSPEC', '');
+
+/**
  * For Google OAuth 2.0 settings specific to this application,
  * go to https://cloud.google.com/console and sign in as google@cilogon.org .
  * The password can be found in LastPass in the 'Shared-CILogon 2' folder
