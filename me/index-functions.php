@@ -31,14 +31,24 @@ function printMainCookiesPage()
     $browsercount = countBrowserCookies();
     $sessioncount = countSessionVariables();
 
+    /* CIL-1416 Check for query parameter 'hide' to collapse
+     * any of the three informational sections. Value for 'hide'
+     * parameter is any of 'browser', 'session', and/or
+     * 'environment', any order, joined by comma.
+     */
+    $gethide = '';
+    if (isset($_GET['hide'])) {
+        $gethide = $_GET['hide'];
+    }
+
     Content::printHeader('Manage CILogon Cookies', false); // Don't set CSRF
 
     Content::printFormHead();
 
     printAboutThisPage($browsercount, $sessioncount);
-    printBrowserCookies($browsercount);
-    printSessionVariables($sessioncount);
-    printEnvironmentVars();
+    printBrowserCookies($browsercount, (preg_match('/browser/i', $gethide)));
+    printSessionVariables($sessioncount, (preg_match('/session/i', $gethide)));
+    printEnvironmentVars(preg_match('/environment/i', $gethide));
 
     echo '</form>';
 
@@ -62,21 +72,21 @@ function printAboutThisPage($browsercount, $sessioncount)
     echo '
         <div class="card-body px-5">
           <div class="card-text my-2">
-            This page allows you to view and (potentially) delete various 
-            cookies associated with the <a target="_blank" href="..">CILogon 
+            This page allows you to view and (potentially) delete various
+            cookies associated with the <a target="_blank" href="..">CILogon
             Service</a>. There are three sections below.
           </div> <!-- end card-text -->
           <ol>
             <li><b>Browser Cookies</b> - These are &quot;cookies&quot;
-            which are stored in your browser. They are used as preferences 
+            which are stored in your browser. They are used as preferences
             for the CILogon Service.
             </li>
             <li><b>Session Variables</b> - These are &quot;short-lived&quot;
-            values related to your current CILogon session. Deleting any of 
+            values related to your current CILogon session. Deleting any of
             these values may require you to re-logon.
             </li>
             <li><b>Environment Variables</b> - These are values set by the
-            interaction between your browser and the web server. These are 
+            interaction between your browser and the web server. These are
             displayed
             mainly for information purposes.
             </li>
@@ -160,12 +170,13 @@ function printAboutThisPage($browsercount, $sessioncount)
  * cookies, then simply output 'none found' message.
  *
  * @param int $browsercount The number of deletable browser cookies
+ * @param bool $collapsed Initially display the section collapsed or not
  */
-function printBrowserCookies($browsercount)
+function printBrowserCookies($browsercount, $collapsed = false)
 {
     global $hide;
 
-    Content::printCollapseBegin('cookies', 'Browser Cookies', false);
+    Content::printCollapseBegin('cookies', 'Browser Cookies', $collapsed);
 
     if ($browsercount > 0) {
         echo '
@@ -230,12 +241,13 @@ function printBrowserCookies($browsercount)
  * are no session variables, then simply output 'none found' message.
  *
  * @param int $sessioncount The number of deletable session variables
+ * @param bool $collapsed Initially display the section collapsed or not
  */
-function printSessionVariables($sessioncount)
+function printSessionVariables($sessioncount, $collapsed = false)
 {
     global $hide;
 
-    Content::printCollapseBegin('session', 'Session Variables', false);
+    Content::printCollapseBegin('session', 'Session Variables', $collapsed);
 
     if ($sessioncount > 0) {
         echo '
@@ -291,10 +303,12 @@ function printSessionVariables($sessioncount)
  *
  * This function prints out the display-only web environment variables
  * (e.g. the $_SERVER array).
+ *
+ * @param bool $collapsed Initially display the section collapsed or not
  */
-function printEnvironmentVars()
+function printEnvironmentVars($collapsed = false)
 {
-    Content::printCollapseBegin('environment', 'Environment Variables', false);
+    Content::printCollapseBegin('environment', 'Environment Variables', $collapsed);
 
     echo '
         <div class="card-body">
