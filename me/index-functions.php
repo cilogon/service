@@ -34,18 +34,15 @@ function printMainCookiesPage()
     /* CIL-1416 Check for query parameter 'hide' to collapse
      * any of the three informational sections. Value for 'hide'
      * parameter is any of 'browser', 'session', and/or
-     * 'environment', any order, joined by comma.
+     * 'environment', any order, separated by comma.
      */
-    $gethide = '';
-    if (isset($_GET['hide'])) {
-        $gethide = $_GET['hide'];
-    }
+    $gethide = Util::getGetOrPostVar('hide');
 
     Content::printHeader('Manage CILogon Cookies', false); // Don't set CSRF
 
     Content::printFormHead();
 
-    printAboutThisPage($browsercount, $sessioncount);
+    printAboutThisPage($browsercount, $sessioncount, $gethide);
     printBrowserCookies($browsercount, (preg_match('/browser/i', $gethide)));
     printSessionVariables($sessioncount, (preg_match('/session/i', $gethide)));
     printEnvironmentVars(preg_match('/environment/i', $gethide));
@@ -64,8 +61,10 @@ function printMainCookiesPage()
  *
  * @param int $browsercount The number of deletable browser cookies.
  * @param int $sessioncount The number of deletable session variables
+ * @param string $gethide (Optional) Which sections to hide: browser,
+ *        session, and/or environment; comma-separated.
  */
-function printAboutThisPage($browsercount, $sessioncount)
+function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
 {
     Content::printCollapseBegin('aboutme', 'CILogon Attributes', false);
 
@@ -125,6 +124,12 @@ function printAboutThisPage($browsercount, $sessioncount)
               <a class="btn btn-primary form-control" href="/">Proceed
               to the CILogon Service</a>
             </div> <!-- end col-auto -->';
+
+    // CIL-1416 Put the "hide" parameter in the form for next page load
+    if (strlen($gethide) > 0) {
+        echo '
+            <input type="hidden" name="hide" value="', $gethide, '">';
+    }
 
     if ($browsercount > 0) {
         echo '
