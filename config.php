@@ -196,17 +196,18 @@ define('REDLIT_IDP_ARRAY', array(
  * 'Select an Identity Provider' screen and go directly to a specific
  * Identity Provider. Each array key/value pair has the following format:
  *
- *   'URI_Regex' => 'entityId'
+ *   'URI/Regex' => 'entityId'
  *
- * The URI regex must be a PHP PCRE (Perl-Compatible Regular Expression).
- * See http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
- * '%' (percent) is a good choice for delimiter so that slashes do not
+ * The URI/Regex can be either a PHP PCRE (Perl-Compatible Regular
+ * Expression) or an exact string match. See
+ * http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
+ * '!' (exclamation) is a good choice for delimiter so that slashes do not
  * need to be escaped. Note that period '.' matches any character,
  * so if you want to match a dot, prefix with a backslash, e.g., '\.' .
  * However, in practice this unnecessary since dots appear mainly in
  * the FQDN.
  *
- * The URI regex should match one of:
+ * The URI/Regex should match one of:
  *    * an OAuth2.0 redirect_uri
  *    * an OAuth2.0 client_id
  *
@@ -220,9 +221,9 @@ define('REDLIT_IDP_ARRAY', array(
  */
 /*
 define('BYPASS_IDP_ARRAY', array(
-    '%^https://bhr.security.ncsa.illinois.edu/oidc/callback/%' =>
+    '!^https://bhr.security.ncsa.illinois.edu/oidc/callback/!' =>
         'https://idp.ncsa.illinois.edu/idp/shibboleth',
-    '%^cilogon:/client_id/1234567890%' =>
+    'cilogon:/client_id/1234567890' =>
         'https://idp.xsede.org/idp/shibboleth',
 ));
 */
@@ -233,20 +234,21 @@ define('BYPASS_IDP_ARRAY', array(
  * (a.k.a., 'selected_idp=...'). Each array key/value pair has the following
  * format:
  *
- *     'URI_REGEX' => '1'
+ *     'URI/Regex' => '1'
  *
  * This is to store the URIs in the 'keys' of the array rather than in
  * the 'values'.
  *
- * The URI regex must be a PHP PCRE (Perl-Compatible Regular Expression).
- * See http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
- * '%' (percent) is a good choice for delimiter so that slashes do not
+ * The URI/Regex can be either a PHP PCRE (Perl-Compatible Regular
+ * Expression) or an exact string match. See
+ * http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
+ * '!' (exclamation) is a good choice for delimiter so that slashes do not
  * need to be escaped. Note that period '.' matches any character,
  * so if you want to match a dot, prefix with a backslash, e.g., '\.' .
  * However, in practice this unnecessary since dots appear mainly in
  * the FQDN.
  *
- * The URI regex should match one of:
+ * The URI/Regex should match one of:
  *    * an OAuth2.0 redirect_uri
  *    * an OAuth2.0 client_id
  *
@@ -263,8 +265,8 @@ define('BYPASS_IDP_ARRAY', array(
  */
 /*
 define('ALLOW_BYPASS_ARRAY', array(
-    '%cilogon:/client_id/1234567890%' => '1',
-    '%^https://.*\.flywheel.io/.*$%' => '1',
+    'cilogon:/client_id/1234567890' => '1',
+    '!^https://.*\.flywheel.io/.*$!' => '1',
 ));
 */
 
@@ -272,17 +274,18 @@ define('ALLOW_BYPASS_ARRAY', array(
  * This array contains IdPs and Portals that should have a skin
  * applied by force. Each array key/value pair has the following format:
  *
- *    'URI_Regex' => 'skinname'
+ *    'URI/Regex' => 'skinname'
  *
- * The URI regex must be a PHP PCRE (Perl-Compatible Regular Expression).
- * See http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
- * '%' (percent) is a good choice for delimiter so that slashes do not
+ * The URI/Regex can be either a PHP PCRE (Perl-Compatible Regular
+ * Expression) or an exact string match. See
+ * http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
+ * '!' (exclamation) is a good choice for delimiter so that slashes do not
  * need to be escaped. Note that period '.' matches any character,
  * so if you want to match a dot, prefix with a backslash, e.g., '\.' .
  * However, in practice this unnecessary since dots appear mainly in
  * the FQDN.
  *
- * The URI regex should match one of :
+ * The URI/Regex should match one of :
  *    * an IdP entityID
  *    * an OAuth1.0a callbackuri
  *    * an OAuth2.0 redirect_uri
@@ -293,8 +296,8 @@ define('ALLOW_BYPASS_ARRAY', array(
  */
 /*
 define('FORCE_SKIN_ARRAY', array(
-    '%^cilogon:/client_id/1234567890%' => 'xsede',
-    '%^https://.*\.flywheel.io/.*$%' => 'flywheel',
+    'cilogon:/client_id/1234567890' => 'xsede',
+    '!^https://.*\.flywheel.io/.*$!' => 'flywheel',
 ));
 */
 
