@@ -9,7 +9,7 @@ GRANT ALL PRIVILEGES on ciloa2.bypass to 'cilogon'@'localhost' WITH GRANT OPTION
 COMMIT;
 
 CREATE TABLE IF NOT EXISTS ciloa2.bypass (
-    type ENUM('allow', 'idp', 'skin') NOT NULL DEFAULT 'allow',
+    type ENUM('allow','idp','skin','sso') NOT NULL DEFAULT 'allow',
     regex VARCHAR(255) NOT NULL DEFAULT '%%',
     value VARCHAR(255) DEFAULT NULL,
     PRIMARY KEY(type,regex)

@@ -115,15 +115,21 @@
   -->
 
 
-  <!-- <poweredbyimg>
-       This is the web-relative path to the "Powered By CILogon" image which
-       appears in the upper-right corner when configured to appear by the
-       skin's CSS (i.e., div.skincilogonlogo{display:inline;}). If not
-       specified, the default value is "/images/poweredbycilogon.png"
-       (without the quotes).
+  <!-- <poweredbyimg>, <poweredbyurl>, <poweredbyalt>, and <poweredbytitle>
+       These are all values used by the "Powered By CILogon" icon in the upper
+       right corner when configured by the skin's CSS
+       (i.e., div.skincilogonlogo{display:inline;}).
+       <poweredbyimg> is the web-relative path to the image to be shown. Note
+       that the image is hosted locally to avoid external dependencies.
+       <poweredbyurl> is the link for the clickable "Powered By CILogon" icon.
+       <poweredbyalt> is the "alt" text for the icon.
+       <poweredbytitle> is the "title" text for the icon (i.e., hover tooltip)
   -->
   <!--
   <poweredbyimg>/images/poweredbycilogon.png</poweredbyimg>
+  <poweredbyurl>https://www.cilogon.org/faq/</poweredbyurl>
+  <poweredbyalt>CILogon</poweredbyalt>
+  <poweredbytitle>CILogon Service</poweredbytitle>
   -->
 
 
@@ -139,6 +145,15 @@
   <!--
   <favicon>/images/favicon-xsede.ico</favicon>
   <favicontype>image/ico</favicontype>
+  -->
+
+
+  <!-- <privacypolicyurl>
+       The URL for the "privacy policy" link shown on the "Select an
+       Identity Provider" page, just below the "Log On" button.
+  -->
+  <!--
+  <privacypolicyurl>https://www.cilogon.org/privacy</privacypolicyurl>
   -->
 
 
@@ -359,7 +374,6 @@
        If set to 1, do not show the "Log Off" button. Instead, show a text
        box "To log off, please quit your browser.".
   -->
-
   <!--
   <logofftextbox>1</logofftextbox>
   -->
@@ -368,7 +382,6 @@
        If set to 1, automatically expand the "Create Password-Protected
        Certificate" collapsible card. (The default is collapsed.)
   -->
-
   <!--
   <expandcreatecert>1</expandcreatecert>
   -->
@@ -378,7 +391,6 @@
        of each page. Note that HTML tags should be HTML-escaped (e.g., use
        &lt; and &gt; in place of '<' and '>').
   -->
-
   <!--
   <banner>
   If you are experiencing issues, please contact your project manager
@@ -391,7 +403,6 @@
        shown below. Note that '<', '>', and '&' must be HTML-escaped as &lt; ,
        &gt; , and &amp; in order to be processed correctly.
   -->
-
   <!--
   <footertext>
     &lt;p&gt;For questions about this site, please see the &lt;a target="_blank"
@@ -404,6 +415,32 @@
     href="http://ca.cilogon.org/acknowledgements"&gt;acknowledgements&lt;/a&gt;
     of support for this site.&lt;/p&gt;
   </footertext>
+  -->
+
+  <!-- <selecthelp>
+       The help text for the floating help bubble (?) text that appears
+       next to the list of IdPs. This is configurable since the default
+       text contains references to CILogon. The default HTML is shown
+       below. Note that '<', '>', and '&' must be HTML-escaped as &lt; ,
+       &gt; , and &amp; in order to be processed correctly.
+  -->
+  <!--
+  <selecthelp>
+  &lt;p&gt;
+    CILogon facilitates secure access to CyberInfrastructure (CI).
+    In order to use the CILogon Service, you must first select
+    an identity provider. An identity provider (IdP) is an
+    organization where you have an account and can log on
+    to gain access to online services.
+  &lt;/p&gt;
+  &lt;p&gt;
+    If you are a faculty, staff, or student member of a university
+    or college, please select it for your identity provider.
+    If your school is not listed, please contact &lt;a
+    href=\'mailto:' . EMAIL_HELP . '\'&gt;' . EMAIL_HELP . '&lt;/a&gt;,
+    and we will try to add your school in the future.
+  &lt;/p&gt;
+  </selecthelp>
   -->
 
 </config>

@@ -270,7 +270,7 @@ function printSessionVariables($sessioncount, $collapsed = false)
                      '<th scope="row"><samp>' ,
                      Util::htmlent($key) ,
                      '</samp></th><td><samp>' ,
-                     Util::htmlent($value) ,
+                     Util::htmlent(is_array($value) ? json_encode($value, JSON_UNESCAPED_SLASHES) : $value) ,
                      '</samp></td></tr>';
             }
         }

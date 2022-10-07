@@ -210,6 +210,7 @@ define('REDLIT_IDP_ARRAY', array(
  * The URI/Regex should match one of:
  *    * an OAuth2.0 redirect_uri
  *    * an OAuth2.0 client_id
+ *    * a CILogon admin_id
  *
  * The entityId must exactly match the IdP metadata value.
  *
@@ -251,6 +252,7 @@ define('BYPASS_IDP_ARRAY', array(
  * The URI/Regex should match one of:
  *    * an OAuth2.0 redirect_uri
  *    * an OAuth2.0 client_id
+ *    * a CILogon admin_id
  *
  * This feature is used by portals that have been vetted to show a
  * 'consent to release attributes' on their site (since this is usually
@@ -290,6 +292,7 @@ define('ALLOW_BYPASS_ARRAY', array(
  *    * an OAuth1.0a callbackuri
  *    * an OAuth2.0 redirect_uri
  *    * an OAuth2.0 client_id
+ *    * a CILogon admin_id
  *
  * In the case that multiple entries match, the skinname for the
  * first match in the list above wins. Skinname is case-insensitive.
@@ -298,6 +301,28 @@ define('ALLOW_BYPASS_ARRAY', array(
 define('FORCE_SKIN_ARRAY', array(
     'cilogon:/client_id/1234567890' => 'xsede',
     '!^https://.*\.flywheel.io/.*$!' => 'flywheel',
+));
+*/
+
+/**
+ * This array contains admin clients that should be used for Single
+ * Sign On (SSO). Each array key/value pair has the following format:
+ *
+ *    'admin_id' => 'CO_Name'
+ *
+ * By convention, admin clients are named as follows:
+ *
+ *     CO_Name Descriptive Name TIER
+ *
+ * If TIER is PROD, it is typically omitted. Examples:
+ *
+ *     ACCESS CONECT Registry TEST
+ *     ACCESS Service Provider Registry
+ */
+/*
+define('SSO_ADMIN_ARRAY', array(
+    'cilogon:/adminClient/15caf92c7e7e12cf54902502f65dbec7/1656685026455' => 'ACCESS',
+    'cilogon:/adminClient/561778a9ab8e33a68e6ed581950f5bd5/1661180615314' => 'ACCESS,
 ));
 */
 
