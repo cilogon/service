@@ -529,6 +529,7 @@ function getTitleText($cookie)
             "authentication at your chosen Identity Provider." ,
         "responseurl" => "The URL to return to after authentication at your chosen Identity Provider." ,
         "_shibsession" => "A shibboleth session token set by an InCommon Identity Provider." ,
+        "sso_idp_array" => "Keep track of IdPs used for Single Sign On (SSO)",
         "status" => "An internal return code when fetching user data from the datastore." ,
         "subject_id" => "The subject identifier provided by the Identity Provider",
         "submit" => "The name of the 'submit' button clicked." ,
