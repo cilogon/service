@@ -62,7 +62,13 @@ if (verifyOIDCParams()) {
             break; // End case 'gotuser'
 
         case 'Proceed': // Proceed after Error page
-            Util::verifySessionAndCall('printMainPage');
+            // Bug fix - If client_id query parameter is set, then
+            // 'Proceed' (set by PKCS12 flow) should be ignored.
+            if (strlen(Util::getGetVar('client_id')) > 0) {
+                Content::handleNoSubmitButtonClicked();
+            } else {
+                Util::verifySessionAndCall('printMainPage');
+            }
             break; // End case 'Proceed'
 
         case 'Cancel': // User denies release of attributes
