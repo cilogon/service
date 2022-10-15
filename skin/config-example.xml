@@ -443,4 +443,13 @@
   </selecthelp>
   -->
 
+  <!-- <maxrecentidps>
+       The maximum number of recent IdPs to show at the top of the "Select
+       and Identity Provider" list. Valid values are 1 to 10. Defaults to 5.
+       Set to 1 to essentially disable the recent IdPs from showing at the
+       top (since the "default" IdP counts as one of the recent IdPs).
+  -->
+  <!--
+  <maxrecentidps>5</maxrecentidps>
+   -->
 </config>
