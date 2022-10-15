@@ -316,10 +316,13 @@ function updateIdPList()
             dataType: 'json',
             success: function (data) {
                 // Loop through the IdPs, adding new <option> elements,
-                // skipping the first one already selected in the list.
-                var sel = providerId.options[0].text;
+                // skipping the ones already added to the list.
+                var sel = [];
+                $.each(providerId.options, function(i, opt) {
+                    sel[i] = $(opt).text();
+                });
                 $.each(data, function (index, value) {
-                    if (value.DisplayName !== sel) {
+                    if (sel.indexOf(value.DisplayName) === -1) {
                         $('.selectpicker').append(
                             '<option data-tokens="' + value.EntityID +
                             '" value="' + value.EntityID +
