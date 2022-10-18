@@ -17,7 +17,7 @@ header('Content-Type:application/json;charset=utf-8');
 
 echo '{
   "issuer": "https://' , $hostname , '",
-  "authorization_endpoint": "https://' , $hostname , '/authorize",
+  "authorization_endpoint": "https://' , $hostname , '/authorize/",
   "device_authorization_endpoint": "https://' , $hostname , '/oauth2/device_authorization",
   "registration_endpoint": "https://' , $hostname , '/oauth2/oidc-cm",
   "token_endpoint": "https://' , $hostname , '/oauth2/token",
