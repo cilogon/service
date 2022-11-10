@@ -388,7 +388,7 @@ with font-weight <strong>bold</strong>, and font-style <em>italic</em>.
     <th> SVG </th>
     <th colspan="2">Scalable Vector Graphics (SVG) file:</th>
     <th><a
-    href="https://cilogon.org/images/cilogon-logo-.svg">View</a></th>
+    href="https://cilogon.org/images/cilogon-logo.svg">View</a></th>
   </tr>
 </table>
 
