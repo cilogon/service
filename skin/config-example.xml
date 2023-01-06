@@ -103,6 +103,19 @@
   -->
 
 
+  <!-- <idppreferred>
+       This is a list of "preferred" IdPs which appear at the top of the
+       "Select an Identity Provider" list, in the order specified.
+  -->
+  <!--
+  <idppreferred>
+    <idp>urn:mace:incommon:uiuc.edu</idp>
+    <idp>https://idp.ncsa.illinois.edu/idp/shibboleth</idp>
+    <idp>http://google.com/accounts/o8/id</idp>
+  </idppreferred>
+  -->
+
+
   <!-- <logonbuttontext>
        This changes the text of the "Log On" button of the WAYF. Use this
        setting with care since the program's control flow relies on the text
