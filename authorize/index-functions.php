@@ -142,7 +142,7 @@ function printMainPage()
         )) && (!($dbs->status & 1))
     ) { // STATUS_OK codes are even
         // CIL-360 - Check for Response Mode
-        // http://openid.net/specs/oauth-v2-multiple-response-types-1_0.html#ResponseModes
+        // https://openid.net/specs/oauth-v2-multiple-response-types-1_0.html#ResponseModes
         if (isset($clientparams['response_mode'])) {
             $responsemode = $clientparams['response_mode'];
             if ($responsemode == 'query') {

@@ -25,7 +25,7 @@ echo '
           </div> <!-- end card-text -->
           <div class="card-text my-2">
             Visit <a target="_blank"
-            href="http://www.cilogon.org/service/outages">www.cilogon.org/service/outages</a> for more
+            href="https://cilogon.statuspage.io/">https://cilogon.statuspage.io/</a> for more
           information.
           </div> <!-- end card-text -->
         </div> <!-- end col -->

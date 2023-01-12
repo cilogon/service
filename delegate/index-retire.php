@@ -27,7 +27,7 @@ echo '
           </div> <!-- end card-text -->
           <div class="card-text my-2">
             Please visit <a target="_blank"
-            href="http://www.cilogon.org/oidc">www.cilogon.org/oidc</a> for
+            href="https://www.cilogon.org/oidc">www.cilogon.org/oidc</a> for
             information on using CILogon\'s OpenID Connect (OIDC) service.
           </div> <!-- end card-text -->
         </div> <!-- end col -->

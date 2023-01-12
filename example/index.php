@@ -29,8 +29,8 @@ needs.
   <li><strong><a target="_blank"
   href="https://cilogon.org/">https://cilogon.org/</a></strong> -  The main
   CILogon Service site is for use by end-users to obtain a certificate for
-  secure access to <a target="_blank" href="http://www.nsf.gov/">NSF</a>
-  <a target="_blank" href="http://www.nsf.gov/oci">CyberInfrastructure</a>.
+  secure access to <a target="_blank" href="https://www.nsf.gov/">NSF</a>
+  <a target="_blank" href="https://www.nsf.gov/oci">CyberInfrastructure</a>.
   </li>
   <li><strong><a target="_blank"
   href="https://cilogon.org/.well-known/openid-configuration">https://cilogon.org/.well-known/openid-configuration</a></strong>
@@ -263,7 +263,7 @@ link to save to your local computer.
 
 <p>
 The font used for the "CILogon" text is <a target="_blank"
-href="http://web.nickshanks.com/fonts/microsoft-core-web-fonts">Arial</a>,
+href="https://learn.microsoft.com/en-us/typography/font-list/arial">Arial</a>,
 with font-weight <strong>bold</strong>, and font-style <em>italic</em>.
 </p>
 

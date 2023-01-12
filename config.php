@@ -200,7 +200,7 @@ define('REDLIT_IDP_ARRAY', array(
  *
  * The URI/Regex can be either a PHP PCRE (Perl-Compatible Regular
  * Expression) or an exact string match. See
- * http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
+ * https://www.php.net/manual/en/pcre.pattern.php for details on syntax.
  * '!' (exclamation) is a good choice for delimiter so that slashes do not
  * need to be escaped. Note that period '.' matches any character,
  * so if you want to match a dot, prefix with a backslash, e.g., '\.' .
@@ -242,7 +242,7 @@ define('BYPASS_IDP_ARRAY', array(
  *
  * The URI/Regex can be either a PHP PCRE (Perl-Compatible Regular
  * Expression) or an exact string match. See
- * http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
+ * https://www.php.net/manual/en/pcre.pattern.php for details on syntax.
  * '!' (exclamation) is a good choice for delimiter so that slashes do not
  * need to be escaped. Note that period '.' matches any character,
  * so if you want to match a dot, prefix with a backslash, e.g., '\.' .
@@ -280,7 +280,7 @@ define('ALLOW_BYPASS_ARRAY', array(
  *
  * The URI/Regex can be either a PHP PCRE (Perl-Compatible Regular
  * Expression) or an exact string match. See
- * http://www.php.net/manual/en/pcre.pattern.php for details on syntax.
+ * https://www.php.net/manual/en/pcre.pattern.php for details on syntax.
  * '!' (exclamation) is a good choice for delimiter so that slashes do not
  * need to be escaped. Note that period '.' matches any character,
  * so if you want to match a dot, prefix with a backslash, e.g., '\.' .
