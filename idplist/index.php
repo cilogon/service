@@ -27,6 +27,10 @@ if ($idplist !== false) { // Verify we read in idplist.xml file
     $idps = Content::getCompositeIdPList(); // Using the 'skin'
     $randsidps = $idplist->getRandSIdPs();
 
+    // CIL-1632 Get list of "hidden" IdPs
+    $skin = Util::getSkin();
+    $hiddenidps = $skin->getHiddenIdPs();
+
     // CIL-978 Check for 'idphint' query parameter
     $idphintlist = Content::getIdphintList($idps);
     if (!empty($idphintlist)) {
@@ -34,6 +38,10 @@ if ($idplist !== false) { // Verify we read in idplist.xml file
         // Update the IdP selection list to show just the idphintlist.
         foreach ($idphintlist as $value) {
             $newidps[$value] = $idps[$value];
+            // Also, remove from the $hiddenidps array
+            if (($key = array_search($value, $hiddenidps)) !== false) {
+                unset($hiddenidps[$key]);
+            }
         }
         $idps = $newidps;
         // Re-sort the $idps by Display_Name for correct alphabetization.
@@ -53,12 +61,17 @@ if ($idplist !== false) { // Verify we read in idplist.xml file
         ) {
             continue;
         }
-        $idparray[] = array(
+        $tmparray = array(
             'EntityID' => $entityId,
             'OrganizationName' => $names['Organization_Name'],
             'DisplayName' => $names['Display_Name'],
             'RandS' => array_key_exists($entityId, $randsidps)
         );
+        // CIL-1632 Add "hidden" tag for IdPs hidden by skin
+        if ((!empty($hiddenidps)) && (in_array($entityId, $hiddenidps))) {
+            $tmparray['Hidden'] => true;
+        }
+        $idparray[] = $tmparray;
     }
 }
 

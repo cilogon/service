@@ -325,8 +325,9 @@ function updateIdPList()
                     if (sel.indexOf(value.DisplayName) === -1) {
                         $('.selectpicker').append(
                             '<option data-tokens="' + value.EntityID +
-                            '" value="' + value.EntityID +
-                            '">' + value.DisplayName + '</option>'
+                            '" value="' + value.EntityID + '"' +
+                            ((value.Hidden === true) ? ' hidden="hidden"' : '') +
+                            '>' + value.DisplayName + '</option>'
                         );
                     }
                 });

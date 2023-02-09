@@ -116,6 +116,22 @@
   -->
 
 
+  <!-- <idphidden>
+       CIL-1632 This is a list of "hidden" IdPs which are still technically
+       in the "Select an Identity Provider" list, but have the "hidden"
+       <option> attribute set so that they are not displayed to the user.
+       NOTE: If you set this config option, you MUST also set <initialidp>
+       (above) to a non-redlit, non-hidden IdP in case all of the
+       recentidps should be hidden.
+  -->
+  <!--
+  <idphidden>
+    <idp>https://idp.ncsa.illinois.edu/idp/shibboleth</idp>
+    <idp>http://google.com/accounts/o8/id</idp>
+  </idphidden>
+  -->
+
+
   <!-- <logonbuttontext>
        This changes the text of the "Log On" button of the WAYF. Use this
        setting with care since the program's control flow relies on the text
