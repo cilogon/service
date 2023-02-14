@@ -69,7 +69,7 @@ if ($idplist !== false) { // Verify we read in idplist.xml file
         );
         // CIL-1632 Add "hidden" tag for IdPs hidden by skin
         if ((!empty($hiddenidps)) && (in_array($entityId, $hiddenidps))) {
-            $tmparray['Hidden'] => true;
+            $tmparray['Hidden'] = true;
         }
         $idparray[] = $tmparray;
     }
