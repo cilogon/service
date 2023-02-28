@@ -480,5 +480,61 @@
   -->
   <!--
   <maxrecentidps>5</maxrecentidps>
+  -->
+
+  <!-- <extrahtml>
+       CIL-1643 Add extra HTML at the start of the <body> tag. This allows
+       for the addition of an HTML/JavaScript-based navigation bar, for
+       example. This feature was requested by ACCESS CI. Note that '<', '>',
+       and '&' must be HTML-escaped as &lt; , &gt; , and &amp; in order to
+       be processed correctly.
+
+       See also <extrascript> and <extrapage> below.
+  -->
+  <!--
+  <extrahtml>
+  &lt;div class="navbar"&gt;
+  &lt;div&gt;
+  </extrahtml>
    -->
+
+  <!-- <extrascript>
+       CIL-1643 Add extra <script> at the end of the <body> tag. This allows
+       for additional JavaScript to be injected into the page, e.g., for use
+       by an HTML-based navigation bar.  Note that '<', '>', and '&' must be
+       HTML-escaped as &lt; , &gt; , and &amp; in order to be processed
+       correctly.
+
+       See also <extrahtml> above and <extrapage> below.
+  -->
+  <!--
+  <extrascript>
+  &lt;script&gt;
+  navbar.addEventListener("click", (e) => {
+    alert("Hello World!");
+  });
+  &lt;/script&gt;
+  </extrascript>
+  -->
+
+  <!-- <extrapage>
+       CIL-1643 For use by <extrahtml> and <extrascript>, <extrapage>
+       limits the pages where the extra HTML and extra JavaScript are shown.
+       If <extrapage> is not defined, then <extrahtml> and <extrascript>
+       are shown on all pages. To restrict the extra HTML/JavaScript,
+       specify one or more of the following values, separated by spaces:
+         * main - show on the main cilogon.org page
+         * authorize - show on the OIDC authorize endpoint page
+         * device - show on the OAuth2 device flow page
+         * example - show on the page of examples
+         * logout - show on the logout page
+         * me - show on the page which displays cookie/session values
+         * testidp - show on the IdP tester page
+
+       See also <extrahtml> above and <extrapage> below.
+  -->
+  <!--
+  <extrapage>logout me testidp</extrapage>
+  -->
+
 </config>
