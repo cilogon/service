@@ -529,12 +529,11 @@
          * example - show on the page of examples
          * logout - show on the logout page
          * me - show on the page which displays cookie/session values
-         * testidp - show on the IdP tester page
 
        See also <extrahtml> above and <extrapage> below.
   -->
   <!--
-  <extrapage>logout me testidp</extrapage>
+  <extrapage>logout me</extrapage>
   -->
 
 </config>
