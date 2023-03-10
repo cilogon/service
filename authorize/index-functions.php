@@ -201,16 +201,10 @@ function printMainPage()
         // Bug: OA4MP always returns STATUS_MISSING_PARAMETER_ERROR,
         // so for now check error=qdl_error instead.
         //if ($dbs->status == DBService::$STATUS['STATUS_QDL_ERROR']) {
-        if ($dbs->error == 'qdl_error') {
-            if (strlen($dbs->custom_error_uri) > 0) {
-                Util::unsetClientSessionVars();
-                header('Location: ' . $dbs->custom_error_uri);
-                exit; // No further processing necessary
-            } elseif (strlen($dbs->error_uri) > 0) {
-                Util::unsetClientSessionVars();
-                header('Location: ' . $dbs->error_uri);
-                exit; // No further processing necessary
-            }
+        if (($dbs->error == 'qdl_error') && (strlen($dbs->custom_error_uri) > 0)) {
+            Util::unsetClientSessionVars();
+            header('Location: ' . $dbs->custom_error_uri);
+            exit; // No further processing necessary
         }
         // CIL-1187 Handle Authn error responses from setTransactionState
         $errstr = $dbs->statusText();
