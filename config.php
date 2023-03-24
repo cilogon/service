@@ -356,3 +356,15 @@ define('HIDE_IDP_ARRAY', array(
  * To temporarily disable the EMAIL_ALERTS emails, set this to true.
  */
 define('DISABLE_LIGO_ALERTS', false);
+
+/**
+ * CIL-1674 When the dbService returns STATUS_EPTID_MISMATCH, the new
+ * default behavior is to log this as a WARNING. In this case, the
+ * dbService?action=getUser call is retried WITHOUT the eptid so as to
+ * match the user on the eppn instead. To revert to the old behavior of
+ * treating STATUS_EPTID_MISMATCH as an ERROR, set EPTID_MISMATCH_IS_WARNING
+ * to false.
+ */
+/*
+define('EPTID_MISMATCH_IS_WARNING', true);
+*/
