@@ -1,3 +1,47 @@
+255e304 2023-03-24 CIL-1674 STATUS_EPTID_MISMATCH can be WARNING or ERROR.
+87bf414 2023-03-22 Remove outdated comments
+6923f3c 2023-03-10 CIL-1342 Use custom_error_uri instead of error_uri
+e4b07a0 2023-03-01 /testidp is not skinnable
+60fd8ca 2023-02-28 CIL-1643 Allow extra HTML/JavaScript to be added
+a18ff6d 2023-02-14 Bug fix
+e3cf4fe 2023-02-09 CIL-1632 - Skin option for "Hidden" IdPs.
+cf03e61 2023-01-31 CIL-1613 Add logo for FABRIC skin
+69851f5 2023-01-12 CIL-1602 Change http:// to https:// where possible
+1d621c5 2023-01-06 CIL-1595 Show 'preferred' IdP at top of list
+89dcee3 2022-11-10 Fix typo
+1540b6a 2022-11-09 Icon was missing white background
+0aa890c 2022-11-09 Add SVG version of CILogon Logo.
+cb5227b 2022-11-09 CIL-1559 Fix cilogon.org/example returning HTTP 500
+354613b 2022-10-18 Revert last commit
+98b28c2 2022-10-18 CIL-1533 Add trailing slash to .well-known 'authorize' endpoint
+edcbe0f 2022-10-14 Fix typo
+b30a41a 2022-10-14 CIL-1515 Add skin option <maxrecentidps>
+9c863cd 2022-10-14 CIL-1515 Recent IdPs at the top should not appear again.
+ffb5017 2022-10-08 Bug fixes.
+17baf04 2022-10-07 Add tooltip for sso_idp_array
+5ea4826 2022-10-07 CIL-1523 Update BioCommons skin
+f378daf 2022-10-07 Rewrite code for ACCESS SSO. Add skin options for front page.
+9070766 2022-10-05 CIL-1510 Allow admin_id for bypass/skin arrays
+e52f9d0 2022-09-23 CIL-1416 Output 'hide' to hidden form input for next page load
+f164cd9 2022-08-31 CIL-1369 Don't query the COmanage database
+da35938 2022-08-31 CIL-1416 Allow hiding sections on cilogon.org/me
+77c5cdc 2022-08-30 CIL-1369 SSO for ACCESS clients
+12e4244 2022-08-23 CIL-1311 Change OAuth2 IdP entityIDs
+5c31e0c 2022-08-22 Add logo for ACCESS
+5c6a394 2022-08-18 CIL-1342 Redirect to error uri on QDL error.
+0fde4d0 2022-08-18 CIL-1342 Redirect to error uri on QDL error.
+6d1f48a 2022-08-11 CIL-1377 Upgrade to PHP 8.1.
+9be52e7 2022-08-08 Try prefer-stable:true to allow dev packages
+ea3bc7f 2022-08-08 Change minimum-stability from dev to stable
+08f681c 2022-07-20 CIL-1342 Redirect to custom error uri on QDL error.
+c3cca7a 2022-07-07 CIL-1331 Also log input parameters to dbService() function.
+7d312bf 2022-07-07 CIL-1331 Log response from setTransactionState
+7d1a1b6 2022-07-07 PHP 7.4 is supported
+2062835 2022-06-10 CIL-1311 Update OAuth2 URLs (for Google in database).
+c4c46b4 2022-05-13 Add missing claims_supported: affiliation, entitlement, itrustuin
+590e966 2022-05-13 CIL-1285 Add eduPersonOrcid to claims_supported
+f974f93 2022-05-12 CIL-1285 Assert eduPersonOrcid for ORCID logins
+23b3092 2022-04-18 Update ChangeLog
 a91d794 2022-04-12 CIL-1247 and CIL-1252 - Fix OIDC redirect problems
 c7136fb 2022-04-12 Fix minor typos
 729b758 2022-03-01 CIL-1194 Fix logic in statusEmbed
@@ -344,11 +388,13 @@ a7b6530 2018-10-12 Add https://simpl-dev.ncsa.illinois.edu/clowder/authenticate/
 fb2a0e5 2018-09-17 CIL-507 Output special log messages for XSEDE log analysis.
 c66d4a7 2018-09-17 Fix typo in comment.
 6bb817d 2018-09-07 Add underline to metadata browser URL. Remove text related to 'Add IdP' button which no longer exists.
+b8d37c4 2018-09-07 Merge branches 'master', 'master', 'master', 'master', 'master', 'master', 'master' and 'master' of github.com:cilogon/service
 414cca4 2018-09-07 CIL-416 Show a few extra warnings on the testidp page.
 76ee4a3 2018-09-06 Duplicate 'sprouttest' skin as 'sprout' for eventual rename since Syngenta IdP is now using production cilogon.org.
 6414e1b 2018-09-04 Also show Display Name for newly added IdPs.
 1501760 2018-08-27 Set simpl.ncsa.illionis.edu to use sprouttest skin for Rob Kooper.
 4f896c4 2018-08-27 Add more portals for Justin Azoff to force use of NCSA IdP.
+e936e8e 2018-08-27 Merge branches 'master', 'master', 'master' and 'master' of github.com:cilogon/service
 a6f0510 2018-08-24 Fix PSR2-related errors.
 526412d 2018-08-24 CIL-377 The service-lib code was updated to use mdui:DisplayName in the IdP listing. This new entry is available in the /idplist/ web endpoint, but still storted by OrganizationDisplayName (for SWAMP).
 974eafa 2018-08-16 For Justin Azoff's dev client, always use NCSA IdP.
