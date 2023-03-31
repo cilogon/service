@@ -74,6 +74,51 @@
   -->
 
 
+  <!-- <regauthgreenlit>
+       The Incommon Metadata asserts the Registration Authority for each
+       IdP. You can restrict the list of IdPs to a particular set of
+       Registration Authorities (RegAuth for short) by listing them here.
+       Notes:
+       (1) The <regauthgreenlit> and <regauthredlit> lists are processed
+           BEFORE the <idpgreenlit> and <idpredlit> lists, so you can use
+           both types to refine the list of IdPs.
+       (2) OAuth2 IdPs (e.g., GitHub, Google, Microsoft, ORCID) are NOT
+           affected by <regauthgreenlit> or <regauthredlit>. To remove
+           the OAuth2 IdPs, use <idpredlit>.
+       To get the current list of Registration Authorities for the
+       IdPs in InCommon Metadata, run the following command:
+
+           curl -s https://mdq.incommon.org/entities/idps/all | \
+           grep registrationAuthority | \
+           sed 's/.*registrationAuthority="\([^"]*\)".*/\1/p' | \
+           sort | uniq
+
+       In the example below, we allow IdPs that are registered by
+       InCommon or the Australian Access Federation.
+  -->
+  <!--
+  <regauthgreenlit>
+    <regauth>https://incommon.org</regauth>
+    <regauth>https://aaf.edu.au</regauth>
+  </regauthgreenlit>
+  -->
+
+
+  <!-- <regauthredlit>
+       This is the counterpart to <regauthgreenlit>. In this case, you can
+       remove IdPs that are registered by particular Registration
+       Authorities. See the Notes in <regauthgreenlit> for more info.
+       In the example below, we remove IdPs registered by the China
+       federations CARSI and CSTCloudFederation.
+  -->
+  <!--
+  <regauthredlit>
+    <regauth>https://www.carsi.edu.cn</regauth>
+    <regauth>https://www.cstcloud.net/</regauth>
+  </regauthredlit>
+  -->
+
+
   <!-- <idpgreenlit>
        The cilogon.org service maintains a global list of available IdPs in
        the file /var/www/html/include/idplist.xml. The IdPs are shown
