@@ -85,8 +85,8 @@
        (2) OAuth2 IdPs (e.g., GitHub, Google, Microsoft, ORCID) are NOT
            affected by <regauthgreenlit> or <regauthredlit>. To remove
            the OAuth2 IdPs, use <idpredlit>.
-       To get the current list of Registration Authorities for the
-       IdPs in InCommon Metadata, run the following command:
+       To get the current list of Registration Authorities, visit
+       https://technical.edugain.org/status or run the following command:
 
            curl -s https://mdq.incommon.org/entities/idps/all | \
            grep registrationAuthority | \
