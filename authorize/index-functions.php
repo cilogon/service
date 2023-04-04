@@ -405,7 +405,7 @@ function verifyOIDCParams()
                             // Either the output returned was not a valid
                             // JSON token, or there was no 'code' found in
                             // the returned JSON token.
-                            $errortxt = getErrorStatusText($output, $clientparams);
+                            [$error, $errortxt] = getErrorStatusAndText($output, $clientparams);
                             $log->error('Error in verifyOIDCParams(): ' .
                                 (!empty($errortxt) ? $errortxt :
                                 'The OA4MP OIDC authorization endpoint ' .
@@ -433,12 +433,31 @@ function verifyOIDCParams()
                                 "\n"
                             );
                             */
-                            Util::setSessionVar(
-                                'client_error_msg',
-                                'There was an unrecoverable error during the transaction. ' .
-                                (!empty($errortxt) ? "<p><b>Error message: $errortxt</b><p>" : '')
-                            );
-                            $clientparams = array();
+                            // CIL-1626 For errors that have a corresponding
+                            // OAuth2 Error Response, redirect to the client with
+                            // the appropriate error parameters.
+                            if (
+                                (!empty($error)) &&
+                                (isset($clientparams['redirect_uri'])) &&
+                                (strlen($clientparams['redirect_uri'] > 0))
+                            ) {
+                                $redirect_url = $clientparams['redirect_uri'] .
+                                    (preg_match('/\?/', $clientparams['redirect_uri']) ? '&' : '?') .
+                                    'error=' . $error .
+                                    ((!empty($errortxt)) ?
+                                        '&error_description=' . urlencode($errortxt) : '') .
+                                    ((preg_match('/error_uri=([^\r\n\s]+)/', $output, $matches)) ?
+                                        '&error_uri=' . urldecode($matches[1]) : '');
+                                header("Location: $redirect_url");
+                                exit; // No further processing necessary
+                            } else { // For other errors, display error to user
+                                Util::setSessionVar(
+                                    'client_error_msg',
+                                    'There was an unrecoverable error during the transaction. ' .
+                                    (!empty($errortxt) ? "<p><b>Error message: $errortxt</b><p>" : '')
+                                );
+                                $clientparams = array();
+                            }
                         }
                     } elseif (
                         (isset($info['http_code'])) &&
@@ -675,23 +694,28 @@ function verifyOIDCParams()
 }
 
 /**
- * getErrorStatusText
+ * getErrorStatusAndText
  *
  * This function is called when the OA4MP OIDC authz endpoint responds with
  * a 200 (success), but the returned output was not a valid JSON token, or
- * there was no 'code' found in the returned JSON token. So attempt to scan
- * the returned $output for error messages that can be returned to the end
- * user and added to the alert email sent to admins.
+ * there was no 'code' found in the returned JSON token. So it scans the
+ * returned $output for error messages that can be returned to the end
+ * user and added to the logged alert message.
  *
  * @param string $output The returned text from the OA4MP authz endpoint.
  * @param array $clientparams An array of the incoming OIDC client parameters.
- * @return string Error text to be displayed to the end user and added to
- *         the alert email sent to admins.
+ * @return array An array of two strings:
+ *        1. An OAuth2 Error Response if applicable
+ *        (https://www.rfc-editor.org/rfc/rfc6749#section-4.1.2.1).
+ *        Or empty string if no suitable OAuth2 error response.
+ *        2. Error text to be logged and either returned to the client as
+ *        "error_description", or displayed to the end user if 1. is empty.
  */
-function getErrorStatusText($output, $clientparams)
+function getErrorStatusAndText($output, $clientparams)
 {
-    $errstr = '';
-    $errtxt = '';
+    $error = '';  // OAuth2 Error Response
+    $errstr = ''; // DBService STATUS_* code as a string
+    $errtxt = ''; // Human-readable error_description
 
     // CIL-575 Check the $output for a "status=..." line and convert
     // the error number to an error message defined in CILogon\Service\Util.
@@ -700,9 +724,18 @@ function getErrorStatusText($output, $clientparams)
         $errstr = array_search($errnum, DBService::$STATUS);
         $errtxt = @DBService::$STATUS_TEXT[$errstr];
         // Add any error_description to the errtxt.
-        if (preg_match('/error_description=([^\r\n]+)/', $output, $matches)) {
+        if (preg_match('/error_description=([^\r\n\s]+)/', $output, $matches)) {
             $errtxt .= ' ' . urldecode($matches[1]);
         }
+    }
+
+    // Transform a few DBService error codes into OAuth2 error responses
+    if ($errstr == 'STATUS_MALFORMED_SCOPE') {
+        $error = 'invalid_scope';
+    } elseif ($errstr == 'STATUS_NO_SCOPES') {
+        $error = 'invalid_request';
+    } elseif ($errstr == 'STATUS_UNAPPROVED_CLIENT') {
+        $error = 'unauthorized_client';
     }
 
     // CIL-831 The OA4MP code returns a STATUS_INTERNAL_ERROR when there is
@@ -722,41 +755,50 @@ function getErrorStatusText($output, $clientparams)
             'prompt',
             'response_mode',
         ];
+        // PHP trickery to set named variables
         foreach ($params as $value) {
             $$value = @$clientparams[$value];
         }
 
         if (empty($scope)) {
-            $errtxt = "Missing or empty scope parameter.";
+            $error = 'invalid_request';
+            $errtxt = 'Missing or empty scope parameter.';
         } elseif (empty($client_id)) {
-            $errtxt = "Missing or empty client_id parameter.";
+            $error = 'invalid_request';
+            $errtxt = 'Missing or empty client_id parameter.';
         } elseif (empty($response_type)) {
-            $errtxt = "Missing or empty response_type parameter.";
+            $error = 'invalid_request';
+            $errtxt = 'Missing or empty response_type parameter.';
         } elseif (preg_match('/[\+%"\']/', $scope)) {
-            $errtxt = "Invalid characters found in scope parameter, may be URL encoded twice.";
+            $error = 'invalid_scope';
+            $errtxt = 'Invalid characters found in scope parameter, may be URL encoded twice.';
         } elseif (preg_match('/[A-Z]/', $scope)) {
-            $errtxt = "Upper case characters found in scope parameter.";
+            $error = 'invalid_scope';
+            $errtxt = 'Upper case characters found in scope parameter.';
         } elseif ($response_type != 'code') {
-            $errtxt = "Unsupported response_type parameter. Only code is supported.";
+            $error = 'unsupported_response_type';
+            $errtxt = 'Unsupported response_type parameter. Only code is supported.';
         } elseif ((!empty($prompt)) && ($prompt != 'login') && ($prompt != 'select_account')) {
-            $errtxt = "Unsupported prompt parameter. Only login and select_account are supported.";
+            $error = 'invalid_request';
+            $errtxt = 'Unsupported prompt parameter. Only login and select_account are supported.';
         } elseif (
             (!empty($response_mode)) &&
             ($response_mode != 'query') &&
             ($response_mode != 'fragment') &&
             ($response_mode != 'form_post')
         ) {
-            $errtxt = "Unsupported response_mode parameter.";
+            $error = 'invalid_request';
+            $errtxt = 'Unsupported response_mode parameter.';
         }
 
         // CIL-909 Use the error_description field if $errtxt is still empty.
         if (
             (strlen($errtxt) == 0) &&
-            (preg_match('/error_description=([^\r\n]+)/', $output, $matches))
+            (preg_match('/error_description=([^\r\n\s]+)/', $output, $matches))
         ) {
             $errtxt = urldecode($matches[1]);
         }
     }
 
-    return $errtxt;
+    return array($error, $errtxt);
 }
