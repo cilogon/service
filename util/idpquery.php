@@ -27,6 +27,7 @@ if ($argc >= 2) {
     $rands = null;
     $bronze = null;
     $silver = null;
+    $personalized = null;
 
     // Scan command line for attributes to match
     for ($v = 1; $v < $argc; $v++) {
@@ -72,6 +73,12 @@ if ($argc >= 2) {
                 $silver = 0;
             } else {
                 $silver = 1;
+            }
+        } elseif (preg_match('/^personalized=?([01]?)$/', $param, $matches)) {
+            if ((isset($matches[1])) && ($matches[1] == '0')) {
+                $personalized = 0;
+            } else {
+                $personalized = 1;
             }
         } else {
             echo "ERROR: Unknown query attribute '$param'.\n";
@@ -127,6 +134,12 @@ if ($argc >= 2) {
                 continue;
             }
         }
+        if (!is_null($personalized)) {
+            $param = $idplist->isPersonalized($idp);
+            if ($personalized xor $param) {
+                continue;
+            }
+        }
         // If we made it this far, add the idp to the list of matched idps.
         $idps[] = $idp;
     }
@@ -143,7 +156,7 @@ function printUsage()
 {
     echo "Usage: php idpquery.php <RegisteredByInCommon=0|1> <InCommonRandS=0|1>\n";
     echo "                        <REFEDSRandS=0|1> <SIRTFI=0|1> <RandS=0|1>\n";
-    echo "                        <Bronze=0|1> <Silver=0|1>\n\n";
+    echo "                        <Bronze=0|1> <Silver=0|1> <Personalized=0|1>\n\n";
     echo "This script allows you to query the idplist.xml file for IdPs with attributes\n";
     echo "that satisfy a certain set of conditions. The conditions you specify can be\n";
     echo "either 'must have' (=1) or 'must not have' (=0). These are joined together\n";
