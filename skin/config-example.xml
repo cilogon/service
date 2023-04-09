@@ -165,8 +165,17 @@
        CIL-1632 This is a list of "hidden" IdPs which are still technically
        in the "Select an Identity Provider" list, but have the "hidden"
        <option> attribute set so that they are not displayed to the user.
-       To use a hidden IdP, set the "idphint" query parameter with the
-       IdP's URL-encoded entityId, e.g.,
+       This is typically used in conjunction with <idpgreenlit> for clients
+       who want only THEIR IdPs to be shown to their users, but CILogon
+       admins still need the ability to log in to their COmanage instance
+       for testing. There are two ways to override the hidden IdP list:
+       (1) Pass a query parameter "?showhidden"/"?showhiddenidps" (with or
+       without a value like "?showhidden=1") to a cilogon.org endpoint.
+       This sets a PHP session variable to always show the IdPs in the
+       <idphidden> list, so you need to do this just once (until the PHP
+       session cookie is cleared).
+       (2) Pass the "idphint" query parameter with the IdP's URL-encoded
+       entityId, e.g.,
            https://cilogon.org/?idphint=urn%3Amace%3Aincommon%3Auiuc.edu
        NOTE: If you set this config option, you MUST also set <initialidp>
        (above) to a non-redlit, non-hidden IdP in case all of the

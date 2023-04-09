@@ -293,25 +293,26 @@ function updateIdPList()
 {
     var providerId = document.getElementById('providerId');
     if (providerId !== null) {
+        var query = {};
         // If skin parameter, 'skinname' is stored in a hidden <input> element
         var skinid = document.getElementById('skinname');
-        var skinname = '';
         if (skinid !== null) {
-            skinname = skinid.value;
+            query.vo = skinid.value;
         }
         // If idphint parameter, get hidden <input> element 'idphintlist'
         var idphintid = document.getElementById('idphintlist');
-        var idphintlist = '';
         if (idphintid !== null) {
-            idphintlist = idphintid.value;
+            query.idphint = idphintid.value;
+        }
+        // If showhidden parameter, get hidden <input> element 'showhidden'
+        var showhiddenid = document.getElementById('showhidden');
+        if (showhiddenid !== null) {
+            query.showhidden = showhiddenid.value;
         }
         // Perform async 'GET' of the idplist endpoint (with skin/idphint)
         $.ajax({
-            url: '/idplist/' +
-                (skinname.length > 0 || idphintlist.length > 0 ? '?' : '') +
-                (skinname.length > 0 ? 'vo=' + skinname : '') +
-                (skinname.length > 0 && idphintlist.length > 0 ? '&' : '') +
-                (idphintlist.length > 0 ? 'idphint=' + idphintlist : ''),
+            url: '/idplist/',
+            data: query,
             type: 'GET',
             dataType: 'json',
             success: function (data) {
