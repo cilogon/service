@@ -173,7 +173,8 @@
        without a value like "?showhidden=1") to a cilogon.org endpoint.
        This sets a PHP session variable to always show the IdPs in the
        <idphidden> list, so you need to do this just once (until the PHP
-       session cookie is cleared).
+       session cookie is cleared). If you pass "?showhidden=0", the session
+       variable will be UNset (or you can unset it using the /me/ page).
        (2) Pass the "idphint" query parameter with the IdP's URL-encoded
        entityId, e.g.,
            https://cilogon.org/?idphint=urn%3Amace%3Aincommon%3Auiuc.edu
