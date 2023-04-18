@@ -30,11 +30,11 @@ if ((is_dir($basedir)) && (is_readable($basedir))) {
         $basedir = substr($basedir, 0, strlen($basedir) - 1);
     }
     $dsn = array(
-        'phptype'  => 'mysqli',
-        'username' => MYSQLI_USERNAME,
-        'password' => MYSQLI_PASSWORD,
-        'database' => MYSQLI_DATABASE,
-        'hostspec' => MYSQLI_HOSTSPEC
+        'phptype'  => DB_TYPE,
+        'username' => DB_USERNAME,
+        'password' => DB_PASSWORD,
+        'hostspec' => DB_HOSTSPEC,
+        'database' => DB_DATABASE
     );
 
     $opts = array(

@@ -168,15 +168,16 @@ define('MYPROXY_SERVER_DN_MAP', array(
 ));
 
 /**
- * Storage type for PHP sessions.
- * Can be one of 'file', 'mysqli', or 'pgsql'. Defaults to 'file'.
+ * By default, PHP sessions are stored to the database using the DB_TYPE
+ * defined in config.secrets.php. If you want to store PHP sessions to the
+ * filesystem, define PHPSESSIONS_USE_FILE as true.
  */
-define('STORAGE_PHPSESSIONS', 'mysqli');
+define('PHPSESSIONS_USE_FILE', false);
 
 /**
  * When saving PHP sessions to file, optionally set the storage directory.
  */
-define('STORAGE_PHPSESSIONS_DIR', '');
+define('PHPSESSIONS_DIR', '');
 
 /**
  * This array contains IdPs that are globally redlit (disabled) for the

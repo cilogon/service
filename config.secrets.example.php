@@ -10,12 +10,15 @@
  */
 
 /**
- * Configure the username/password and database/hostspec appropriately.
+ * Configure the parameters for the database connection. DB_TYPE is one of
+ * the PEAR DB supported database backends documented at
+ * https://pear.php.net/manual/en/package.database.db.intro-dsn.php .
  */
-//define('MYSQLI_USERNAME', '');
-//define('MYSQLI_PASSWORD', '');
-//define('MYSQLI_DATABASE', '');
-//define('MYSQLI_HOSTSPEC', '');
+//define('DB_TYPE', 'mysqli');
+//define('DB_USERNAME', '');
+//define('DB_PASSWORD', '');
+//define('DB_HOSTSPEC', '');
+//define('DB_DATABASE', '');
 
 /**
  * For Google OAuth 2.0 settings specific to this application,

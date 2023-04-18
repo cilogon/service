@@ -28,11 +28,11 @@ if ($argc != 2) {
 $basedir = $argv[1];
 if ((is_dir($basedir)) && (is_readable($basedir))) {
     $dsn = array(
-        'phptype'  => 'mysqli',
-        'username' => MYSQLI_USERNAME,
-        'password' => MYSQLI_PASSWORD,
-        'database' => MYSQLI_DATABASE,
-        'hostspec' => MYSQLI_HOSTSPEC
+        'phptype'  => DB_TYPE,
+        'username' => DB_USERNAME,
+        'password' => DB_PASSWORD,
+        'hostspec' => DB_HOSTSPEC,
+        'database' => DB_DATABASE
     );
 
     $opts = array(
