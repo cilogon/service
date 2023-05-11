@@ -21,6 +21,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
+        "php": ">=7.0.0",
         "cilogon/service-lib": "@dev",
         "league/oauth2-client": "^2.6.0"
     },
