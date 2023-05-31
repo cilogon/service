@@ -76,6 +76,7 @@ echo '{
     "entitlement",
     "eppn",
     "eptid",
+    "eduPersonAssurance",
     "eduPersonOrcid",
     "exp",
     "family_name",
