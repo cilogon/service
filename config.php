@@ -46,10 +46,23 @@ define('OAUTH2_CREATE_TRANSACTION_URL', OAUTH2_DBSERVICE_URL . '?action=createTr
 define('OAUTH1_AUTHORIZED_URL', 'http://localhost:8080/oauth/authorized');
 
 /**
- * The full path/filename of the InCommon metadata XML file.
- * It should have read permissions for apache (via either owner or group).
+ * An array of the full path/filename of various metadata XML files.
+ * These files should be readable by apache.
  */
-define('DEFAULT_INCOMMON_XML', '/var/cache/shibboleth/InCommon-metadata.xml');
+define('DEFAULT_METADATA_FILES', array(
+    '/var/cache/shibboleth/InCommon-metadata.xml',
+    '/var/cache/shibboleth/aaf-metadata.xml',
+));
+
+/**
+ * An array of the URLs corresponding to the metadata XML files above.
+ * This array is used by Util::updateIdPList() to generate the
+ * idplist.{json,xml} files.
+ */
+define('DEFAULT_METADATA_URLS', array(
+    'https://mdq.incommon.org/entities/idps/all',
+    'https://md.aaf.edu.au/aaf-metadata.xml',
+));
 
 /**
  * The full path/filename of the generated list of IdPs in JSON format.
