@@ -33,7 +33,7 @@ if ((is_dir($basedir)) && (is_readable($basedir))) {
         'phptype'  => DB_TYPE,
         'username' => DB_USERNAME,
         'password' => DB_PASSWORD,
-        'hostspec' => DB_HOSTSPEC,
+        'hostspec' => (defined('DB_HOSTSPEC_RO') ? DB_HOSTSPEC_RO : DB_HOSTSPEC),
         'database' => DB_DATABASE
     );
 

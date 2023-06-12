@@ -18,6 +18,7 @@
 //define('DB_USERNAME', '');
 //define('DB_PASSWORD', '');
 //define('DB_HOSTSPEC', '');
+//define('DB_HOSTSPEC_RO', ''); // Optional read-only endpoint
 //define('DB_DATABASE', '');
 
 /**
