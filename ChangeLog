@@ -1,3 +1,18 @@
+2a2c343 2023-07-17 PHP support up to v8.1
+f1e3f9e 2023-06-12 CIL-1769 Enable use of read-only database endpoint.
+65e7344 2023-06-12 CIL-1751 Allow multiple Metadata XML source files.
+341d478 2023-06-12 Remove outdated idplist.php utility
+d3468bb 2023-05-31 CIL-1738 Assert support for eduPersonAssurance
+32493a5 2023-05-11 Require at least PHP 7
+b572e42 2023-04-18 CIL-1713 Separate PHP DB code from PHP sessions code
+93e3795 2023-04-11 CIL-1632 Add comment about "showhidden=0" to UNset it.
+0a0d2ac 2023-04-09 CIL-1632 For hidden IdPs, allow "showhidden" parameter.
+b4a7cb5 2023-04-04 CIL-1626 Redirect to OIDC client on common errors.
+39e4f9e 2023-04-04 Update idpquery for 'Personalized' IdPs
+cb1df60 2023-04-01 Update comment
+0241c0f 2023-03-31 CIL-1685 Comment-Add link to eduGAIN Participants list
+31466e4 2023-03-31 CIL-1685 Restrict IdPs based on Registration Authorities
+187e8f2 2023-03-27 Update ChangeLog
 255e304 2023-03-24 CIL-1674 STATUS_EPTID_MISMATCH can be WARNING or ERROR.
 87bf414 2023-03-22 Remove outdated comments
 6923f3c 2023-03-10 CIL-1342 Use custom_error_uri instead of error_uri
