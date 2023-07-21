@@ -22,7 +22,7 @@
     "prefer-stable": true,
     "require": {
         "php": ">=7.0.0",
-        "cilogon/service-lib": "2.0.0",
+        "cilogon/service-lib": "2.0.1",
         "league/oauth2-client": "^2.6.0"
     },
     "require-dev": {
