@@ -99,7 +99,9 @@ function getUID()
         '', // ORCID AMR
         '', // preferred_username (GitHub 'login')
         @$shibarray['Entitlement'],
-        @$shibarray['iTrustUIN']
+        @$shibarray['iTrustUIN'],
+        '', // eduPersonOrcid
+        @$shibarray['uidNumber']
     );
 }
 

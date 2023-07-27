@@ -536,6 +536,7 @@ function getTitleText($cookie)
         "submit" => "The name of the 'submit' button clicked." ,
         "successuri" => "A URL used by portals for redirection after successful issuance of a certificate." ,
         "tempcred" => "An OAUTH identifier used to track portal sessions." ,
+        "uidNumber" => "The user integer identification number provided by the Identity Provider",
         "user_uid" => "The datastore user identifier." ,
     );
 

@@ -158,7 +158,8 @@ function getUserAndRespond($responseurl)
             $preferred_username,
             '', // entitlement
             '', // itrustuin
-            $eduPersonOrcid
+            $eduPersonOrcid,
+            '' // uidNumber
         );
     } else {
         Util::unsetSessionVar('submit');
