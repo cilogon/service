@@ -1,3 +1,7 @@
+d558283 2023-07-27 CIL-1806 Consume uidNumber from UIUC IdP
+c817586 2023-07-21 CIL-1800 Fix broken Microsoft OAuth2 logins
+b467af1 2023-07-18 Use service-lib 2.0.0 release
+02f0d75 2023-07-17 Update ChangeLog
 2a2c343 2023-07-17 PHP support up to v8.1
 f1e3f9e 2023-06-12 CIL-1769 Enable use of read-only database endpoint.
 65e7344 2023-06-12 CIL-1751 Allow multiple Metadata XML source files.
