@@ -654,7 +654,7 @@ function verifyOIDCParams()
             'The CILogon OIDC authorization endpoint received a request ' .
             'from an OIDC client, but at least one of the required ' .
             'parameters (' . $missing . ') was missing. ' .
-            'clientparams = ' . json_encodde($clientparams));
+            'clientparams = ' . json_encode($clientparams));
         // CIL-1098 Don't send errors for client-initiated errors
         /*
         Util::sendErrorAlert(
