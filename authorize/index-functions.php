@@ -314,10 +314,20 @@ function verifyOIDCParams()
         );
         $clientparams = array();
 
-    // If the 'redirect_uri' parameter was passed in then let the 'real'
-    // OA4MP OIDC authz endpoint handle parse the request since it might be
-    // possible to return an error code to the client.
-    } elseif (isset($clientparams['redirect_uri'])) {
+    // CIL-1867 According to the OAuth2 spec for authorization code flow
+    // (https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.1),
+    // the only parameters required for OAuth2 are 'response_type=code'
+    // and 'client_id'. However, historically, this PHP code has also
+    // required 'redirect_uri' to be passed in before calling the 'real'
+    // OA4MP OIDC authz endpoint. Additionally, the dbService will return
+    // 'Missing or empty scope parameter' if 'scope' is not provided. So
+    // check for all parameters before calling 'createTransaction'.
+    } elseif (
+        (isset($clientparams['redirect_uri'])) &&
+        (isset($clientparams['response_type'])) &&
+        (isset($clientparams['client_id'])) &&
+        (isset($clientparams['scope']))
+    ) {
         $ch = curl_init();
         if (!defined('OAUTH2_CREATE_TRANSACTION_URL')) { // Should not happen
             $log->error('Error in verifyOIDCParams(): ' .
@@ -622,21 +632,24 @@ function verifyOIDCParams()
             $clientparams = array();
         }
 
-    // If redirect_uri was not passed in, but one of the other required OIDC
-    // parameters WAS passed in, then assume that this was an attempt by an
-    // OIDC client to use the authz endpoint, and display an error message
-    // that at least one parameter (redirect_uri) was missing from the
-    // request. Note that since we don't have a redirect_uri, we cannot
-    // return code flow back to the OIDC client.
+    // If at least ONE of the required OIDC parameters was passed in,
+    // then assume that this was an attempt by an OIDC client to use
+    // the authz endpoint, and display an error message that one or more
+    // parameters were missing from the request. Note that since we might
+    // not have a redirect_uri, we should not try to redirect the flow
+    // back to the OIDC client.
     } elseif (
+        (isset($clientparams['redirect_uri'])) ||
+        (isset($clientparams['response_type'])) ||
         (isset($clientparams['client_id'])) ||
-        (isset($clientparams['scope'])) ||
-        (isset($clientparams['response_type']))
+        (isset($clientparams['scope']))
     ) {
-        $missing = 'redirect_uri' .
-            ((isset($clientparams['client_id'])) ? '' : ', client_id') .
-            ((isset($clientparams['scope'])) ? '' : ', scope') .
-            ((isset($clientparams['response_type'])) ? '' : ', response_type');
+        $missing =
+            ((isset($clientparams['redirect_uri'])) ? '' : 'redirect_uri ') .
+            ((isset($clientparams['client_id'])) ? '' : 'client_id ') .
+            ((isset($clientparams['scope'])) ? '' : 'scope ') .
+            ((isset($clientparams['response_type'])) ? '' : 'response_type');
+        $missing = rtrim($missing);
         $log->error('Error in verifyOIDCParams(): ' .
             'The CILogon OIDC authorization endpoint received a request ' .
             'from an OIDC client, but at least one of the required ' .
@@ -663,7 +676,7 @@ function verifyOIDCParams()
         );
         $clientparams = array();
 
-    // If none of the required OIDC authz endpoint parameters were passed
+    // If NONE of the required OIDC authz endpoint parameters were passed
     // in, then this might be a later step in the authz process. So check
     // the session variable array 'clientparams' for the required
     // information.
