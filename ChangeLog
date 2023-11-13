@@ -1,3 +1,8 @@
+1594ebd 2023-11-13 CIL-1812 Allow session vars NOT to be output
+9aad1d3 2023-11-10 CIL-1883 New skin for RENCI
+6745506 2023-10-30 Bug fix
+7d43b36 2023-10-30 Use service-lib v2.1.1
+723ed39 2023-10-30 Update ChangeLog
 00752f0 2023-10-30 CIL-1812 Prevent open directs
 a4ad818 2023-08-29 CIL-554 OAuth 1.0a support is retired
 dee32f2 2023-08-29 CIL-554 OAuth 1.0a support is retired
