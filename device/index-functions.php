@@ -179,7 +179,6 @@ function printMainPage()
                 // CIL-507 Special log message for XSEDE
                 $email = Util::getSessionVar('email');
                 $clientname = $clientparams['client_name'];
-                $log->info("USAGE email=\"$email\" client=\"$clientname\"");
                 Util::logXSEDEUsage($clientname, $email);
             } else { // dbService returned error for setTransactionState
                 // CIL-1342 Redirect to custom error uri on QDL errors

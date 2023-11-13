@@ -22,7 +22,7 @@ use CILogon\Service\Loggit;
 function printLogonPage()
 {
     $log = new Loggit();
-    $log->info('Welcome page hit.');
+    $log->info('Welcome page hit.', false, false);
 
     Content::printHeader(
         'Welcome To The CILogon OpenID Connect Authorization Service'
@@ -183,8 +183,9 @@ function printMainPage()
   </body>
 </html>';
                 $log->info(
-                    'response_mode=form_post; outputting form' . "\n" .
-                    $outform
+                    'response_mode=form_post; outputting form' . "\n" . $outform,
+                    false,
+                    false
                 );
                 echo $outform;
                 exit; // No further processing necessary
@@ -194,7 +195,6 @@ function printMainPage()
         // CIL-507 Special log message for XSEDE
         $email = Util::getSessionVar('email');
         $clientname = $clientparams['client_name'];
-        $log->info("USAGE email=\"$email\" client=\"$clientname\"");
         Util::logXSEDEUsage($clientname, $email);
     } else { // dbservice error
         // CIL-1342 Redirect to custom error uri on QDL errors

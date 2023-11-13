@@ -53,7 +53,7 @@ if (
 
     Util::setSessionVar('submit', 'gotuser');
     Util::getCsrf()->setCookieAndSession();
-    $log->info('In OIDC /getuser/ - redirecting to ' . $responseurl);
+    $log->info('In OIDC /getuser/ - redirecting to ' . $responseurl, false, false);
     header('Location: ' . $responseurl);
     exit; // No further processing necessary
 }

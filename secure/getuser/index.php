@@ -41,8 +41,12 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
     // If the REQUEST_URI was '/secure/getcert' then it was ECP.
     // Respond with an error message rather than a redirect.
     if (preg_match('%/secure/getcert%', Util::getServerVar('REQUEST_URI'))) {
-        $log->info('"/secure/getcert" error: Either CSRF check ' .
-                   'failed, or invalid "submit" command issued.');
+        $log->error(
+            '"/secure/getcert" error: Either CSRF check ' .
+            'failed, or invalid "submit" command issued.',
+            false,
+            false
+        );
         outputError('Unable to complete ECP transaction. Either CSRF ' .
                     'check failed, or invalid "submit" command issued.');
     } else { // CIL-1252 Try to recover any flow in progress
@@ -61,7 +65,7 @@ if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
 
         Util::setSessionVar('submit', 'gotuser');
         Util::getCsrf()->setCookieAndSession();
-        $log->info('In Shibboleth /getuser/ - redirecting to ' . $responseurl);
+        $log->info('In Shibboleth /getuser/ - redirecting to ' . $responseurl, false, false);
         header('Location: ' . $responseurl);
         exit; // No further processing necessary
     }

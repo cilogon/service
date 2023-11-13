@@ -147,7 +147,7 @@ function getPKCS12()
     // If 'status' is not STATUS_OK*, then return error message
     if (Util::getSessionVar('status') & 1) { // Bad status codes are odd
         $errstr = array_search(Util::getSessionVar('status'), DBService::$STATUS);
-        $log->info('ECP PKCS12 error: ' . $errstr . '.');
+        $log->error('ECP PKCS12 error: ' . $errstr . '.');
         outputError($errstr);
         Util::unsetAllUserSessionVars();
         return; // ERROR means no further processing is necessary
@@ -155,7 +155,7 @@ function getPKCS12()
 
     // CIL-624 Check if X509 certs are disabled
     if ((defined('DISABLE_X509')) && (DISABLE_X509 === true)) {
-        $log->info('ECP PKCS12 error: Downloading certificates is ' .
+        $log->error('ECP PKCS12 error: Downloading certificates is ' .
             'disabled due to DISABLE_X509.');
         outputError('Downloading certificates is disabled.');
         Util::unsetAllUserSessionVars();
@@ -165,7 +165,7 @@ function getPKCS12()
     // Verify myproxy-logon binary is configured
     $disabledbyconf = ((!defined('MYPROXY_LOGON')) || (empty(MYPROXY_LOGON)));
     if ($disabledbyconf) {
-        $log->info('ECP PKCS12 error: Downloading certificates is ' .
+        $log->error('ECP PKCS12 error: Downloading certificates is ' .
             'disabled due to myproxy-logon not configured.');
         outputError('Downloading certificates is disabled.');
         Util::unsetAllUserSessionVars();
@@ -174,7 +174,7 @@ function getPKCS12()
 
     $shibarray = Util::getIdpList()->getShibInfo();
     if (Util::isEduGAINAndGetCert(@$shibarray['Identity Provider'], @$shibarray['Organization Name'])) {
-        $log->info('ECP PKCS12 error: Failed to get cert due to eduGAIN IdP restriction.');
+        $log->error('ECP PKCS12 error: Failed to get cert due to eduGAIN IdP restriction.');
         outputError('Failed to get cert due to eduGAIN IdP restriction.');
         return; // ERROR means no further processing is necessary
     }
@@ -185,7 +185,7 @@ function getPKCS12()
     // Look for the p12error PHP session variable. If set, return it.
     $p12error = Util::getSessionVar('p12error');
     if (strlen($p12error) > 0) {
-        $log->info('ECP PKCS12 error: ' . $p12error);
+        $log->error('ECP PKCS12 error: ' . $p12error);
         outputError($p12error);
     } else { // Try to read the .p12 file from disk and return it
         $p12 = Util::getSessionVar('p12');
@@ -204,13 +204,12 @@ function getPKCS12()
             $log->info('ECP PKCS12 success!');
             // CIL-507 Special log message for XSEDE
             $email = Util::getSessionVar('email');
-            $log->info("USAGE email=\"$email\" client=\"ECP\"");
             Util::logXSEDEUsage('ECP', $email);
 
             header('Content-type: application/x-pkcs12');
             echo $p12file;
         } else {
-            $log->info('ECP PKCS12 error: Missing or empty PKCS12 file.');
+            $log->error('ECP PKCS12 error: Missing or empty PKCS12 file.');
             outputError('Missing or empty PKCS12 file.');
         }
     }
@@ -235,7 +234,7 @@ function getCert()
     // Verify that a non-empty certreq <form> variable was posted
     $certreq = Util::getPostVar('certreq');
     if (strlen($certreq) == 0) {
-        $log->info('ECP certreq error: Missing certificate request.');
+        $log->error('ECP certreq error: Missing certificate request.');
         outputError('Missing certificate request.');
         return; // ERROR means no further processing is necessary
     }
@@ -248,7 +247,7 @@ function getCert()
     // If 'status' is not STATUS_OK*, then return error message
     if (Util::getSessionVar('status') & 1) { // Bad status codes are odd
         $errstr = array_search(Util::getSessionVar('status'), DBService::$STATUS);
-        $log->info('ECP certreq error: ' . $errstr . '.');
+        $log->error('ECP certreq error: ' . $errstr . '.');
         outputError($errstr);
         Util::unsetAllUserSessionVars();
         return; // ERROR means no further processing is necessary
@@ -256,7 +255,7 @@ function getCert()
 
     // CIL-624 Check if X509 certs are disabled
     if ((defined('DISABLE_X509')) && (DISABLE_X509 === true)) {
-        $log->info('ECP certreq error: Downloading certificates is ' .
+        $log->error('ECP certreq error: Downloading certificates is ' .
             'disabled due to DISABLE_X509.');
         outputError('Downloading certificates is disabled.');
         Util::unsetAllUserSessionVars();
@@ -266,7 +265,7 @@ function getCert()
     // Verify myproxy-logon binary is configured
     $disabledbyconf = ((!defined('MYPROXY_LOGON')) || (empty(MYPROXY_LOGON)));
     if ($disabledbyconf) {
-        $log->info('ECP certreq error: Downloading certificates is ' .
+        $log->error('ECP certreq error: Downloading certificates is ' .
             'disabled due to myproxy-logon not configured.');
         outputError('Downloading certificates is disabled.');
         Util::unsetAllUserSessionVars();
@@ -275,7 +274,7 @@ function getCert()
 
     $shibarray = Util::getIdpList()->getShibInfo();
     if (Util::isEduGAINAndGetCert(@$shibarray['Identity Provider'], @$shibarray['Organization Name'])) {
-        $log->info('ECP certreq error: Failed to get cert due to eduGAIN IdP restriction.');
+        $log->error('ECP certreq error: Failed to get cert due to eduGAIN IdP restriction.');
         outputError('Failed to get cert due to eduGAIN IdP restriction.');
         return; // ERROR means no further processing is necessary
     }
@@ -324,17 +323,16 @@ function getCert()
             $log->info('ECP getcert success!');
             // CIL-507 Special log message for XSEDE
             $email = Util::getSessionVar('email');
-            $log->info("USAGE email=\"$email\" client=\"ECP\"");
             Util::logXSEDEUsage('ECP', $email);
 
             header('Content-type: text/plain');
             echo $cert;
         } else { // The myproxy-logon command failed - shouldn't happen!
-            $log->info('ECP certreq error: MyProxy unable to create certificate.');
+            $log->error('ECP certreq error: MyProxy unable to create certificate.');
             outputError('Error! MyProxy unable to create certificate.');
         }
     } else { // Couldn't find the 'distinguished_name' PHP session value
-        $log->info('ECP certreq error: Missing \'distinguished_name\' session value.');
+        $log->error('ECP certreq error: Missing \'distinguished_name\' session value.');
         outputError('Cannot create certificate due to missing attributes.');
     }
 }
