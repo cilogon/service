@@ -1,3 +1,9 @@
+cff76ba 2024-03-21 Use service-lib v2.2.1
+cd4fd02 2024-03-19 CIL-1917/1949/1950 New AAF logo
+e5912f4 2024-01-23 CIL-1917 Add image for CADRE skin
+05662f3 2024-01-05 Use service-lib v2.2.0
+62a0dc7 2024-01-05 Update LICENSE for 2024
+2fb77f2 2023-11-13 Update ChangeLog
 1594ebd 2023-11-13 CIL-1812 Allow session vars NOT to be output
 9aad1d3 2023-11-10 CIL-1883 New skin for RENCI
 6745506 2023-10-30 Bug fix
