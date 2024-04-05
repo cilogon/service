@@ -43,7 +43,7 @@ define('OAUTH2_CREATE_TRANSACTION_URL', OAUTH2_DBSERVICE_URL . '?action=createTr
 /**
  * The full URL of the OAuth 1.0a script for 'authorized' endpoint.
  */
-define('OAUTH1_AUTHORIZED_URL', 'http://localhost:8080/oauth/authorized');
+//define('OAUTH1_AUTHORIZED_URL', 'http://localhost:8080/oauth/authorized');
 
 /**
  * An array of the full path/filename of various metadata XML files.
@@ -88,7 +88,7 @@ define('TEST_IDP_XML', __DIR__ . '/include/testidplist.xml');
 define('DEFAULT_PKCS12_DIR', __DIR__ . '/pkcs12/');
 
 /**
- * The default host name of the service website. This is used as the public-
+ * The default hostname of the service website. This is used as the public-
  * facing hostname and returned by Util::getHN() in the case that HTTP_HOST
  * is not set.
  */
@@ -148,7 +148,7 @@ define('DEFAULT_LOGNAME', '');
  * set to empty string to prevent writing XSEDE USAGE messages. You must
  * create the directory beforehand and set write permissions appropriately.
  */
-define('XSEDE_USAGE_DIR', '');
+//define('XSEDE_USAGE_DIR', '');
 
 /**
  * If you want to completely disable the ability to fetch X509 certificates,
@@ -171,7 +171,7 @@ define('MYPROXY_LOGON', '/usr/bin/myproxy-logon');
 define('MYPROXY_HOST', 'myproxy.cilogon.org,myproxy2.cilogon.org');
 define('MYPROXY_PORT', '7512');
 define('MYPROXY_LIFETIME', '12');
-define('MYPROXY_CLIENT_CRED', '/var/www/config/hostcred.pem');
+define('MYPROXY_CLIENT_CRED', '/var/www/conf/hostcred.pem');
 // Define MYPROXY_SERVER_DN_MAP for hostnames that don't match root CA name.
 define('MYPROXY_SERVER_DN_MAP', array(
     'myproxy2.cilogon.org' =>
@@ -181,14 +181,25 @@ define('MYPROXY_SERVER_DN_MAP', array(
 ));
 
 /**
- * By default, PHP sessions are stored to the database using the DB_TYPE
- * defined in config.secrets.php. If you want to store PHP sessions to the
- * filesystem, define PHPSESSIONS_USE_FILE as true.
+ * Define where to store PHP sessions. Must be one of:
+ * 'file', 'database', or 'dynamodb'. If not defined, defaults to 'file'.
+ * If 'file', optionally set the storage directory with PHPSESSIONS_DIR.
+ * If 'database', set appropriate values for DB_* in config.secrets.php.
+ * If 'dynamodb', set appropriate values for DYNAMO_* in config.secrets.php.
+ */
+define('PHPSESSIONS_STORAGE', 'file');
+
+/**
+ * TODO: PHPSESSIONS_USE_FILE is replaced by PHPSESSIONS_STORAGE and should
+ * be removed after the next cilogon-web deployment.
  */
 define('PHPSESSIONS_USE_FILE', false);
 
 /**
- * When saving PHP sessions to file, optionally set the storage directory.
+ * When PHPSESSIONS_STORAGE is 'file', optionally set the storage directory.
+ * NOTE: If you use this option, garbage collection MUST be done manually,
+ * e.g., set an hourly cronjob to do something like this:
+ *     find PHPSESSIONS_DIR -cmin +24 -type f | xargs rm
  */
 define('PHPSESSIONS_DIR', '');
 
@@ -203,6 +214,7 @@ define('PHPSESSIONS_DIR', '');
 define('REDLIT_IDP_ARRAY', array(
     'https://shib.mdanderson.org/idp/shibboleth',
     'https://idp.itsligo.ie/idp/shibboleth',
+    'https://idp.xsede.org/idp/shibboleth',
 ));
 
 /**
@@ -210,9 +222,9 @@ define('REDLIT_IDP_ARRAY', array(
  * 'Select an Identity Provider' screen and go directly to a specific
  * Identity Provider. Each array key/value pair has the following format:
  *
- *   'URI/Regex' => 'entityId'
+ *   'URI_Regex' => 'entityId'
  *
- * The URI/Regex can be either a PHP PCRE (Perl-Compatible Regular
+ * The URI_Regex can be either a PHP PCRE (Perl-Compatible Regular
  * Expression) or an exact string match. See
  * https://www.php.net/manual/en/pcre.pattern.php for details on syntax.
  * '!' (exclamation) is a good choice for delimiter so that slashes do not
@@ -236,7 +248,7 @@ define('REDLIT_IDP_ARRAY', array(
  */
 /*
 define('BYPASS_IDP_ARRAY', array(
-    '!^https://bhr.security.ncsa.illinois.edu/oidc/callback/!' =>
+    '%^https://bhr.security.ncsa.illinois.edu/oidc/callback/%' =>
         'https://idp.ncsa.illinois.edu/idp/shibboleth',
     'cilogon:/client_id/1234567890' =>
         'https://idp.xsede.org/idp/shibboleth',

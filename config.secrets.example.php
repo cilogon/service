@@ -22,6 +22,15 @@
 //define('DB_DATABASE', '');
 
 /**
+ * Configure the parameters for the AWS DynamoDB connection for saving
+ * PHP sessions.
+ */
+//define('DYNAMODB_REGION', 'us-east-2');
+//define('DYNAMODB_TABLE', 'phpsessions');
+//define('DYNAMODB_ACCESSKEY', '');
+//define('DYNAMODB_SECRETACCESSKEY', '');
+
+/**
  * For Google OAuth 2.0 settings specific to this application,
  * go to https://cloud.google.com/console and sign in as google@cilogon.org .
  * The password can be found in LastPass in the 'Shared-CILogon 2' folder
