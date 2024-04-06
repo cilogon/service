@@ -185,7 +185,7 @@ define('MYPROXY_SERVER_DN_MAP', array(
  * 'file', 'database', or 'dynamodb'. If not defined, defaults to 'file'.
  * If 'file', optionally set the storage directory with PHPSESSIONS_DIR.
  * If 'database', set appropriate values for DB_* in config.secrets.php.
- * If 'dynamodb', set appropriate values for DYNAMO_* in config.secrets.php.
+ * If 'dynamodb', set appropriate values for DYNAMODB_* in config.secrets.php.
  */
 define('PHPSESSIONS_STORAGE', 'file');
 
