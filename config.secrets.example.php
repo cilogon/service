@@ -26,9 +26,9 @@
  * PHP sessions.
  */
 //define('DYNAMODB_REGION', 'us-east-2');
-//define('DYNAMODB_TABLE', 'phpsessions');
-//define('DYNAMODB_ACCESSKEY', '');
-//define('DYNAMODB_SECRETACCESSKEY', '');
+//define('DYNAMODB_PHPSESSIONS_TABLE', 'phpsessions');
+//define('DYNAMODB_PHPSESSIONS_ACCESSKEY', '');
+//define('DYNAMODB_PHPSESSIONS_SECRETACCESSKEY', '');
 
 /**
  * For Google OAuth 2.0 settings specific to this application,
