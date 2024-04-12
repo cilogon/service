@@ -87,7 +87,7 @@ function printUserCodePage()
         </div> <!-- end row -->
     ';
 
-    Content::printFormHead();
+    Content::printFormHead('Enter User Code');
 
     echo '
         <div class="form-group col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1 mt-3">
@@ -118,7 +118,8 @@ function printUserCodePage()
             <div class="col text-center">
               <input type="submit" name="submit"
               class="btn btn-primary submit"
-              value="Enter User Code"/>
+              value="Enter User Code"
+              title="Enter User Code" />
             </div>
           </div>
         </div> <!-- end form-group -->

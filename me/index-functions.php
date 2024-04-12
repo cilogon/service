@@ -40,7 +40,7 @@ function printMainCookiesPage()
 
     Content::printHeader('Manage CILogon Cookies', false); // Don't set CSRF
 
-    Content::printFormHead();
+    Content::printFormHead('Manage Cookies');
 
     printAboutThisPage($browsercount, $sessioncount, $gethide);
     printBrowserCookies($browsercount, (preg_match('/browser/i', $gethide)));
@@ -121,8 +121,9 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
     echo '
           <div class="row align-items-center justify-content-center">
             <div class="col-auto">
-              <a class="btn btn-primary form-control" href="/">Proceed
-              to the CILogon Service</a>
+              <a class="btn btn-primary form-control"
+              title="Proceed to the CILogon Service"
+              href="/">Proceed to the CILogon Service</a>
             </div> <!-- end col-auto -->';
 
     // CIL-1416 Put the "hide" parameter in the form for next page load
@@ -136,7 +137,8 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
             <div class="col-auto">
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="Delete Browser Cookies" />
+              value="Delete Browser Cookies"
+              title="Delete Browser Cookies" />
             </div> <!-- end col-auto -->';
     }
     if ($sessioncount > 0) {
@@ -144,7 +146,8 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
             <div class="col-auto">
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="Delete Session Variables" />
+              value="Delete Session Variables"
+              title="Delete Session Variables" />
             </div> <!-- end col-auto -->';
     }
     if (($browsercount > 0) || ($sessioncount > 0)) {
@@ -152,14 +155,16 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
             <div class="col-auto">
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="Delete ALL" />
+              value="Delete ALL"
+              title="Delete ALL" />
             </div> <!-- end col-auto -->';
     }
     echo '
             <div class="col-auto">
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="Reload Page" />
+              value="Reload Page"
+              title="Reload Page" />
             </div> <!-- end col-auto -->
           </div> <!-- end row align-items-center -->
         </div> <!-- end card-body --> ';
@@ -186,7 +191,8 @@ function printBrowserCookies($browsercount, $collapsed = false)
     if ($browsercount > 0) {
         echo '
         <div class="card-body">
-          <table class="table table-striped table-sm table-hover small">
+          <table class="table table-striped table-sm table-hover small"
+          aria-label="Browser Cookies">
           <tbody>
         ';
 
@@ -195,7 +201,7 @@ function printBrowserCookies($browsercount, $collapsed = false)
             if (!in_array($key, $hide)) {
                 echo '<tr title="' , getTitleText($key) , '">' ,
                      '<td><input type="checkbox" name="del_browser[]" ',
-                     'value="', $key , '"/></td>' ,
+                     'value="', $key , '" title="', $key, '"/></td>' ,
                      '<th scope="row" style="word-break: break-all"><samp>' ,
                      Util::htmlent($key) ,
                      '</samp></th><td><samp>';
@@ -218,7 +224,8 @@ function printBrowserCookies($browsercount, $collapsed = false)
             <div class="col-auto">
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="Delete Checked" />
+              value="Delete Checked"
+              title="Delete Checked" />
             </div> <!-- end col-auto -->
           </div> <!-- end row align-items-center -->';
     } else {
@@ -257,7 +264,8 @@ function printSessionVariables($sessioncount, $collapsed = false)
     if ($sessioncount > 0) {
         echo '
         <div class="card-body">
-          <table class="table table-striped table-sm table-hover small">
+          <table class="table table-striped table-sm table-hover small"
+          aria-label="Session Variables">
           <tbody>
         ';
 
@@ -266,7 +274,7 @@ function printSessionVariables($sessioncount, $collapsed = false)
             if (!in_array($key, $hide)) {
                 echo '<tr title="' , getTitleText($key) , '">' ,
                      '<td><input type="checkbox" name="del_session[]" ',
-                     'value="', $key , '"/></td>' ,
+                     'value="', $key , '" title="', $key, '"/></td>' ,
                      '<th scope="row"><samp>' ,
                      Util::htmlent($key) ,
                      '</samp></th><td><samp>' ,
@@ -283,7 +291,8 @@ function printSessionVariables($sessioncount, $collapsed = false)
             <div class="col-auto">
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="Delete Checked" />
+              value="Delete Checked"
+              title="Delete Checked" />
             </div> <!-- end col-auto -->
           </div> <!-- end row align-items-center -->';
     } else {
@@ -317,7 +326,8 @@ function printEnvironmentVars($collapsed = false)
 
     echo '
         <div class="card-body">
-          <table class="table table-striped table-hover table-sm small">
+          <table class="table table-striped table-hover table-sm small"
+          aria-label="Environment Variables">
           <tbody>
     ';
 
@@ -525,6 +535,7 @@ function getTitleText($cookie)
         "portalstatus" => "An internal return code when fetching portal parameters from the datastore." ,
         "preferred_username" => "The GitHub login name. Should not be used as a persistent identifier." ,
         "providerId" => "The previously selected Identity Provider." ,
+        "recentidps" => "A list of the most recently selected Identity Providers",
         "responsesubmit" => "The name of the page to return to after " .
             "authentication at your chosen Identity Provider." ,
         "responseurl" => "The URL to return to after authentication at your chosen Identity Provider." ,
@@ -537,7 +548,7 @@ function getTitleText($cookie)
         "successuri" => "A URL used by portals for redirection after successful issuance of a certificate." ,
         "tempcred" => "An OAUTH identifier used to track portal sessions." ,
         "uidNumber" => "The user integer identification number provided by the Identity Provider",
-        "user_uid" => "The datastore user identifier." ,
+        "user_uid" => "The unique CILogon user identifier." ,
     );
 
     foreach ($explain as $key => $value) {

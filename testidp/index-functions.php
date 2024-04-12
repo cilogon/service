@@ -111,8 +111,9 @@ function printMainPage()
           </div> <!-- end row -->
           <div class="row align-items-center justify-content-center">
             <div class="col-auto">
-              <a class="btn btn-primary" href="/">Proceed
-              to the CILogon Service</a>
+              <a class="btn btn-primary"
+              title="Proceed to the CILogon Service"
+              href="/">Proceed to the CILogon Service</a>
             </div> <!-- end col-auto -->
         ';
     } else {
@@ -134,7 +135,9 @@ function printMainPage()
     }
     echo '
             <div class="col-auto">
-               <a class="btn btn-primary" href="/logout">Logout</a>
+               <a class="btn btn-primary"
+               title="Logout"
+               href="/logout">Logout</a>
             </div> <!-- end col-auto -->
           </div> <!-- end row align-items-center -->
         </div> <!-- end card-body --> ';

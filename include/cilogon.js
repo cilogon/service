@@ -364,6 +364,7 @@ function statusEmbed()
     };
 
     frame.src = 'https://mj968hlbbyn6.statuspage.io/embed/frame';
+    frame.title = 'CILogon Status';
     frame.style.position = 'fixed';
     frame.style.border = 'none';
     frame.style.boxShadow = '0 20px 32px -8px rgba(9,20,66,0.25)';

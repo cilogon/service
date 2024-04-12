@@ -28,7 +28,15 @@ a:visited {
 }
 a:hover, a:active {
   text-decoration: underline;
-  color: #696;
+  color: #464;
+}
+input[type=checkbox] {
+  min-width: 24px;
+  min-height: 24px;
+}
+label {
+  margin-top: 0.3em;
+  margin-left: 0.3em;
 }
 .helpcursor {
   cursor: help;
@@ -126,7 +134,7 @@ div.skincilogonlogo a:active {
   height: 60px;
   /* line-height: 60px; */
   border: 1px solid #888;
-  color: #888;
+  color: #666;
   /* margin: 0; */
   /* margin-top: 2px */
   /* margin-bottom: 2px; */
@@ -137,11 +145,11 @@ div.skincilogonlogo a:active {
   margin: 0;
 }
 .footer a:link {
-  color: #696;
+  color: #464;
   text-decoration: none;
 }
 .footer a:visited {
-  color: #696;
+  color: #464;
   text-decoration: none;
 }
 .privacypolicy {
