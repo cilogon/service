@@ -1,3 +1,9 @@
+a4e5ffa 2024-04-12 CIL-1967 Fix issues found during WCAG accessibility assessment
+1e9d2a3 2024-04-08 Rename config to DYNAMODB_PHPSESSIONS_*
+6ec9752 2024-04-06 Fix typo in comment
+d4d5118 2024-04-05 CIL-1963 Use DynamoDB for PHP sessions
+926e842 2024-03-21 CIL-1950 Add LDaCA logo png locally
+4686199 2024-03-21 Update ChangeLog
 cff76ba 2024-03-21 Use service-lib v2.2.1
 cd4fd02 2024-03-19 CIL-1917/1949/1950 New AAF logo
 e5912f4 2024-01-23 CIL-1917 Add image for CADRE skin
