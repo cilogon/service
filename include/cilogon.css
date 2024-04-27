@@ -174,3 +174,6 @@ table tr td {
   word-wrap: break-word;
   word-break: break-all;
 }
+:focus-visible {
+  box-shadow: 0 0 2px 2px #888;
+} 
