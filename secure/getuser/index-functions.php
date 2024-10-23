@@ -100,7 +100,7 @@ function getUID()
         '', // preferred_username (GitHub 'login')
         @$shibarray['Entitlement'],
         @$shibarray['iTrustUIN'],
-        '', // eduPersonOrcid
+        @$shibarray['eduPersonOrcid'],
         @$shibarray['uidNumber']
     );
 }
