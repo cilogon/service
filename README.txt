@@ -7,7 +7,7 @@
 # You can check out the files to the /var/www/html/ directory on your server
 # using thefollowing commands:
 #
-# sudo su -
+# sudo -i
 # cd /var/www/
 # cvs -d:pserver:anonymous@cilogon.cvs.sourceforge.net:/cvsroot/cilogon \
 #      login
