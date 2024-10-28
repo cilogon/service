@@ -1,3 +1,9 @@
+20bccb2 2024-10-28 CIL-2102 / CIL-2116 Update .well-known endpoint
+84ac868 2024-10-23 CIL-2114 Consume SAML eduPersonOrcid
+4750197 2024-10-23 Update sudo command
+8a19cff 2024-07-15 Bug fix: Include config.php in index-maint.php
+eefd4ab 2024-04-27 Add a shadow around the tab-focused element
+8fbbc2e 2024-04-13 Update ChangeLog
 3cccbd3 2024-04-13 Use service-lib v2.3.1
 c9de552 2024-04-12 Update ChangeLog
 12ebd0d 2024-04-12 Use service-lib v2.3.0
