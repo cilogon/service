@@ -38,6 +38,7 @@ echo '{
   "grant_types_supported": [
     "authorization_code",
     "refresh_token",
+    "client_credentials",
     "urn:ietf:params:oauth:grant-type:token-exchange",
     "urn:ietf:params:oauth:grant-type:device_code"
   ],
@@ -54,7 +55,6 @@ echo '{
     "email",
     "profile",
     "org.cilogon.userinfo",
-    "edu.uiuc.ncsa.myproxy.getcert",
     "offline_access"
   ],
   "token_endpoint_auth_methods_supported": [
