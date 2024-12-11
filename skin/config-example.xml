@@ -29,8 +29,8 @@
 <config>
 
   <!-- <initialidp>
-       When a user first visits the cilogon.org page, he is presented with a
-       list of IdPs. By default, Google is initially highlighted. You can
+       When users first visit the cilogon.org page, they are presented with
+       a list of IdPs. By default, ORCID is initially highlighted. You can
        change this behavior by specifying a different initial IdP. (Use the
        entityId for InCommon, IdP endpoint URL for OpenID.) In the example
        here, ProtectNetwork is selected initially.
@@ -287,6 +287,8 @@
 
 
   <!-- <delegate>
+       NOTE: This option is deprecated since the /delegate/ (OAuth 1.0a)
+       endpoint is no longer active.
        This block contains options specific to the "Delegate" page (i.e.
        when a certificate is delegated to a portal).
        <initiallifetime> allows you to specify the initial value for
