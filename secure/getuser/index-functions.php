@@ -79,9 +79,7 @@ function getUID()
 
     $func(
         @$shibarray['User Identifier'],
-        // CIL-2178 If OMIT_IDP, then don't pass 'idp' to dbService
-        ((defined('OMIT_IDP')) && (OMIT_IDP === true)) ?
-            '' : @$shibarray['Identity Provider'],
+        @$shibarray['Identity Provider'],
         @$shibarray['Organization Name'],
         $first_name,
         $last_name,
