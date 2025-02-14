@@ -394,3 +394,12 @@ define('DISABLE_LIGO_ALERTS', false);
 /*
 define('EPTID_MISMATCH_IS_WARNING', true);
 */
+
+/**
+ * CIL-2178 IF OMIT_IDP is set to true, the "idp" parameter is NOT sent to the
+ * dbService for SAML-based IdPs. This would allow IdPs to change their
+ * entityIDs without adverse effects on their users.
+ */
+/*
+define('OMIT_IDP', true);
+*/
