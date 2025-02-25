@@ -173,10 +173,35 @@ function getPKCS12()
     }
 
     $shibarray = Util::getIdpList()->getShibInfo();
-    if (Util::isEduGAINAndGetCert(@$shibarray['Identity Provider'], @$shibarray['Organization Name'])) {
+    $idp = @$shibarray['Identity Provider'];
+    if (Util::isEduGAINAndGetCert($idp, @$shibarray['Organization Name'])) {
         $log->error('ECP PKCS12 error: Failed to get cert due to eduGAIN IdP restriction.');
         outputError('Failed to get cert due to eduGAIN IdP restriction.');
         return; // ERROR means no further processing is necessary
+    }
+
+    /* CIL-2185 Check if IdP is in ECP_IDP_MAX_LIFETIME_ARRAY. If so, set the
+     * lifetime by overriding the 'p12lifetime' POST variable. If lifetime
+     * is 0 (zero), then downloading certificates is disabled for that IdP.
+     */
+    if (defined('ECP_IDP_MAX_LIFETIME_ARRAY')) {
+        if (array_key_exists($idp, ECP_IDP_MAX_LIFETIME_ARRAY)) {
+            if (ECP_IDP_MAX_LIFETIME_ARRAY[$idp] == 0) {
+                $log->error('ECP PKCS12 error: Downloading certificates is ' .
+                    'disabled for IdP' . $idp . ' .');
+                outputError('Downloading certificates is disabled.');
+                Util::unsetAllUserSessionVars();
+                return; // ERROR means no further processing is necessary
+            } else { // Set p12lifetime to MAX lifetime if necessary
+                $p12lifetime = (int)Util::getPostVar('p12lifetime');
+                if (
+                    ($p12lifetime == 0) ||
+                    ($p12lifetime > ECP_IDP_MAX_LIFETIME_ARRAY[$idp])
+                ) {
+                    $_POST['p12lifetime'] = ECP_IDP_MAX_LIFETIME_ARRAY[$idp];
+                }
+            }
+        }
     }
 
     $skin->setMyProxyInfo();
@@ -273,10 +298,35 @@ function getCert()
     }
 
     $shibarray = Util::getIdpList()->getShibInfo();
-    if (Util::isEduGAINAndGetCert(@$shibarray['Identity Provider'], @$shibarray['Organization Name'])) {
+    $idp = @$shibarray['Identity Provider'];
+    if (Util::isEduGAINAndGetCert($idp, @$shibarray['Organization Name'])) {
         $log->error('ECP certreq error: Failed to get cert due to eduGAIN IdP restriction.');
         outputError('Failed to get cert due to eduGAIN IdP restriction.');
         return; // ERROR means no further processing is necessary
+    }
+
+    /* CIL-2185 Check if IdP is in ECP_IDP_MAX_LIFETIME_ARRAY. If so, set the
+     * lifetime by overriding the 'certlifetime' POST variable. If lifetime
+     * is 0 (zero), then downloading certificates is disabled for that IdP.
+     */
+    if (defined('ECP_IDP_MAX_LIFETIME_ARRAY')) {
+        if (array_key_exists($idp, ECP_IDP_MAX_LIFETIME_ARRAY)) {
+            if (ECP_IDP_MAX_LIFETIME_ARRAY[$idp] == 0) {
+                $log->error('ECP certreq error: Downloading certificates is ' .
+                    'disabled for IdP' . $idp . ' .');
+                outputError('Downloading certificates is disabled.');
+                Util::unsetAllUserSessionVars();
+                return; // ERROR means no further processing is necessary
+            } else { // Set certlifetime to MAX lifetime if necessary
+                $certlifetime = (int)Util::getPostVar('certlifetime');
+                if (
+                    ($certlifetime == 0) ||
+                    ($certlifetime > ECP_IDP_MAX_LIFETIME_ARRAY[$idp])
+                ) {
+                    $_POST['certlifetime'] = ECP_IDP_MAX_LIFETIME_ARRAY[$idp];
+                }
+            }
+        }
     }
 
     // Get the certificate lifetime. Set to a default value if not set.

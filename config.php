@@ -403,3 +403,17 @@ define('EPTID_MISMATCH_IS_WARNING', true);
 /*
 define('OMIT_IDP', true);
 */
+
+/**
+ * CIL-2185 An array of IdP entityIDs and their associated max lifetimes for
+ * certificates fetched via ECP. This allows for the ECP X.509 certificate
+ * maximum lifetime to be set on a per-IdP basis. (Lifetime is in hours.) If
+ * the max lifetime is set to 0 (zero), then ECP certificate requests will
+ * return an error message indicating that ECP is disabled for that IdP.
+ */
+/*
+define('ECP_IDP_MAX_LIFETIME_ARRAY', array(
+    'https://idp.ncsa.illinois.edu/idp/shibboleth' => 8,
+    'https://idp.fnal.gov/idp/shibboleth' => 24,
+));
+*/
