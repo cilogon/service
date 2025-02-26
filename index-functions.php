@@ -54,7 +54,7 @@ function printMainPage()
     Util::setSessionVar('submit', 'Proceed');
     Util::getCsrf()->setTheSession();
 
-    Content::printHeader('Get Your Certificate');
+    Content::printHeader('CILogon Service');
     Content::printGetCertificate();
     Content::printCertInfo();
     Content::printUserAttributes();
