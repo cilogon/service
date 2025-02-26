@@ -155,10 +155,27 @@ define('DEFAULT_LOGNAME', '');
  * set DISABLE_X509 to true. (Defaults to false.) This is similiar to
  * setting MYPROXY_LOGON below to empty string, but completely hides the
  * "Create Password-Protected Certificate" box, and also checks if the
- * OIDC transaction has the edu.ncsa.uiuc.myproxy.getcert scope.
+ * OIDC transaction has the edu.ncsa.uiuc.myproxy.getcert scope. It also
+ * prevents ECP clients from generating PKCS12/PEM certificates. If this
+ * is set to true, it overrides DISABLE_X509_WEB and DISABLE_X509_ECP.
  *
  */
 //define('DISABLE_X509', true);
+
+/**
+ * To disable X509 certificates for the web front-end and OIDC clients,
+ * set DISABLE_X509_WEB to true. (Defauls to false.) This completely hides
+ * the "Create Password-Protected Certificate" box, and also checks if the
+ * OIDC transaction has the edu.ncsa.uiuc.myproxy.getcert scope.
+ */
+//define('DISABLE_X509_WEB', true);
+
+/**
+ * To disable X509 certificates for ECP clients, set DISABLE_X509_ECP to
+ * true. (Defauls to false.) This prevents ECP clients from generating
+ * PKCS12/PEM certificates.
+ */
+//define('DISABLE_X509_ECP', true);
 
 /**
  * In order for CILogon to be able to generate X.509 certificates, the

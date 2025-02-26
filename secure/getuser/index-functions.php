@@ -154,7 +154,11 @@ function getPKCS12()
     }
 
     // CIL-624 Check if X509 certs are disabled
-    if ((defined('DISABLE_X509')) && (DISABLE_X509 === true)) {
+    // CIL-2190 Separate web certs from ECP certs
+    if (
+        ((defined('DISABLE_X509')) && (DISABLE_X509 === true)) ||
+        ((defined('DISABLE_X509_ECP')) && (DISABLE_X509_ECP === true))
+    ) {
         $log->error('ECP PKCS12 error: Downloading certificates is ' .
             'disabled due to DISABLE_X509.');
         outputError('Downloading certificates is disabled.');
@@ -279,7 +283,11 @@ function getCert()
     }
 
     // CIL-624 Check if X509 certs are disabled
-    if ((defined('DISABLE_X509')) && (DISABLE_X509 === true)) {
+    // CIL-2190 Separate web certs from ECP certs
+    if (
+        ((defined('DISABLE_X509')) && (DISABLE_X509 === true)) ||
+        ((defined('DISABLE_X509_ECP')) && (DISABLE_X509_ECP === true))
+    ) {
         $log->error('ECP certreq error: Downloading certificates is ' .
             'disabled due to DISABLE_X509.');
         outputError('Downloading certificates is disabled.');

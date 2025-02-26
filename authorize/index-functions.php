@@ -284,23 +284,23 @@ function verifyOIDCParams()
 
     // CIL-624 If X509 certs are disabled, check for 'getcert' scope.
     // If found, show an error message.
+    // CIL-2190 Separate web certs from ECP certs
     $scope = Util::getGetVar('scope');
     if (
-        (defined('DISABLE_X509')) &&
-        (DISABLE_X509 === true) &&
+        (((defined('DISABLE_X509')) && (DISABLE_X509 === true)) ||
+         ((defined('DISABLE_X509_WEB')) && (DISABLE_X509_WEB === true))) &&
         (preg_match('/edu.uiuc.ncsa.myproxy.getcert/', $scope))
     ) {
         $log->error('Error in verifyOIDCParams(): The CILogon OIDC ' .
             'authorization endpoint received a request including the ' .
             '"edu.ncsa.uiuc.myproxy.getcert" scope, but the server ' .
-            'is configured with DISABLE_X509 to prevent downloading ' .
-            'certificates.');
+            'is configured to prevent downloading certificates.');
         Util::sendErrorAlert(
             'CILogon OIDC authz endpoint error',
             'The CILogon OIDC authorization endpoint received a request ' .
             'including the "edu.ncsa.uiuc.myproxy.getcert" scope, ' .
-            'but the server is configured with DISABLE_X509 to prevent ' .
-            'downloading certificates. ' .
+            'but the server is configured to prevent downloading ' .
+            'certificates. ' .
             "\n\n" .
             'clientparams = ' . print_r($clientparams, true) .
             "\n"
