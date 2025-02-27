@@ -207,12 +207,6 @@ define('MYPROXY_SERVER_DN_MAP', array(
 define('PHPSESSIONS_STORAGE', 'file');
 
 /**
- * TODO: PHPSESSIONS_USE_FILE is replaced by PHPSESSIONS_STORAGE and should
- * be removed after the next cilogon-web deployment.
- */
-define('PHPSESSIONS_USE_FILE', false);
-
-/**
  * When PHPSESSIONS_STORAGE is 'file', optionally set the storage directory.
  * NOTE: If you use this option, garbage collection MUST be done manually,
  * e.g., set an hourly cronjob to do something like this:
