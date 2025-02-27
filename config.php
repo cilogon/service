@@ -402,18 +402,14 @@ define('DISABLE_LIGO_ALERTS', false);
  * treating STATUS_EPTID_MISMATCH as an ERROR, set EPTID_MISMATCH_IS_WARNING
  * to false.
  */
-/*
-define('EPTID_MISMATCH_IS_WARNING', true);
-*/
+//define('EPTID_MISMATCH_IS_WARNING', true);
 
 /**
  * CIL-2178 IF OMIT_IDP is set to true, the "idp" parameter is NOT sent to the
  * dbService for SAML-based IdPs. This would allow IdPs to change their
  * entityIDs without adverse effects on their users.
  */
-/*
-define('OMIT_IDP', true);
-*/
+//define('OMIT_IDP', true);
 
 /**
  * CIL-2185 An array of IdP entityIDs and their associated max lifetimes for
