@@ -1,3 +1,18 @@
+1d19eaf 2025-02-27 Change comment style for 2 constants
+4c8fa98 2025-02-27 Remove unused PHPSESSIONS_USE_FILE constant
+46fb6aa 2025-02-26 Change page title to 'CILogon Service'
+56d214b 2025-02-26 CIL-2190 Disable web certs and ECP certs separately
+077045d 2025-02-25 CIL-2185 ECP configurable lifetime per IdP
+7a52873 2025-02-14 CIL-2178 Move OMIT_IDP check into getUser() function
+1ebcf4c 2025-02-13 CIL-2178 Add OMIT_IDP config var: don't send "idp" to dbService
+6a60143 2025-01-24 Add empty images subdirectory
+19224f7 2025-01-24 CIL-2161 Move web front-end images to EFS
+4c833d6 2025-01-09 CIL-2151 Update PHP service to v2.5.0
+72a9822 2025-01-09 CIL-2116 Add client_credentials grant_type
+98edacc 2024-12-11 Update some comments in config-example.xml
+451105e 2024-11-01 CIL-2116 Remove client_credentials grant type for now
+40d761f 2024-10-28 Require service-lib v2.4.0
+e7f1913 2024-10-28 Update ChangeLog
 20bccb2 2024-10-28 CIL-2102 / CIL-2116 Update .well-known endpoint
 84ac868 2024-10-23 CIL-2114 Consume SAML eduPersonOrcid
 4750197 2024-10-23 Update sudo command
