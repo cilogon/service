@@ -33,7 +33,7 @@ function printLogonPage()
         $skin->init();
 
         Content::printHeader(
-            'Welcome To The CILogon Device Authorization Service'
+            _('Welcome To The CILogon Device Authorization Service')
         );
 
         Content::printOIDCConsent();
@@ -55,11 +55,11 @@ function printUserCodePage()
     $log->info('User code page hit.');
 
     Content::printHeader(
-        'Welcome To The CILogon Device Authorization Service'
+        _('Welcome To The CILogon Device Authorization Service')
     );
     Content::printCollapseBegin(
         'usercodedefault',
-        'CILogon Device Flow User Code',
+        _('CILogon Device Flow User Code'),
         false
     );
 
@@ -81,33 +81,36 @@ function printUserCodePage()
     echo '
       <div class="card-body px-5">
         <div class="card-text my-2">
-          Please enter the user code displayed on your device.
-          If you do not have a user code, please proceed to the main
-          <a href="..">CILogon site</a>.
+          ',
+          _('Please enter the user code displayed on your device. ' .
+          'If you do not have a user code, please proceed to the main ' .
+          '<a href="..">CILogon site</a>.'), '
         </div> <!-- end row -->
     ';
 
-    Content::printFormHead('Enter User Code');
+    Content::printFormHead(_('Enter User Code'));
 
     echo '
         <div class="form-group col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1 mt-3">
-          <label for="user-code">Enter User Code</label>
+          <label for="user-code">', _('Enter User Code'), '</label>
           <div class="form-row">
             <div class="col-11">
               <input type="text" name="user_code" id="user-code"
               required="required" autocomplete="off" maxlength="40"
               class="form-control upper" aria-describedby="user-code-help"
               oninput="this.value=this.value.replace(/[^a-zA-Z0-9\-\s\_]/,\'\'); upperCaseF(this);"
-              title="User code is alphanumeric"/>
+              title="', _('User code is alphanumeric'), '"/>
               <div class="invalid-tooltip">
-                Please enter a valid user code.
+                ',
+                _('Please enter a valid user code.'), '
               </div>
             </div>
           </div>
           <div class="form-row">
             <div class="col-11">
               <small id="user-code-help" class="form-text text-muted">
-                Enter the user code displayed on your device.
+                ',
+                _('Enter the user code displayed on your device.'), '
               </small>
             </div>
           </div>
@@ -118,8 +121,8 @@ function printUserCodePage()
             <div class="col text-center">
               <input type="submit" name="submit"
               class="btn btn-primary submit"
-              value="Enter User Code"
-              title="Enter User Code" />
+              value="', _('Enter User Code'), '"
+              title="', _('Enter User Code'), '" />
             </div>
           </div>
         </div> <!-- end form-group -->
@@ -219,8 +222,8 @@ function printMainPage()
             }
         }
     } else { // No user_code+grant in PHP session - weird error!
-        $errstr = 'Error confirming user code: Code not found. ' .
-            'Please enable cookies in your web browser.';
+        $errstr = _('Error confirming user code: Code not found. ' .
+            'Please enable cookies in your web browser.');
     }
 
     // If no error so far, call userCodeApproved to complete the transaction
@@ -242,10 +245,10 @@ function printMainPage()
 
     $log->info('User Code Verified page hit.');
 
-    Content::printHeader('User Code Approval');
+    Content::printHeader(_('User Code Approval'));
     Content::printCollapseBegin(
         'usercodeapproval',
-        'CILogon User Code Verification',
+        _('CILogon User Code Verification'),
         false
     );
 
@@ -256,10 +259,14 @@ function printMainPage()
         Content::printErrorBox(
             '<div class="card-text my-2">' .
             $errstr . ' ' .
-            'Please return to your device and begin a new request.' .
+            _('Please return to your device and begin a new request.') .
             '</div> <!-- end card-text -->'
         );
     } else {
+        $approved_msg = _('You have successfully approved the user code. ' .
+            'Please return to your device for further instructions.');
+        $denied_msg = _('You have successfully denied the user code. ' .
+            'Please return to your device for further instructions.');
         echo '
         <div class="row my-3">
           <div class="col-2 text-center">
@@ -273,10 +280,8 @@ function printMainPage()
             </large>
           </div>
           <div class="col">
-            You have successfully ' .
-            ($user_code_approved ? 'approved ' : 'denied ') .
-            'the user code. Please return to your device for further
-            instructions.
+            ', 
+            ($user_code_approved ? $approved_msg : $denied_msg). '
           </div>
         </div>';
     }
@@ -300,15 +305,15 @@ function printMainPage()
  */
 function getDeviceErrorStr($errnum)
 {
-    $errstr = 'Error with user code.'; // Generic error message
+    $errstr = _('Error with user code.'); // Generic error message
     if (!is_null($errnum)) {
-        $errstr = 'Error: ' .
+        $errstr = _('Error: ') .
             @DBService::$STATUS_TEXT[array_search($errnum, DBService::$STATUS)];
         // Customize error messages for device code flow
         if ($errnum == 0x10001) {
-            $errstr = 'Error: User code not found.';
+            $errstr = _('Error: User code not found.');
         } elseif ($errnum == 0x10003) {
-            $errstr = 'Error: User code expired.';
+            $errstr = _('Error: User code expired.');
         }
     }
     return $errstr;
@@ -378,7 +383,7 @@ function verifyUserCodeParam()
                     );
                 }
             } else {
-                Util::setSessionVar('user_code_error_msg', 'Unable to find a client matching the user code.');
+                Util::setSessionVar('user_code_error_msg', _('Unable to find a client matching the user code.'));
             }
         } else { // STATUS_ERROR code returned
             $errstr = getDeviceErrorStr($dbs->status);

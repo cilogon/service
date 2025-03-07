@@ -33,8 +33,8 @@ if (verifyOIDCParams()) {
     // Depending on the value of the clicked 'submit' button or the
     // equivalent PHP session variable, take action or print out HTML.
     switch ($submit) {
-        case 'Log On': // Check for OpenID or InCommon usage.
-        case 'Continue': // For OOI
+        case _('Log On'): // Check for OpenID or InCommon usage.
+        case _('Continue'): // For OOI
             // Need to check for 'max_age' OIDC parameter. If elapsed time
             // since last user authentication is greater than max_age, then
             // set 'forceauthn' session variable to force the user to
@@ -61,7 +61,7 @@ if (verifyOIDCParams()) {
             Content::handleGotUser();
             break; // End case 'gotuser'
 
-        case 'Proceed': // Proceed after Error page
+        case _('Proceed'): // Proceed after Error page
             // Bug fix - If client_id query parameter is set, then
             // 'Proceed' (set by PKCS12 flow) should be ignored.
             if (strlen(Util::getGetVar('client_id')) > 0) {
@@ -71,7 +71,7 @@ if (verifyOIDCParams()) {
             }
             break; // End case 'Proceed'
 
-        case 'Cancel': // User denies release of attributes
+        case _('Cancel'): // User denies release of attributes
             // If user clicked the 'Cancel' button, return to the
             // OIDC client with an error message.
             $redirect = 'Location: https://www.cilogon.org'; // If no redirect_uri

@@ -30,14 +30,15 @@ function printLogonPage($clearcookies = false)
         Util::unsetAllUserSessionVars();
     }
 
-    Content::printHeader('Test Your Identity Provider With CILogon');
-    Content::printCollapseBegin('testidp', 'Test Your Identity Provider', false);
+    Content::printHeader(_('Test Your Identity Provider With CILogon'));
+    Content::printCollapseBegin('testidp', _('Test Your Identity Provider'), false);
 
     echo '
         <div class="card-body px-5">
           <div class="card-text my-2">
-            To test that your identity provider works with CILogon, please
-            select it from the list below and Log On.
+            ',
+            _('To test that your identity provider works with CILogon, ' .
+            'please select it from the list below and Log On.'), '
           </div> <!-- end card-text -->
         </div> <!-- end card-body -->
     ';
@@ -67,20 +68,21 @@ function printMainPage()
     Util::setSessionVar('submit', 'Proceed');
     Util::getCsrf()->setTheSession();
 
-    Content::printHeader('Test Identity Provider');
+    Content::printHeader(_('Test Identity Provider'));
 
-    Content::printCollapseBegin('showidp', 'Verify Attribute Release', false);
+    Content::printCollapseBegin('showidp', _('Verify Attribute Release'), false);
 
     echo '
         <div class="card-body px-5">
           <div class="card-text my-2">
-            Thank you for your interest in the CILogon Service. This page
-            enables you to verify that all necessary attributes have been
-            released to the CILogon Service Provider
-            (<abbr title="Service Provider">SP</abbr>) by your selected
-            Identity Provider (<abbr title="Identity Provider">IdP</abbr>).
-            Below you will see the various attributes required by the
-            CILogon Service and their values as released by your IdP.
+            ',
+            _('Thank you for your interest in the CILogon Service. ' .
+            'This page enables you to verify that all necessary ' .
+            'attributes have been released to the CILogon Service Provider ' .
+            '(<abbr title="Service Provider">SP</abbr>) by your selected ' .
+            'Identity Provider (<abbr title="Identity Provider">IdP</abbr>). ' .
+            'Below you will see the various attributes required by the ' .
+            'CILogon Service and their values as released by your IdP.'), '
           </div> <!-- end card-text -->
     ';
 
@@ -103,31 +105,35 @@ function printMainPage()
             Content::getIcon('fa-check-square fa-2x', 'lime'), '</large>
             </div> <!-- end col-1 -->
             <div class="col">
-              All required attributes have been released by your
-              IdP. For details of the various attributes utilized
-              by the CILogon Service and their current values,
-              see the sections below.
+              ',
+              _('All required attributes have been released by your ' .
+              'IdP. For details of the various attributes utilized ' .
+              'by the CILogon Service and their current values, ' .
+              'see the sections below.'), '
             </div>
           </div> <!-- end row -->
           <div class="row align-items-center justify-content-center">
             <div class="col-auto">
               <a class="btn btn-primary"
-              title="Proceed to the CILogon Service"
-              href="/">Proceed to the CILogon Service</a>
+              title="', _('Proceed to the CILogon Service'), '"
+              href="/">', _('Proceed to the CILogon Service'), '</a>
             </div> <!-- end col-auto -->
         ';
     } else {
         echo Content::getIcon(
             'fa-exclamation-circle fa-2x',
             'red',
-            'Missing one or more attributes.'
+            _('Missing one or more attributes.')
         ), '
             </div> <!-- end col-1 -->
             <div class="col">
-              One or more of the attributes required by the CILogon Service
-              are not available. Please see the sections below for details.
-              Contact <a href="mailto:', EMAIL_HELP, '">', EMAIL_HELP, '</a>
-              for additional information and assistance.
+              ',
+              _('One or more of the attributes required by the CILogon ' .
+              'Service are not available. Please see the sections below ' .
+              'for details. For additional information and assistance, ' .
+              'please contact '),
+              '<a href="mailto:', EMAIL_HELP, '">', EMAIL_HELP, '</a>' ,
+              '
             </div>
           </div> <!-- end row -->
           <div class="row align-items-center justify-content-center">

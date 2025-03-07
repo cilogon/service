@@ -38,9 +38,9 @@ function printMainCookiesPage()
      */
     $gethide = Util::getGetOrPostVar('hide');
 
-    Content::printHeader('Manage CILogon Cookies', false); // Don't set CSRF
+    Content::printHeader(_('Manage CILogon Cookies'), false); // Don't set CSRF
 
-    Content::printFormHead('Manage Cookies');
+    Content::printFormHead(_('Manage Cookies'));
 
     printAboutThisPage($browsercount, $sessioncount, $gethide);
     printBrowserCookies($browsercount, (preg_match('/browser/i', $gethide)));
@@ -66,28 +66,30 @@ function printMainCookiesPage()
  */
 function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
 {
-    Content::printCollapseBegin('aboutme', 'CILogon Attributes', false);
+    Content::printCollapseBegin('aboutme', _('CILogon Attributes'), false);
 
     echo '
         <div class="card-body px-5">
           <div class="card-text my-2">
-            This page allows you to view and (potentially) delete various
-            cookies associated with the <a target="_blank" href="..">CILogon
-            Service</a>. There are three sections below.
+            ',
+            _('This page allows you to view and (potentially) delete various ' .
+            'cookies associated with the ' .
+            '<a target="_blank" href="..">CILogon Service</a>. ' .
+            'There are three sections below.'), '
           </div> <!-- end card-text -->
           <ol>
-            <li><b>Browser Cookies</b> - These are &quot;cookies&quot;
-            which are stored in your browser. They are used as preferences
-            for the CILogon Service.
+            <li><b>', _('Browser Cookies'), '</b> - ', _('These are ' .
+            '&quot;cookies&quot; which are stored in your browser. ' .
+            'They are used as preferences for the CILogon Service.'), '
             </li>
-            <li><b>Session Variables</b> - These are &quot;short-lived&quot;
-            values related to your current CILogon session. Deleting any of
-            these values may require you to re-logon.
+            <li><b>', _('Session Variables'), '</b> - ', _('These are ' .
+            '&quot;short-lived&quot; values related to your current ' .
+            'CILogon session. Deleting any of these values may require ' .
+            'you to re-logon.'), '
             </li>
-            <li><b>Environment Variables</b> - These are values set by the
-            interaction between your browser and the web server. These are
-            displayed
-            mainly for information purposes.
+            <li><b>', _('Environment Variables'), '</b> - ', _('These are ' .
+            'values set by the interaction between your browser and the web ' .
+            'server. These are displayed mainly for information purposes.'), '
             </li>
           </ol>
     ';
@@ -97,23 +99,25 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
     if (($browsercount > 0) || ($sessioncount > 0)) {
         echo '
           <div class="card-text my-2">
-            You can delete cookies individually by checking the associated
-            checkbox(es) and clicking the &quot;Delete Checked&quot; button.
-            You can also delete groups of cookies by clicking ';
+            ',
+            _('You can delete cookies individually by checking the ' .
+            'associated checkbox(es) and clicking the &quot;Delete ' .
+            'Checked&quot; button. You can also delete groups of ' .
+            'cookies by clicking ');
         if ($browsercount > 0) {
-            echo 'the &quot;Delete Browser Cookies&quot; button';
+            echo _('the &quot;Delete Browser Cookies&quot; button');
             if ($sessioncount > 0) {
                 echo ', ';
             }
         }
 
         if ($sessioncount > 0) {
-            echo 'the &quot;Delete Session Variables&quot; button';
+            echo _('the &quot;Delete Session Variables&quot; button');
             if ($browsercount > 0) {
                 echo ', ';
             }
         }
-        echo ' or the &quot;Delete ALL&quot; button';
+        echo _(' or the &quot;Delete ALL&quot; button');
         echo '.
           </div> <!-- end card-text -->';
     }
@@ -122,8 +126,8 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
           <div class="row align-items-center justify-content-center">
             <div class="col-auto">
               <a class="btn btn-primary form-control"
-              title="Proceed to the CILogon Service"
-              href="/">Proceed to the CILogon Service</a>
+              title="', _('Proceed to the CILogon Service'), '"
+              href="/">', _('Proceed to the CILogon Service'), '</a>
             </div> <!-- end col-auto -->';
 
     // CIL-1416 Put the "hide" parameter in the form for next page load
@@ -138,7 +142,7 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
               value="Delete Browser Cookies"
-              title="Delete Browser Cookies" />
+              title="', _('Delete Browser Cookies'), '" />
             </div> <!-- end col-auto -->';
     }
     if ($sessioncount > 0) {
@@ -147,7 +151,7 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
               value="Delete Session Variables"
-              title="Delete Session Variables" />
+              title="', _('Delete Session Variables'), '" />
             </div> <!-- end col-auto -->';
     }
     if (($browsercount > 0) || ($sessioncount > 0)) {
@@ -156,7 +160,7 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
               value="Delete ALL"
-              title="Delete ALL" />
+              title="', _('Delete ALL') , '" />
             </div> <!-- end col-auto -->';
     }
     echo '
@@ -164,7 +168,7 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
               value="Reload Page"
-              title="Reload Page" />
+              title="', _('Reload Page'), '" />
             </div> <!-- end col-auto -->
           </div> <!-- end row align-items-center -->
         </div> <!-- end card-body --> ';
@@ -186,7 +190,7 @@ function printBrowserCookies($browsercount, $collapsed = false)
 {
     global $hide;
 
-    Content::printCollapseBegin('cookies', 'Browser Cookies', $collapsed);
+    Content::printCollapseBegin('cookies', _('Browser Cookies'), $collapsed);
 
     if ($browsercount > 0) {
         echo '
@@ -225,7 +229,7 @@ function printBrowserCookies($browsercount, $collapsed = false)
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
               value="Delete Checked"
-              title="Delete Checked" />
+              title="', _('Delete Checked'), '" />
             </div> <!-- end col-auto -->
           </div> <!-- end row align-items-center -->';
     } else {
@@ -233,7 +237,8 @@ function printBrowserCookies($browsercount, $collapsed = false)
         <div class="card-body px-5">
           <div class="row">
             <div class="col-auto">
-              No browser cookies found.
+              ',
+              _('No browser cookies found.'), '
             </div>
           </div>';
     }
@@ -259,7 +264,7 @@ function printSessionVariables($sessioncount, $collapsed = false)
 {
     global $hide;
 
-    Content::printCollapseBegin('session', 'Session Variables', $collapsed);
+    Content::printCollapseBegin('session', _('Session Variables'), $collapsed);
 
     if ($sessioncount > 0) {
         echo '
@@ -292,7 +297,7 @@ function printSessionVariables($sessioncount, $collapsed = false)
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
               value="Delete Checked"
-              title="Delete Checked" />
+              title="', _('Delete Checked'), '" />
             </div> <!-- end col-auto -->
           </div> <!-- end row align-items-center -->';
     } else {
@@ -300,7 +305,8 @@ function printSessionVariables($sessioncount, $collapsed = false)
         <div class="card-body px-5">
           <div class="row">
             <div class="col-auto">
-              No session variables found.
+              ',
+              _('No session variables found.'), '
             </div>
           </div>';
     }
@@ -322,7 +328,7 @@ function printSessionVariables($sessioncount, $collapsed = false)
  */
 function printEnvironmentVars($collapsed = false)
 {
-    Content::printCollapseBegin('environment', 'Environment Variables', $collapsed);
+    Content::printCollapseBegin('environment', _('Environment Variables'), $collapsed);
 
     echo '
         <div class="card-body">
@@ -492,63 +498,66 @@ function getTitleText($cookie)
     $explain = array(
         "acr" => "Authentication Context Class Ref",
         "amr" => "Authentication Method Ref",
-        "affiliation" => "A list of attributes describing your affiliations at your Identity Provider." ,
-        "authntime" => "The Unix timestamp of the last successful user authentication." ,
-        "callbackuri" => "The URL of the callback servlet used by portals connecting to the CILogon Delegate service." ,
-        "cilogon_skin" => "The skin affects the look-and-feel and " .
+        "affiliation" => _("A list of attributes describing your affiliations at your Identity Provider."),
+        "authntime" => _("The Unix timestamp of the last successful user authentication."),
+        "callbackuri" => _("The URL of the callback servlet used by " .
+            "portals connecting to the CILogon Delegate service."),
+        "cilogon_skin" => _("The skin affects the look-and-feel and " .
             "functionality of the CILogon Service. It is typically " .
-            "specified by a portal." ,
-        "clientparams" => "A set of cookies for each portal you have used with CILogon." ,
-        "display_name" => "Your full name set by your Identity Provider." ,
-        "distinguished_name" => "A quasi distinguished name for the X.509 certificate issued by a MyProxy server." ,
-        "eduPersonOrcid" => "ORCID identifier",
-        "email" => "Your email address given by your Identity Provider." ,
-        "entitlement" => "A list of URIs representing permissions to access a resource or service." ,
-        "eppn" => "'eduPerson Principal Name' - a SAML attribute set by your Identity Provider." ,
-        "eptid" => "'eduPerson Targeted Identifier' - a SAML attribute set by your Identity Provider" ,
-        "failureuri" => "A URL used by portals in case the CILogon " .
-            "Service is unable to issue a certificate on your behalf. " ,
-        "first_name" => "Your given name set by your Identity Provider." ,
-        "idp_display_name" => "The display name of your chosen Identity Provider." ,
-        "idp" => "The authentication URI of your chosen Identity Provider." ,
-        "itrustuin" => "Your university ID number.",
-        "keepidp" => "Remember if you checked the 'Remember this " .
-            "selection' checkbox when you selected and Identity Provider." ,
-        "last_name" => "Your surname set by your Identity Provider." ,
-        "loa" => "Level of Assurance set by your Identity Provider." ,
-        "logonerror" => "A text message of the reason for the last authentication error." ,
-        "member_of" => "Groups of which you are a member",
-        "oidc" => "Your user identifier set by the OpenID Connect Identity Provider." ,
-        "open_id" => "Your user identifier set by the OpenID Identity Provider." ,
-        "ou" => "Your organizational unit set by your Identity Provider." ,
-        "pairwise_id" => "The pairwise subject identifier provided by the Identity Provider",
-        "p12error" => "A text message of the reason why the PKCS12 certificate could not be created." ,
-        "p12lifetime" => "This multiplied by the p12multipler gives the lifetime of the PKCS12 certificate in hours." ,
-        "p12multiplier" => "This multiplied by the p12lifetime gives the lifetime of the PKCS12 certificate in hours." ,
-        "p12" => "The expiration time and URL to download a PKCS12 certificate file." ,
-        "portalcookie" => "Contains certificate lifetimes for all " .
-            "portals you have used with the CILogon Delegate service." ,
-        "portalname" => "The display name of the portal connected to the CILogon Delegate service. " ,
-        "portalparams" => "For portals previously using the CILogon " .
+            "specified by a portal."),
+        "clientparams" => _("A set of cookies for each portal you have used with CILogon."),
+        "display_name" => _("Your full name set by your Identity Provider."),
+        "distinguished_name" => _("A quasi distinguished name for the X.509 certificate issued by a MyProxy server."),
+        "eduPersonOrcid" => _("ORCID identifier"),
+        "email" => _("Your email address given by your Identity Provider."),
+        "entitlement" => _("A list of URIs representing permissions to access a resource or service."),
+        "eppn" => _("'eduPerson Principal Name' - a SAML attribute set by your Identity Provider."),
+        "eptid" => _("'eduPerson Targeted Identifier' - a SAML attribute set by your Identity Provider"),
+        "failureuri" => _("A URL used by portals in case the CILogon " .
+            "Service is unable to issue a certificate on your behalf. "),
+        "first_name" => _("Your given name set by your Identity Provider."),
+        "idp_display_name" => _("The display name of your chosen Identity Provider."),
+        "idp" => _("The authentication URI of your chosen Identity Provider."),
+        "itrustuin" => _("Your university ID number."),
+        "keepidp" => _("Remember if you checked the 'Remember this " .
+            "selection' checkbox when you selected and Identity Provider."),
+        "last_name" => _("Your surname set by your Identity Provider."),
+        "loa" => _("Level of Assurance set by your Identity Provider."),
+        "logonerror" => _("A text message of the reason for the last authentication error."),
+        "member_of" => _("Groups of which you are a member"),
+        "oidc" => _("Your user identifier set by the OpenID Connect Identity Provider."),
+        "open_id" => _("Your user identifier set by the OpenID Identity Provider."),
+        "ou" => _("Your organizational unit set by your Identity Provider."),
+        "pairwise_id" => _("The pairwise subject identifier provided by the Identity Provider"),
+        "p12error" => _("A text message of the reason why the PKCS12 certificate could not be created."),
+        "p12lifetime" => _("This multiplied by the p12multipler gives the " .
+            "lifetime of the PKCS12 certificate in hours."),
+        "p12multiplier" => _("This multiplied by the p12lifetime gives the " .
+            "lifetime of the PKCS12 certificate in hours."),
+        "p12" => _("The expiration time and URL to download a PKCS12 certificate file."),
+        "portalcookie" => _("Contains certificate lifetimes for all " .
+            "portals you have used with the CILogon Delegate service."),
+        "portalname" => _("The display name of the portal connected to the CILogon Delegate service."),
+        "portalparams" => _("For portals previously using the CILogon " .
             "Delegate service, this is the saved lifetime of the " .
-            "delegated certificate." ,
-        "portalstatus" => "An internal return code when fetching portal parameters from the datastore." ,
-        "preferred_username" => "The GitHub login name. Should not be used as a persistent identifier." ,
-        "providerId" => "The previously selected Identity Provider." ,
-        "recentidps" => "A list of the most recently selected Identity Providers",
-        "responsesubmit" => "The name of the page to return to after " .
-            "authentication at your chosen Identity Provider." ,
-        "responseurl" => "The URL to return to after authentication at your chosen Identity Provider." ,
-        "_shibsession" => "A shibboleth session token set by an InCommon Identity Provider." ,
-        "showhidden" => "Always show any hidden IdPs.",
-        "sso_idp_array" => "Keep track of IdPs used for Single Sign On (SSO)",
-        "status" => "An internal return code when fetching user data from the datastore." ,
-        "subject_id" => "The subject identifier provided by the Identity Provider",
-        "submit" => "The name of the 'submit' button clicked." ,
-        "successuri" => "A URL used by portals for redirection after successful issuance of a certificate." ,
-        "tempcred" => "An OAUTH identifier used to track portal sessions." ,
-        "uidNumber" => "The user integer identification number provided by the Identity Provider",
-        "user_uid" => "The unique CILogon user identifier." ,
+            "delegated certificate."),
+        "portalstatus" => _("An internal return code when fetching portal parameters from the datastore."),
+        "preferred_username" => _("The GitHub login name. Should not be used as a persistent identifier."),
+        "providerId" => _("The previously selected Identity Provider."),
+        "recentidps" => _("A list of the most recently selected Identity Providers"),
+        "responsesubmit" => _("The name of the page to return to after " .
+            "authentication at your chosen Identity Provider."),
+        "responseurl" => _("The URL to return to after authentication at your chosen Identity Provider."),
+        "_shibsession" => _("A shibboleth session token set by an InCommon Identity Provider."),
+        "showhidden" => _("Always show any hidden IdPs."),
+        "sso_idp_array" => _("Keep track of IdPs used for Single Sign On (SSO)"),
+        "status" => _("An internal return code when fetching user data from the datastore."),
+        "subject_id" => _("The subject identifier provided by the Identity Provider"),
+        "submit" => _("The name of the 'submit' button clicked."),
+        "successuri" => _("A URL used by portals for redirection after successful issuance of a certificate."),
+        "tempcred" => _("An OAUTH identifier used to track portal sessions."),
+        "uidNumber" => _("The user integer identification number provided by the Identity Provider"),
+        "user_uid" => _("The unique CILogon user identifier."),
     );
 
     foreach ($explain as $key => $value) {

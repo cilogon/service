@@ -25,7 +25,7 @@ function printLogonPage()
     $log->info('Welcome page hit.', false, false);
 
     Content::printHeader(
-        'Welcome To The CILogon OpenID Connect Authorization Service'
+        _('Welcome To The CILogon OpenID Connect Authorization Service')
     );
 
     $clientparams = json_decode(Util::getSessionVar('clientparams'), true);
@@ -62,16 +62,14 @@ function printOIDCErrorPage()
     $log = new Loggit();
     $log->warn('Missing or invalid OIDC parameters.');
 
-    Content::printHeader('CILogon Authorization Endpoint');
-    Content::printCollapseBegin('oidcdefault', 'CILogon OIDC Authorization Endpoint', false);
+    Content::printHeader(_('CILogon Authorization Endpoint'));
+    Content::printCollapseBegin('oidcdefault', _('CILogon OIDC Authorization Endpoint'), false);
 
     echo '
         <div class="card-body px-5">
           <div class="card-text my-2">
-            You have reached the CILogon OAuth2/OpenID Connect (OIDC)
-            Authorization Endpoint. This service is for use by OAuth2/OIDC
-            Relying Parties (RPs) to authorize users of the CILogon Service.
-            End users should not normally see this page.
+            ',
+            _('You have reached the CILogon OAuth2/OpenID Connect (OIDC) Authorization Endpoint. This service is for use by OAuth2/OIDC Relying Parties (RPs) to authorize users of the CILogon Service. End users should not normally see this page.'), '
           </div> <!-- end row -->
     ';
 
@@ -82,13 +80,14 @@ function printOIDCErrorPage()
     } else {
         echo '
           <div class="card-text my-2">
-            Possible reasons for seeing this page include:
+            ',
+            _('Possible reasons for seeing this page include:'), '
           </div> <!-- end row -->
           <div class="card-text my-2">
             <ul>
-              <li>You navigated directly to this page.</li>
-              <li>You clicked your browser\'s "Back" button.</li>
-              <li>There was a problem with the OpenID Connect client.</li>
+              <li>', _('You navigated directly to this page.'), '</li>
+              <li>', _('You clicked your browser\'s "Back" button.'), '</li>
+              <li>', _('There was a problem with the OpenID Connect client.'), '</li>
             </ul>
           </div> <!-- end row -->
         ';
@@ -96,12 +95,12 @@ function printOIDCErrorPage()
 
     echo '
           <div class="card-text my-2">
-            For assistance, please contact us at the email address at the
-            bottom of the page.
+            ',
+            _('For assistance, please contact us at the email address at the bottom of the page.'), '
           </div>
           <div class="card-text my-2">
-            <strong>Note:</strong> You must enable cookies in your web
-            browser to use this site.
+            ',
+            _('Note: You must enable cookies in your web browser to use this site.'), '
           </div>
         </div> <!-- end card-body -->
     ';
@@ -307,10 +306,10 @@ function verifyOIDCParams()
         );
         Util::setSessionVar(
             'client_error_msg',
-            'The CILogon Service is currently configured to prevent ' .
+            _('The CILogon Service is currently configured to prevent ' .
             'downloading X.509 certificates, but the incoming request ' .
             'included the "edu.ncsa.uiuc.myproxy.getcert" scope. ' .
-            'CILogon system administrators have been notified.'
+            'CILogon system administrators have been notified.')
         );
         $clientparams = array();
 
@@ -463,7 +462,7 @@ function verifyOIDCParams()
                             } else { // For other errors, display error to user
                                 Util::setSessionVar(
                                     'client_error_msg',
-                                    'There was an unrecoverable error during the transaction. ' .
+                                    _('There was an unrecoverable error during the transaction. ') .
                                     (!empty($errortxt) ? "<p><b>Error message: $errortxt</b><p>" : '')
                                 );
                                 $clientparams = array();
@@ -597,8 +596,8 @@ function verifyOIDCParams()
                         }
                         Util::setSessionVar(
                             'client_error_msg',
-                            'There was an unrecoverable error during the transaction. ' .
-                            'CILogon system administrators have been notified.' .
+                            _('There was an unrecoverable error during the transaction. ' .
+                            'CILogon system administrators have been notified.') .
                             ((strlen($errstr) > 0) ? $errstr : '') .
                             ((strlen($output) > 0) ?
                             '<br/><pre>' .
@@ -669,10 +668,9 @@ function verifyOIDCParams()
          */
         Util::setSessionVar(
             'client_error_msg',
-            'It appears that an OpenID Connect client attempted to ' .
+            _('It appears that an OpenID Connect client attempted to ' .
             'initiate a session with the CILogon Service, but at least ' .
-            'one of the requried parameters (' . $missing . ') ' .
-            'was missing.'
+            'one of the requried parameters was missing.')
         );
         $clientparams = array();
 
@@ -775,25 +773,25 @@ function getErrorStatusAndText($output, $clientparams)
 
         if (empty($scope)) {
             $error = 'invalid_request';
-            $errtxt = 'Missing or empty scope parameter.';
+            $errtxt = _('Missing or empty scope parameter.');
         } elseif (empty($client_id)) {
             $error = 'invalid_request';
-            $errtxt = 'Missing or empty client_id parameter.';
+            $errtxt = _('Missing or empty client_id parameter.');
         } elseif (empty($response_type)) {
             $error = 'invalid_request';
-            $errtxt = 'Missing or empty response_type parameter.';
+            $errtxt = _('Missing or empty response_type parameter.');
         } elseif (preg_match('/[\+%"\']/', $scope)) {
             $error = 'invalid_scope';
-            $errtxt = 'Invalid characters found in scope parameter, may be URL encoded twice.';
+            $errtxt = _('Invalid characters found in scope parameter, may be URL encoded twice.');
         } elseif (preg_match('/[A-Z]/', $scope)) {
             $error = 'invalid_scope';
-            $errtxt = 'Upper case characters found in scope parameter.';
+            $errtxt = _('Upper case characters found in scope parameter.');
         } elseif ($response_type != 'code') {
             $error = 'unsupported_response_type';
-            $errtxt = 'Unsupported response_type parameter. Only code is supported.';
+            $errtxt = _('Unsupported response_type parameter. Only code is supported.');
         } elseif ((!empty($prompt)) && ($prompt != 'login') && ($prompt != 'select_account')) {
             $error = 'invalid_request';
-            $errtxt = 'Unsupported prompt parameter. Only login and select_account are supported.';
+            $errtxt = _('Unsupported prompt parameter. Only login and select_account are supported.');
         } elseif (
             (!empty($response_mode)) &&
             ($response_mode != 'query') &&
@@ -801,7 +799,7 @@ function getErrorStatusAndText($output, $clientparams)
             ($response_mode != 'form_post')
         ) {
             $error = 'invalid_request';
-            $errtxt = 'Unsupported response_mode parameter.';
+            $errtxt = _('Unsupported response_mode parameter.');
         }
 
         // CIL-909 Use the error_description field if $errtxt is still empty.

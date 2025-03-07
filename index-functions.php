@@ -34,7 +34,7 @@ function printLogonPage($clearcookies = false)
     $log = new Loggit();
     $log->info('Welcome page hit.', false, false);
 
-    Content::printHeader('Welcome To The CILogon Service');
+    Content::printHeader(_('Welcome To The CILogon Service'));
     Content::printWAYF();
     Content::printFooter();
 }
@@ -51,10 +51,10 @@ function printMainPage()
     $log->info('Get And Use Certificate page hit.', false, false);
 
     // CIL-626 Allow browser 'reload page' by adding CSRF to the PHP session
-    Util::setSessionVar('submit', 'Proceed');
+    Util::setSessionVar('submit', _('Proceed'));
     Util::getCsrf()->setTheSession();
 
-    Content::printHeader('CILogon Service');
+    Content::printHeader(_('CILogon Service'));
     Content::printGetCertificate();
     Content::printCertInfo();
     Content::printUserAttributes();

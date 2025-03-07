@@ -38,12 +38,12 @@ $log->info('submit="' . $submit . '"');
 // Depending on the value of the clicked 'submit' button or the
 // equivalent PHP session variable, take action or print out HTML.
 switch ($submit) {
-    case 'Log On': // Check for OpenID or InCommon usage.
-    case 'Continue': // For OOI
+    case _('Log On'): // Check for OpenID or InCommon usage.
+    case _('Continue'): // For OOI
         Content::handleLogOnButtonClicked();
         break; // End case 'Log On'
 
-    case 'Log Off':   // Click the 'Log Off' button
+    case _('Log Off'):   // Click the 'Log Off' button
         printLogonPage(true);
         break; // End case 'Log Off'
 
@@ -51,17 +51,17 @@ switch ($submit) {
         Content::handleGotUser();
         break; // End case 'gotuser'
 
-    case 'Go Back': // Return to the Main page
-    case 'Proceed': // Proceed after Error page
+    case _('Go Back'): // Return to the Main page
+    case _('Proceed'): // Proceed after Error page
         Util::verifySessionAndCall('printMainPage');
         break; // End case 'Go Back' / 'Proceed'
 
-    case 'Cancel': // Cancel button on WAYF page - go to CILogon Info Page
+    case _('Cancel'): // Cancel button on WAYF page - go to CILogon Info Page
         header('Location: https://www.cilogon.org');
         exit; // No further processing necessary
         break;
 
-    case 'Get New Certificate':
+    case _('Get New Certificate'):
         if (Util::verifySessionAndCall('CILogon\\Service\\Content::generateP12')) {
             printMainPage();
         }

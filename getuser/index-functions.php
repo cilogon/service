@@ -43,15 +43,15 @@ function getUserAndRespond($responseurl)
     $lastcsrf = Util::getCsrf()->getTheCookie();
     if ($state != $lastcsrf) {
         // Verify that response's 'state' equals the last CSRF token
-        Util::setSessionVar('logonerror', 'Invalid state parameter.');
+        Util::setSessionVar('logonerror', _('Invalid state parameter.'));
     } elseif (strlen($code) == 0) {
         // Make sure the response has a non-empty 'code'
         $error = Util::getGetVar('error');
         $error_description = Util::getGetVar('error_description');
         if ((strlen($error) > 0) && (strlen($error_description) > 0)) {
-            Util::setSessionVar('logonerror', $error_description . '. Please try again.');
+            Util::setSessionVar('logonerror', $error_description . _('Please try again.'));
         } else {
-            Util::setSessionVar('logonerror', 'Empty code parameter. Please try again.');
+            Util::setSessionVar('logonerror', _('Empty code parameter. Please try again.'));
         }
     } else {
         // When using OAuth or OIDC, check portalcookie for providerId
@@ -120,7 +120,7 @@ function getUserAndRespond($responseurl)
         } else {
             Util::setSessionVar(
                 'logonerror',
-                'Missing OAuth2 client configuration values.'
+                _('Missing OAuth2 client configuration values.')
             );
         }
     }

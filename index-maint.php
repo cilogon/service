@@ -12,8 +12,8 @@ use CILogon\Service\Content;
 
 Util::startPHPSession();
 
-Content::printHeader('Site Maintenance');
-Content::printCollapseBegin('maint', 'Site Maintenance', false);
+Content::printHeader(_('Site Maintenance'));
+Content::printCollapseBegin('maint', _('Site Maintenance'), false);
 
 echo '
     <div class="card-body px-5">
@@ -23,13 +23,12 @@ echo '
         </div> <!-- end col-1 -->
         <div class="col">
           <div class="card-text my-2">
-            The CILogon Service is currently undergoing maintenance.
-            Please try again in a few minutes.
+            ',
+            _('The CILogon Service is currently undergoing maintenance. Please try again in a few minutes.'), '
           </div> <!-- end card-text -->
           <div class="card-text my-2">
-            Visit <a target="_blank"
-            href="https://cilogon.statuspage.io/">https://cilogon.statuspage.io/</a> for more
-          information.
+            ',
+            _('Visit <a target="_blank" href="https://cilogon.statuspage.io/">https://cilogon.statuspage.io/</a> for more information.'), '
           </div> <!-- end card-text -->
         </div> <!-- end col -->
        </div> <!-- end row -->

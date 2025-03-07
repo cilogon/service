@@ -25,7 +25,7 @@ $log->info('submit="' . $submit . '"');
 // Depending on the value of the clicked 'submit' button or the
 // equivalent PHP session variable, take action or print out HTML.
 switch ($submit) {
-    case 'Enter User Code':
+    case _('Enter User Code'):
         if (!verifyUserCodeParam()) { // user_code was not valid
             printUserCodePage();
         } else { // Redirect to 'Select an IdP' page or bypass it if configured
@@ -33,8 +33,8 @@ switch ($submit) {
         }
         break; // End case 'Enter User Code'
 
-    case 'Log On': // Check for OpenID or InCommon usage
-    case 'Continue': // For OOI
+    case _('Log On'): // Check for OpenID or InCommon usage
+    case _('Continue'): // For OOI
         // Need to check for 'max_age' OIDC parameter. If elapsed time
         // since last user authentication is greater than max_age, then
         // set 'forceauthn' session variable to force the user to
@@ -62,11 +62,11 @@ switch ($submit) {
         Content::handleGotUser();
         break; // End case 'gotuser'
 
-    case 'Proceed': // Proceed after Error page
+    case _('Proceed'): // Proceed after Error page
         Util::verifySessionAndCall('printLogonPage');
         break; // End case 'Proceed'
 
-    case 'Cancel': // User denies release of attributes
+    case _('Cancel'): // User denies release of attributes
         Util::setSessionVar('user_code_denied', '1');
         printMainPage();
         break; // End case 'Cancel'
