@@ -141,7 +141,7 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
             <div class="col-auto">
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="Delete Browser Cookies"
+              value="', _('Delete Browser Cookies'), '"
               title="', _('Delete Browser Cookies'), '" />
             </div> <!-- end col-auto -->';
     }
@@ -150,7 +150,7 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
             <div class="col-auto">
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="Delete Session Variables"
+              value="', _('Delete Session Variables'), '"
               title="', _('Delete Session Variables'), '" />
             </div> <!-- end col-auto -->';
     }
@@ -159,15 +159,15 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
             <div class="col-auto">
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="Delete ALL"
-              title="', _('Delete ALL') , '" />
+              value="', _('Delete ALL'), '"
+              title="', _('Delete ALL'), '" />
             </div> <!-- end col-auto -->';
     }
     echo '
             <div class="col-auto">
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="Reload Page"
+              value="', _('Reload Page'), '"
               title="', _('Reload Page'), '" />
             </div> <!-- end col-auto -->
           </div> <!-- end row align-items-center -->
@@ -228,7 +228,7 @@ function printBrowserCookies($browsercount, $collapsed = false)
             <div class="col-auto">
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="Delete Checked"
+              value="', _('Delete Checked'), '"
               title="', _('Delete Checked'), '" />
             </div> <!-- end col-auto -->
           </div> <!-- end row align-items-center -->';
@@ -296,7 +296,7 @@ function printSessionVariables($sessioncount, $collapsed = false)
             <div class="col-auto">
               <input type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="Delete Checked"
+              value="', _('Delete Checked'), '"
               title="', _('Delete Checked'), '" />
             </div> <!-- end col-auto -->
           </div> <!-- end row align-items-center -->';
