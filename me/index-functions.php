@@ -196,7 +196,7 @@ function printBrowserCookies($browsercount, $collapsed = false)
         echo '
         <div class="card-body">
           <table class="table table-striped table-sm table-hover small"
-          aria-label="Browser Cookies">
+          aria-label="', _('Browser Cookies'), '">
           <tbody>
         ';
 
@@ -270,7 +270,7 @@ function printSessionVariables($sessioncount, $collapsed = false)
         echo '
         <div class="card-body">
           <table class="table table-striped table-sm table-hover small"
-          aria-label="Session Variables">
+          aria-label="', _('Session Variables') ,'">
           <tbody>
         ';
 
@@ -333,7 +333,7 @@ function printEnvironmentVars($collapsed = false)
     echo '
         <div class="card-body">
           <table class="table table-striped table-hover table-sm small"
-          aria-label="Environment Variables">
+          aria-label="', _('Environment Variables'), '">
           <tbody>
     ';
 
@@ -508,13 +508,13 @@ function getTitleText($cookie)
         "clientparams" => _("A set of cookies for each portal you have used with CILogon."),
         "display_name" => _("Your full name set by your Identity Provider."),
         "distinguished_name" => _("A quasi distinguished name for the X.509 certificate issued by a MyProxy server."),
-        "eduPersonOrcid" => _("ORCID identifier"),
+        "eduPersonOrcid" => _("ORCID identifier."),
         "email" => _("Your email address given by your Identity Provider."),
         "entitlement" => _("A list of URIs representing permissions to access a resource or service."),
         "eppn" => _("'eduPerson Principal Name' - a SAML attribute set by your Identity Provider."),
-        "eptid" => _("'eduPerson Targeted Identifier' - a SAML attribute set by your Identity Provider"),
+        "eptid" => _("'eduPerson Targeted Identifier' - a SAML attribute set by your Identity Provider."),
         "failureuri" => _("A URL used by portals in case the CILogon " .
-            "Service is unable to issue a certificate on your behalf. "),
+            "Service is unable to issue a certificate on your behalf."),
         "first_name" => _("Your given name set by your Identity Provider."),
         "idp_display_name" => _("The display name of your chosen Identity Provider."),
         "idp" => _("The authentication URI of your chosen Identity Provider."),
@@ -524,11 +524,11 @@ function getTitleText($cookie)
         "last_name" => _("Your surname set by your Identity Provider."),
         "loa" => _("Level of Assurance set by your Identity Provider."),
         "logonerror" => _("A text message of the reason for the last authentication error."),
-        "member_of" => _("Groups of which you are a member"),
+        "member_of" => _("Groups of which you are a member."),
         "oidc" => _("Your user identifier set by the OpenID Connect Identity Provider."),
         "open_id" => _("Your user identifier set by the OpenID Identity Provider."),
         "ou" => _("Your organizational unit set by your Identity Provider."),
-        "pairwise_id" => _("The pairwise subject identifier provided by the Identity Provider"),
+        "pairwise_id" => _("The pairwise subject identifier provided by the Identity Provider."),
         "p12error" => _("A text message of the reason why the PKCS12 certificate could not be created."),
         "p12lifetime" => _("This multiplied by the p12multipler gives the " .
             "lifetime of the PKCS12 certificate in hours."),
@@ -544,19 +544,19 @@ function getTitleText($cookie)
         "portalstatus" => _("An internal return code when fetching portal parameters from the datastore."),
         "preferred_username" => _("The GitHub login name. Should not be used as a persistent identifier."),
         "providerId" => _("The previously selected Identity Provider."),
-        "recentidps" => _("A list of the most recently selected Identity Providers"),
+        "recentidps" => _("A list of the most recently selected Identity Providers."),
         "responsesubmit" => _("The name of the page to return to after " .
             "authentication at your chosen Identity Provider."),
         "responseurl" => _("The URL to return to after authentication at your chosen Identity Provider."),
         "_shibsession" => _("A shibboleth session token set by an InCommon Identity Provider."),
         "showhidden" => _("Always show any hidden IdPs."),
-        "sso_idp_array" => _("Keep track of IdPs used for Single Sign On (SSO)"),
+        "sso_idp_array" => _("Keep track of IdPs used for Single Sign On (SSO)."),
         "status" => _("An internal return code when fetching user data from the datastore."),
         "subject_id" => _("The subject identifier provided by the Identity Provider"),
         "submit" => _("The name of the 'submit' button clicked."),
         "successuri" => _("A URL used by portals for redirection after successful issuance of a certificate."),
         "tempcred" => _("An OAUTH identifier used to track portal sessions."),
-        "uidNumber" => _("The user integer identification number provided by the Identity Provider"),
+        "uidNumber" => _("The user integer identification number provided by the Identity Provider."),
         "user_uid" => _("The unique CILogon user identifier."),
     );
 
