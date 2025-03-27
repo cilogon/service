@@ -596,4 +596,33 @@
   <extrapage>logout me</extrapage>
   -->
 
+  <!-- <languages>
+       CIL-2123 A list of languages that are available for the CILogon web
+       front-end. If not set, defaults to en_US. The <lang> tag codes
+       correspond to a gettext file in the /locale directory and are
+       usually of the form <language_code>_<country_code>.  See
+       https://getdocs.org/Gettext/docs/latest/Usual-Language-Codes and
+       https://getdocs.org/Gettext/docs/latest/Country-Codes for the list
+       of typical language and country codes.
+
+       See also <defaultlanguage> below.
+  -->
+  <!--
+  <languages>
+    <lang>en_US</lang>
+    <lang>fr_CA</lang>
+    <lang>de_DE</lang>
+  </languages>
+  -->
+
+  <!-- <defaultlanguage>
+       If multiple languages are available for the CILogon web front-end and
+       the user has not yet selected a language, this is the default language
+       for the GUI. It must match one of the configured <languages> above.
+       If not set, default to en_US (if available in <languages>) or the
+       first <lang> otherwise.
+  -->
+  <!--
+  <defaultlanguage>en_US</defaultlanguage>
+  -->
 </config>
