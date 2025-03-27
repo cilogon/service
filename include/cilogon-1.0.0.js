@@ -1,3 +1,11 @@
+/* CIL-2213 - If you make any changes to this file, you must rename the file
+ * to increment the version number due to the Apache HTTP server being
+ * configured with a long cache lifetime (1 year). Changing the file name
+ * forces a client browser to load any updates. You must also update the
+ * printFooter() function in service-lib/src/Service/Content.php to reference
+ * the renamed file.
+ */
+
 /***************************************************************************
  * Function  : partial                                                     *
  * Parameters: Any parameters to be passed to the partial function.        *
