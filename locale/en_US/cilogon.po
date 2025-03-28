@@ -1,0 +1,605 @@
+msgid ""
+msgstr ""
+"X-Domain: cilogon\n"
+
+#: ./index-functions.php:37
+msgid "Welcome To The CILogon Service"
+msgstr "Welcome To The CILogon Service"
+
+#: ./index-functions.php:54
+#: ./index-site.php:55
+#: ./index.php:55
+#: ./authorize/index-site.php:64
+#: ./authorize/index.php:64
+#: ./device/index-site.php:65
+#: ./device/index.php:65
+msgid "Proceed"
+msgstr "Proceed"
+
+#: ./index-functions.php:57
+#: ./device/index-functions.php:87
+#: ./me/index-functions.php:78
+msgid "CILogon Service"
+msgstr "CILogon Service"
+
+#: ./index-maint.php:15
+#: ./index-maint.php:16
+msgid "Site Maintenance"
+msgstr "Site Maintenance"
+
+#: ./index-maint.php:27
+msgid "The CILogon Service is currently undergoing maintenance. Please try again in a few minutes."
+msgstr "The CILogon Service is currently undergoing maintenance. Please try again in a few minutes."
+
+#: ./index-maint.php:31
+msgid "For more information, please see"
+msgstr "For more information, please see"
+
+#: ./index-site.php:41
+#: ./index.php:41
+#: ./authorize/index-site.php:36
+#: ./authorize/index.php:36
+#: ./device/index-site.php:36
+#: ./device/index.php:36
+msgid "Log On"
+msgstr "Log On"
+
+#: ./index-site.php:42
+#: ./index.php:42
+#: ./authorize/index-site.php:37
+#: ./authorize/index.php:37
+#: ./device/index-site.php:37
+#: ./device/index.php:37
+msgid "Continue"
+msgstr "Continue"
+
+#: ./index-site.php:46
+#: ./index.php:46
+msgid "Log Off"
+msgstr "Log Off"
+
+#: ./index-site.php:54
+#: ./index.php:54
+msgid "Go Back"
+msgstr "Go Back"
+
+#: ./index-site.php:59
+#: ./index.php:59
+#: ./authorize/index-site.php:74
+#: ./authorize/index.php:74
+#: ./device/index-site.php:69
+#: ./device/index.php:69
+msgid "Cancel"
+msgstr "Cancel"
+
+#: ./index-site.php:64
+#: ./index.php:64
+msgid "Get New Certificate"
+msgstr "Get New Certificate"
+
+#: ./authorize/index-functions.php:28
+msgid "Welcome To The CILogon OpenID Connect Authorization Service"
+msgstr "Welcome To The CILogon OpenID Connect Authorization Service"
+
+#: ./authorize/index-functions.php:65
+msgid "CILogon Authorization Endpoint"
+msgstr "CILogon Authorization Endpoint"
+
+#: ./authorize/index-functions.php:66
+msgid "CILogon OIDC Authorization Endpoint"
+msgstr "CILogon OIDC Authorization Endpoint"
+
+#: ./authorize/index-functions.php:72
+msgid "You have reached the CILogon OAuth2/OpenID Connect (OIDC) Authorization Endpoint. This service is for use by OAuth2/OIDC Relying Parties (RPs) to authorize users of the CILogon Service. End users should not normally see this page."
+msgstr "You have reached the CILogon OAuth2/OpenID Connect (OIDC) Authorization Endpoint. This service is for use by OAuth2/OIDC Relying Parties (RPs) to authorize users of the CILogon Service. End users should not normally see this page."
+
+#: ./authorize/index-functions.php:84
+msgid "Possible reasons for seeing this page include:"
+msgstr "Possible reasons for seeing this page include:"
+
+#: ./authorize/index-functions.php:88
+msgid "You navigated directly to this page."
+msgstr "You navigated directly to this page."
+
+#: ./authorize/index-functions.php:89
+msgid "You clicked your browser's \"Back\" button."
+msgstr "You clicked your browser's \"Back\" button."
+
+#: ./authorize/index-functions.php:90
+msgid "There was a problem with the OpenID Connect client."
+msgstr "There was a problem with the OpenID Connect client."
+
+#: ./authorize/index-functions.php:99
+msgid "For assistance, please contact us at the email address at the bottom of the page."
+msgstr "For assistance, please contact us at the email address at the bottom of the page."
+
+#: ./authorize/index-functions.php:103
+msgid "Note: You must enable cookies in your web browser to use this site."
+msgstr "Note: You must enable cookies in your web browser to use this site."
+
+#: ./authorize/index-functions.php:309
+msgid "The CILogon Service is currently configured to prevent downloading X.509 certificates, but the incoming request included the \"edu.ncsa.uiuc.myproxy.getcert\" scope. CILogon system administrators have been notified."
+msgstr "The CILogon Service is currently configured to prevent downloading X.509 certificates, but the incoming request included the \"edu.ncsa.uiuc.myproxy.getcert\" scope. CILogon system administrators have been notified."
+
+#: ./authorize/index-functions.php:465
+msgid "There was an unrecoverable error during the transaction. "
+msgstr "There was an unrecoverable error during the transaction. "
+
+#: ./authorize/index-functions.php:599
+msgid "There was an unrecoverable error during the transaction. CILogon system administrators have been notified."
+msgstr "There was an unrecoverable error during the transaction. CILogon system administrators have been notified."
+
+#: ./authorize/index-functions.php:671
+msgid "It appears that an OpenID Connect client attempted to initiate a session with the CILogon Service, but at least one of the requried parameters was missing."
+msgstr "It appears that an OpenID Connect client attempted to initiate a session with the CILogon Service, but at least one of the requried parameters was missing."
+
+#: ./authorize/index-functions.php:776
+msgid "Missing or empty scope parameter."
+msgstr "Missing or empty scope parameter."
+
+#: ./authorize/index-functions.php:779
+msgid "Missing or empty client_id parameter."
+msgstr "Missing or empty client_id parameter."
+
+#: ./authorize/index-functions.php:782
+msgid "Missing or empty response_type parameter."
+msgstr "Missing or empty response_type parameter."
+
+#: ./authorize/index-functions.php:785
+msgid "Invalid characters found in scope parameter, may be URL encoded twice."
+msgstr "Invalid characters found in scope parameter, may be URL encoded twice."
+
+#: ./authorize/index-functions.php:788
+msgid "Upper case characters found in scope parameter."
+msgstr "Upper case characters found in scope parameter."
+
+#: ./authorize/index-functions.php:791
+msgid "Unsupported response_type parameter. Only code is supported."
+msgstr "Unsupported response_type parameter. Only code is supported."
+
+#: ./authorize/index-functions.php:794
+msgid "Unsupported prompt parameter. Only login and select_account are supported."
+msgstr "Unsupported prompt parameter. Only login and select_account are supported."
+
+#: ./authorize/index-functions.php:802
+msgid "Unsupported response_mode parameter."
+msgstr "Unsupported response_mode parameter."
+
+#: ./device/index-functions.php:36
+#: ./device/index-functions.php:58
+msgid "Welcome To The CILogon Device Authorization Service"
+msgstr "Welcome To The CILogon Device Authorization Service"
+
+#: ./device/index-functions.php:62
+msgid "CILogon Device Flow User Code"
+msgstr "CILogon Device Flow User Code"
+
+#: ./device/index-functions.php:85
+msgid "Please enter the user code displayed on your device. If you do not have a user code, please proceed to the"
+msgstr "Please enter the user code displayed on your device. If you do not have a user code, please proceed to the"
+
+#: ./device/index-functions.php:91
+#: ./device/index-functions.php:95
+#: ./device/index-functions.php:124
+#: ./device/index-functions.php:125
+#: ./device/index-site.php:28
+#: ./device/index.php:28
+msgid "Enter User Code"
+msgstr "Enter User Code"
+
+#: ./device/index-functions.php:102
+msgid "User code is alphanumeric"
+msgstr "User code is alphanumeric"
+
+#: ./device/index-functions.php:105
+msgid "Please enter a valid user code."
+msgstr "Please enter a valid user code."
+
+#: ./device/index-functions.php:113
+msgid "Enter the user code displayed on your device."
+msgstr "Enter the user code displayed on your device."
+
+#: ./device/index-functions.php:225
+msgid "Error confirming user code: Code not found. Please enable cookies in your web browser."
+msgstr "Error confirming user code: Code not found. Please enable cookies in your web browser."
+
+#: ./device/index-functions.php:248
+msgid "User Code Approval"
+msgstr "User Code Approval"
+
+#: ./device/index-functions.php:251
+msgid "CILogon User Code Verification"
+msgstr "CILogon User Code Verification"
+
+#: ./device/index-functions.php:262
+msgid "Please return to your device and begin a new request."
+msgstr "Please return to your device and begin a new request."
+
+#: ./device/index-functions.php:266
+msgid "You have successfully approved the user code. Please return to your device for further instructions."
+msgstr "You have successfully approved the user code. Please return to your device for further instructions."
+
+#: ./device/index-functions.php:268
+msgid "You have successfully denied the user code. Please return to your device for further instructions."
+msgstr "You have successfully denied the user code. Please return to your device for further instructions."
+
+#: ./device/index-functions.php:307
+msgid "Error with user code."
+msgstr "Error with user code."
+
+#: ./device/index-functions.php:309
+msgid "Error: "
+msgstr "Error: "
+
+#: ./device/index-functions.php:313
+msgid "Error: User code not found."
+msgstr "Error: User code not found."
+
+#: ./device/index-functions.php:315
+msgid "Error: User code expired."
+msgstr "Error: User code expired."
+
+#: ./device/index-functions.php:385
+msgid "Unable to find a client matching the user code."
+msgstr "Unable to find a client matching the user code."
+
+#: ./getuser/index-functions.php:46
+msgid "Invalid state parameter."
+msgstr "Invalid state parameter."
+
+#: ./getuser/index-functions.php:52
+msgid "Please try again."
+msgstr "Please try again."
+
+#: ./getuser/index-functions.php:54
+msgid "Empty code parameter. Please try again."
+msgstr "Empty code parameter. Please try again."
+
+#: ./getuser/index-functions.php:123
+msgid "Missing OAuth2 client configuration values."
+msgstr "Missing OAuth2 client configuration values."
+
+#: ./me/index-functions.php:41
+msgid "Manage CILogon Cookies"
+msgstr "Manage CILogon Cookies"
+
+#: ./me/index-functions.php:43
+msgid "Manage Cookies"
+msgstr "Manage Cookies"
+
+#: ./me/index-functions.php:69
+msgid "CILogon Attributes"
+msgstr "CILogon Attributes"
+
+#: ./me/index-functions.php:75
+msgid "This page enables you to view and delete various cookies associated with the "
+msgstr "This page enables you to view and delete various cookies associated with the "
+
+#: ./me/index-functions.php:79
+msgid "There are three sections below."
+msgstr "There are three sections below."
+
+#: ./me/index-functions.php:82
+#: ./me/index-functions.php:194
+#: ./me/index-functions.php:200
+msgid "Browser Cookies"
+msgstr "Browser Cookies"
+
+#: ./me/index-functions.php:82
+msgid "These are &quot;cookies&quot; which are stored in your browser. They are used as preferences for the CILogon Service."
+msgstr "These are &quot;cookies&quot; which are stored in your browser. They are used as preferences for the CILogon Service."
+
+#: ./me/index-functions.php:86
+#: ./me/index-functions.php:268
+#: ./me/index-functions.php:274
+msgid "Session Variables"
+msgstr "Session Variables"
+
+#: ./me/index-functions.php:86
+msgid "These are &quot;short-lived&quot; values related to your current CILogon session. Deleting any of these values may require you to re-logon."
+msgstr "These are &quot;short-lived&quot; values related to your current CILogon session. Deleting any of these values may require you to re-logon."
+
+#: ./me/index-functions.php:91
+#: ./me/index-functions.php:332
+#: ./me/index-functions.php:337
+msgid "Environment Variables"
+msgstr "Environment Variables"
+
+#: ./me/index-functions.php:91
+msgid "These are values set by the interaction between your browser and the web server. These are displayed mainly for information purposes."
+msgstr "These are values set by the interaction between your browser and the web server. These are displayed mainly for information purposes."
+
+#: ./me/index-functions.php:104
+msgid "You can delete cookies individually by checking the associated checkbox(es) and clicking the &quot;Delete Checked&quot; button. You can also delete groups of cookies by clicking "
+msgstr "You can delete cookies individually by checking the associated checkbox(es) and clicking the &quot;Delete Checked&quot; button. You can also delete groups of cookies by clicking "
+
+#: ./me/index-functions.php:109
+msgid "the &quot;Delete Browser Cookies&quot; button"
+msgstr "the &quot;Delete Browser Cookies&quot; button"
+
+#: ./me/index-functions.php:116
+msgid "the &quot;Delete Session Variables&quot; button"
+msgstr "the &quot;Delete Session Variables&quot; button"
+
+#: ./me/index-functions.php:121
+msgid " or the &quot;Delete ALL&quot; button"
+msgstr " or the &quot;Delete ALL&quot; button"
+
+#: ./me/index-functions.php:130
+#: ./me/index-functions.php:131
+#: ./testidp/index-functions.php:117
+#: ./testidp/index-functions.php:118
+msgid "Proceed to the CILogon Service"
+msgstr "Proceed to the CILogon Service"
+
+#: ./me/index-functions.php:145
+#: ./me/index-functions.php:146
+msgid "Delete Browser Cookies"
+msgstr "Delete Browser Cookies"
+
+#: ./me/index-functions.php:154
+#: ./me/index-functions.php:155
+msgid "Delete Session Variables"
+msgstr "Delete Session Variables"
+
+#: ./me/index-functions.php:163
+#: ./me/index-functions.php:164
+msgid "Delete ALL"
+msgstr "Delete ALL"
+
+#: ./me/index-functions.php:171
+#: ./me/index-functions.php:172
+msgid "Reload Page"
+msgstr "Reload Page"
+
+#: ./me/index-functions.php:232
+#: ./me/index-functions.php:233
+#: ./me/index-functions.php:300
+#: ./me/index-functions.php:301
+msgid "Delete Checked"
+msgstr "Delete Checked"
+
+#: ./me/index-functions.php:242
+msgid "No browser cookies found."
+msgstr "No browser cookies found."
+
+#: ./me/index-functions.php:310
+msgid "No session variables found."
+msgstr "No session variables found."
+
+#: ./me/index-functions.php:502
+msgid "A list of attributes describing your affiliations at your Identity Provider."
+msgstr "A list of attributes describing your affiliations at your Identity Provider."
+
+#: ./me/index-functions.php:503
+msgid "The Unix timestamp of the last successful user authentication."
+msgstr "The Unix timestamp of the last successful user authentication."
+
+#: ./me/index-functions.php:504
+msgid "The URL of the callback servlet used by portals connecting to the CILogon Delegate service."
+msgstr "The URL of the callback servlet used by portals connecting to the CILogon Delegate service."
+
+#: ./me/index-functions.php:506
+msgid "The skin affects the look-and-feel and functionality of the CILogon Service. It is typically specified by a portal."
+msgstr "The skin affects the look-and-feel and functionality of the CILogon Service. It is typically specified by a portal."
+
+#: ./me/index-functions.php:509
+msgid "A set of cookies for each portal you have used with CILogon."
+msgstr "A set of cookies for each portal you have used with CILogon."
+
+#: ./me/index-functions.php:510
+msgid "Your full name set by your Identity Provider."
+msgstr "Your full name set by your Identity Provider."
+
+#: ./me/index-functions.php:511
+msgid "A quasi distinguished name for the X.509 certificate issued by a MyProxy server."
+msgstr "A quasi distinguished name for the X.509 certificate issued by a MyProxy server."
+
+#: ./me/index-functions.php:512
+msgid "ORCID identifier."
+msgstr "ORCID identifier."
+
+#: ./me/index-functions.php:513
+msgid "Your email address given by your Identity Provider."
+msgstr "Your email address given by your Identity Provider."
+
+#: ./me/index-functions.php:514
+msgid "A list of URIs representing permissions to access a resource or service."
+msgstr "A list of URIs representing permissions to access a resource or service."
+
+#: ./me/index-functions.php:515
+msgid "'eduPerson Principal Name' - a SAML attribute set by your Identity Provider."
+msgstr "'eduPerson Principal Name' - a SAML attribute set by your Identity Provider."
+
+#: ./me/index-functions.php:516
+msgid "'eduPerson Targeted Identifier' - a SAML attribute set by your Identity Provider."
+msgstr "'eduPerson Targeted Identifier' - a SAML attribute set by your Identity Provider."
+
+#: ./me/index-functions.php:517
+msgid "A URL used by portals in case the CILogon Service is unable to issue a certificate on your behalf."
+msgstr "A URL used by portals in case the CILogon Service is unable to issue a certificate on your behalf."
+
+#: ./me/index-functions.php:519
+msgid "Your given name set by your Identity Provider."
+msgstr "Your given name set by your Identity Provider."
+
+#: ./me/index-functions.php:520
+msgid "The display name of your chosen Identity Provider."
+msgstr "The display name of your chosen Identity Provider."
+
+#: ./me/index-functions.php:521
+msgid "The authentication URI of your chosen Identity Provider."
+msgstr "The authentication URI of your chosen Identity Provider."
+
+#: ./me/index-functions.php:522
+msgid "Your university ID number."
+msgstr "Your university ID number."
+
+#: ./me/index-functions.php:523
+msgid "Remember if you checked the 'Remember this selection' checkbox when you selected and Identity Provider."
+msgstr "Remember if you checked the 'Remember this selection' checkbox when you selected and Identity Provider."
+
+#: ./me/index-functions.php:525
+msgid "Your surname set by your Identity Provider."
+msgstr "Your surname set by your Identity Provider."
+
+#: ./me/index-functions.php:526
+msgid "Level of Assurance set by your Identity Provider."
+msgstr "Level of Assurance set by your Identity Provider."
+
+#: ./me/index-functions.php:527
+msgid "A text message of the reason for the last authentication error."
+msgstr "A text message of the reason for the last authentication error."
+
+#: ./me/index-functions.php:528
+msgid "Groups of which you are a member."
+msgstr "Groups of which you are a member."
+
+#: ./me/index-functions.php:529
+msgid "Your user identifier set by the OpenID Connect Identity Provider."
+msgstr "Your user identifier set by the OpenID Connect Identity Provider."
+
+#: ./me/index-functions.php:530
+msgid "Your user identifier set by the OpenID Identity Provider."
+msgstr "Your user identifier set by the OpenID Identity Provider."
+
+#: ./me/index-functions.php:531
+msgid "Your organizational unit set by your Identity Provider."
+msgstr "Your organizational unit set by your Identity Provider."
+
+#: ./me/index-functions.php:532
+msgid "The pairwise subject identifier provided by the Identity Provider."
+msgstr "The pairwise subject identifier provided by the Identity Provider."
+
+#: ./me/index-functions.php:533
+msgid "A text message of the reason why the PKCS12 certificate could not be created."
+msgstr "A text message of the reason why the PKCS12 certificate could not be created."
+
+#: ./me/index-functions.php:534
+msgid "This multiplied by the p12multipler gives the lifetime of the PKCS12 certificate in hours."
+msgstr "This multiplied by the p12multipler gives the lifetime of the PKCS12 certificate in hours."
+
+#: ./me/index-functions.php:536
+msgid "This multiplied by the p12lifetime gives the lifetime of the PKCS12 certificate in hours."
+msgstr "This multiplied by the p12lifetime gives the lifetime of the PKCS12 certificate in hours."
+
+#: ./me/index-functions.php:538
+msgid "The expiration time and URL to download a PKCS12 certificate file."
+msgstr "The expiration time and URL to download a PKCS12 certificate file."
+
+#: ./me/index-functions.php:539
+msgid "Contains certificate lifetimes for all portals you have used with the CILogon Delegate service."
+msgstr "Contains certificate lifetimes for all portals you have used with the CILogon Delegate service."
+
+#: ./me/index-functions.php:541
+msgid "The display name of the portal connected to the CILogon Delegate service."
+msgstr "The display name of the portal connected to the CILogon Delegate service."
+
+#: ./me/index-functions.php:542
+msgid "For portals previously using the CILogon Delegate service, this is the saved lifetime of the delegated certificate."
+msgstr "For portals previously using the CILogon Delegate service, this is the saved lifetime of the delegated certificate."
+
+#: ./me/index-functions.php:545
+msgid "An internal return code when fetching portal parameters from the datastore."
+msgstr "An internal return code when fetching portal parameters from the datastore."
+
+#: ./me/index-functions.php:546
+msgid "The GitHub login name. Should not be used as a persistent identifier."
+msgstr "The GitHub login name. Should not be used as a persistent identifier."
+
+#: ./me/index-functions.php:547
+msgid "The previously selected Identity Provider."
+msgstr "The previously selected Identity Provider."
+
+#: ./me/index-functions.php:548
+msgid "A list of the most recently selected Identity Providers."
+msgstr "A list of the most recently selected Identity Providers."
+
+#: ./me/index-functions.php:549
+msgid "The name of the page to return to after authentication at your chosen Identity Provider."
+msgstr "The name of the page to return to after authentication at your chosen Identity Provider."
+
+#: ./me/index-functions.php:551
+msgid "The URL to return to after authentication at your chosen Identity Provider."
+msgstr "The URL to return to after authentication at your chosen Identity Provider."
+
+#: ./me/index-functions.php:552
+msgid "A shibboleth session token set by an InCommon Identity Provider."
+msgstr "A shibboleth session token set by an InCommon Identity Provider."
+
+#: ./me/index-functions.php:553
+msgid "Always show any hidden IdPs."
+msgstr "Always show any hidden IdPs."
+
+#: ./me/index-functions.php:554
+msgid "Keep track of IdPs used for Single Sign On (SSO)."
+msgstr "Keep track of IdPs used for Single Sign On (SSO)."
+
+#: ./me/index-functions.php:555
+msgid "An internal return code when fetching user data from the datastore."
+msgstr "An internal return code when fetching user data from the datastore."
+
+#: ./me/index-functions.php:556
+msgid "The subject identifier provided by the Identity Provider"
+msgstr "The subject identifier provided by the Identity Provider"
+
+#: ./me/index-functions.php:557
+msgid "The name of the 'submit' button clicked."
+msgstr "The name of the 'submit' button clicked."
+
+#: ./me/index-functions.php:558
+msgid "A URL used by portals for redirection after successful issuance of a certificate."
+msgstr "A URL used by portals for redirection after successful issuance of a certificate."
+
+#: ./me/index-functions.php:559
+msgid "An OAUTH identifier used to track portal sessions."
+msgstr "An OAUTH identifier used to track portal sessions."
+
+#: ./me/index-functions.php:560
+msgid "The user integer identification number provided by the Identity Provider."
+msgstr "The user integer identification number provided by the Identity Provider."
+
+#: ./me/index-functions.php:561
+msgid "The unique CILogon user identifier."
+msgstr "The unique CILogon user identifier."
+
+#: ./testidp/index-functions.php:33
+msgid "Test Your Identity Provider With CILogon"
+msgstr "Test Your Identity Provider With CILogon"
+
+#: ./testidp/index-functions.php:34
+msgid "Test Your Identity Provider"
+msgstr "Test Your Identity Provider"
+
+#: ./testidp/index-functions.php:40
+msgid "To test that your identity provider works with CILogon, please select it from the list below and Log On."
+msgstr "To test that your identity provider works with CILogon, please select it from the list below and Log On."
+
+#: ./testidp/index-functions.php:71
+msgid "Test Identity Provider"
+msgstr "Test Identity Provider"
+
+#: ./testidp/index-functions.php:73
+msgid "Verify Attribute Release"
+msgstr "Verify Attribute Release"
+
+#: ./testidp/index-functions.php:79
+msgid "Thank you for your interest in the CILogon Service. This page enables you to verify that all necessary attributes have been released to the CILogon Service Provider (SP) by your selected Identity Provider (IdP). Below you will see the various attributes required by the CILogon Service and their values as released by your IdP."
+msgstr "Thank you for your interest in the CILogon Service. This page enables you to verify that all necessary attributes have been released to the CILogon Service Provider (SP) by your selected Identity Provider (IdP). Below you will see the various attributes required by the CILogon Service and their values as released by your IdP."
+
+#: ./testidp/index-functions.php:108
+msgid "All required attributes have been released by your IdP. For details of the various attributes utilized by the CILogon Service and their current values, see the sections below."
+msgstr "All required attributes have been released by your IdP. For details of the various attributes utilized by the CILogon Service and their current values, see the sections below."
+
+#: ./testidp/index-functions.php:125
+msgid "Missing one or more attributes."
+msgstr "Missing one or more attributes."
+
+#: ./testidp/index-functions.php:130
+msgid "One or more of the attributes required by the CILogon Service are not available. Please see the sections below for details. For additional information and assistance, please contact"
+msgstr "One or more of the attributes required by the CILogon Service are not available. Please see the sections below for details. For additional information and assistance, please contact"
+
+#: ./testidp/index-functions.php:144
+#: ./testidp/index-functions.php:145
+msgid "Logout"
+msgstr "Logout"

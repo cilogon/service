@@ -1,0 +1,605 @@
+msgid ""
+msgstr ""
+"X-Domain: cilogon\n"
+
+#: ./index-functions.php:37
+msgid "Welcome To The CILogon Service"
+msgstr "ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥꓕ oꓕ ǝɯoɔןǝM"
+
+#: ./index-functions.php:54
+#: ./index-site.php:55
+#: ./index.php:55
+#: ./authorize/index-site.php:64
+#: ./authorize/index.php:64
+#: ./device/index-site.php:65
+#: ./device/index.php:65
+msgid "Proceed"
+msgstr "pǝǝɔoɹԀ"
+
+#: ./index-functions.php:57
+#: ./device/index-functions.php:87
+#: ./me/index-functions.php:78
+msgid "CILogon Service"
+msgstr "ǝɔᴉʌɹǝS uoƃoꓶIƆ"
+
+#: ./index-maint.php:15
+#: ./index-maint.php:16
+msgid "Site Maintenance"
+msgstr "ǝɔuɐuǝʇuᴉɐW ǝʇᴉS"
+
+#: ./index-maint.php:27
+msgid "The CILogon Service is currently undergoing maintenance. Please try again in a few minutes."
+msgstr "˙sǝʇnuᴉɯ ʍǝɟ ɐ uᴉ uᴉɐƃɐ ʎɹʇ ǝsɐǝןԀ ˙ǝɔuɐuǝʇuᴉɐɯ ƃuᴉoƃɹǝpun ʎןʇuǝɹɹnɔ sᴉ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥꓕ"
+
+#: ./index-maint.php:31
+msgid "For more information, please see"
+msgstr "ǝǝs ǝsɐǝןd 'uoᴉʇɐɯɹoɟuᴉ ǝɹoɯ ɹoℲ"
+
+#: ./index-site.php:41
+#: ./index.php:41
+#: ./authorize/index-site.php:36
+#: ./authorize/index.php:36
+#: ./device/index-site.php:36
+#: ./device/index.php:36
+msgid "Log On"
+msgstr "uO ƃoꓶ"
+
+#: ./index-site.php:42
+#: ./index.php:42
+#: ./authorize/index-site.php:37
+#: ./authorize/index.php:37
+#: ./device/index-site.php:37
+#: ./device/index.php:37
+msgid "Continue"
+msgstr "ǝnuᴉʇuoƆ"
+
+#: ./index-site.php:46
+#: ./index.php:46
+msgid "Log Off"
+msgstr "ɟɟO ƃoꓶ"
+
+#: ./index-site.php:54
+#: ./index.php:54
+msgid "Go Back"
+msgstr "ʞɔɐꓭ oꓨ"
+
+#: ./index-site.php:59
+#: ./index.php:59
+#: ./authorize/index-site.php:74
+#: ./authorize/index.php:74
+#: ./device/index-site.php:69
+#: ./device/index.php:69
+msgid "Cancel"
+msgstr "ןǝɔuɐƆ"
+
+#: ./index-site.php:64
+#: ./index.php:64
+msgid "Get New Certificate"
+msgstr "ǝʇɐɔᴉɟᴉʇɹǝƆ ʍǝN ʇǝꓨ"
+
+#: ./authorize/index-functions.php:28
+msgid "Welcome To The CILogon OpenID Connect Authorization Service"
+msgstr "ǝɔᴉʌɹǝS uoᴉʇɐzᴉɹoɥʇn∀ ʇɔǝuuoƆ ꓷIuǝdO uoƃoꓶIƆ ǝɥꓕ oꓕ ǝɯoɔןǝM"
+
+#: ./authorize/index-functions.php:65
+msgid "CILogon Authorization Endpoint"
+msgstr "ʇuᴉodpuƎ uoᴉʇɐzᴉɹoɥʇn∀ uoƃoꓶIƆ"
+
+#: ./authorize/index-functions.php:66
+msgid "CILogon OIDC Authorization Endpoint"
+msgstr "ʇuᴉodpuƎ uoᴉʇɐzᴉɹoɥʇn∀ ƆꓷIO uoƃoꓶIƆ"
+
+#: ./authorize/index-functions.php:72
+msgid "You have reached the CILogon OAuth2/OpenID Connect (OIDC) Authorization Endpoint. This service is for use by OAuth2/OIDC Relying Parties (RPs) to authorize users of the CILogon Service. End users should not normally see this page."
+msgstr "˙ǝƃɐd sᴉɥʇ ǝǝs ʎןןɐɯɹou ʇou pןnoɥs sɹǝsn puƎ ˙ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ɟo sɹǝsn ǝzᴉɹoɥʇnɐ oʇ (sԀꓤ) sǝᴉʇɹɐԀ ƃuᴉʎןǝꓤ ƆꓷIO/ᄅɥʇn∀O ʎq ǝsn ɹoɟ sᴉ ǝɔᴉʌɹǝs sᴉɥꓕ ˙ʇuᴉodpuƎ uoᴉʇɐzᴉɹoɥʇn∀ (ƆꓷIO) ʇɔǝuuoƆ ꓷIuǝdO/ᄅɥʇn∀O uoƃoꓶIƆ ǝɥʇ pǝɥɔɐǝɹ ǝʌɐɥ no⅄"
+
+#: ./authorize/index-functions.php:84
+msgid "Possible reasons for seeing this page include:"
+msgstr ":ǝpnןɔuᴉ ǝƃɐd sᴉɥʇ ƃuᴉǝǝs ɹoɟ suosɐǝɹ ǝןqᴉssoԀ"
+
+#: ./authorize/index-functions.php:88
+msgid "You navigated directly to this page."
+msgstr "˙ǝƃɐd sᴉɥʇ oʇ ʎןʇɔǝɹᴉp pǝʇɐƃᴉʌɐu no⅄"
+
+#: ./authorize/index-functions.php:89
+msgid "You clicked your browser's \"Back\" button."
+msgstr "˙uoʇʇnq ˶ʞɔɐꓭ˶ s,ɹǝsʍoɹq ɹnoʎ pǝʞɔᴉןɔ no⅄"
+
+#: ./authorize/index-functions.php:90
+msgid "There was a problem with the OpenID Connect client."
+msgstr "˙ʇuǝᴉןɔ ʇɔǝuuoƆ ꓷIuǝdO ǝɥʇ ɥʇᴉʍ ɯǝןqoɹd ɐ sɐʍ ǝɹǝɥꓕ"
+
+#: ./authorize/index-functions.php:99
+msgid "For assistance, please contact us at the email address at the bottom of the page."
+msgstr "˙ǝƃɐd ǝɥʇ ɟo ɯoʇʇoq ǝɥʇ ʇɐ ssǝɹppɐ ןᴉɐɯǝ ǝɥʇ ʇɐ sn ʇɔɐʇuoɔ ǝsɐǝןd 'ǝɔuɐʇsᴉssɐ ɹoℲ"
+
+#: ./authorize/index-functions.php:103
+msgid "Note: You must enable cookies in your web browser to use this site."
+msgstr "˙ǝʇᴉs sᴉɥʇ ǝsn oʇ ɹǝsʍoɹq qǝʍ ɹnoʎ uᴉ sǝᴉʞooɔ ǝןqɐuǝ ʇsnɯ no⅄ :ǝʇoN"
+
+#: ./authorize/index-functions.php:309
+msgid "The CILogon Service is currently configured to prevent downloading X.509 certificates, but the incoming request included the \"edu.ncsa.uiuc.myproxy.getcert\" scope. CILogon system administrators have been notified."
+msgstr "˙pǝᴉɟᴉʇou uǝǝq ǝʌɐɥ sɹoʇɐɹʇsᴉuᴉɯpɐ ɯǝʇsʎs uoƃoꓶIƆ ˙ǝdoɔs ˶ʇɹǝɔʇǝƃ˙ʎxoɹdʎɯ˙ɔnᴉn˙ɐsɔu˙npǝ˶ ǝɥʇ pǝpnןɔuᴉ ʇsǝnbǝɹ ƃuᴉɯoɔuᴉ ǝɥʇ ʇnq 'sǝʇɐɔᴉɟᴉʇɹǝɔ 60ϛ˙X ƃuᴉpɐoןuʍop ʇuǝʌǝɹd oʇ pǝɹnƃᴉɟuoɔ ʎןʇuǝɹɹnɔ sᴉ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥꓕ"
+
+#: ./authorize/index-functions.php:465
+msgid "There was an unrecoverable error during the transaction. "
+msgstr " ˙uoᴉʇɔɐsuɐɹʇ ǝɥʇ ƃuᴉɹnp ɹoɹɹǝ ǝןqɐɹǝʌoɔǝɹun uɐ sɐʍ ǝɹǝɥꓕ"
+
+#: ./authorize/index-functions.php:599
+msgid "There was an unrecoverable error during the transaction. CILogon system administrators have been notified."
+msgstr "˙pǝᴉɟᴉʇou uǝǝq ǝʌɐɥ sɹoʇɐɹʇsᴉuᴉɯpɐ ɯǝʇsʎs uoƃoꓶIƆ ˙uoᴉʇɔɐsuɐɹʇ ǝɥʇ ƃuᴉɹnp ɹoɹɹǝ ǝןqɐɹǝʌoɔǝɹun uɐ sɐʍ ǝɹǝɥꓕ"
+
+#: ./authorize/index-functions.php:671
+msgid "It appears that an OpenID Connect client attempted to initiate a session with the CILogon Service, but at least one of the requried parameters was missing."
+msgstr "˙ƃuᴉssᴉɯ sɐʍ sɹǝʇǝɯɐɹɐd pǝᴉɹnbǝɹ ǝɥʇ ɟo ǝuo ʇsɐǝן ʇɐ ʇnq 'ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ɥʇᴉʍ uoᴉssǝs ɐ ǝʇɐᴉʇᴉuᴉ oʇ pǝʇdɯǝʇʇɐ ʇuǝᴉןɔ ʇɔǝuuoƆ ꓷIuǝdO uɐ ʇɐɥʇ sɹɐǝddɐ ʇI"
+
+#: ./authorize/index-functions.php:776
+msgid "Missing or empty scope parameter."
+msgstr "˙ɹǝʇǝɯɐɹɐd ǝdoɔs ʎʇdɯǝ ɹo ƃuᴉssᴉW"
+
+#: ./authorize/index-functions.php:779
+msgid "Missing or empty client_id parameter."
+msgstr "˙ɹǝʇǝɯɐɹɐd pᴉ‾ʇuǝᴉןɔ ʎʇdɯǝ ɹo ƃuᴉssᴉW"
+
+#: ./authorize/index-functions.php:782
+msgid "Missing or empty response_type parameter."
+msgstr "˙ɹǝʇǝɯɐɹɐd ǝdʎʇ‾ǝsuodsǝɹ ʎʇdɯǝ ɹo ƃuᴉssᴉW"
+
+#: ./authorize/index-functions.php:785
+msgid "Invalid characters found in scope parameter, may be URL encoded twice."
+msgstr "˙ǝɔᴉʍʇ pǝpoɔuǝ ꓶꓤꓵ ǝq ʎɐɯ 'ɹǝʇǝɯɐɹɐd ǝdoɔs uᴉ punoɟ sɹǝʇɔɐɹɐɥɔ pᴉןɐʌuI"
+
+#: ./authorize/index-functions.php:788
+msgid "Upper case characters found in scope parameter."
+msgstr "˙ɹǝʇǝɯɐɹɐd ǝdoɔs uᴉ punoɟ sɹǝʇɔɐɹɐɥɔ ǝsɐɔ ɹǝddꓵ"
+
+#: ./authorize/index-functions.php:791
+msgid "Unsupported response_type parameter. Only code is supported."
+msgstr "˙pǝʇɹoddns sᴉ ǝpoɔ ʎןuO ˙ɹǝʇǝɯɐɹɐd ǝdʎʇ‾ǝsuodsǝɹ pǝʇɹoddnsuꓵ"
+
+#: ./authorize/index-functions.php:794
+msgid "Unsupported prompt parameter. Only login and select_account are supported."
+msgstr "˙pǝʇɹoddns ǝɹɐ ʇunoɔɔɐ‾ʇɔǝןǝs puɐ uᴉƃoן ʎןuO ˙ɹǝʇǝɯɐɹɐd ʇdɯoɹd pǝʇɹoddnsuꓵ"
+
+#: ./authorize/index-functions.php:802
+msgid "Unsupported response_mode parameter."
+msgstr "˙ɹǝʇǝɯɐɹɐd ǝpoɯ‾ǝsuodsǝɹ pǝʇɹoddnsuꓵ"
+
+#: ./device/index-functions.php:36
+#: ./device/index-functions.php:58
+msgid "Welcome To The CILogon Device Authorization Service"
+msgstr "ǝɔᴉʌɹǝS uoᴉʇɐzᴉɹoɥʇn∀ ǝɔᴉʌǝꓷ uoƃoꓶIƆ ǝɥꓕ oꓕ ǝɯoɔןǝM"
+
+#: ./device/index-functions.php:62
+msgid "CILogon Device Flow User Code"
+msgstr "ǝpoƆ ɹǝsꓵ ʍoןℲ ǝɔᴉʌǝꓷ uoƃoꓶIƆ"
+
+#: ./device/index-functions.php:85
+msgid "Please enter the user code displayed on your device. If you do not have a user code, please proceed to the"
+msgstr "ǝɥʇ oʇ pǝǝɔoɹd ǝsɐǝןd 'ǝpoɔ ɹǝsn ɐ ǝʌɐɥ ʇou op noʎ ɟI ˙ǝɔᴉʌǝp ɹnoʎ uo pǝʎɐןdsᴉp ǝpoɔ ɹǝsn ǝɥʇ ɹǝʇuǝ ǝsɐǝןԀ"
+
+#: ./device/index-functions.php:91
+#: ./device/index-functions.php:95
+#: ./device/index-functions.php:124
+#: ./device/index-functions.php:125
+#: ./device/index-site.php:28
+#: ./device/index.php:28
+msgid "Enter User Code"
+msgstr "ǝpoƆ ɹǝsꓵ ɹǝʇuƎ"
+
+#: ./device/index-functions.php:102
+msgid "User code is alphanumeric"
+msgstr "ɔᴉɹǝɯnuɐɥdןɐ sᴉ ǝpoɔ ɹǝsꓵ"
+
+#: ./device/index-functions.php:105
+msgid "Please enter a valid user code."
+msgstr "˙ǝpoɔ ɹǝsn pᴉןɐʌ ɐ ɹǝʇuǝ ǝsɐǝןԀ"
+
+#: ./device/index-functions.php:113
+msgid "Enter the user code displayed on your device."
+msgstr "˙ǝɔᴉʌǝp ɹnoʎ uo pǝʎɐןdsᴉp ǝpoɔ ɹǝsn ǝɥʇ ɹǝʇuƎ"
+
+#: ./device/index-functions.php:225
+msgid "Error confirming user code: Code not found. Please enable cookies in your web browser."
+msgstr "˙ɹǝsʍoɹq qǝʍ ɹnoʎ uᴉ sǝᴉʞooɔ ǝןqɐuǝ ǝsɐǝןԀ ˙punoɟ ʇou ǝpoƆ :ǝpoɔ ɹǝsn ƃuᴉɯɹᴉɟuoɔ ɹoɹɹƎ"
+
+#: ./device/index-functions.php:248
+msgid "User Code Approval"
+msgstr "ןɐʌoɹdd∀ ǝpoƆ ɹǝsꓵ"
+
+#: ./device/index-functions.php:251
+msgid "CILogon User Code Verification"
+msgstr "uoᴉʇɐɔᴉɟᴉɹǝΛ ǝpoƆ ɹǝsꓵ uoƃoꓶIƆ"
+
+#: ./device/index-functions.php:262
+msgid "Please return to your device and begin a new request."
+msgstr "˙ʇsǝnbǝɹ ʍǝu ɐ uᴉƃǝq puɐ ǝɔᴉʌǝp ɹnoʎ oʇ uɹnʇǝɹ ǝsɐǝןԀ"
+
+#: ./device/index-functions.php:266
+msgid "You have successfully approved the user code. Please return to your device for further instructions."
+msgstr "˙suoᴉʇɔnɹʇsuᴉ ɹǝɥʇɹnɟ ɹoɟ ǝɔᴉʌǝp ɹnoʎ oʇ uɹnʇǝɹ ǝsɐǝןԀ ˙ǝpoɔ ɹǝsn ǝɥʇ pǝʌoɹddɐ ʎןןnɟssǝɔɔns ǝʌɐɥ no⅄"
+
+#: ./device/index-functions.php:268
+msgid "You have successfully denied the user code. Please return to your device for further instructions."
+msgstr "˙suoᴉʇɔnɹʇsuᴉ ɹǝɥʇɹnɟ ɹoɟ ǝɔᴉʌǝp ɹnoʎ oʇ uɹnʇǝɹ ǝsɐǝןԀ ˙ǝpoɔ ɹǝsn ǝɥʇ pǝᴉuǝp ʎןןnɟssǝɔɔns ǝʌɐɥ no⅄"
+
+#: ./device/index-functions.php:307
+msgid "Error with user code."
+msgstr "˙ǝpoɔ ɹǝsn ɥʇᴉʍ ɹoɹɹƎ"
+
+#: ./device/index-functions.php:309
+msgid "Error: "
+msgstr " :ɹoɹɹƎ"
+
+#: ./device/index-functions.php:313
+msgid "Error: User code not found."
+msgstr "˙punoɟ ʇou ǝpoɔ ɹǝsꓵ :ɹoɹɹƎ"
+
+#: ./device/index-functions.php:315
+msgid "Error: User code expired."
+msgstr "˙pǝɹᴉdxǝ ǝpoɔ ɹǝsꓵ :ɹoɹɹƎ"
+
+#: ./device/index-functions.php:385
+msgid "Unable to find a client matching the user code."
+msgstr "˙ǝpoɔ ɹǝsn ǝɥʇ ƃuᴉɥɔʇɐɯ ʇuǝᴉןɔ ɐ puᴉɟ oʇ ǝןqɐuꓵ"
+
+#: ./getuser/index-functions.php:46
+msgid "Invalid state parameter."
+msgstr "˙ɹǝʇǝɯɐɹɐd ǝʇɐʇs pᴉןɐʌuI"
+
+#: ./getuser/index-functions.php:52
+msgid "Please try again."
+msgstr "˙uᴉɐƃɐ ʎɹʇ ǝsɐǝןԀ"
+
+#: ./getuser/index-functions.php:54
+msgid "Empty code parameter. Please try again."
+msgstr "˙uᴉɐƃɐ ʎɹʇ ǝsɐǝןԀ ˙ɹǝʇǝɯɐɹɐd ǝpoɔ ʎʇdɯƎ"
+
+#: ./getuser/index-functions.php:123
+msgid "Missing OAuth2 client configuration values."
+msgstr "˙sǝnןɐʌ uoᴉʇɐɹnƃᴉɟuoɔ ʇuǝᴉןɔ ᄅɥʇn∀O ƃuᴉssᴉW"
+
+#: ./me/index-functions.php:41
+msgid "Manage CILogon Cookies"
+msgstr "sǝᴉʞooƆ uoƃoꓶIƆ ǝƃɐuɐW"
+
+#: ./me/index-functions.php:43
+msgid "Manage Cookies"
+msgstr "sǝᴉʞooƆ ǝƃɐuɐW"
+
+#: ./me/index-functions.php:69
+msgid "CILogon Attributes"
+msgstr "sǝʇnqᴉɹʇʇ∀ uoƃoꓶIƆ"
+
+#: ./me/index-functions.php:75
+msgid "This page enables you to view and delete various cookies associated with the "
+msgstr " ǝɥʇ ɥʇᴉʍ pǝʇɐᴉɔossɐ sǝᴉʞooɔ snoᴉɹɐʌ ǝʇǝןǝp puɐ ʍǝᴉʌ oʇ noʎ sǝןqɐuǝ ǝƃɐd sᴉɥꓕ"
+
+#: ./me/index-functions.php:79
+msgid "There are three sections below."
+msgstr "˙ʍoןǝq suoᴉʇɔǝs ǝǝɹɥʇ ǝɹɐ ǝɹǝɥꓕ"
+
+#: ./me/index-functions.php:82
+#: ./me/index-functions.php:194
+#: ./me/index-functions.php:200
+msgid "Browser Cookies"
+msgstr "sǝᴉʞooƆ ɹǝsʍoɹꓭ"
+
+#: ./me/index-functions.php:82
+msgid "These are &quot;cookies&quot; which are stored in your browser. They are used as preferences for the CILogon Service."
+msgstr "˙ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ɹoɟ sǝɔuǝɹǝɟǝɹd sɐ pǝsn ǝɹɐ ʎǝɥꓕ ˙ɹǝsʍoɹq ɹnoʎ uᴉ pǝɹoʇs ǝɹɐ ɥɔᴉɥʍ ;ʇonb⅋sǝᴉʞooɔ;ʇonb⅋ ǝɹɐ ǝsǝɥꓕ"
+
+#: ./me/index-functions.php:86
+#: ./me/index-functions.php:268
+#: ./me/index-functions.php:274
+msgid "Session Variables"
+msgstr "sǝןqɐᴉɹɐΛ uoᴉssǝS"
+
+#: ./me/index-functions.php:86
+msgid "These are &quot;short-lived&quot; values related to your current CILogon session. Deleting any of these values may require you to re-logon."
+msgstr "˙uoƃoן-ǝɹ oʇ noʎ ǝɹᴉnbǝɹ ʎɐɯ sǝnןɐʌ ǝsǝɥʇ ɟo ʎuɐ ƃuᴉʇǝןǝꓷ ˙uoᴉssǝs uoƃoꓶIƆ ʇuǝɹɹnɔ ɹnoʎ oʇ pǝʇɐןǝɹ sǝnןɐʌ ;ʇonb⅋pǝʌᴉן-ʇɹoɥs;ʇonb⅋ ǝɹɐ ǝsǝɥꓕ"
+
+#: ./me/index-functions.php:91
+#: ./me/index-functions.php:332
+#: ./me/index-functions.php:337
+msgid "Environment Variables"
+msgstr "sǝןqɐᴉɹɐΛ ʇuǝɯuoɹᴉʌuƎ"
+
+#: ./me/index-functions.php:91
+msgid "These are values set by the interaction between your browser and the web server. These are displayed mainly for information purposes."
+msgstr "˙sǝsodɹnd uoᴉʇɐɯɹoɟuᴉ ɹoɟ ʎןuᴉɐɯ pǝʎɐןdsᴉp ǝɹɐ ǝsǝɥꓕ ˙ɹǝʌɹǝs qǝʍ ǝɥʇ puɐ ɹǝsʍoɹq ɹnoʎ uǝǝʍʇǝq uoᴉʇɔɐɹǝʇuᴉ ǝɥʇ ʎq ʇǝs sǝnןɐʌ ǝɹɐ ǝsǝɥꓕ"
+
+#: ./me/index-functions.php:104
+msgid "You can delete cookies individually by checking the associated checkbox(es) and clicking the &quot;Delete Checked&quot; button. You can also delete groups of cookies by clicking "
+msgstr " ƃuᴉʞɔᴉןɔ ʎq sǝᴉʞooɔ ɟo sdnoɹƃ ǝʇǝןǝp osןɐ uɐɔ no⅄ ˙uoʇʇnq ;ʇonb⅋pǝʞɔǝɥƆ ǝʇǝןǝꓷ;ʇonb⅋ ǝɥʇ ƃuᴉʞɔᴉןɔ puɐ (sǝ)xoqʞɔǝɥɔ pǝʇɐᴉɔossɐ ǝɥʇ ƃuᴉʞɔǝɥɔ ʎq ʎןןɐnpᴉʌᴉpuᴉ sǝᴉʞooɔ ǝʇǝןǝp uɐɔ no⅄"
+
+#: ./me/index-functions.php:109
+msgid "the &quot;Delete Browser Cookies&quot; button"
+msgstr "uoʇʇnq ;ʇonb⅋sǝᴉʞooƆ ɹǝsʍoɹꓭ ǝʇǝןǝꓷ;ʇonb⅋ ǝɥʇ"
+
+#: ./me/index-functions.php:116
+msgid "the &quot;Delete Session Variables&quot; button"
+msgstr "uoʇʇnq ;ʇonb⅋sǝןqɐᴉɹɐΛ uoᴉssǝS ǝʇǝןǝꓷ;ʇonb⅋ ǝɥʇ"
+
+#: ./me/index-functions.php:121
+msgid " or the &quot;Delete ALL&quot; button"
+msgstr "uoʇʇnq ;ʇonb⅋ꓶꓶ∀ ǝʇǝןǝꓷ;ʇonb⅋ ǝɥʇ ɹo "
+
+#: ./me/index-functions.php:130
+#: ./me/index-functions.php:131
+#: ./testidp/index-functions.php:117
+#: ./testidp/index-functions.php:118
+msgid "Proceed to the CILogon Service"
+msgstr "ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ oʇ pǝǝɔoɹԀ"
+
+#: ./me/index-functions.php:145
+#: ./me/index-functions.php:146
+msgid "Delete Browser Cookies"
+msgstr "sǝᴉʞooƆ ɹǝsʍoɹꓭ ǝʇǝןǝꓷ"
+
+#: ./me/index-functions.php:154
+#: ./me/index-functions.php:155
+msgid "Delete Session Variables"
+msgstr "sǝןqɐᴉɹɐΛ uoᴉssǝS ǝʇǝןǝꓷ"
+
+#: ./me/index-functions.php:163
+#: ./me/index-functions.php:164
+msgid "Delete ALL"
+msgstr "ꓶꓶ∀ ǝʇǝןǝꓷ"
+
+#: ./me/index-functions.php:171
+#: ./me/index-functions.php:172
+msgid "Reload Page"
+msgstr "ǝƃɐԀ pɐoןǝꓤ"
+
+#: ./me/index-functions.php:232
+#: ./me/index-functions.php:233
+#: ./me/index-functions.php:300
+#: ./me/index-functions.php:301
+msgid "Delete Checked"
+msgstr "pǝʞɔǝɥƆ ǝʇǝןǝꓷ"
+
+#: ./me/index-functions.php:242
+msgid "No browser cookies found."
+msgstr "˙punoɟ sǝᴉʞooɔ ɹǝsʍoɹq oN"
+
+#: ./me/index-functions.php:310
+msgid "No session variables found."
+msgstr "˙punoɟ sǝןqɐᴉɹɐʌ uoᴉssǝs oN"
+
+#: ./me/index-functions.php:502
+msgid "A list of attributes describing your affiliations at your Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹnoʎ ʇɐ suoᴉʇɐᴉןᴉɟɟɐ ɹnoʎ ƃuᴉqᴉɹɔsǝp sǝʇnqᴉɹʇʇɐ ɟo ʇsᴉן ∀"
+
+#: ./me/index-functions.php:503
+msgid "The Unix timestamp of the last successful user authentication."
+msgstr "˙uoᴉʇɐɔᴉʇuǝɥʇnɐ ɹǝsn ןnɟssǝɔɔns ʇsɐן ǝɥʇ ɟo dɯɐʇsǝɯᴉʇ xᴉuꓵ ǝɥꓕ"
+
+#: ./me/index-functions.php:504
+msgid "The URL of the callback servlet used by portals connecting to the CILogon Delegate service."
+msgstr "˙ǝɔᴉʌɹǝs ǝʇɐƃǝןǝꓷ uoƃoꓶIƆ ǝɥʇ oʇ ƃuᴉʇɔǝuuoɔ sןɐʇɹod ʎq pǝsn ʇǝןʌɹǝs ʞɔɐqןןɐɔ ǝɥʇ ɟo ꓶꓤꓵ ǝɥꓕ"
+
+#: ./me/index-functions.php:506
+msgid "The skin affects the look-and-feel and functionality of the CILogon Service. It is typically specified by a portal."
+msgstr "˙ןɐʇɹod ɐ ʎq pǝᴉɟᴉɔǝds ʎןןɐɔᴉdʎʇ sᴉ ʇI ˙ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ɟo ʎʇᴉןɐuoᴉʇɔunɟ puɐ ןǝǝɟ-puɐ-ʞooן ǝɥʇ sʇɔǝɟɟɐ uᴉʞs ǝɥꓕ"
+
+#: ./me/index-functions.php:509
+msgid "A set of cookies for each portal you have used with CILogon."
+msgstr "˙uoƃoꓶIƆ ɥʇᴉʍ pǝsn ǝʌɐɥ noʎ ןɐʇɹod ɥɔɐǝ ɹoɟ sǝᴉʞooɔ ɟo ʇǝs ∀"
+
+#: ./me/index-functions.php:510
+msgid "Your full name set by your Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹnoʎ ʎq ʇǝs ǝɯɐu ןןnɟ ɹno⅄"
+
+#: ./me/index-functions.php:511
+msgid "A quasi distinguished name for the X.509 certificate issued by a MyProxy server."
+msgstr "˙ɹǝʌɹǝs ʎxoɹԀʎW ɐ ʎq pǝnssᴉ ǝʇɐɔᴉɟᴉʇɹǝɔ 60ϛ˙X ǝɥʇ ɹoɟ ǝɯɐu pǝɥsᴉnƃuᴉʇsᴉp ᴉsɐnb ∀"
+
+#: ./me/index-functions.php:512
+msgid "ORCID identifier."
+msgstr "˙ɹǝᴉɟᴉʇuǝpᴉ ꓷIƆꓤO"
+
+#: ./me/index-functions.php:513
+msgid "Your email address given by your Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹnoʎ ʎq uǝʌᴉƃ ssǝɹppɐ ןᴉɐɯǝ ɹno⅄"
+
+#: ./me/index-functions.php:514
+msgid "A list of URIs representing permissions to access a resource or service."
+msgstr "˙ǝɔᴉʌɹǝs ɹo ǝɔɹnosǝɹ ɐ ssǝɔɔɐ oʇ suoᴉssᴉɯɹǝd ƃuᴉʇuǝsǝɹdǝɹ sIꓤꓵ ɟo ʇsᴉן ∀"
+
+#: ./me/index-functions.php:515
+msgid "'eduPerson Principal Name' - a SAML attribute set by your Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹnoʎ ʎq ʇǝs ǝʇnqᴉɹʇʇɐ ꓶW∀S ɐ - ,ǝɯɐN ןɐdᴉɔuᴉɹԀ uosɹǝԀnpǝ,"
+
+#: ./me/index-functions.php:516
+msgid "'eduPerson Targeted Identifier' - a SAML attribute set by your Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹnoʎ ʎq ʇǝs ǝʇnqᴉɹʇʇɐ ꓶW∀S ɐ - ,ɹǝᴉɟᴉʇuǝpI pǝʇǝƃɹɐꓕ uosɹǝԀnpǝ,"
+
+#: ./me/index-functions.php:517
+msgid "A URL used by portals in case the CILogon Service is unable to issue a certificate on your behalf."
+msgstr "˙ɟןɐɥǝq ɹnoʎ uo ǝʇɐɔᴉɟᴉʇɹǝɔ ɐ ǝnssᴉ oʇ ǝןqɐun sᴉ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ǝsɐɔ uᴉ sןɐʇɹod ʎq pǝsn ꓶꓤꓵ ∀"
+
+#: ./me/index-functions.php:519
+msgid "Your given name set by your Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹnoʎ ʎq ʇǝs ǝɯɐu uǝʌᴉƃ ɹno⅄"
+
+#: ./me/index-functions.php:520
+msgid "The display name of your chosen Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI uǝsoɥɔ ɹnoʎ ɟo ǝɯɐu ʎɐןdsᴉp ǝɥꓕ"
+
+#: ./me/index-functions.php:521
+msgid "The authentication URI of your chosen Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI uǝsoɥɔ ɹnoʎ ɟo Iꓤꓵ uoᴉʇɐɔᴉʇuǝɥʇnɐ ǝɥꓕ"
+
+#: ./me/index-functions.php:522
+msgid "Your university ID number."
+msgstr "˙ɹǝqɯnu ꓷI ʎʇᴉsɹǝʌᴉun ɹno⅄"
+
+#: ./me/index-functions.php:523
+msgid "Remember if you checked the 'Remember this selection' checkbox when you selected and Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI puɐ pǝʇɔǝןǝs noʎ uǝɥʍ xoqʞɔǝɥɔ ,uoᴉʇɔǝןǝs sᴉɥʇ ɹǝqɯǝɯǝꓤ, ǝɥʇ pǝʞɔǝɥɔ noʎ ɟᴉ ɹǝqɯǝɯǝꓤ"
+
+#: ./me/index-functions.php:525
+msgid "Your surname set by your Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹnoʎ ʎq ʇǝs ǝɯɐuɹns ɹno⅄"
+
+#: ./me/index-functions.php:526
+msgid "Level of Assurance set by your Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹnoʎ ʎq ʇǝs ǝɔuɐɹnss∀ ɟo ןǝʌǝꓶ"
+
+#: ./me/index-functions.php:527
+msgid "A text message of the reason for the last authentication error."
+msgstr "˙ɹoɹɹǝ uoᴉʇɐɔᴉʇuǝɥʇnɐ ʇsɐן ǝɥʇ ɹoɟ uosɐǝɹ ǝɥʇ ɟo ǝƃɐssǝɯ ʇxǝʇ ∀"
+
+#: ./me/index-functions.php:528
+msgid "Groups of which you are a member."
+msgstr "˙ɹǝqɯǝɯ ɐ ǝɹɐ noʎ ɥɔᴉɥʍ ɟo sdnoɹꓨ"
+
+#: ./me/index-functions.php:529
+msgid "Your user identifier set by the OpenID Connect Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ʇɔǝuuoƆ ꓷIuǝdO ǝɥʇ ʎq ʇǝs ɹǝᴉɟᴉʇuǝpᴉ ɹǝsn ɹno⅄"
+
+#: ./me/index-functions.php:530
+msgid "Your user identifier set by the OpenID Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ꓷIuǝdO ǝɥʇ ʎq ʇǝs ɹǝᴉɟᴉʇuǝpᴉ ɹǝsn ɹno⅄"
+
+#: ./me/index-functions.php:531
+msgid "Your organizational unit set by your Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹnoʎ ʎq ʇǝs ʇᴉun ןɐuoᴉʇɐzᴉuɐƃɹo ɹno⅄"
+
+#: ./me/index-functions.php:532
+msgid "The pairwise subject identifier provided by the Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ǝɥʇ ʎq pǝpᴉʌoɹd ɹǝᴉɟᴉʇuǝpᴉ ʇɔǝɾqns ǝsᴉʍɹᴉɐd ǝɥꓕ"
+
+#: ./me/index-functions.php:533
+msgid "A text message of the reason why the PKCS12 certificate could not be created."
+msgstr "˙pǝʇɐǝɹɔ ǝq ʇou pןnoɔ ǝʇɐɔᴉɟᴉʇɹǝɔ ᄅƖSƆꓘԀ ǝɥʇ ʎɥʍ uosɐǝɹ ǝɥʇ ɟo ǝƃɐssǝɯ ʇxǝʇ ∀"
+
+#: ./me/index-functions.php:534
+msgid "This multiplied by the p12multipler gives the lifetime of the PKCS12 certificate in hours."
+msgstr "˙sɹnoɥ uᴉ ǝʇɐɔᴉɟᴉʇɹǝɔ ᄅƖSƆꓘԀ ǝɥʇ ɟo ǝɯᴉʇǝɟᴉן ǝɥʇ sǝʌᴉƃ ɹǝןdᴉʇןnɯᄅƖd ǝɥʇ ʎq pǝᴉןdᴉʇןnɯ sᴉɥꓕ"
+
+#: ./me/index-functions.php:536
+msgid "This multiplied by the p12lifetime gives the lifetime of the PKCS12 certificate in hours."
+msgstr "˙sɹnoɥ uᴉ ǝʇɐɔᴉɟᴉʇɹǝɔ ᄅƖSƆꓘԀ ǝɥʇ ɟo ǝɯᴉʇǝɟᴉן ǝɥʇ sǝʌᴉƃ ǝɯᴉʇǝɟᴉןᄅƖd ǝɥʇ ʎq pǝᴉןdᴉʇןnɯ sᴉɥꓕ"
+
+#: ./me/index-functions.php:538
+msgid "The expiration time and URL to download a PKCS12 certificate file."
+msgstr "˙ǝןᴉɟ ǝʇɐɔᴉɟᴉʇɹǝɔ ᄅƖSƆꓘԀ ɐ pɐoןuʍop oʇ ꓶꓤꓵ puɐ ǝɯᴉʇ uoᴉʇɐɹᴉdxǝ ǝɥꓕ"
+
+#: ./me/index-functions.php:539
+msgid "Contains certificate lifetimes for all portals you have used with the CILogon Delegate service."
+msgstr "˙ǝɔᴉʌɹǝs ǝʇɐƃǝןǝꓷ uoƃoꓶIƆ ǝɥʇ ɥʇᴉʍ pǝsn ǝʌɐɥ noʎ sןɐʇɹod ןןɐ ɹoɟ sǝɯᴉʇǝɟᴉן ǝʇɐɔᴉɟᴉʇɹǝɔ suᴉɐʇuoƆ"
+
+#: ./me/index-functions.php:541
+msgid "The display name of the portal connected to the CILogon Delegate service."
+msgstr "˙ǝɔᴉʌɹǝs ǝʇɐƃǝןǝꓷ uoƃoꓶIƆ ǝɥʇ oʇ pǝʇɔǝuuoɔ ןɐʇɹod ǝɥʇ ɟo ǝɯɐu ʎɐןdsᴉp ǝɥꓕ"
+
+#: ./me/index-functions.php:542
+msgid "For portals previously using the CILogon Delegate service, this is the saved lifetime of the delegated certificate."
+msgstr "˙ǝʇɐɔᴉɟᴉʇɹǝɔ pǝʇɐƃǝןǝp ǝɥʇ ɟo ǝɯᴉʇǝɟᴉן pǝʌɐs ǝɥʇ sᴉ sᴉɥʇ 'ǝɔᴉʌɹǝs ǝʇɐƃǝןǝꓷ uoƃoꓶIƆ ǝɥʇ ƃuᴉsn ʎןsnoᴉʌǝɹd sןɐʇɹod ɹoℲ"
+
+#: ./me/index-functions.php:545
+msgid "An internal return code when fetching portal parameters from the datastore."
+msgstr "˙ǝɹoʇsɐʇɐp ǝɥʇ ɯoɹɟ sɹǝʇǝɯɐɹɐd ןɐʇɹod ƃuᴉɥɔʇǝɟ uǝɥʍ ǝpoɔ uɹnʇǝɹ ןɐuɹǝʇuᴉ u∀"
+
+#: ./me/index-functions.php:546
+msgid "The GitHub login name. Should not be used as a persistent identifier."
+msgstr "˙ɹǝᴉɟᴉʇuǝpᴉ ʇuǝʇsᴉsɹǝd ɐ sɐ pǝsn ǝq ʇou pןnoɥS ˙ǝɯɐu uᴉƃoן qnHʇᴉꓨ ǝɥꓕ"
+
+#: ./me/index-functions.php:547
+msgid "The previously selected Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI pǝʇɔǝןǝs ʎןsnoᴉʌǝɹd ǝɥꓕ"
+
+#: ./me/index-functions.php:548
+msgid "A list of the most recently selected Identity Providers."
+msgstr "˙sɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI pǝʇɔǝןǝs ʎןʇuǝɔǝɹ ʇsoɯ ǝɥʇ ɟo ʇsᴉן ∀"
+
+#: ./me/index-functions.php:549
+msgid "The name of the page to return to after authentication at your chosen Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI uǝsoɥɔ ɹnoʎ ʇɐ uoᴉʇɐɔᴉʇuǝɥʇnɐ ɹǝʇɟɐ oʇ uɹnʇǝɹ oʇ ǝƃɐd ǝɥʇ ɟo ǝɯɐu ǝɥꓕ"
+
+#: ./me/index-functions.php:551
+msgid "The URL to return to after authentication at your chosen Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI uǝsoɥɔ ɹnoʎ ʇɐ uoᴉʇɐɔᴉʇuǝɥʇnɐ ɹǝʇɟɐ oʇ uɹnʇǝɹ oʇ ꓶꓤꓵ ǝɥꓕ"
+
+#: ./me/index-functions.php:552
+msgid "A shibboleth session token set by an InCommon Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI uoɯɯoƆuI uɐ ʎq ʇǝs uǝʞoʇ uoᴉssǝs ɥʇǝןoqqᴉɥs ∀"
+
+#: ./me/index-functions.php:553
+msgid "Always show any hidden IdPs."
+msgstr "˙sԀpI uǝppᴉɥ ʎuɐ ʍoɥs sʎɐʍן∀"
+
+#: ./me/index-functions.php:554
+msgid "Keep track of IdPs used for Single Sign On (SSO)."
+msgstr "˙(OSS) uO uƃᴉS ǝןƃuᴉS ɹoɟ pǝsn sԀpI ɟo ʞɔɐɹʇ dǝǝꓘ"
+
+#: ./me/index-functions.php:555
+msgid "An internal return code when fetching user data from the datastore."
+msgstr "˙ǝɹoʇsɐʇɐp ǝɥʇ ɯoɹɟ ɐʇɐp ɹǝsn ƃuᴉɥɔʇǝɟ uǝɥʍ ǝpoɔ uɹnʇǝɹ ןɐuɹǝʇuᴉ u∀"
+
+#: ./me/index-functions.php:556
+msgid "The subject identifier provided by the Identity Provider"
+msgstr "ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ǝɥʇ ʎq pǝpᴉʌoɹd ɹǝᴉɟᴉʇuǝpᴉ ʇɔǝɾqns ǝɥꓕ"
+
+#: ./me/index-functions.php:557
+msgid "The name of the 'submit' button clicked."
+msgstr "˙pǝʞɔᴉןɔ uoʇʇnq ,ʇᴉɯqns, ǝɥʇ ɟo ǝɯɐu ǝɥꓕ"
+
+#: ./me/index-functions.php:558
+msgid "A URL used by portals for redirection after successful issuance of a certificate."
+msgstr "˙ǝʇɐɔᴉɟᴉʇɹǝɔ ɐ ɟo ǝɔuɐnssᴉ ןnɟssǝɔɔns ɹǝʇɟɐ uoᴉʇɔǝɹᴉpǝɹ ɹoɟ sןɐʇɹod ʎq pǝsn ꓶꓤꓵ ∀"
+
+#: ./me/index-functions.php:559
+msgid "An OAUTH identifier used to track portal sessions."
+msgstr "˙suoᴉssǝs ןɐʇɹod ʞɔɐɹʇ oʇ pǝsn ɹǝᴉɟᴉʇuǝpᴉ Hꓕꓵ∀O u∀"
+
+#: ./me/index-functions.php:560
+msgid "The user integer identification number provided by the Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ǝɥʇ ʎq pǝpᴉʌoɹd ɹǝqɯnu uoᴉʇɐɔᴉɟᴉʇuǝpᴉ ɹǝƃǝʇuᴉ ɹǝsn ǝɥꓕ"
+
+#: ./me/index-functions.php:561
+msgid "The unique CILogon user identifier."
+msgstr "˙ɹǝᴉɟᴉʇuǝpᴉ ɹǝsn uoƃoꓶIƆ ǝnbᴉun ǝɥꓕ"
+
+#: ./testidp/index-functions.php:33
+msgid "Test Your Identity Provider With CILogon"
+msgstr "uoƃoꓶIƆ ɥʇᴉM ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹno⅄ ʇsǝꓕ"
+
+#: ./testidp/index-functions.php:34
+msgid "Test Your Identity Provider"
+msgstr "ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹno⅄ ʇsǝꓕ"
+
+#: ./testidp/index-functions.php:40
+msgid "To test that your identity provider works with CILogon, please select it from the list below and Log On."
+msgstr "˙uO ƃoꓶ puɐ ʍoןǝq ʇsᴉן ǝɥʇ ɯoɹɟ ʇᴉ ʇɔǝןǝs ǝsɐǝןd 'uoƃoꓶIƆ ɥʇᴉʍ sʞɹoʍ ɹǝpᴉʌoɹd ʎʇᴉʇuǝpᴉ ɹnoʎ ʇɐɥʇ ʇsǝʇ oꓕ"
+
+#: ./testidp/index-functions.php:71
+msgid "Test Identity Provider"
+msgstr "ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ʇsǝꓕ"
+
+#: ./testidp/index-functions.php:73
+msgid "Verify Attribute Release"
+msgstr "ǝsɐǝןǝꓤ ǝʇnqᴉɹʇʇ∀ ʎɟᴉɹǝΛ"
+
+#: ./testidp/index-functions.php:79
+msgid "Thank you for your interest in the CILogon Service. This page enables you to verify that all necessary attributes have been released to the CILogon Service Provider (SP) by your selected Identity Provider (IdP). Below you will see the various attributes required by the CILogon Service and their values as released by your IdP."
+msgstr "˙ԀpI ɹnoʎ ʎq pǝsɐǝןǝɹ sɐ sǝnןɐʌ ɹᴉǝɥʇ puɐ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ʎq pǝɹᴉnbǝɹ sǝʇnqᴉɹʇʇɐ snoᴉɹɐʌ ǝɥʇ ǝǝs ןןᴉʍ noʎ ʍoןǝꓭ ˙(ԀpI) ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI pǝʇɔǝןǝs ɹnoʎ ʎq (ԀS) ɹǝpᴉʌoɹԀ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ oʇ pǝsɐǝןǝɹ uǝǝq ǝʌɐɥ sǝʇnqᴉɹʇʇɐ ʎɹɐssǝɔǝu ןןɐ ʇɐɥʇ ʎɟᴉɹǝʌ oʇ noʎ sǝןqɐuǝ ǝƃɐd sᴉɥꓕ ˙ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ uᴉ ʇsǝɹǝʇuᴉ ɹnoʎ ɹoɟ noʎ ʞuɐɥꓕ"
+
+#: ./testidp/index-functions.php:108
+msgid "All required attributes have been released by your IdP. For details of the various attributes utilized by the CILogon Service and their current values, see the sections below."
+msgstr "˙ʍoןǝq suoᴉʇɔǝs ǝɥʇ ǝǝs 'sǝnןɐʌ ʇuǝɹɹnɔ ɹᴉǝɥʇ puɐ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ʎq pǝzᴉןᴉʇn sǝʇnqᴉɹʇʇɐ snoᴉɹɐʌ ǝɥʇ ɟo sןᴉɐʇǝp ɹoℲ ˙ԀpI ɹnoʎ ʎq pǝsɐǝןǝɹ uǝǝq ǝʌɐɥ sǝʇnqᴉɹʇʇɐ pǝɹᴉnbǝɹ ןן∀"
+
+#: ./testidp/index-functions.php:125
+msgid "Missing one or more attributes."
+msgstr "˙sǝʇnqᴉɹʇʇɐ ǝɹoɯ ɹo ǝuo ƃuᴉssᴉW"
+
+#: ./testidp/index-functions.php:130
+msgid "One or more of the attributes required by the CILogon Service are not available. Please see the sections below for details. For additional information and assistance, please contact"
+msgstr "ʇɔɐʇuoɔ ǝsɐǝןd 'ǝɔuɐʇsᴉssɐ puɐ uoᴉʇɐɯɹoɟuᴉ ןɐuoᴉʇᴉppɐ ɹoℲ ˙sןᴉɐʇǝp ɹoɟ ʍoןǝq suoᴉʇɔǝs ǝɥʇ ǝǝs ǝsɐǝןԀ ˙ǝןqɐןᴉɐʌɐ ʇou ǝɹɐ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ʎq pǝɹᴉnbǝɹ sǝʇnqᴉɹʇʇɐ ǝɥʇ ɟo ǝɹoɯ ɹo ǝuO"
+
+#: ./testidp/index-functions.php:144
+#: ./testidp/index-functions.php:145
+msgid "Logout"
+msgstr "ʇnoƃoꓶ"
