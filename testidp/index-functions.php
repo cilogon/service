@@ -79,8 +79,7 @@ function printMainPage()
             _('Thank you for your interest in the CILogon Service. ' .
             'This page enables you to verify that all necessary ' .
             'attributes have been released to the CILogon Service Provider ' .
-            '(<abbr title="Service Provider">SP</abbr>) by your selected ' .
-            'Identity Provider (<abbr title="Identity Provider">IdP</abbr>). ' .
+            '(SP) by your selected Identity Provider (IdP). ' .
             'Below you will see the various attributes required by the ' .
             'CILogon Service and their values as released by your IdP.'), '
           </div> <!-- end card-text -->
@@ -101,7 +100,7 @@ function printMainPage()
         (strlen(Util::getSessionVar('idp')) > 0) &&
         (strlen(Util::getSessionVar('idp_display_name')) > 0)
     ) {
-        echo '<large>' ,
+        echo '<large>',
             Content::getIcon('fa-check-square fa-2x', 'lime'), '</large>
             </div> <!-- end col-1 -->
             <div class="col">
@@ -132,7 +131,7 @@ function printMainPage()
               'Service are not available. Please see the sections below ' .
               'for details. For additional information and assistance, ' .
               'please contact '),
-              '<a href="mailto:', EMAIL_HELP, '">', EMAIL_HELP, '</a>' ,
+              '<a href="mailto:', EMAIL_HELP, '">', EMAIL_HELP, '</a>',
               '
             </div>
           </div> <!-- end row -->

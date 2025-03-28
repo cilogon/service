@@ -28,7 +28,8 @@ echo '
           </div> <!-- end card-text -->
           <div class="card-text my-2">
             ',
-            _('Visit <a target="_blank" href="https://cilogon.statuspage.io/">https://cilogon.statuspage.io/</a> for more information.'), '
+            _('For more information, please see'),
+            ' <a target="_blank" href="https://cilogon.statuspage.io/">https://cilogon.statuspage.io/</a>.
           </div> <!-- end card-text -->
         </div> <!-- end col -->
        </div> <!-- end row -->

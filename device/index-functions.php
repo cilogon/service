@@ -83,8 +83,8 @@ function printUserCodePage()
         <div class="card-text my-2">
           ',
           _('Please enter the user code displayed on your device. ' .
-          'If you do not have a user code, please proceed to the main ' .
-          '<a href="..">CILogon site</a>.'), '
+          'If you do not have a user code, please proceed to the') ,
+          ' <a href="..">main site</a>.
         </div> <!-- end row -->
     ';
 
@@ -280,8 +280,7 @@ function printMainPage()
             </large>
           </div>
           <div class="col">
-            ', 
-            ($user_code_approved ? $approved_msg : $denied_msg). '
+            ', ($user_code_approved ? $approved_msg : $denied_msg), '
           </div>
         </div>';
     }

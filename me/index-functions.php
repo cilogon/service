@@ -72,10 +72,10 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
         <div class="card-body px-5">
           <div class="card-text my-2">
             ',
-            _('This page allows you to view and (potentially) delete various ' .
-            'cookies associated with the ' .
-            '<a target="_blank" href="..">CILogon Service</a>. ' .
-            'There are three sections below.'), '
+            _('This page enables you to view and delete various ' .
+            'cookies associated with the '),
+            '<a target="_blank" href="..">CILogon Service</a>. ',
+            _('There are three sections below.'), '
           </div> <!-- end card-text -->
           <ol>
             <li><b>', _('Browser Cookies'), '</b> - ', _('These are ' .
@@ -203,11 +203,11 @@ function printBrowserCookies($browsercount, $collapsed = false)
         ksort($_COOKIE);
         foreach ($_COOKIE as $key => $value) {
             if (!in_array($key, $hide)) {
-                echo '<tr title="' , getTitleText($key) , '">' ,
+                echo '<tr title="' , getTitleText($key) , '">',
                      '<td><input type="checkbox" name="del_browser[]" ',
-                     'value="', $key , '" title="', $key, '"/></td>' ,
-                     '<th scope="row" style="word-break: break-all"><samp>' ,
-                     Util::htmlent($key) ,
+                     'value="', $key , '" title="', $key, '"/></td>',
+                     '<th scope="row" style="word-break: break-all"><samp>',
+                     Util::htmlent($key),
                      '</samp></th><td><samp>';
                 // Special handling of portalparams cookie
                 if ($key == PortalCookie::COOKIENAME) {
@@ -277,13 +277,13 @@ function printSessionVariables($sessioncount, $collapsed = false)
         ksort($_SESSION);
         foreach ($_SESSION as $key => $value) {
             if (!in_array($key, $hide)) {
-                echo '<tr title="' , getTitleText($key) , '">' ,
+                echo '<tr title="' , getTitleText($key) , '">',
                      '<td><input type="checkbox" name="del_session[]" ',
-                     'value="', $key , '" title="', $key, '"/></td>' ,
-                     '<th scope="row"><samp>' ,
-                     Util::htmlent($key) ,
-                     '</samp></th><td><samp>' ,
-                     Util::htmlent(is_array($value) ? json_encode($value, JSON_UNESCAPED_SLASHES) : $value) ,
+                     'value="', $key , '" title="', $key, '"/></td>',
+                     '<th scope="row"><samp>',
+                     Util::htmlent($key),
+                     '</samp></th><td><samp>',
+                     Util::htmlent(is_array($value) ? json_encode($value, JSON_UNESCAPED_SLASHES) : $value),
                      '</samp></td></tr>';
             }
         }
@@ -339,10 +339,10 @@ function printEnvironmentVars($collapsed = false)
 
     ksort($_SERVER);
     foreach ($_SERVER as $key => $value) {
-        echo '<tr><th scope="row"><samp>' ,
-             Util::htmlent($key) ,
-             '</samp></th><td><samp>' ,
-             Util::htmlent($value) ,
+        echo '<tr><th scope="row"><samp>',
+             Util::htmlent($key),
+             '</samp></th><td><samp>',
+             Util::htmlent($value),
              '</samp></td></tr>';
     }
 
