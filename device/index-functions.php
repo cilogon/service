@@ -84,7 +84,7 @@ function printUserCodePage()
           ',
           _('Please enter the user code displayed on your device. ' .
           'If you do not have a user code, please proceed to the') ,
-          ' <a href="..">main site</a>.
+          ' <a href="..">', _('CILogon Service'), '</a>.
         </div> <!-- end row -->
     ';
 

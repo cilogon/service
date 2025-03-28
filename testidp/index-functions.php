@@ -130,8 +130,8 @@ function printMainPage()
               _('One or more of the attributes required by the CILogon ' .
               'Service are not available. Please see the sections below ' .
               'for details. For additional information and assistance, ' .
-              'please contact '),
-              '<a href="mailto:', EMAIL_HELP, '">', EMAIL_HELP, '</a>',
+              'please contact'),
+              ' <a href="mailto:', EMAIL_HELP, '">', EMAIL_HELP, '</a>',
               '
             </div>
           </div> <!-- end row -->
@@ -141,8 +141,8 @@ function printMainPage()
     echo '
             <div class="col-auto">
                <a class="btn btn-primary"
-               title="Logout"
-               href="/logout">Logout</a>
+               title="', _('Logout'), '"
+               href="/logout">', _('Logout'), '</a>
             </div> <!-- end col-auto -->
           </div> <!-- end row align-items-center -->
         </div> <!-- end card-body --> ';

@@ -74,7 +74,8 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
             ',
             _('This page enables you to view and delete various ' .
             'cookies associated with the '),
-            '<a target="_blank" href="..">CILogon Service</a>. ',
+            '<a target="_blank" href="..">', 
+            _('CILogon Service'), '</a>. ',
             _('There are three sections below.'), '
           </div> <!-- end card-text -->
           <ol>
