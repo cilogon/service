@@ -1,3 +1,9 @@
+55fe9af 2025-04-02 Update README and LICENSE files
+4176171 2025-03-27 Add comment to cilogon.{css,js} about HTTP cache
+b2c74e8 2025-03-19 CIL-2213 Local Font Awesome requires "fonts" directory
+60585c1 2025-03-19 CIL-2213 Host CSS/JavaScript files on cilogon.org
+bf0cb42 2025-02-27 Update to service-lib 2.6.0
+490c113 2025-02-27 Update ChangeLog
 1d19eaf 2025-02-27 Change comment style for 2 constants
 4c8fa98 2025-02-27 Remove unused PHPSESSIONS_USE_FILE constant
 46fb6aa 2025-02-26 Change page title to 'CILogon Service'
