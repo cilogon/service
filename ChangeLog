@@ -1,3 +1,7 @@
+3cb3935 2025-04-18 Update to service-lib 2.7.2
+6ca51bb 2025-04-16 CIL-2222 Federate DoE OneID IdP
+ca72017 2025-04-03 Update Changelog
+fb290fc 2025-04-03 Update to service-lib 2.7.0
 55fe9af 2025-04-02 Update README and LICENSE files
 4176171 2025-03-27 Add comment to cilogon.{css,js} about HTTP cache
 b2c74e8 2025-03-19 CIL-2213 Local Font Awesome requires "fonts" directory
