@@ -1,3 +1,6 @@
+f179a89 2025-04-29 Update to service-lib 2.7.3
+b0aada4 2025-04-23 Add symlinks for legacy cilogon.{css,js} files
+89deb4b 2025-04-18 Update ChangeLog
 3cb3935 2025-04-18 Update to service-lib 2.7.2
 6ca51bb 2025-04-16 CIL-2222 Federate DoE OneID IdP
 ca72017 2025-04-03 Update Changelog
