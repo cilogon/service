@@ -282,38 +282,6 @@ function verifyOIDCParams()
         $clientparams[$key] = $value;
     }
 
-    // CIL-624 If X509 certs are disabled, check for 'getcert' scope.
-    // If found, show an error message.
-    // CIL-2190 Separate web certs from ECP certs
-    $scope = Util::getGetVar('scope');
-    if (
-        (((defined('DISABLE_X509')) && (DISABLE_X509 === true)) ||
-         ((defined('DISABLE_X509_WEB')) && (DISABLE_X509_WEB === true))) &&
-        (preg_match('/edu.uiuc.ncsa.myproxy.getcert/', $scope))
-    ) {
-        $log->error('Error in verifyOIDCParams(): The CILogon OIDC ' .
-            'authorization endpoint received a request including the ' .
-            '"edu.ncsa.uiuc.myproxy.getcert" scope, but the server ' .
-            'is configured to prevent downloading certificates.');
-        Util::sendErrorAlert(
-            'CILogon OIDC authz endpoint error',
-            'The CILogon OIDC authorization endpoint received a request ' .
-            'including the "edu.ncsa.uiuc.myproxy.getcert" scope, ' .
-            'but the server is configured to prevent downloading ' .
-            'certificates. ' .
-            "\n\n" .
-            'clientparams = ' . print_r($clientparams, true) .
-            "\n"
-        );
-        Util::setSessionVar(
-            'client_error_msg',
-            'The CILogon Service is currently configured to prevent ' .
-            'downloading X.509 certificates, but the incoming request ' .
-            'included the "edu.ncsa.uiuc.myproxy.getcert" scope. ' .
-            'CILogon system administrators have been notified.'
-        );
-        $clientparams = array();
-
     // CIL-1867 According to the OAuth2 spec for authorization code flow
     // (https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.1),
     // the only parameters required for OAuth2 are 'response_type=code'
@@ -322,7 +290,7 @@ function verifyOIDCParams()
     // OA4MP OIDC authz endpoint. Additionally, the dbService will return
     // 'Missing or empty scope parameter' if 'scope' is not provided. So
     // check for all parameters before calling 'createTransaction'.
-    } elseif (
+    if (
         (isset($clientparams['redirect_uri'])) &&
         (isset($clientparams['response_type'])) &&
         (isset($clientparams['client_id'])) &&
@@ -343,6 +311,7 @@ function verifyOIDCParams()
             $url = OAUTH2_CREATE_TRANSACTION_URL;
             if (count($_GET) > 0) {
                 // CIL-658 Look for double-encoded spaces in 'scope'
+                $scope = Util::getGetVar('scope');
                 if (strlen($scope) > 0) {
                     $_GET['scope'] = preg_replace('/(\+|%2B)/', ' ', $scope);
                 }
