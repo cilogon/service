@@ -19,7 +19,6 @@ $hide = array(
     'CSRF',
     'PHPSESSID',
     'lastaccess',
-    'myproxyinfo',
 );
 
 // Get the value of the 'submit' input element

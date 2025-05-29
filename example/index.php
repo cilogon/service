@@ -28,9 +28,8 @@ needs.
 <ol>
   <li><strong><a target="_blank"
   href="https://cilogon.org/">https://cilogon.org/</a></strong> -  The main
-  CILogon Service site is for use by end-users to obtain a certificate for
-  secure access to <a target="_blank" href="https://www.nsf.gov/">NSF</a>
-  <a target="_blank" href="https://www.nsf.gov/oci">CyberInfrastructure</a>.
+  CILogon Service site is for use by end-users to view the user attributes
+  asserted by their chosen Identity Provider.
   </li>
   <li><strong><a target="_blank"
   href="https://cilogon.org/.well-known/openid-configuration">https://cilogon.org/.well-known/openid-configuration</a></strong>
@@ -44,11 +43,11 @@ needs.
     href="https://www.cilogon.org/oidc">CILogon OpenID Connect (OIDC)</a>.
   </li>
   <li><strong><a target="_blank"
-  href="https://cilogon.org/delegate/">https://cilogon.org/delegate/</a></strong>
-  - The CILogon Delegation Service is an OAuth 1.0a service used by
-    Community Portals to obtain certificates on behalf of their users.
-    <strong>Note this service is deprecated in favor of the OAuth2/OIDC
-    service</strong>.
+  href="https://cilogon.org/device/">https://cilogon.org/device/</a></strong>
+  - The CILogon Device endpoint is used for Device Authorization Grant Flow
+    (RFC 8628) which enables devices without a web browser to get OAuth2/OIDC
+    tokens. For details, please visit <a target="_blank"
+    href="https://www.cilogon.org/device">https://www.cilogon.org/device</a>.
   </li>
 </ol>
 
@@ -100,7 +99,7 @@ colors used by the CILogon site.
     <form action="#" method="post">
     <input type="submit" name="cisubmit1" id="cisubmit1"
       value="CILogon Service"
-      title="Click to get a certificate via the CILogon Service."
+      title="Click to uses the CILogon Service."
       style="font-family:Arial,sans-serif; font-style:italic;
       font-weight:bold; font-size:large; color:#030;
       background-color:#aca; cursor:help;"
@@ -114,7 +113,7 @@ colors used by the CILogon site.
 &lt;form action="#" method="post"&gt;
 &lt;input type="submit" name="cisubmit1" id="cisubmit1"
 value="CILogon Service"
-title="Click to get a certificate via the CILogon Service."
+title="Click to use the CILogon Service."
 style="font-family:Arial,sans-serif; font-style:italic;
 font-weight:bold; font-size:large; color:#030;
 background-color:#aca; cursor:help;" /&gt;
@@ -141,7 +140,7 @@ are available at the bottm of the page.
     <input type="image" name="cisubmit2" id="cisubmit2"
       src="https://cilogon.org/images/cilogon-logon-32-g.png"
       alt="CILogon Service"
-      title="Click to get a certificate via the CILogon Service."
+      title="Click to use the CILogon Service."
       style="cursor:help;"
       onclick="return false;"
       />
@@ -154,7 +153,7 @@ are available at the bottm of the page.
 &lt;input type="image" name="cisubmit2" id="cisubmit2"
 src="https://cilogon.org/images/cilogon-ci-32-g.png"
 alt="CILogon Service"
-title="Click to get a certificate via the CILogon Service."
+title="Click to use the CILogon Service."
 style="cursor:help;" /&gt;
 &lt;/form&gt;</textarea>
 </form>
@@ -182,7 +181,7 @@ a CILogon icon and some CSS stylized text.
       font-weight:bold; font-size:x-large; color:#696;"><img
       style="border-style:none; vertical-align:middle"
       src="https://cilogon.org/images/cilogon-logo-24x24-b.png"
-      alt=""/>Get Certificate</a>
+      alt=""/>Visit CILogon.org</a>
     </td>
     <td align="right">
       <form action="#" method="post">
@@ -192,7 +191,7 @@ style="font-family:Arial,sans-serif; font-style:italic;
 font-weight:bold; font-size:x-large; color:#696;"&gt;&lt;img
 style="border-style:none; vertical-align:middle"
 src="https://cilogon.org/images/cilogon-logo-24x24-b.png"
-alt=""&gt;Get Certificate&lt;/a&gt;</textarea>
+alt=""&gt;Visit CILogon.org&lt;/a&gt;</textarea>
       </form>
     </td>
   </tr>

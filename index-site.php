@@ -61,12 +61,6 @@ switch ($submit) {
         exit; // No further processing necessary
         break;
 
-    case 'Get New Certificate':
-        if (Util::verifySessionAndCall('CILogon\\Service\\Content::generateP12')) {
-            printMainPage();
-        }
-        break; // End case 'Get New Certificate'
-
     default: // No submit button clicked nor PHP session submit variable set
         Content::handleNoSubmitButtonClicked();
         break; // End default case

@@ -173,14 +173,12 @@ function printMainPage()
                     $grant,
                     Util::getSessionVar('user_uid'),
                     Util::getSessionVar('authntime'),
-                    Util::getLOA(),
-                    Util::getSessionVar('myproxyinfo')
+                    Util::getLOA()
                 )) && (!($dbs->status & 1))
             ) { // STATUS_OK codes are even
                 // CIL-507 Special log message for XSEDE
                 $email = Util::getSessionVar('email');
                 $clientname = $clientparams['client_name'];
-                Util::logXSEDEUsage($clientname, $email);
             } else { // dbService returned error for setTransactionState
                 // CIL-1342 Redirect to custom error uri on QDL errors
                 if (($dbs->error == 'qdl_error') && (strlen($dbs->custom_error_uri) > 0)) {

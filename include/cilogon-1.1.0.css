@@ -165,14 +165,6 @@ div.skincilogonlogo a:active {
   margin-bottom: -1em;
   font-size: small;
 }
-.p12certificatelifetime {
-  display: none;
-}
-#p12hourglass {
-  display: none;
-  position: absolute;
-  margin-left: 2em;
-}
 table tr th {
   text-align: right;
   word-wrap: break-word;

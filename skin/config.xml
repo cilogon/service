@@ -29,11 +29,6 @@
          https://test.cilogon.org/default
 -->
 
-  <delegate>
-    <forcelifetime>12</forcelifetime>
-    <forceremember>1</forceremember>
-  </delegate>
-
   <!-- CIL-1032 Block IdPs with name of "idp" or "IdP Proxy" -->
   <idpredlit>
     <idp>https://idp.omren.om/idp</idp>

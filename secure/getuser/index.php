@@ -33,22 +33,16 @@ $log->info('In Shibboleth /getuser/ - submit="' . $submit . '" responseurl="' . 
 
 if (($submit == 'getuser') && (strlen($responseurl) > 0)) {
     getUserAndRespond($responseurl);
-} elseif ($submit == 'pkcs12') {
-    getPKCS12();
-} elseif ($submit == 'certreq') {
-    getCert();
 } else {
     // If the REQUEST_URI was '/secure/getcert' then it was ECP.
     // Respond with an error message rather than a redirect.
     if (preg_match('%/secure/getcert%', Util::getServerVar('REQUEST_URI'))) {
         $log->error(
-            '"/secure/getcert" error: Either CSRF check ' .
-            'failed, or invalid "submit" command issued.',
+            '"/secure/getcert" error: Attempt to use ECP getcert endpoint.',
             false,
             false
         );
-        outputError('Unable to complete ECP transaction. Either CSRF ' .
-                    'check failed, or invalid "submit" command issued.');
+        outputError('ECP certificates have been disabled.');
     } else { // CIL-1252 Try to recover any flow in progress
         // If responseurl is empty, redirect to main site, or one of the flows (device/OIDC)
         if (strlen($responseurl) == 0) {

@@ -55,8 +55,6 @@ function printMainPage()
     Util::getCsrf()->setTheSession();
 
     Content::printHeader('CILogon Service');
-    Content::printGetCertificate();
-    Content::printCertInfo();
     Content::printUserAttributes();
     Content::printIdPMetadata();
     Content::printLogOff();

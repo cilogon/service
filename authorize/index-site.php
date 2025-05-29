@@ -63,7 +63,7 @@ if (verifyOIDCParams()) {
 
         case 'Proceed': // Proceed after Error page
             // Bug fix - If client_id query parameter is set, then
-            // 'Proceed' (set by PKCS12 flow) should be ignored.
+            // 'Proceed' should be ignored.
             if (strlen(Util::getGetVar('client_id')) > 0) {
                 Content::handleNoSubmitButtonClicked();
             } else {

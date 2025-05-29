@@ -118,10 +118,9 @@ function printOIDCErrorPage()
  * user has successfully logged on at the selected IdP. In the OIDC
  * case, the user's UID is then paired with the OIDC 'code' and
  * 'authntime' in the datastore so that it can be fetched later when
- * the OIDC client wants to get userinfo or a certificate. There
- * really isn't anything 'printed' to the user here. Control is
- * simply redirected to the OIDC client with appropriate success or
- * error response.
+ * the OIDC client wants to get userinfo. There really isn't anything
+ * 'printed' to the user here. Control is simply redirected to the OIDC
+ * client with appropriate success or error response.
  */
 function printMainPage()
 {
@@ -137,8 +136,7 @@ function printMainPage()
             $clientparams['code'],
             Util::getSessionVar('user_uid'),
             Util::getSessionVar('authntime'),
-            Util::getLOA(),
-            Util::getSessionVar('myproxyinfo')
+            Util::getLOA()
         )) && (!($dbs->status & 1))
     ) { // STATUS_OK codes are even
         // CIL-360 - Check for Response Mode
@@ -195,7 +193,6 @@ function printMainPage()
         // CIL-507 Special log message for XSEDE
         $email = Util::getSessionVar('email');
         $clientname = $clientparams['client_name'];
-        Util::logXSEDEUsage($clientname, $email);
     } else { // dbservice error
         // CIL-1342 Redirect to custom error uri on QDL errors
         if (($dbs->error == 'qdl_error') && (strlen($dbs->custom_error_uri) > 0)) {
