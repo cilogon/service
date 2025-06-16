@@ -9,3 +9,4 @@ pkcs12/
 getoidc/
 config.secrets.php
 .last_checked
+!vendor/index.html

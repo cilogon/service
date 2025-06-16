@@ -163,7 +163,6 @@ function printMainPage()
                     $full_redirect_url
                 );
                 Util::unsetClientSessionVars();
-                // Util::unsetAllUserSessionVars();
                 // Get the components of the response (split by '&')
                 $comps = explode('&', $queryparams);
                 $outform = '<html>
@@ -190,9 +189,6 @@ function printMainPage()
             }
         }
         $log->info('setTransactionState succeeded, redirect to ' . $redirect);
-        // CIL-507 Special log message for XSEDE
-        $email = Util::getSessionVar('email');
-        $clientname = $clientparams['client_name'];
     } else { // dbservice error
         // CIL-1342 Redirect to custom error uri on QDL errors
         if (($dbs->error == 'qdl_error') && (strlen($dbs->custom_error_uri) > 0)) {
@@ -239,7 +235,6 @@ function printMainPage()
     }
 
     Util::unsetClientSessionVars();
-    // Util::unsetAllUserSessionVars();
     header($redirect);
     exit; // No further processing necessary
 }

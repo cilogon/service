@@ -176,9 +176,7 @@ function printMainPage()
                     Util::getLOA()
                 )) && (!($dbs->status & 1))
             ) { // STATUS_OK codes are even
-                // CIL-507 Special log message for XSEDE
-                $email = Util::getSessionVar('email');
-                $clientname = $clientparams['client_name'];
+                // Successfully associated user_uid with code
             } else { // dbService returned error for setTransactionState
                 // CIL-1342 Redirect to custom error uri on QDL errors
                 if (($dbs->error == 'qdl_error') && (strlen($dbs->custom_error_uri) > 0)) {
