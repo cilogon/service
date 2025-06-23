@@ -454,4 +454,18 @@
   <extrapage>logout me</extrapage>
   -->
 
+  <!-- <initialrecentidps>
+       CIL-2272 (and CIL-2268) A comma-separated list of IdPs that appear
+       at the top of the "Select an Identity Provider" list when a user
+       first visits cilogon.org. If not configured, this defaults to the
+       'social' Identity providers ORCID, Google, Microsoft, and GitHub.
+       This option was requested by ACCESS since they did not want to
+       promote the social IdPs to new users. TIP: if you don't want any
+       IdPs to appear in the list of recent IdPs for new users, then set
+       this option to the be the same as <initialidp> .
+  -->
+  <!--
+  <initialrecentidps>http://orcid.org/oauth/authorize,http://google.com/accounts/o8/id,http://login.microsoftonline.com/common/oauth2/v2.0/authorize,http://github.com/login/oauth/authorize</initialrecentidps>
+  -->
+
 </config>
