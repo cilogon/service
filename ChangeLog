@@ -1,3 +1,5 @@
+64fbd01 2025-06-23 Use service-lib 3.0.0
+7cee526 2025-06-23 Update ChangeLog
 db12881 2025-06-16 CIL-2248 A few more tweaks when removing X509 certs
 de1e5bd 2025-05-29 CIL-2248 Remove MyProxy from PHP code
 5aa0661 2025-05-01 Don't check for getcert scope when X509 certs are disabled
