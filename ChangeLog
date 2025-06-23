@@ -1,3 +1,5 @@
+ff614e2 2025-06-23 Use service-lib 3.0.1
+a4e406b 2025-06-23 Update ChangeLog
 64fbd01 2025-06-23 Use service-lib 3.0.0
 7cee526 2025-06-23 Update ChangeLog
 db12881 2025-06-16 CIL-2248 A few more tweaks when removing X509 certs
