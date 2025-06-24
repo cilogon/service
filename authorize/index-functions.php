@@ -136,7 +136,8 @@ function printMainPage()
             $clientparams['code'],
             Util::getSessionVar('user_uid'),
             Util::getSessionVar('authntime'),
-            Util::getLOA()
+            Util::getLOA(),
+            Util::getSessionVar('myproxyinfo')
         )) && (!($dbs->status & 1))
     ) { // STATUS_OK codes are even
         // CIL-360 - Check for Response Mode

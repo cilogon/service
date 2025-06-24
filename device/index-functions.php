@@ -173,7 +173,8 @@ function printMainPage()
                     $grant,
                     Util::getSessionVar('user_uid'),
                     Util::getSessionVar('authntime'),
-                    Util::getLOA()
+                    Util::getLOA(),
+                    Util::getSessionVar('myproxyinfo')
                 )) && (!($dbs->status & 1))
             ) { // STATUS_OK codes are even
                 // Successfully associated user_uid with code
