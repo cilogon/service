@@ -494,8 +494,7 @@ function getTitleText($cookie)
     // NOTE: the array is searched using 'preg_match' to allow for
     // substring matches (which is important in the case of
     // _shibsession...). Thus, it is important that longer strings
-    // appear before shorter strings with the same prefix, e.g.
-    // 'p12 error' appears before 'p12'.
+    // appear before shorter strings with the same prefix.
     $explain = array(
         "acr" => "Authentication Context Class Ref",
         "amr" => "Authentication Method Ref",
@@ -508,14 +507,12 @@ function getTitleText($cookie)
             "specified by a portal."),
         "clientparams" => _("A set of cookies for each portal you have used with CILogon."),
         "display_name" => _("Your full name set by your Identity Provider."),
-        "distinguished_name" => _("A quasi distinguished name for the X.509 certificate issued by a MyProxy server."),
         "eduPersonOrcid" => _("ORCID identifier."),
         "email" => _("Your email address given by your Identity Provider."),
         "entitlement" => _("A list of URIs representing permissions to access a resource or service."),
         "eppn" => _("'eduPerson Principal Name' - a SAML attribute set by your Identity Provider."),
         "eptid" => _("'eduPerson Targeted Identifier' - a SAML attribute set by your Identity Provider."),
-        "failureuri" => _("A URL used by portals in case the CILogon " .
-            "Service is unable to issue a certificate on your behalf."),
+        "failureuri" => _("A URL used by portals in case of error.").
         "first_name" => _("Your given name set by your Identity Provider."),
         "idp_display_name" => _("The display name of your chosen Identity Provider."),
         "idp" => _("The authentication URI of your chosen Identity Provider."),
@@ -530,12 +527,6 @@ function getTitleText($cookie)
         "open_id" => _("Your user identifier set by the OpenID Identity Provider."),
         "ou" => _("Your organizational unit set by your Identity Provider."),
         "pairwise_id" => _("The pairwise subject identifier provided by the Identity Provider."),
-        "p12error" => _("A text message of the reason why the PKCS12 certificate could not be created."),
-        "p12lifetime" => _("This multiplied by the p12multipler gives the " .
-            "lifetime of the PKCS12 certificate in hours."),
-        "p12multiplier" => _("This multiplied by the p12lifetime gives the " .
-            "lifetime of the PKCS12 certificate in hours."),
-        "p12" => _("The expiration time and URL to download a PKCS12 certificate file."),
         "portalcookie" => _("Contains certificate lifetimes for all " .
             "portals you have used with the CILogon Delegate service."),
         "portalname" => _("The display name of the portal connected to the CILogon Delegate service."),

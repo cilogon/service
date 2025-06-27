@@ -20,7 +20,7 @@ use CILogon\Service\Loggit;
  * OpenID script.
  *
  * @param bool $clearcookies True if the Shibboleth cookies and session
- *        variables  should be cleared out before displaying the page.
+ *        variables should be cleared out before displaying the page.
  *        Defaults to false.
  */
 function printLogonPage($clearcookies = false)
@@ -43,7 +43,8 @@ function printLogonPage($clearcookies = false)
  * printMainPage
  *
  * This function prints out the HTML for the main page where the user
- * can download a certificate.
+ * can view their attributes (user and IdP). Before June 2025, the user
+ * could also download a certificate.
  */
 function printMainPage()
 {
@@ -54,9 +55,7 @@ function printMainPage()
     Util::setSessionVar('submit', _('Proceed'));
     Util::getCsrf()->setTheSession();
 
-    Content::printHeader(_('CILogon Service'));
-    Content::printGetCertificate();
-    Content::printCertInfo();
+    Content::printHeader('CILogon Service');
     Content::printUserAttributes();
     Content::printIdPMetadata();
     Content::printLogOff();

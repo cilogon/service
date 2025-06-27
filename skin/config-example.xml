@@ -244,134 +244,6 @@
   -->
 
 
-  <!-- <pkcs12>
-       This block contains options specific to the "Get New Certificate" box
-       (i.e. download a PKCS12 credential).
-       The <initiallifetime> block allows you to specify the initial value
-       for "Certificate Lifetime". If set, you must specify BOTH <number>
-       AND <multiplier>.
-       <number> is the value that appears in the text input box.
-       <multiplier> can be 1 (=> number is in hours), 24 (=> number is in
-       days), or 732 (=> number is in months). The example below shows the
-       default of 13 months, which is also the maximum lifetime.
-       <minlifetime> allows to you specify the minimum lifetime (in hours) a
-       user can enter for the credential. Defaults to 1. Should not be less
-       than 1.
-       <maxlifetime> allows you to specify the maximum lifetime (in hours) a
-       user can enter for the credential. Defaults to 9516 (which equals 13
-       months). Should not be greater than 9516.
-       Note: The program checks for 1 <= minlifetime <= initiallifetime <=
-       maxlifetime <= 9516.
-       <disable> If set to 1, downloading PKCS12 certificates is disabled.
-       Instead, a message will be shown to the user stating that PKCS12
-       certificates cannot be downloaded due to restriction. The actual
-       message can be overridden with the <disabledmessage> option.
-       <disabledmessage> overrides the default message shown to the user
-       when <disabled> is set to 1. If using HTML in the message, be sure
-       to encode any special characters (such as '<') to HTML entities.
-  -->
-  <!--
-  <pkcs12>
-    <initiallifetime>
-      <number>13</number>
-      <multiplier>732</multiplier>
-    </initiallifetime>
-    <minlifetime>1</minlifetime>
-    <maxlifetime>9516</maxlifetime>
-    <disable>1</disable>
-    <disabledmessage>
-    Downloading PKCS12 certificates is restricted. Please use another method.
-    </disabledmessage>
-  </pkcs12>
-  -->
-
-
-  <!-- <delegate>
-       NOTE: This option is deprecated since the /delegate/ (OAuth 1.0a)
-       endpoint is no longer active.
-       This block contains options specific to the "Delegate" page (i.e.
-       when a certificate is delegated to a portal).
-       <initiallifetime> allows you to specify the initial value for
-       "Certificate Lifetime (in hours)" for the current portal. This
-       defaults to 12. Maximum value is 240. Note that this value is
-       utilized ONLY IF there is not a remember and/or lifetime cookie set
-       for the current portal.
-       <initialremember> If present, set to 1. This checks the "Remember my
-       OK for this portal" checkbox when the user first visits the site.
-       This means that the user's first visit will show _only_ the IdP
-       selection page; all subsequent pages will continue automatically.
-       Note that this value is utilized ONLY IF there is not a remember
-       and/or lifetime cookie set for the current portal. If you set this
-       value, you should probably also set the <initiallifetime> value,
-       unless you want to use the default value of 12.
-       <forcelifetime> Allows you specify the value for "Certificate
-       Lifetime (in hours)" for ALL visits from the current portal. Maximum
-       value is 240. This setting overrides the lifetime cookie (if any),
-       and also "grays out" the lifetime input box to prevent the user from
-       specifying a lifetime of the delegated credential.
-       <forceremember> If present, set to 1. This virtually checks the
-       "Remember my OK for this portal checkbox" for ALL visits from the
-       current portal. This settings overrides the remember cookie (if
-       any), which means that the Allow/Deny delegate page will never be
-       shown to the user. If you set this value, you should probably
-       also set the <forcelifetime> value, unless you want to use the
-       default value of 12.
-       NOTE: While you can specify the <initial...> and the <force...>
-       values at the same time, it probably doesn't make a lot of sense
-       since the <force...> parameters override the cookies set by the
-       <initial...> parameters.
-       <minlifetime> allows to you specify the minimum lifetime (in hours) a
-       user can enter for the delegated certificate. Defaults to 1. Should
-       not be less than 1.
-       <maxlifetime> allows you to specify the maximum lifetime (in hours) a
-       user can enter for the delegated certificate. Defaults to 240 (which
-       equals 10 days). Should not be greater than 240.
-       Note: The program checks for 1 <= minlifetime <= initiallifetime <=
-       maxlifetime <= 240. However, it does not do the same for
-       forcelifetime, so be sure that forcelifetime is in the range
-       [1..240].
-  -->
-  <!--
-  <delegate>
-    <initiallifetime>12</initiallifetime>
-    <initialremember>1</initialremember>
-    <forcelifetime>12</forcelifetime>
-    <forceremember>1</forceremember>
-    <minlifetime>1</minlifetime>
-    <maxlifetime>240</maxlifetime>
-  </delegate>
-  -->
-
-
-  <!-- <ecp>
-       This block is specific to fetching an X.509 certificate using
-       an ECP-enabled client (e.g. "ecp.pl -g c"). This does NOT apply to
-       fetching a PKCS12 credential using an ECP-enabled client
-       (e.g. "ecp.pl -g p") which is handled by the <pkcs12> block above.
-       <defaultlifetime> can be used to specify a default lifetime (in
-       hours) when the client does not give one. Typically, the
-       MYPROXY_LIFETIME value of 12 hours (found in include/myproxy.php) is
-       used when the lifetime is not given. You can set it to some other
-       value with this option.
-       <minlifetime> allows you to specify the minimum lifetime (in hours) a
-       user can enter for the certificate. Defaults to 1. Should not be less
-       than 1.
-       <maxlifetime> allows you to specify the maximum lifetime (in hours) a
-       user can enter for the certificate. Defaults to 277 (which equals
-       1000000 seconds). Should not be greater than 277.
-       Note: The program checks for 1 <= minlifetime <= defaultlifetime <=
-       maxlifetime <= 277, and also checks to make sure the specified
-       lifetime is within [minlifetime..maxlifetime].
-  -->
-  <!--
-  <ecp>
-    <defaultlifetime>12</defaultlifetime>
-    <minlifetime>1</minlifetime>
-    <maxlifetime>277</maxlifetime>
-  </ecp>
-  -->
-
-
   <!-- <portallist>
        This block contains a list of regular expressions which attempt to
        match up to a portal's "callback url" (a.k.a. Service URL) or client
@@ -394,6 +266,7 @@
     <portal>/.*\.ncsa\.uiuc\.edu/</portal>
   </portallist>
   -->
+
 
   <!-- <portallistaction>
        This block works in conjunction with the <portallist> block. It has
@@ -421,22 +294,6 @@
   </portallistaction>
   -->
 
-  <!-- <dnformat>
-       This is a simple option that dictates the format of the certificate
-       subject DN displayed to the user. It can be one of several values:
-       * oneline - This is the default which will be used if no value is
-                   specified. It displays the DN in the "oneline" format as
-                   used by openssl. It looks like this:
-                   /DC=org/DC=cilogon/C=US/O=IdP Name/CN=Full Name A123
-       * rfc2253 - This displays the DN in the "rfc2253" format as used in
-                   openssl. It looks like this:
-                   CN=Full Name A123,O=IdP Name,C=US,DC=cilogon,DC=org
-       Any other value is ignored and defaults to "oneline".
-  -->
-  <!--
-  <dnformat>rfc2253</dnformat>
-  -->
-
   <!-- <forceauthn>
        If set to 1, make the user reauthenticate at the IdP every time,
        assuming the CILogon session cookie has been cleared. For
@@ -449,15 +306,17 @@
   <forceauthn>1</forceauthn>
   -->
 
+
   <!-- <wayfcancelbutton>
        If set to 1, show an additional button on the "Select an Identity
        Provider" page "Cancel", which would either send the user to
-       www.cilogon.org (in the case of PKCS12 certificates) or back to the
-       originating portal (in the case of OAuth).
+       www.cilogon.org or back to the originating portal (in the case of
+       OAuth2/OIDC flow).
   -->
   <!--
   <wayfcancelbutton>1</wayfcancelbutton>
    -->
+
 
   <!-- <logofftextbox>
        If set to 1, do not show the "Log Off" button. Instead, show a text
@@ -467,13 +326,6 @@
   <logofftextbox>1</logofftextbox>
   -->
 
-  <!-- <expandcreatecert>
-       If set to 1, automatically expand the "Create Password-Protected
-       Certificate" collapsible card. (The default is collapsed.)
-  -->
-  <!--
-  <expandcreatecert>1</expandcreatecert>
-  -->
 
   <!-- <banner>
        Text to be shown in an informational banner for this skin at the top
@@ -486,6 +338,7 @@
   at &lt;a href="mailto:help@project.org"&gt;help@project.org&lt;/a&gt;.
   </banner>
   -->
+
 
   <!-- <footertext>
        The full HTML to show at the bottom of each page. The default HTML is
@@ -505,6 +358,7 @@
     of support for this site.&lt;/p&gt;
   </footertext>
   -->
+
 
   <!-- <selecthelp>
        The help text for the floating help bubble (?) text that appears
@@ -532,6 +386,7 @@
   </selecthelp>
   -->
 
+
   <!-- <maxrecentidps>
        The maximum number of recent IdPs to show at the top of the "Select
        an Identity Provider" list. Valid values are 1 to 10. Defaults to 5.
@@ -541,6 +396,7 @@
   <!--
   <maxrecentidps>5</maxrecentidps>
   -->
+
 
   <!-- <extrahtml>
        CIL-1643 Add extra HTML at the start of the <body> tag. This allows
@@ -557,6 +413,7 @@
   &lt;div&gt;
   </extrahtml>
    -->
+
 
   <!-- <extrascript>
        CIL-1643 Add extra <script> at the end of the <body> tag. This allows
@@ -576,6 +433,7 @@
   &lt;/script&gt;
   </extrascript>
   -->
+
 
   <!-- <extrapage>
        CIL-1643 For use by <extrahtml> and <extrascript>, <extrapage>
@@ -625,4 +483,19 @@
   <!--
   <defaultlanguage>en_US</defaultlanguage>
   -->
+
+  <!-- <initialrecentidps>
+       CIL-2272 (and CIL-2268) A comma-separated list of IdPs that appear
+       at the top of the "Select an Identity Provider" list when a user
+       first visits cilogon.org. If not configured, this defaults to the
+       'social' Identity providers ORCID, Google, Microsoft, and GitHub.
+       This option was requested by ACCESS since they did not want to
+       promote the social IdPs to new users. TIP: if you don't want any
+       IdPs to appear in the list of recent IdPs for new users, then set
+       this option to the be the same as <initialidp> .
+  -->
+  <!--
+  <initialrecentidps>http://orcid.org/oauth/authorize,http://google.com/accounts/o8/id,http://login.microsoftonline.com/common/oauth2/v2.0/authorize,http://github.com/login/oauth/authorize</initialrecentidps>
+  -->
+
 </config>

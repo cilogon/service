@@ -8,7 +8,7 @@
 
 /*
 define('BANNER_TEXT',
-       'We are currently experiencing problems issuing certificates. We are
+       'We are currently experiencing problems. System administrators are
        working on a solution. We apologize for the inconvenience.'
 );
 */
@@ -82,12 +82,6 @@ define('DEFAULT_IDP_JSON', __DIR__ . '/include/idplist.json');
 define('TEST_IDP_XML', __DIR__ . '/include/testidplist.xml');
 
 /**
- * The full path of the directory containing temporary directories
- * for generated PKCS12 files.
- */
-define('DEFAULT_PKCS12_DIR', __DIR__ . '/pkcs12/');
-
-/**
  * The default hostname of the service website. This is used as the public-
  * facing hostname and returned by Util::getHN() in the case that HTTP_HOST
  * is not set.
@@ -101,24 +95,6 @@ define('DEFAULT_HOSTNAME', 'cilogon.org');
  * for UK and Australian domains such as example.org.au).
  */
 define('DEFAULT_DOMAINNAME', 'cilogon.org');
-
-/**
- * This array is used by Util::getMachineHostname to determine the public-
- * facing FQDN for (1) the PKCS12 certificate download link and (2) the
- * Shibboleth Single Sign-on session initiator URL. It maps the local
- * machine name (uname) to a 'cilogon.org' name. If no mapping exists,
- * then DEFAULT_HOSTNAME is used.
- */
-define('HOSTNAME_ARRAY', array(
-    'poloa.ncsa.illinois.edu' => 'polo1.cilogon.org' ,
-    'polob.ncsa.illinois.edu' => 'polo2.cilogon.org' ,
-    'poloc.ncsa.illinois.edu' => 'test.cilogon.org' ,
-    'polod.ncsa.illinois.edu' => 'dev.cilogon.org' ,
-    'poloj.ncsa.illinois.edu' => 'polo1.cilogon.org' ,
-    'polok.ncsa.illinois.edu' => 'polo2.cilogon.org' ,
-    'polol.ncsa.illinois.edu' => 'test.cilogon.org' ,
-    'fozzie.nics.utk.edu'     => 'polo3.cilogon.org' ,
-));
 
 /**
  * If HOSTNAME_FOOTER is defined as 'true', the local hostname will be
@@ -142,60 +118,6 @@ define('EMAIL_IDP_UPDATES', 'idp-updates@cilogon.org');
  */
 define('DEFAULT_LOGTYPE', 'syslog');
 define('DEFAULT_LOGNAME', '');
-
-/**
- * The directory for XSEDE USAGE CSV files to be uploaded. Comment out or
- * set to empty string to prevent writing XSEDE USAGE messages. You must
- * create the directory beforehand and set write permissions appropriately.
- */
-//define('XSEDE_USAGE_DIR', '');
-
-/**
- * If you want to completely disable the ability to fetch X509 certificates,
- * set DISABLE_X509 to true. (Defaults to false.) This is similiar to
- * setting MYPROXY_LOGON below to empty string, but completely hides the
- * "Create Password-Protected Certificate" box, and also checks if the
- * OIDC transaction has the edu.ncsa.uiuc.myproxy.getcert scope. It also
- * prevents ECP clients from generating PKCS12/PEM certificates. If this
- * is set to true, it overrides DISABLE_X509_WEB and DISABLE_X509_ECP.
- *
- */
-//define('DISABLE_X509', true);
-
-/**
- * To disable X509 certificates for the web front-end and OIDC clients,
- * set DISABLE_X509_WEB to true. (Defauls to false.) This completely hides
- * the "Create Password-Protected Certificate" box, and also checks if the
- * OIDC transaction has the edu.ncsa.uiuc.myproxy.getcert scope.
- */
-//define('DISABLE_X509_WEB', true);
-
-/**
- * To disable X509 certificates for ECP clients, set DISABLE_X509_ECP to
- * true. (Defauls to false.) This prevents ECP clients from generating
- * PKCS12/PEM certificates.
- */
-//define('DISABLE_X509_ECP', true);
-
-/**
- * In order for CILogon to be able to generate X.509 certificates, the
- * myproxy-logon binary must be installed and set in the MYPROXY_LOGON
- * define. If left blank, X.509 certificate functionality will be disabled.
- * Also, be sure to set the hostname(s) and port of the MyProxy server, as
- * well as the default certifcate lifetime (in hours).
- */
-define('MYPROXY_LOGON', '/usr/bin/myproxy-logon');
-define('MYPROXY_HOST', 'myproxy.cilogon.org,myproxy2.cilogon.org');
-define('MYPROXY_PORT', '7512');
-define('MYPROXY_LIFETIME', '12');
-define('MYPROXY_CLIENT_CRED', '/var/www/conf/hostcred.pem');
-// Define MYPROXY_SERVER_DN_MAP for hostnames that don't match root CA name.
-define('MYPROXY_SERVER_DN_MAP', array(
-    'myproxy2.cilogon.org' =>
-        '/DC=org/DC=cilogon/C=US/O=CILogon/CN=myproxy.cilogon.org',
-    'myproxy3.cilogon.org' =>
-        '/DC=org/DC=cilogon/C=US/O=CILogon/CN=myproxy.cilogon.org'
-));
 
 /**
  * Define where to store PHP sessions. Must be one of:
@@ -411,16 +333,3 @@ define('DISABLE_LIGO_ALERTS', false);
  */
 //define('OMIT_IDP', true);
 
-/**
- * CIL-2185 An array of IdP entityIDs and their associated max lifetimes for
- * certificates fetched via ECP. This allows for the ECP X.509 certificate
- * maximum lifetime to be set on a per-IdP basis. (Lifetime is in hours.) If
- * the max lifetime is set to 0 (zero), then ECP certificate requests will
- * return an error message indicating that ECP is disabled for that IdP.
- */
-/*
-define('ECP_IDP_MAX_LIFETIME_ARRAY', array(
-    'https://idp.ncsa.illinois.edu/idp/shibboleth' => 8,
-    'https://idp.fnal.gov/idp/shibboleth' => 24,
-));
-*/
