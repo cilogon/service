@@ -512,7 +512,7 @@ function getTitleText($cookie)
         "entitlement" => _("A list of URIs representing permissions to access a resource or service."),
         "eppn" => _("'eduPerson Principal Name' - a SAML attribute set by your Identity Provider."),
         "eptid" => _("'eduPerson Targeted Identifier' - a SAML attribute set by your Identity Provider."),
-        "failureuri" => _("A URL used by portals in case of error.").
+        "failureuri" => _("A URL used by portals in case of error."),
         "first_name" => _("Your given name set by your Identity Provider."),
         "idp_display_name" => _("The display name of your chosen Identity Provider."),
         "idp" => _("The authentication URI of your chosen Identity Provider."),
