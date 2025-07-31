@@ -22,11 +22,11 @@ echo '
         ', Content::getIcon('fa-exclamation-triangle fa-2x', 'gold'), '
         </div> <!-- end col-1 -->
         <div class="col">
-          <div class="card-text my-2">
+          <div class="card-text my-2" id="id=maint-1">
             ',
             _('The CILogon Service is currently undergoing maintenance. Please try again in a few minutes.'), '
           </div> <!-- end card-text -->
-          <div class="card-text my-2">
+          <div class="card-text my-2" id="id=maint-2">
             ',
             _('For more information, please see'),
             ' <a target="_blank" href="https://cilogon.statuspage.io/">cilogon.statuspage.io</a> .

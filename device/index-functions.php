@@ -80,7 +80,7 @@ function printUserCodePage()
 
     echo '
       <div class="card-body px-5">
-        <div class="card-text my-2">
+        <div class="card-text my-2" id="id-device-flow-1">
           ',
           _('Please enter the user code displayed on your device. ' .
           'If you do not have a user code, please proceed to the') ,
@@ -254,7 +254,7 @@ function printMainPage()
 
     if (strlen($errstr) > 0) {
         Content::printErrorBox(
-            '<div class="card-text my-2">' .
+            '<div class="card-text my-2" id="id-device-flow-2">' .
             $errstr . ' ' .
             _('Please return to your device and begin a new request.') .
             '</div> <!-- end card-text -->'

@@ -35,7 +35,7 @@ function printLogonPage($clearcookies = false)
 
     echo '
         <div class="card-body px-5">
-          <div class="card-text my-2">
+          <div class="card-text my-2" id="id-testidp-1">
             ',
             _('To test that your identity provider works with CILogon, ' .
             'please select it from the list below and Log On.'), '
@@ -74,7 +74,7 @@ function printMainPage()
 
     echo '
         <div class="card-body px-5">
-          <div class="card-text my-2">
+          <div class="card-text my-2" id="id-testidp-2">
             ',
             _('Thank you for your interest in the CILogon Service. ' .
             'This page enables you to verify that all necessary ' .

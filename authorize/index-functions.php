@@ -67,7 +67,7 @@ function printOIDCErrorPage()
 
     echo '
         <div class="card-body px-5">
-          <div class="card-text my-2">
+          <div class="card-text my-2" id="id-oidc-error-1">
             ',
             _('You have reached the CILogon OAuth2/OpenID Connect (OIDC) Authorization Endpoint. This service is for use by OAuth2/OIDC Relying Parties (RPs) to authorize users of the CILogon Service. End users should not normally see this page.'), '
           </div> <!-- end row -->
@@ -79,11 +79,11 @@ function printOIDCErrorPage()
         echo '<div class="alert alert-danger" role="alert">', $client_error_msg, '</div>';
     } else {
         echo '
-          <div class="card-text my-2">
+          <div class="card-text my-2" id="id-oidc-error-2">
             ',
             _('Possible reasons for seeing this page include'), ':
           </div> <!-- end row -->
-          <div class="card-text my-2">
+          <div class="card-text my-2" id="id-oidc-error-3">
             <ul>
               <li>', _('You navigated directly to this page.'), '</li>
               <li>', _('You clicked your browser\'s Back button.'), '</li>
@@ -94,11 +94,11 @@ function printOIDCErrorPage()
     }
 
     echo '
-          <div class="card-text my-2">
+          <div class="card-text my-2" id="id-oidc-error-4">
             ',
             _('For assistance, please contact us at the email address at the bottom of the page.'), '
           </div>
-          <div class="card-text my-2">
+          <div class="card-text my-2" id="id-oidc-error-5">
             ',
             _('Note: You must enable cookies in your web browser to use this site.'), '
           </div>

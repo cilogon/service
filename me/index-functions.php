@@ -70,7 +70,7 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
 
     echo '
         <div class="card-body px-5">
-          <div class="card-text my-2">
+          <div class="card-text my-2" id="id-me-cilogon-attributes-1">
             ',
             _('This page enables you to view and delete various ' .
             'cookies associated with the'), ' ' ,
@@ -99,7 +99,7 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
     // deleted, output the appropriate 'Delete ...' button(s).
     if (($browsercount > 0) || ($sessioncount > 0)) {
         echo '
-          <div class="card-text my-2">
+          <div class="card-text my-2" id="id-me-cilogon-attributes-2">
             ',
             _('You can delete cookies individually by checking the ' .
             'associated checkbox(es) and clicking the &quot;Delete ' .
