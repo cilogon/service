@@ -81,12 +81,12 @@ function printOIDCErrorPage()
         echo '
           <div class="card-text my-2">
             ',
-            _('Possible reasons for seeing this page include:'), '
+            _('Possible reasons for seeing this page include'), ':
           </div> <!-- end row -->
           <div class="card-text my-2">
             <ul>
               <li>', _('You navigated directly to this page.'), '</li>
-              <li>', _('You clicked your browser\'s "Back" button.'), '</li>
+              <li>', _('You clicked your browser\'s Back button.'), '</li>
               <li>', _('There was a problem with the OpenID Connect client.'), '</li>
             </ul>
           </div> <!-- end row -->
@@ -424,7 +424,7 @@ function verifyOIDCParams()
                             } else { // For other errors, display error to user
                                 Util::setSessionVar(
                                     'client_error_msg',
-                                    _('There was an unrecoverable error during the transaction. ') .
+                                    _('There was an unrecoverable error during the transaction.') .
                                     (!empty($errortxt) ? "<p><b>Error message: $errortxt</b><p>" : '')
                                 );
                                 $clientparams = array();

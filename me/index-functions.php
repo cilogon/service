@@ -73,18 +73,18 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
           <div class="card-text my-2">
             ',
             _('This page enables you to view and delete various ' .
-            'cookies associated with the '),
+            'cookies associated with the'), ' ' ,
             '<a target="_blank" href="..">', 
             _('CILogon Service'), '</a>. ',
             _('There are three sections below.'), '
           </div> <!-- end card-text -->
           <ol>
             <li><b>', _('Browser Cookies'), '</b> - ', _('These are ' .
-            '&quot;cookies&quot; which are stored in your browser. ' .
+            'cookies which are stored in your browser. ' .
             'They are used as preferences for the CILogon Service.'), '
             </li>
             <li><b>', _('Session Variables'), '</b> - ', _('These are ' .
-            '&quot;short-lived&quot; values related to your current ' .
+            'short-lived values related to your current ' .
             'CILogon session. Deleting any of these values may require ' .
             'you to re-logon.'), '
             </li>
@@ -104,7 +104,7 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
             _('You can delete cookies individually by checking the ' .
             'associated checkbox(es) and clicking the &quot;Delete ' .
             'Checked&quot; button. You can also delete groups of ' .
-            'cookies by clicking ');
+            'cookies by clicking'), ' ';
         if ($browsercount > 0) {
             echo _('the &quot;Delete Browser Cookies&quot; button');
             if ($sessioncount > 0) {

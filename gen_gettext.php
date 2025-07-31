@@ -228,7 +228,14 @@ $phpScanner = new PhpScanner(
     Translations::create('cilogon')
 );
 $phpScanner->setDefaultDomain('cilogon');
-foreach (glob('./{*,*/*,*/*/*,*/*/*/*,*/*/*/*/*}.php', GLOB_BRACE) as $file) {
+foreach (glob('./{*,*/*,*/*/*,*/*/*/*,*/*/*/*/*,*/*/*/*/*/*}.php', GLOB_BRACE) as $file) {
+    // Skip non-cilogon vendor libraries
+    if (
+        (preg_match('%\./vendor/%', $file)) &&
+        (!preg_match('%\./vendor/cilogon/%', $file))
+    ) {
+        continue;
+    }
     $phpScanner->scanFile($file);
 }
 list('cilogon' => $translations) = $phpScanner->getTranslations();

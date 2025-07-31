@@ -303,7 +303,7 @@ function getDeviceErrorStr($errnum)
 {
     $errstr = _('Error with user code.'); // Generic error message
     if (!is_null($errnum)) {
-        $errstr = _('Error: ') .
+        $errstr = _('Error') . ': ' .
             @DBService::$STATUS_TEXT[array_search($errnum, DBService::$STATUS)];
         // Customize error messages for device code flow
         if ($errnum == 0x10001) {
