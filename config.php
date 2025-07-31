@@ -332,4 +332,3 @@ define('DISABLE_LIGO_ALERTS', false);
  * entityIDs without adverse effects on their users.
  */
 //define('OMIT_IDP', true);
-
