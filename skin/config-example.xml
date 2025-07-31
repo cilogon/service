@@ -83,8 +83,9 @@
            BEFORE the <idpgreenlit> and <idpredlit> lists, so you can use
            both types to refine the list of IdPs.
        (2) OAuth2 IdPs (e.g., GitHub, Google, Microsoft, ORCID) are NOT
-           affected by <regauthgreenlit> or <regauthredlit>. To remove
-           the OAuth2 IdPs, use <idpredlit>.
+           affected by <regauthgreenlit> or <regauthredlit>. To add
+           OAuth2 IdPs when using <regauthgreenlit>, use <idpgreenlit>.
+           To remove OAuth2 IdPs when using <regauthredlit>, use <idpredlit>.
        To get the current list of Registration Authorities, visit
        https://technical.edugain.org/status or run the following command:
 
