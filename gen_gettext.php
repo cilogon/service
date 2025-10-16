@@ -245,20 +245,24 @@ foreach ($translations as $translation) {
     $translation->translate($translation->getOriginal());
 }
 $poGenerator_en_US = new PoGenerator();
+$moGenerator_en_US = new MoGenerator();
 if (!is_dir('locale/en_US')) {
     mkdir('locale/en_US', 0755, true);
 }
 $poGenerator_en_US->generateFile($translations, 'locale/en_US/cilogon.po');
+$moGenerator_en_US->generateFile($translations, 'locale/en_US/cilogon.mo');
 
 // Next, flip the text upside down
 foreach ($translations as $translation) {
     $translation->translate(flipString($translation->getOriginal()));
 }
 $poGenerator_en_UM = new PoGenerator();
+$moGenerator_en_UM = new MoGenerator();
 if (!is_dir('locale/en_UM')) {
     mkdir('locale/en_UM', 0755, true);
 }
 $poGenerator_en_UM->generateFile($translations, 'locale/en_UM/cilogon.po');
+$moGenerator_en_UM->generateFile($translations, 'locale/en_UM/cilogon.mo');
 
 
 
