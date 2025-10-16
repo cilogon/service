@@ -19,8 +19,10 @@ $submit = Util::getCsrf()->verifyCookieAndGetSubmit();
 Util::unsetSessionVar('submit');
 Util::unsetSessionVar('storeattributes'); // Used only by /testidp/
 
-$log = new Loggit();
-$log->info('submit="' . $submit . '"');
+if (strlen($submit) > 0) {
+    $log = new Loggit();
+    $log->info('submit="' . $submit . '"');
+}
 
 // Depending on the value of the clicked 'submit' button or the
 // equivalent PHP session variable, take action or print out HTML.

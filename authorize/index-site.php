@@ -19,8 +19,10 @@ $submit = Util::getCsrf()->verifyCookieAndGetSubmit();
 Util::unsetSessionVar('submit');
 Util::unsetSessionVar('storeattributes'); // Used only by /testidp/
 
-$log = new Loggit();
-$log->info('submit="' . $submit . '"');
+if (strlen($submit) > 0) {
+    $log = new Loggit();
+    $log->info('submit="' . $submit . '"');
+}
 
 // First, check to see if the info related to the OIDC client exists
 // in the current PHP session. If so, continue processing based on the
