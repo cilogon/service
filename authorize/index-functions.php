@@ -127,7 +127,7 @@ function printMainPage()
     $redirect = 'Location: ' . $clientparams['redirect_url'];
 
     $log = new Loggit();
-    $log->info('Calling setTransactionState dbService method...');
+    $log->info('Calling setTransactionState dbService method...', false, false);
 
     $dbs = new DBService();
     if (
@@ -323,7 +323,7 @@ function verifyOIDCParams()
                 $log->error('Error in verifyOIDCParams(): ' .
                     'cUrl Error = ' .  curl_error($ch) .
                     ', URL Accessed = ' . $url .
-                    'clientparams = ' . json_encode($clientparams));
+                    'clientparams = ' . json_encode($clientparams, JSON_UNESCAPED_SLASHES));
                 Util::sendErrorAlert(
                     'cUrl Error',
                     'cUrl Error    = ' . curl_error($ch) . "\n" .
@@ -385,8 +385,8 @@ function verifyOIDCParams()
                                 'there was no "code" in the JSON token. ' .
                                 ((strlen($output) > 0) ?
                                     "Returned output = $output" : '')) .
-                                ' curl_getinfo = ' . json_encode($info) .
-                                ' clientparams = ' . json_encode($clientparams));
+                                ' curl_getinfo = ' . json_encode($info, JSON_UNESCAPED_SLASHES) .
+                                ' clientparams = ' . json_encode($clientparams, JSON_UNESCAPED_SLASHES));
                             // CIL-1098 Stop sending so many error emails
                             /*
                             Util::sendErrorAlert(
@@ -515,8 +515,8 @@ function verifyOIDCParams()
                             'an HTTP response other than 200 or 302. ' .
                             ((strlen($output) > 0) ?
                                 "Returned output = $output" : '') .
-                            ' curl_getinfo = ' . json_encode($info) .
-                            ' clientparams = ' . json_encode($clientparams));
+                            ' curl_getinfo = ' . json_encode($info, JSON_UNESCAPED_SLASHES) .
+                            ' clientparams = ' . json_encode($clientparams, JSON_UNESCAPED_SLASHES));
                         Util::sendErrorAlert(
                             'OA4MP OIDC authz endpoint error',
                             'The OA4MP OIDC authorization endpoint returned ' .
@@ -615,7 +615,7 @@ function verifyOIDCParams()
             'The CILogon OIDC authorization endpoint received a request ' .
             'from an OIDC client, but at least one of the required ' .
             'parameters (' . $missing . ') was missing. ' .
-            'clientparams = ' . json_encode($clientparams));
+            'clientparams = ' . json_encode($clientparams, JSON_UNESCAPED_SLASHES));
         // CIL-1098 Don't send errors for client-initiated errors
         /*
         Util::sendErrorAlert(
@@ -660,7 +660,7 @@ function verifyOIDCParams()
         (!($clientparams['clientstatus'] & 1))
     ) { // STATUS_OK* are even
         $retval = true;
-        Util::setSessionVar('clientparams', json_encode($clientparams));
+        Util::setSessionVar('clientparams', json_encode($clientparams, JSON_UNESCAPED_SLASHES));
     }
 
     return $retval;

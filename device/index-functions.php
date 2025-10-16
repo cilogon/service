@@ -169,7 +169,7 @@ function printMainPage()
         // If user logged in, call setTransactionState to associate
         // the user_uid with the 'grant' (a.k.a., 'code').
         if ($user_code_approved) {
-            $log->info('Calling setTransactionState dbService method...');
+            $log->info('Calling setTransactionState dbService method...'. false, false);
             $dbs = new DBService();
             if (
                 ($dbs->setTransactionState(
@@ -404,7 +404,7 @@ function verifyUserCodeParam()
         (!($clientparams['clientstatus'] & 1))
     ) { // STATUS_OK codes are even
         $retval = true;
-        Util::setSessionVar('clientparams', json_encode($clientparams));
+        Util::setSessionVar('clientparams', json_encode($clientparams, JSON_UNESCAPED_SLASHES));
     } else {
         Util::unsetSessionVar('clientparams');
     }
@@ -428,7 +428,7 @@ function verifyUserCodeParam()
         if (strlen($initialidp) > 0) {
             $clientparams['initialidp'] = $initialidp;
         }
-        Util::setSessionVar('clientparams', json_encode($clientparams));
+        Util::setSessionVar('clientparams', json_encode($clientparams, JSON_UNESCAPED_SLASHES));
     }
 
     return $retval;
