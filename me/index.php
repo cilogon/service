@@ -9,7 +9,7 @@ require_once __DIR__ . '/index-functions.php';
 
 use CILogon\Service\Util;
 
-Util::startPHPSession();
+Util::cilogonInit();
 
 // This array contains the cookies that we do not want to show to the
 // user because we don't want these cookies to be deleted. The cookie

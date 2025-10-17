@@ -12,7 +12,7 @@ use CILogon\Service\Content;
 use CILogon\Service\ShibError;
 use CILogon\Service\Loggit;
 
-Util::startPHPSession();
+Util::cilogonInit();
 
 // Util::startTiming();
 // Util::$timeit->printTime('MAIN Program START...');

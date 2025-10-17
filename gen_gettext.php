@@ -10,6 +10,7 @@ use Gettext\Scanner\PhpScanner;
 use Gettext\Translations;
 use Gettext\Loader\PoLoader;
 use Gettext\Generator\PoGenerator;
+use Gettext\Generator\MoGenerator;
 
 function flipString($strtoflip)
 {
@@ -246,11 +247,11 @@ foreach ($translations as $translation) {
 }
 $poGenerator_en_US = new PoGenerator();
 $moGenerator_en_US = new MoGenerator();
-if (!is_dir('locale/en_US')) {
-    mkdir('locale/en_US', 0755, true);
+if (!is_dir('locale/en_US/LC_MESSAGES')) {
+    mkdir('locale/en_US/LC_MESSAGES', 0755, true);
 }
-$poGenerator_en_US->generateFile($translations, 'locale/en_US/cilogon.po');
-$moGenerator_en_US->generateFile($translations, 'locale/en_US/cilogon.mo');
+$poGenerator_en_US->generateFile($translations, 'locale/en_US/LC_MESSAGES/cilogon.po');
+$moGenerator_en_US->generateFile($translations, 'locale/en_US/LC_MESSAGES/cilogon.mo');
 
 // Next, flip the text upside down
 foreach ($translations as $translation) {
@@ -258,11 +259,11 @@ foreach ($translations as $translation) {
 }
 $poGenerator_en_UM = new PoGenerator();
 $moGenerator_en_UM = new MoGenerator();
-if (!is_dir('locale/en_UM')) {
-    mkdir('locale/en_UM', 0755, true);
+if (!is_dir('locale/en_UM/LC_MESSAGES')) {
+    mkdir('locale/en_UM/LC_MESSAGES', 0755, true);
 }
-$poGenerator_en_UM->generateFile($translations, 'locale/en_UM/cilogon.po');
-$moGenerator_en_UM->generateFile($translations, 'locale/en_UM/cilogon.mo');
+$poGenerator_en_UM->generateFile($translations, 'locale/en_UM/LC_MESSAGES/cilogon.po');
+$moGenerator_en_UM->generateFile($translations, 'locale/en_UM/LC_MESSAGES/cilogon.mo');
 
 
 

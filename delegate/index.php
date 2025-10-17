@@ -9,7 +9,7 @@ include_once __DIR__ . '/../config.secrets.php';
 use CILogon\Service\Util;
 use CILogon\Service\Content;
 
-Util::startPHPSession();
+Util::cilogonInit();
 
 Content::printHeader('CILogon Delegation Service');
 Content::printCollapseBegin('maint', 'OAuth1 Service Retired', false);

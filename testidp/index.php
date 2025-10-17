@@ -11,7 +11,7 @@ use CILogon\Service\Util;
 use CILogon\Service\Content;
 use CILogon\Service\ShibError;
 
-Util::startPHPSession();
+Util::cilogonInit();
 
 // Check for a Shibboleth error and handle it
 $shiberror = new ShibError();

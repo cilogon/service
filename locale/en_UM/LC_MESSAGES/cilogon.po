@@ -7,12 +7,12 @@ msgid "Welcome To The CILogon Service"
 msgstr "ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥꓕ oꓕ ǝɯoɔןǝM"
 
 #: ./index-functions.php:55
-#: ./index-site.php:55
-#: ./index.php:55
-#: ./authorize/index-site.php:64
-#: ./authorize/index.php:64
-#: ./device/index-site.php:65
-#: ./device/index.php:65
+#: ./index-site.php:57
+#: ./index.php:57
+#: ./authorize/index-site.php:66
+#: ./authorize/index.php:66
+#: ./device/index-site.php:67
+#: ./device/index.php:67
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1272
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1273
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1536
@@ -37,43 +37,43 @@ msgstr "˙sǝʇnuᴉɯ ʍǝɟ ɐ uᴉ uᴉɐƃɐ ʎɹʇ ǝsɐǝןԀ ˙ǝɔuɐuǝ
 msgid "For more information, please see"
 msgstr "ǝǝs ǝsɐǝןd 'uoᴉʇɐɯɹoɟuᴉ ǝɹoɯ ɹoℲ"
 
-#: ./index-site.php:41
-#: ./index.php:41
-#: ./authorize/index-site.php:36
-#: ./authorize/index.php:36
-#: ./device/index-site.php:36
-#: ./device/index.php:36
+#: ./index-site.php:43
+#: ./index.php:43
+#: ./authorize/index-site.php:38
+#: ./authorize/index.php:38
+#: ./device/index-site.php:38
+#: ./device/index.php:38
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:2361
 msgid "Log On"
 msgstr "uO ƃoꓶ"
 
-#: ./index-site.php:42
-#: ./index.php:42
-#: ./authorize/index-site.php:37
-#: ./authorize/index.php:37
-#: ./device/index-site.php:37
-#: ./device/index.php:37
+#: ./index-site.php:44
+#: ./index.php:44
+#: ./authorize/index-site.php:39
+#: ./authorize/index.php:39
+#: ./device/index-site.php:39
+#: ./device/index.php:39
 msgid "Continue"
 msgstr "ǝnuᴉʇuoƆ"
 
-#: ./index-site.php:46
-#: ./index.php:46
+#: ./index-site.php:48
+#: ./index.php:48
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1207
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1222
 msgid "Log Off"
 msgstr "ɟɟO ƃoꓶ"
 
-#: ./index-site.php:54
-#: ./index.php:54
+#: ./index-site.php:56
+#: ./index.php:56
 msgid "Go Back"
 msgstr "ʞɔɐꓭ oꓨ"
 
-#: ./index-site.php:59
-#: ./index.php:59
-#: ./authorize/index-site.php:74
-#: ./authorize/index.php:74
-#: ./device/index-site.php:69
-#: ./device/index.php:69
+#: ./index-site.php:61
+#: ./index.php:61
+#: ./authorize/index-site.php:76
+#: ./authorize/index.php:76
+#: ./device/index-site.php:71
+#: ./device/index.php:71
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:554
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:555
 msgid "Cancel"
@@ -187,8 +187,8 @@ msgstr "ǝɔᴉʌɹǝS uoƃoꓶIƆ"
 #: ./device/index-functions.php:95
 #: ./device/index-functions.php:124
 #: ./device/index-functions.php:125
-#: ./device/index-site.php:28
-#: ./device/index.php:28
+#: ./device/index-site.php:30
+#: ./device/index.php:30
 msgid "Enter User Code"
 msgstr "ǝpoƆ ɹǝsꓵ ɹǝʇuƎ"
 

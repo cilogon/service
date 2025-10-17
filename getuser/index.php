@@ -10,7 +10,7 @@ require_once __DIR__ . '/index-functions.php';
 use CILogon\Service\Util;
 use CILogon\Service\Loggit;
 
-Util::startPHPSession();
+Util::cilogonInit();
 
 // Check the csrf cookie against either a hidden <form> element or a
 // PHP session variable, and get the value of the 'submit' element.

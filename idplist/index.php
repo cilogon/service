@@ -19,7 +19,7 @@ include_once __DIR__ . '/../config.secrets.php';
 use CILogon\Service\Util;
 use CILogon\Service\Content;
 
-Util::startPHPSession();
+Util::cilogonInit();
 
 $idparray = array(); // Array of IdP objects to be converted to JSON
 $idplist = Util::getIdpList();
