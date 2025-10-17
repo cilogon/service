@@ -468,9 +468,9 @@
   -->
   <!--
   <languages>
-    <lang>en_US</lang>
-    <lang>fr_CA</lang>
-    <lang>de_DE</lang>
+    <lang>en</lang>
+    <lang>fr</lang>
+    <lang>de</lang>
   </languages>
   -->
 
@@ -482,7 +482,7 @@
        first <lang> otherwise.
   -->
   <!--
-  <defaultlanguage>en_US</defaultlanguage>
+  <defaultlanguage>en</defaultlanguage>
   -->
 
   <!-- <initialrecentidps>

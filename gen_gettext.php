@@ -241,29 +241,29 @@ foreach (glob('./{*,*/*,*/*/*,*/*/*/*,*/*/*/*/*,*/*/*/*/*/*}.php', GLOB_BRACE) a
 }
 list('cilogon' => $translations) = $phpScanner->getTranslations();
 
-// First, just copy original to translation for en_US
+// First, just copy original to translation for en
 foreach ($translations as $translation) {
     $translation->translate($translation->getOriginal());
 }
-$poGenerator_en_US = new PoGenerator();
-$moGenerator_en_US = new MoGenerator();
-if (!is_dir('locale/en_US/LC_MESSAGES')) {
-    mkdir('locale/en_US/LC_MESSAGES', 0755, true);
+$poGenerator_en = new PoGenerator();
+$moGenerator_en = new MoGenerator();
+if (!is_dir('locale/en/LC_MESSAGES')) {
+    mkdir('locale/en/LC_MESSAGES', 0755, true);
 }
-$poGenerator_en_US->generateFile($translations, 'locale/en_US/LC_MESSAGES/cilogon.po');
-$moGenerator_en_US->generateFile($translations, 'locale/en_US/LC_MESSAGES/cilogon.mo');
+$poGenerator_en->generateFile($translations, 'locale/en/LC_MESSAGES/cilogon.po');
+$moGenerator_en->generateFile($translations, 'locale/en/LC_MESSAGES/cilogon.mo');
 
 // Next, flip the text upside down
 foreach ($translations as $translation) {
     $translation->translate(flipString($translation->getOriginal()));
 }
-$poGenerator_en_UM = new PoGenerator();
-$moGenerator_en_UM = new MoGenerator();
-if (!is_dir('locale/en_UM/LC_MESSAGES')) {
-    mkdir('locale/en_UM/LC_MESSAGES', 0755, true);
+$poGenerator_ru = new PoGenerator();
+$moGenerator_ru = new MoGenerator();
+if (!is_dir('locale/ru/LC_MESSAGES')) {
+    mkdir('locale/ru/LC_MESSAGES', 0755, true);
 }
-$poGenerator_en_UM->generateFile($translations, 'locale/en_UM/LC_MESSAGES/cilogon.po');
-$moGenerator_en_UM->generateFile($translations, 'locale/en_UM/LC_MESSAGES/cilogon.mo');
+$poGenerator_ru->generateFile($translations, 'locale/ru/LC_MESSAGES/cilogon.po');
+$moGenerator_ru->generateFile($translations, 'locale/ru/LC_MESSAGES/cilogon.mo');
 
 
 
