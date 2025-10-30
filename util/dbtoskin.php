@@ -45,7 +45,7 @@ if ((is_dir($basedir)) && (is_readable($basedir))) {
     $overwrite = false;
     $db = DB::connect($dsn, $opts);
     if (!PEAR::isError($db)) {
-        $res = $db->query('SELECT * FROM skins');
+        $res = $db->query('SELECT name,config,css FROM skins');
         if (!DB::isError($res)) {
             while ($res->fetchInto($row, DB_FETCHMODE_ASSOC)) {
                 $name = $row['name'];
