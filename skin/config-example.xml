@@ -460,9 +460,9 @@
        front-end. If not set, defaults to en_US. The <lang> tag codes
        correspond to a gettext file in the /locale directory and are
        usually of the form <language_code>_<country_code>.  See
-       https://getdocs.org/Gettext/docs/latest/Usual-Language-Codes and
-       https://getdocs.org/Gettext/docs/latest/Country-Codes for the list
-       of typical language and country codes.
+       https://www.gnu.org/software/gettext/manual/html_node/Usual-Language-Codes.html and
+       https://www.gnu.org/software/gettext/manual/html_node/Country-Codes.html
+       for the list of typical language and country codes.
 
        See also <defaultlanguage> below.
   -->

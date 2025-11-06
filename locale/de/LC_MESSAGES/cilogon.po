@@ -1,0 +1,1105 @@
+msgid ""
+msgstr ""
+"X-Domain: cilogon\n"
+
+#: ./index-functions.php:37
+msgid "Welcome To The CILogon Service"
+msgstr "Willkommen beim CiLogon Service"
+
+#: ./index-functions.php:55
+#: ./index-site.php:57
+#: ./index.php:57
+#: ./authorize/index-site.php:66
+#: ./authorize/index.php:66
+#: ./device/index-site.php:67
+#: ./device/index.php:67
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1275
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1276
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1539
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1540
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1687
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1688
+#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:256
+#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:257
+msgid "Proceed"
+msgstr "Fortfahren"
+
+#: ./index-maint.php:15
+#: ./index-maint.php:16
+msgid "Site Maintenance"
+msgstr "Wartung der Website"
+
+#: ./index-maint.php:27
+msgid "The CILogon Service is currently undergoing maintenance. Please try again in a few minutes."
+msgstr "Der CiLogon Service wird derzeit gewartet. Bitte versuchen Sie es in ein paar Minuten erneut."
+
+#: ./index-maint.php:31
+msgid "For more information, please see"
+msgstr "Weitere Informationen finden Sie unter"
+
+#: ./index-site.php:43
+#: ./index.php:43
+#: ./authorize/index-site.php:38
+#: ./authorize/index.php:38
+#: ./device/index-site.php:38
+#: ./device/index.php:38
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2364
+msgid "Log On"
+msgstr "Einloggen"
+
+#: ./index-site.php:44
+#: ./index.php:44
+#: ./authorize/index-site.php:39
+#: ./authorize/index.php:39
+#: ./device/index-site.php:39
+#: ./device/index.php:39
+msgid "Continue"
+msgstr "Weiter"
+
+#: ./index-site.php:48
+#: ./index.php:48
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1210
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1225
+msgid "Log Off"
+msgstr "Abmelden"
+
+#: ./index-site.php:56
+#: ./index.php:56
+msgid "Go Back"
+msgstr "Geh zurück"
+
+#: ./index-site.php:61
+#: ./index.php:61
+#: ./authorize/index-site.php:76
+#: ./authorize/index.php:76
+#: ./device/index-site.php:71
+#: ./device/index.php:71
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:557
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:558
+msgid "Cancel"
+msgstr "Stornieren"
+
+#: ./authorize/index-functions.php:28
+msgid "Welcome To The CILogon OpenID Connect Authorization Service"
+msgstr "Willkommen beim CiLogon OpenID Connect Authorization Service"
+
+#: ./authorize/index-functions.php:65
+msgid "CILogon Authorization Endpoint"
+msgstr "CIlogon-Autorisierungsendpunkt"
+
+#: ./authorize/index-functions.php:66
+msgid "CILogon OIDC Authorization Endpoint"
+msgstr "CIlogon OIDC-Autorisierungsendpunkt"
+
+#: ./authorize/index-functions.php:72
+msgid "You have reached the CILogon OAuth2/OpenID Connect (OIDC) Authorization Endpoint. This service is for use by OAuth2/OIDC Relying Parties (RPs) to authorize users of the CILogon Service. End users should not normally see this page."
+msgstr "Sie haben den CIlogon OAuth2/OpenID Connect (OIDC) Authorization Endpoint erreicht. Dieser Dienst wird von OAuth2/OIDC Relying Parties (RPs) verwendet, um Benutzer des CIlogon-Dienstes zu autorisieren. Endbenutzer sollten diese Seite normalerweise nicht sehen."
+
+#: ./authorize/index-functions.php:84
+msgid "Possible reasons for seeing this page include"
+msgstr "Mögliche Gründe für das Aufrufen dieser Seite sind"
+
+#: ./authorize/index-functions.php:88
+msgid "You navigated directly to this page."
+msgstr "Sie sind direkt zu dieser Seite navigiert."
+
+#: ./authorize/index-functions.php:89
+msgid "You clicked your browser's Back button."
+msgstr "Sie haben in Ihrem Browser auf die Schaltfläche Zurück geklickt."
+
+#: ./authorize/index-functions.php:90
+msgid "There was a problem with the OpenID Connect client."
+msgstr "Es gab ein Problem mit dem OpenID Connect-Client."
+
+#: ./authorize/index-functions.php:99
+msgid "For assistance, please contact us at the email address at the bottom of the page."
+msgstr "Wenn Sie Hilfe benötigen, kontaktieren Sie uns bitte unter der E-Mail-Adresse unten auf der Seite."
+
+#: ./authorize/index-functions.php:103
+msgid "Note: You must enable cookies in your web browser to use this site."
+msgstr "Hinweis: Sie müssen Cookies in Ihrem Webbrowser aktivieren, um diese Website nutzen zu können."
+
+#: ./authorize/index-functions.php:427
+msgid "There was an unrecoverable error during the transaction."
+msgstr "Während der Transaktion ist ein nicht behebbarer Fehler aufgetreten."
+
+#: ./authorize/index-functions.php:561
+msgid "There was an unrecoverable error during the transaction. CILogon system administrators have been notified."
+msgstr "Während der Transaktion ist ein nicht behebbarer Fehler aufgetreten. Die CIlogon-Systemadministratoren wurden benachrichtigt."
+
+#: ./authorize/index-functions.php:633
+msgid "It appears that an OpenID Connect client attempted to initiate a session with the CILogon Service, but at least one of the requried parameters was missing."
+msgstr "Es scheint, dass ein OpenID Connect-Client versucht hat, eine Sitzung mit dem iLogon-Dienst zu initiieren, aber mindestens einer der erforderlichen Parameter fehlte."
+
+#: ./authorize/index-functions.php:738
+msgid "Missing or empty scope parameter."
+msgstr "Fehlender oder leerer Bereichsparameter."
+
+#: ./authorize/index-functions.php:741
+msgid "Missing or empty client_id parameter."
+msgstr "Fehlender oder leerer client_id-Parameter."
+
+#: ./authorize/index-functions.php:744
+msgid "Missing or empty response_type parameter."
+msgstr "Fehlender oder leerer response_type-Parameter."
+
+#: ./authorize/index-functions.php:747
+msgid "Invalid characters found in scope parameter, may be URL encoded twice."
+msgstr "Im Bereichsparameter wurden ungültige Zeichen gefunden. Möglicherweise ist die URL zweimal codiert."
+
+#: ./authorize/index-functions.php:750
+msgid "Upper case characters found in scope parameter."
+msgstr "Großbuchstaben wurden im Bereichsparameter gefunden."
+
+#: ./authorize/index-functions.php:753
+msgid "Unsupported response_type parameter. Only code is supported."
+msgstr "Der response_type-Parameter wird nicht unterstützt. Nur Code wird unterstützt."
+
+#: ./authorize/index-functions.php:756
+msgid "Unsupported prompt parameter. Only login and select_account are supported."
+msgstr "Der Prompt-Parameter wird nicht unterstützt. Nur login und select_account werden unterstützt."
+
+#: ./authorize/index-functions.php:764
+msgid "Unsupported response_mode parameter."
+msgstr "Der response_mode-Parameter wird nicht unterstützt."
+
+#: ./device/index-functions.php:36
+#: ./device/index-functions.php:58
+msgid "Welcome To The CILogon Device Authorization Service"
+msgstr "Willkommen beim CiLogon Device Authorization Service"
+
+#: ./device/index-functions.php:62
+msgid "CILogon Device Flow User Code"
+msgstr "CiLogon Device Flow Benutzercode"
+
+#: ./device/index-functions.php:85
+msgid "Please enter the user code displayed on your device. If you do not have a user code, please proceed to the"
+msgstr "Bitte geben Sie den auf Ihrem Gerät angezeigten Benutzercode ein. Wenn Sie keinen Benutzercode haben, fahren Sie bitte mit dem"
+
+#: ./device/index-functions.php:87
+#: ./me/index-functions.php:78
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:30
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:42
+msgid "CILogon Service"
+msgstr "CiLogon-Dienst"
+
+#: ./device/index-functions.php:91
+#: ./device/index-functions.php:95
+#: ./device/index-functions.php:124
+#: ./device/index-functions.php:125
+#: ./device/index-site.php:30
+#: ./device/index.php:30
+msgid "Enter User Code"
+msgstr "Benutzercode eingeben"
+
+#: ./device/index-functions.php:102
+msgid "User code is alphanumeric"
+msgstr "Der Benutzercode ist alphanumerisch"
+
+#: ./device/index-functions.php:105
+msgid "Please enter a valid user code."
+msgstr "Bitte geben Sie einen gültigen Benutzercode ein."
+
+#: ./device/index-functions.php:113
+msgid "Enter the user code displayed on your device."
+msgstr "Geben Sie den auf Ihrem Gerät angezeigten Benutzercode ein."
+
+#: ./device/index-functions.php:222
+msgid "Error confirming user code: Code not found. Please enable cookies in your web browser."
+msgstr "Fehler beim Bestätigen des Benutzercodes: Code nicht gefunden. Bitte aktivieren Sie Cookies in Ihrem Webbrowser."
+
+#: ./device/index-functions.php:245
+msgid "User Code Approval"
+msgstr "Genehmigung des Benutzercodes"
+
+#: ./device/index-functions.php:248
+msgid "CILogon User Code Verification"
+msgstr "Überprüfung des CiLogon-Benutzercodes"
+
+#: ./device/index-functions.php:259
+msgid "Please return to your device and begin a new request."
+msgstr "Bitte kehren Sie zu Ihrem Gerät zurück und starten Sie eine neue Anfrage."
+
+#: ./device/index-functions.php:263
+msgid "You have successfully approved the user code. Please return to your device for further instructions."
+msgstr "Sie haben den Benutzercode erfolgreich genehmigt. Bitte kehren Sie zu Ihrem Gerät zurück, um weitere Anweisungen zu erhalten."
+
+#: ./device/index-functions.php:265
+msgid "You have successfully denied the user code. Please return to your device for further instructions."
+msgstr "Sie haben den Benutzercode erfolgreich verweigert. Bitte kehren Sie zu Ihrem Gerät zurück, um weitere Anweisungen zu erhalten."
+
+#: ./device/index-functions.php:304
+msgid "Error with user code."
+msgstr "Fehler mit dem Benutzercode."
+
+#: ./device/index-functions.php:306
+msgid "Error"
+msgstr "Fehler"
+
+#: ./device/index-functions.php:310
+msgid "Error: User code not found."
+msgstr "Fehler: Der Benutzercode wurde nicht gefunden."
+
+#: ./device/index-functions.php:312
+msgid "Error: User code expired."
+msgstr "Fehler: Der Benutzercode ist abgelaufen."
+
+#: ./device/index-functions.php:382
+msgid "Unable to find a client matching the user code."
+msgstr "Es konnte kein Client gefunden werden, der dem Benutzercode entspricht."
+
+#: ./getuser/index-functions.php:46
+msgid "Invalid state parameter."
+msgstr "Ungültiger Zustandsparameter."
+
+#: ./getuser/index-functions.php:52
+msgid "Please try again."
+msgstr "Bitte versuchen Sie es erneut."
+
+#: ./getuser/index-functions.php:54
+msgid "Empty code parameter. Please try again."
+msgstr "Leerer Codeparameter. Bitte versuchen Sie es erneut."
+
+#: ./getuser/index-functions.php:123
+msgid "Missing OAuth2 client configuration values."
+msgstr "Fehlende OAuth2-Client-Konfigurationswerte."
+
+#: ./me/index-functions.php:41
+msgid "Manage CILogon Cookies"
+msgstr "CiLogon-Cookies verwalten"
+
+#: ./me/index-functions.php:43
+msgid "Manage Cookies"
+msgstr "Cookies verwalten"
+
+#: ./me/index-functions.php:69
+msgid "CILogon Attributes"
+msgstr "CILogon-Attribute"
+
+#: ./me/index-functions.php:75
+msgid "This page enables you to view and delete various cookies associated with the"
+msgstr "Auf dieser Seite können Sie verschiedene Cookies anzeigen und löschen, die mit dem"
+
+#: ./me/index-functions.php:79
+msgid "There are three sections below."
+msgstr "Es gibt drei Abschnitte unten."
+
+#: ./me/index-functions.php:82
+#: ./me/index-functions.php:194
+#: ./me/index-functions.php:200
+msgid "Browser Cookies"
+msgstr "Browser-Cookies"
+
+#: ./me/index-functions.php:82
+msgid "These are cookies which are stored in your browser. They are used as preferences for the CILogon Service."
+msgstr "Dies sind Cookies, die in Ihrem Browser gespeichert werden. Sie werden als Einstellungen für den CiLogon Service verwendet."
+
+#: ./me/index-functions.php:86
+#: ./me/index-functions.php:268
+#: ./me/index-functions.php:274
+msgid "Session Variables"
+msgstr "Sitzungsvariablen"
+
+#: ./me/index-functions.php:86
+msgid "These are short-lived values related to your current CILogon session. Deleting any of these values may require you to re-logon."
+msgstr "Dies sind kurzlebige Werte, die sich auf Ihre aktuelle CIlogon-Sitzung beziehen. Wenn Sie einen dieser Werte löschen, müssen Sie sich möglicherweise erneut anmelden."
+
+#: ./me/index-functions.php:91
+#: ./me/index-functions.php:332
+#: ./me/index-functions.php:337
+msgid "Environment Variables"
+msgstr "Umgebungsvariablen"
+
+#: ./me/index-functions.php:91
+msgid "These are values set by the interaction between your browser and the web server. These are displayed mainly for information purposes."
+msgstr "Dies sind Werte, die durch die Interaktion zwischen Ihrem Browser und dem Webserver festgelegt werden. Diese werden hauptsächlich zu Informationszwecken angezeigt."
+
+#: ./me/index-functions.php:104
+msgid "You can delete cookies individually by checking the associated checkbox(es) and clicking the &quot;Delete Checked&quot; button. You can also delete groups of cookies by clicking"
+msgstr "Sie können Cookies einzeln löschen, indem Sie die zugehörigen Kontrollkästchen markieren und auf die Schaltfläche „Häkchen löschen“ klicken. Sie können auch Gruppen von Cookies löschen, indem Sie auf"
+
+#: ./me/index-functions.php:109
+msgid "the &quot;Delete Browser Cookies&quot; button"
+msgstr "die Schaltfläche „Browser-Cookies löschen“"
+
+#: ./me/index-functions.php:116
+msgid "the &quot;Delete Session Variables&quot; button"
+msgstr "die Schaltfläche „Sitzungsvariablen löschen“"
+
+#: ./me/index-functions.php:121
+msgid " or the &quot;Delete ALL&quot; button"
+msgstr " oder die Schaltfläche „ALLE löschen“"
+
+#: ./me/index-functions.php:130
+#: ./me/index-functions.php:131
+#: ./testidp/index-functions.php:117
+#: ./testidp/index-functions.php:118
+msgid "Proceed to the CILogon Service"
+msgstr "Gehen Sie zum CiLogon Service"
+
+#: ./me/index-functions.php:145
+#: ./me/index-functions.php:146
+msgid "Delete Browser Cookies"
+msgstr "Browser-Cookies löschen"
+
+#: ./me/index-functions.php:154
+#: ./me/index-functions.php:155
+msgid "Delete Session Variables"
+msgstr "Sitzungsvariablen löschen"
+
+#: ./me/index-functions.php:163
+#: ./me/index-functions.php:164
+msgid "Delete ALL"
+msgstr "ALLE löschen"
+
+#: ./me/index-functions.php:171
+#: ./me/index-functions.php:172
+msgid "Reload Page"
+msgstr "Seite neu laden"
+
+#: ./me/index-functions.php:232
+#: ./me/index-functions.php:233
+#: ./me/index-functions.php:300
+#: ./me/index-functions.php:301
+msgid "Delete Checked"
+msgstr "Häkchen löschen"
+
+#: ./me/index-functions.php:242
+msgid "No browser cookies found."
+msgstr "Keine Browser-Cookies gefunden."
+
+#: ./me/index-functions.php:310
+msgid "No session variables found."
+msgstr "Keine Sitzungsvariablen gefunden."
+
+#: ./me/index-functions.php:501
+msgid "A list of attributes describing your affiliations at your Identity Provider."
+msgstr "Eine Liste von Attributen, die Ihre Zugehörigkeiten bei Ihrem Identitätsanbieter beschreiben."
+
+#: ./me/index-functions.php:502
+msgid "The Unix timestamp of the last successful user authentication."
+msgstr "Der Unix-Zeitstempel der letzten erfolgreichen Benutzerauthentifizierung."
+
+#: ./me/index-functions.php:503
+msgid "The URL of the callback servlet used by portals connecting to the CILogon Delegate service."
+msgstr "Die URL des Callback-Servlets, das von Portalen verwendet wird, die eine Verbindung zum CIlogon Delegate-Dienst herstellen."
+
+#: ./me/index-functions.php:505
+msgid "The skin affects the look-and-feel and functionality of the CILogon Service. It is typically specified by a portal."
+msgstr "Die Haut beeinflusst das Aussehen und die Funktionalität des CiLogon Service. Sie wird in der Regel von einem Portal spezifiziert."
+
+#: ./me/index-functions.php:508
+msgid "A set of cookies for each portal you have used with CILogon."
+msgstr "Eine Reihe von Cookies für jedes Portal, das Sie mit CiLogon verwendet haben."
+
+#: ./me/index-functions.php:509
+msgid "Your full name set by your Identity Provider."
+msgstr "Ihr vollständiger Name, der von Ihrem Identitätsanbieter festgelegt wurde."
+
+#: ./me/index-functions.php:510
+msgid "ORCID identifier."
+msgstr "ORCID-Bezeichner."
+
+#: ./me/index-functions.php:511
+msgid "Your email address given by your Identity Provider."
+msgstr "Ihre E-Mail-Adresse, die Sie von Ihrem Identitätsanbieter erhalten haben."
+
+#: ./me/index-functions.php:512
+msgid "A list of URIs representing permissions to access a resource or service."
+msgstr "Eine Liste von URIs, die Berechtigungen für den Zugriff auf eine Ressource oder einen Dienst darstellen."
+
+#: ./me/index-functions.php:513
+msgid "'eduPerson Principal Name' - a SAML attribute set by your Identity Provider."
+msgstr "'eduPerson Principal Name' — ein SAML-Attribut, das von Ihrem Identity Provider festgelegt wurde."
+
+#: ./me/index-functions.php:514
+msgid "'eduPerson Targeted Identifier' - a SAML attribute set by your Identity Provider."
+msgstr "'eduPerson Targeted Identifier' — ein SAML-Attribut, das von Ihrem Identity Provider festgelegt wurde."
+
+#: ./me/index-functions.php:515
+msgid "A URL used by portals in case of error."
+msgstr "Eine URL, die von Portalen im Fehlerfall verwendet wird."
+
+#: ./me/index-functions.php:516
+msgid "Your given name set by your Identity Provider."
+msgstr "Ihr Vorname, der von Ihrem Identitätsanbieter festgelegt wurde."
+
+#: ./me/index-functions.php:517
+msgid "The display name of your chosen Identity Provider."
+msgstr "Der Anzeigename Ihres ausgewählten Identitätsanbieters."
+
+#: ./me/index-functions.php:518
+msgid "The authentication URI of your chosen Identity Provider."
+msgstr "Die Authentifizierungs-URI Ihres ausgewählten Identitätsanbieters."
+
+#: ./me/index-functions.php:519
+msgid "Your university ID number."
+msgstr "Ihre Hochschul-ID-Nummer."
+
+#: ./me/index-functions.php:520
+msgid "Remember if you checked the 'Remember this selection' checkbox when you selected and Identity Provider."
+msgstr "Denken Sie daran, ob Sie bei der Auswahl eines Identitätsanbieters das Kontrollkästchen „Diese Auswahl speichern“ aktiviert haben."
+
+#: ./me/index-functions.php:522
+msgid "Your surname set by your Identity Provider."
+msgstr "Ihr Nachname, der von Ihrem Identity Provider festgelegt wurde."
+
+#: ./me/index-functions.php:523
+msgid "Level of Assurance set by your Identity Provider."
+msgstr "Von Ihrem Identitätsanbieter festgelegtes Sicherheitsniveau."
+
+#: ./me/index-functions.php:524
+msgid "A text message of the reason for the last authentication error."
+msgstr "Eine Textnachricht mit dem Grund für den letzten Authentifizierungsfehler."
+
+#: ./me/index-functions.php:525
+msgid "Groups of which you are a member."
+msgstr "Gruppen, in denen Sie Mitglied sind."
+
+#: ./me/index-functions.php:526
+msgid "Your user identifier set by the OpenID Connect Identity Provider."
+msgstr "Ihre Benutzerkennung, die vom OpenID Connect Identity Provider festgelegt wurde."
+
+#: ./me/index-functions.php:527
+msgid "Your user identifier set by the OpenID Identity Provider."
+msgstr "Ihre Benutzerkennung, die vom OpenID Identity Provider festgelegt wurde."
+
+#: ./me/index-functions.php:528
+msgid "Your organizational unit set by your Identity Provider."
+msgstr "Ihre Organisationseinheit, die von Ihrem Identity Provider festgelegt wurde."
+
+#: ./me/index-functions.php:529
+msgid "The pairwise subject identifier provided by the Identity Provider."
+msgstr "Die vom Identity Provider bereitgestellte paarweise Betreff-ID."
+
+#: ./me/index-functions.php:530
+msgid "Contains certificate lifetimes for all portals you have used with the CILogon Delegate service."
+msgstr "Enthält die Gültigkeitsdauer von Zertifikaten für alle Portale, die Sie mit dem CiLogon Delegate-Dienst verwendet haben."
+
+#: ./me/index-functions.php:532
+msgid "The display name of the portal connected to the CILogon Delegate service."
+msgstr "Der Anzeigename des Portals, das mit dem CiLogon Delegate-Dienst verbunden ist."
+
+#: ./me/index-functions.php:533
+msgid "For portals previously using the CILogon Delegate service, this is the saved lifetime of the delegated certificate."
+msgstr "Für Portale, die zuvor den CiLogon Delegate-Dienst verwendet haben, ist dies die gespeicherte Lebensdauer des delegierten Zertifikats."
+
+#: ./me/index-functions.php:536
+msgid "An internal return code when fetching portal parameters from the datastore."
+msgstr "Ein interner Rückgabecode beim Abrufen von Portalparametern aus dem Datenspeicher."
+
+#: ./me/index-functions.php:537
+msgid "The GitHub login name. Should not be used as a persistent identifier."
+msgstr "Der GitHub-Anmeldename. Sollte nicht als persistenter Bezeichner verwendet werden."
+
+#: ./me/index-functions.php:538
+msgid "The previously selected Identity Provider."
+msgstr "Der zuvor ausgewählte Identity Provider."
+
+#: ./me/index-functions.php:539
+msgid "A list of the most recently selected Identity Providers."
+msgstr "Eine Liste der zuletzt ausgewählten Identitätsanbieter."
+
+#: ./me/index-functions.php:540
+msgid "The name of the page to return to after authentication at your chosen Identity Provider."
+msgstr "Der Name der Seite, zu der Sie nach der Authentifizierung bei Ihrem ausgewählten Identitätsanbieter zurückkehren möchten."
+
+#: ./me/index-functions.php:542
+msgid "The URL to return to after authentication at your chosen Identity Provider."
+msgstr "Die URL, zu der nach der Authentifizierung bei Ihrem ausgewählten Identitätsanbieter zurückgekehrt werden soll."
+
+#: ./me/index-functions.php:543
+msgid "A shibboleth session token set by an InCommon Identity Provider."
+msgstr "Ein Shibboleth-Sitzungstoken, das von einem InCommon Identity Provider festgelegt wurde."
+
+#: ./me/index-functions.php:544
+msgid "Always show any hidden IdPs."
+msgstr "Zeige immer alle versteckten IdPs an."
+
+#: ./me/index-functions.php:545
+msgid "Keep track of IdPs used for Single Sign On (SSO)."
+msgstr "Behalten Sie den Überblick über IdPs, die für Single Sign On (SSO) verwendet werden."
+
+#: ./me/index-functions.php:546
+msgid "An internal return code when fetching user data from the datastore."
+msgstr "Ein interner Rückgabecode beim Abrufen von Benutzerdaten aus dem Datenspeicher."
+
+#: ./me/index-functions.php:547
+msgid "The subject identifier provided by the Identity Provider"
+msgstr "Die vom Identity Provider bereitgestellte Betreff-ID"
+
+#: ./me/index-functions.php:548
+msgid "The name of the 'submit' button clicked."
+msgstr "Der Name der Schaltfläche „Senden“, auf die geklickt wurde."
+
+#: ./me/index-functions.php:549
+msgid "A URL used by portals for redirection after successful issuance of a certificate."
+msgstr "Eine URL, die von Portalen für die Weiterleitung nach erfolgreicher Ausstellung eines Zertifikats verwendet wird."
+
+#: ./me/index-functions.php:550
+msgid "An OAUTH identifier used to track portal sessions."
+msgstr "Eine OAUTH-ID, die zur Verfolgung von Portalsitzungen verwendet wird."
+
+#: ./me/index-functions.php:551
+msgid "The user integer identification number provided by the Identity Provider."
+msgstr "Die vom Identity Provider bereitgestellte Integer-Identifikationsnummer des Benutzers."
+
+#: ./me/index-functions.php:552
+msgid "The unique CILogon user identifier."
+msgstr "Die eindeutige CIlogon-Benutzerkennung."
+
+#: ./testidp/index-functions.php:33
+msgid "Test Your Identity Provider With CILogon"
+msgstr "Testen Sie Ihren Identitätsanbieter mit CiLogon"
+
+#: ./testidp/index-functions.php:34
+msgid "Test Your Identity Provider"
+msgstr "Testen Sie Ihren Identitätsanbieter"
+
+#: ./testidp/index-functions.php:40
+msgid "To test that your identity provider works with CILogon, please select it from the list below and Log On."
+msgstr "Um zu testen, ob Ihr Identitätsanbieter mit CiLogon funktioniert, wählen Sie ihn bitte aus der folgenden Liste aus und melden Sie sich an."
+
+#: ./testidp/index-functions.php:71
+msgid "Test Identity Provider"
+msgstr "Testen Sie den Identitätsanbieter"
+
+#: ./testidp/index-functions.php:73
+msgid "Verify Attribute Release"
+msgstr "Attributfreigabe überprüfen"
+
+#: ./testidp/index-functions.php:79
+msgid "Thank you for your interest in the CILogon Service. This page enables you to verify that all necessary attributes have been released to the CILogon Service Provider (SP) by your selected Identity Provider (IdP). Below you will see the various attributes required by the CILogon Service and their values as released by your IdP."
+msgstr "Vielen Dank für Ihr Interesse am CiLogon Service. Auf dieser Seite können Sie überprüfen, ob alle erforderlichen Attribute von Ihrem ausgewählten Identity Provider (IdP) für den CIlogon Service Provider (SP) freigegeben wurden. Unten sehen Sie die verschiedenen Attribute, die der CIlogon Service benötigt, und ihre Werte, wie sie von Ihrem IdP veröffentlicht wurden."
+
+#: ./testidp/index-functions.php:108
+msgid "All required attributes have been released by your IdP. For details of the various attributes utilized by the CILogon Service and their current values, see the sections below."
+msgstr "Alle erforderlichen Attribute wurden von Ihrem IdP veröffentlicht. Einzelheiten zu den verschiedenen vom CiLogon Service verwendeten Attributen und ihren aktuellen Werten finden Sie in den folgenden Abschnitten."
+
+#: ./testidp/index-functions.php:125
+msgid "Missing one or more attributes."
+msgstr "Es fehlen ein oder mehrere Attribute."
+
+#: ./testidp/index-functions.php:130
+msgid "One or more of the attributes required by the CILogon Service are not available. Please see the sections below for details. For additional information and assistance, please contact"
+msgstr "Eines oder mehrere der vom CIlogon Service benötigten Attribute sind nicht verfügbar. Einzelheiten finden Sie in den folgenden Abschnitten. Für weitere Informationen und Unterstützung wenden Sie sich bitte an"
+
+#: ./testidp/index-functions.php:144
+#: ./testidp/index-functions.php:145
+msgid "Logout"
+msgstr "Abmelden"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:136
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:148
+msgid "Close"
+msgstr "Schliessen"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:166
+msgid "For questions about this site, please see the"
+msgstr "Bei Fragen zu dieser Website wenden Sie sich bitte an"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:168
+msgid "or send email to"
+msgstr "oder senden Sie eine E-Mail an"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:170
+msgid "When using the CILogon Service, be aware of"
+msgstr "Beachten Sie bei der Nutzung des CiLogon-Dienstes Folgendes:"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:173
+msgid "your responsibilities"
+msgstr "deine Pflichten"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:176
+msgid "Acknowledgements of support"
+msgstr "Danksagungen für die Unterstützung"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:176
+msgid "for this site."
+msgstr "für diese Seite."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:416
+msgid "CILogon facilitates secure access to CyberInfrastructure (CI). In order to use the CILogon Service, you must first select an identity provider. An identity provider (IdP) is an organization where you have an account and can log on to gain access to online services."
+msgstr "CiLogon ermöglicht den sicheren Zugriff auf CyberInfrastructure (CI). Um den CiLogon Service nutzen zu können, müssen Sie zunächst einen Identity Provider auswählen. Ein Identity Provider (IdP) ist eine Organisation, bei der Sie ein Konto haben und sich anmelden können, um Zugriff auf Onlinedienste zu erhalten."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:423
+msgid "If you are a faculty, staff, or student member of a university or college, please select it as your identity provider. If your school is not listed, please see"
+msgstr "Wenn Sie eine Fakultät, ein Mitarbeiter oder ein Student an einer Universität oder Hochschule sind, wählen Sie diese bitte als Ihren Identitätsanbieter aus. Wenn Ihre Schule nicht aufgeführt ist, lesen Sie bitte"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:427
+msgid "How to Select an Identity Provider"
+msgstr "So wählen Sie einen Identitätsanbieter aus"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:454
+msgid "If available, you can also try one of the social identity providers such as ORCID or Google."
+msgstr "Falls verfügbar, können Sie auch einen der Anbieter für soziale Identitäten wie ORCID oder Google ausprobieren."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:462
+msgid "Selected Identity Provider"
+msgstr "Ausgewählter Identitätsanbieter"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:462
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:468
+msgid "Select an Identity Provider"
+msgstr "Wählen Sie einen Identitätsanbieter"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:489
+msgid "divider"
+msgstr "Teiler"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:495
+msgid "Selection"
+msgstr "Auswahl"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:504
+msgid "Check this box to bypass the welcome page on subsequent visits and proceed directly to the selected identity provider. You will need to clear your browser's cookies to return here."
+msgstr "Markieren Sie dieses Kästchen, um die Willkommensseite bei nachfolgenden Besuchen zu umgehen und direkt zum ausgewählten Identitätsanbieter zu gelangen. Sie müssen die Cookies Ihres Browsers löschen, um hierher zurückzukehren."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:515
+msgid "Remember this selection"
+msgstr "Merken Sie sich diese Auswahl"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:517
+msgid "Remember"
+msgstr "Erinnere dich"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:577
+msgid "By logging on to this site, you agree to the"
+msgstr "Indem Sie sich auf dieser Website anmelden, erklären Sie sich mit den"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:580
+msgid "privacy policy"
+msgstr "Datenschutzrichtlinie"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:657
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:670
+msgid "User Attributes"
+msgstr "Benutzerattribute"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:662
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:737
+msgid "Some CILogon clients (e.g., Globus) require ePPN."
+msgstr "Einige CIlogon-Clients (z. B. Globus) benötigen ePPN."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:678
+msgid "CILogon User Identifier"
+msgstr "CIlogon-Benutzerkennung"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:686
+msgid "Identity Provider (entityID)"
+msgstr "Identitätsanbieter (EntityID)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:694
+msgid "Missing the entityID of the IdP."
+msgstr "Die EntityID des IdP fehlt."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:714
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:731
+msgid "Must have one of ePPN, ePTID, Subject ID, or Pairwise ID."
+msgstr "Muss eine von ePPN, eptID, Subject ID oder Pairwise ID haben."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:749
+msgid "Subject ID (subject-id)"
+msgstr "Betreff-ID (Subjekt-ID)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:758
+msgid "Pairwise ID (pairwise-id)"
+msgstr "Paarweise ID (paarweise ID)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:776
+msgid "Missing the OpenID identifier."
+msgstr "Der OpenID-Bezeichner fehlt."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:789
+msgid "First Name (givenName)"
+msgstr "Vorname (GivenName)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:802
+msgid "Last Name (sn)"
+msgstr "Nachname (sn)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:815
+msgid "Display Name (displayName)"
+msgstr "Anzeigename (DisplayName)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:827
+msgid "Email Address (email)"
+msgstr "E-Mail-Adresse (E-Mail)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:838
+msgid "Level of Assurance (assurance)"
+msgstr "Grad der Sicherheit (Assurance)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:865
+msgid "Affiliation (affiliation)"
+msgstr "Zugehörigkeit (Zugehörigkeit)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:874
+msgid "Entitlement (entitlement)"
+msgstr "Anspruch (Anspruch)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:883
+msgid "Organizational Unit (ou)"
+msgstr "Organisationseinheit (ou)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:892
+msgid "Member (member)"
+msgstr "Mitglied (Mitglied)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:919
+msgid "Preferred Username"
+msgstr "Bevorzugter Nutzername"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:959
+msgid "Identity Provider Attributes"
+msgstr "Attribute des Identitätsanbieters"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:962
+msgid "Organization Name"
+msgstr "Name der Organisation"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:970
+msgid "Could not find &lt;OrganizationDisplayName&gt; in metadata."
+msgstr "Konnte <OrganizationDisplayName>in den Metadaten nicht gefunden werden."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:979
+msgid "Home Page"
+msgstr "Startseite"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:986
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1474
+msgid "Support Contact"
+msgstr "Support-Kontakt"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1004
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1492
+msgid "Technical Contact"
+msgstr "Technischer Kontakt"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1018
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1510
+msgid "Administrative Contact"
+msgstr "Administrativer Kontakt"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1032
+msgid "Registered by InCommon"
+msgstr "Registriert von InCommon"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1033
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1041
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1051
+msgid "Yes"
+msgstr "Ja"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1033
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1041
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1051
+msgid "No"
+msgstr "Nein"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1059
+msgid "Entity ID"
+msgstr "Entitäts-ID"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1187
+msgid "Notice: JavaScript is not enabled. The CILogon Service requires JavaScript for functionality."
+msgstr "Hinweis: JavaScript ist nicht aktiviert. Der CIlogon Service benötigt JavaScript für die Funktionalität."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1190
+msgid "Please Enable JavaScript"
+msgstr "Bitte aktiviere JavaScript"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1204
+msgid "End your CILogon session and return to the front page. Note that this will not log you out from your Identity Provider."
+msgstr "Beenden Sie Ihre CIlogon-Sitzung und kehren Sie zur Startseite zurück. Beachten Sie, dass Sie dadurch nicht von Ihrem Identity Provider abgemeldet werden."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1220
+msgid "Exit your browser"
+msgstr "Beenden Sie Ihren Browser"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1221
+msgid "To log off, please quit your browser."
+msgstr "Um sich abzumelden, beenden Sie bitte Ihren Browser."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1250
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1347
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1570
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1573
+msgid "Error Logging On"
+msgstr "Fehler beim Einloggen"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1253
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1264
+msgid "General Error"
+msgstr "Allgemeiner Fehler"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1260
+msgid "An error has occurred. This may be a temporary error. Please try again later, or contact us at the the email address at the bottom of the page."
+msgstr "Es ist ein Fehler aufgetreten. Dies kann ein temporärer Fehler sein. Bitte versuchen Sie es später erneut oder kontaktieren Sie uns über die E-Mail-Adresse unten auf der Seite."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1350
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1528
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1673
+msgid "Attribute Release Error"
+msgstr "Fehler bei der Attributfreigabe"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1361
+msgid "There was a problem logging on. Your identity provider has not provided CILogon with required information."
+msgstr "Beim Einloggen ist ein Problem aufgetreten. Ihr Identitätsanbieter hat CIlogon nicht mit den erforderlichen Informationen versorgt."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1375
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1377
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1384
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1390
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1399
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1407
+msgid "MISSING"
+msgstr "FEHLT"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1383
+msgid "First Name"
+msgstr "Vorname"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1389
+msgid "Last Name"
+msgstr "Nachname"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1398
+msgid "Display Name"
+msgstr "Name anzeigen"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1405
+msgid "Email Address"
+msgstr "E-mail-Adresse"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1407
+msgid "INVALID"
+msgstr "UNGÜLTIG"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1422
+msgid "If you are a student, you may need to ask your identity provider to release your email address."
+msgstr "Wenn Sie Student sind, müssen Sie möglicherweise Ihren Identitätsanbieter bitten, Ihre E-Mail-Adresse herauszugeben."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1457
+msgid "Contact your identity provider to let them know you are having having a problem logging on to CILogon."
+msgstr "Wenden Sie sich an Ihren Identitätsanbieter, um ihn darüber zu informieren, dass Sie Probleme bei der Anmeldung bei CiLogon haben."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1476
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1494
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1512
+msgid "Contact Support"
+msgstr "Support kontaktieren"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1523
+msgid "Alternatively, you can contact us at the email address at the bottom of the page."
+msgstr "Alternativ können Sie uns unter der E-Mail-Adresse unten auf der Seite kontaktieren."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1580
+msgid "There was a problem logging on."
+msgstr "Beim Einloggen ist ein Problem aufgetreten."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1586
+msgid "There was a problem logging on. It appears that you have attempted to use Google as your identity provider, but your name or email address was missing. To rectify this problem, go to"
+msgstr "Beim Einloggen ist ein Problem aufgetreten. Offenbar haben Sie versucht, Google als Ihren Identitätsanbieter zu verwenden, aber Ihr Name oder Ihre E-Mail-Adresse fehlte. Um dieses Problem zu beheben, gehen Sie zu"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1591
+msgid "Google's Personal Info page"
+msgstr "Googles Seite mit persönlichen Daten"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1592
+msgid "and enter your first name, last name, and email address.  (All other Google account information is not required by the CILogon Service.)"
+msgstr "und geben Sie Ihren Vornamen, Nachnamen und Ihre E-Mail-Adresse ein. (Alle anderen Google-Kontoinformationen werden vom CiLogon-Dienst nicht benötigt.)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1598
+msgid "After you have updated your Google account profile, click the \"Proceed\" button below and attempt to log on with your Google account again. If you have any questions, please contact us at the email address at the bottom of the page."
+msgstr "Nachdem Sie Ihr Google-Kontoprofil aktualisiert haben, klicken Sie unten auf die Schaltfläche „Fortfahren“ und versuchen Sie erneut, sich mit Ihrem Google-Konto anzumelden. Wenn Sie Fragen haben, kontaktieren Sie uns bitte unter der E-Mail-Adresse unten auf der Seite."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1608
+msgid "There was a problem logging on. It appears that you have attempted to use GitHub as your identity provider, but your name or email address was missing. To rectify this problem, go to"
+msgstr "Beim Einloggen ist ein Problem aufgetreten. Offenbar haben Sie versucht, GitHub als Ihren Identitätsanbieter zu verwenden, aber Ihr Name oder Ihre E-Mail-Adresse fehlte. Um dieses Problem zu beheben, gehen Sie zu"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1613
+msgid "GitHub's Public Profile page"
+msgstr "GitHubs öffentliche Profilseite"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1614
+msgid "and enter your name and email address. (All other GitHub account information is not required by the CILogon Service.)"
+msgstr "und geben Sie Ihren Namen und Ihre E-Mail-Adresse ein. (Alle anderen GitHub-Kontoinformationen werden vom CiLogon Service nicht benötigt.)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1620
+msgid "After you have updated your GitHub account profile, click the \"Proceed\" button below and attempt to log on with your GitHub account again. If you have any questions, please contact us at the email address at the bottom of the page."
+msgstr "Nachdem du dein GitHub-Kontoprofil aktualisiert hast, klicke unten auf die Schaltfläche „Fortfahren“ und versuche erneut, dich mit deinem GitHub-Konto anzumelden. Wenn Sie Fragen haben, kontaktieren Sie uns bitte unter der E-Mail-Adresse unten auf der Seite."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1630
+msgid "There was a problem logging on. It appears that you have attempted to use ORCID as your identity provider, but your name or email address was missing. To rectify this problem, go to"
+msgstr "Beim Einloggen ist ein Problem aufgetreten. Offenbar haben Sie versucht, ORCID als Ihren Identitätsanbieter zu verwenden, aber Ihr Name oder Ihre E-Mail-Adresse fehlte. Um dieses Problem zu beheben, gehen Sie zu"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1635
+msgid "ORCID's Profile page"
+msgstr "ORCIDs Profilseite"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1636
+msgid "enter your name and email address, and make sure they can be viewed by Everyone. (All other ORCID account information is not required by the CILogon Service.)"
+msgstr "geben Sie Ihren Namen und Ihre E-Mail-Adresse ein und stellen Sie sicher, dass sie von allen eingesehen werden können. (Alle anderen ORCID-Kontoinformationen werden vom CiLogon Service nicht benötigt.)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1643
+msgid "After you have updated your ORCID account profile, click the \"Proceed\" button below and attempt to log on with your ORCID account again. If you have any questions, please contact us at the email address at the bottom of the page."
+msgstr "Nachdem Sie Ihr ORCID-Kontoprofil aktualisiert haben, klicken Sie unten auf die Schaltfläche „Fortfahren“ und versuchen Sie erneut, sich mit Ihrem ORCID-Konto anzumelden. Wenn Sie Fragen haben, kontaktieren Sie uns bitte unter der E-Mail-Adresse unten auf der Seite."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1653
+msgid "There was a problem logging on. It appears that you have attempted to use Microsoft as your identity provider, but your name or email address was missing. To rectify this problem, go to"
+msgstr "Beim Einloggen ist ein Problem aufgetreten. Offenbar haben Sie versucht, Microsoft als Ihren Identitätsanbieter zu verwenden, aber Ihr Name oder Ihre E-Mail-Adresse fehlte. Um dieses Problem zu beheben, gehen Sie zu"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1658
+msgid "Microsoft's Account page"
+msgstr "Die Kontoseite von Microsoft"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1659
+msgid "and enter your name and email address. (All other Microsfot account information is not required by the CILogon Service.)"
+msgstr "und geben Sie Ihren Namen und Ihre E-Mail-Adresse ein. (Alle anderen Microsoft-Kontoinformationen werden vom iLogon-Dienst nicht benötigt.)"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1665
+msgid "After you have updated your Microsoft account profile, click the \"Proceed\" button below and attempt to log on with your Microsoft account again. If you have any questions, please contact us at the email address at the bottom of the page."
+msgstr "Nachdem Sie Ihr Microsoft-Kontoprofil aktualisiert haben, klicken Sie unten auf die Schaltfläche „Fortfahren“ und versuchen Sie erneut, sich mit Ihrem Microsoft-Konto anzumelden. Wenn Sie Fragen haben, kontaktieren Sie uns bitte unter der E-Mail-Adresse unten auf der Seite."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1746
+msgid "Please select a valid IdP."
+msgstr "Bitte wählen Sie einen gültigen IdP aus."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2161
+msgid "Invalid Identity Provider."
+msgstr "Ungültiger Identitätsanbieter."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2298
+msgid "Invalid IdP selected. Please try again."
+msgstr "Ungültiger IdP ausgewählt. Bitte versuchen Sie es erneut."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2637
+msgid "Consent to Attribute Release"
+msgstr "Zustimmung zur Attributfreigabe"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2645
+msgid " requests access to the following information. If you do not approve this request, do not proceed."
+msgstr " fordert Zugriff auf die folgenden Informationen an. Wenn Sie diese Anfrage nicht genehmigen, fahren Sie nicht fort."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2652
+msgid "User Code"
+msgstr "Benutzercode"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2656
+msgid "Your CILogon user identifier"
+msgstr "Ihre CIlogon-Benutzerkennung"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2663
+msgid "Your name"
+msgstr "Dein Name"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2670
+msgid "Your email address"
+msgstr "Deine E-Mail Adresse"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2674
+msgid "Your username and affiliation from your identity provider"
+msgstr "Ihr Nutzername und Ihre Zugehörigkeit von Ihrem Identitätsanbieter"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2712
+msgid "Logged Out of the CILogon Service"
+msgstr "Aus dem CiLogon Service ausgeloggt"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2716
+msgid "Logged Out of CILogon"
+msgstr "Von CiLogon abgemeldet"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2722
+msgid "You have successfully logged out of CILogon."
+msgstr "Sie haben sich erfolgreich von CiLogon abgemeldet."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2730
+msgid "You can optionally click the link below to log out of Google. However, this will log you out from ALL of your Google accounts. Any current Google sessions in other tabs/windows may be invalidated."
+msgstr "Sie können optional auf den unten stehenden Link klicken, um sich von Google abzumelden. Dadurch werden Sie jedoch von ALLEN Ihren Google-Konten abgemeldet. Alle aktuellen Google-Sitzungen in anderen Tabs/Fenstern können ungültig werden."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2737
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2752
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2770
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2788
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2828
+msgid "Log out from Identity Provider"
+msgstr "Vom Identity Provider abmelden"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2739
+msgid "(Optional) Log out from Google"
+msgstr "(Optional) Von Google abmelden"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2747
+msgid "You can optionally click the link below to log out of GitHub."
+msgstr "Sie können optional auf den unten stehenden Link klicken, um sich von GitHub abzumelden."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2754
+msgid "(Optional) Log out from GitHub"
+msgstr "(Optional) Melde dich von GitHub ab"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2762
+msgid "You can optionally click the link below to log out of ORCID. Note that ORCID will redirect you to the ORCID Sign In page. You can ignore this as your authentication session with ORCID will have been cleared first."
+msgstr "Sie können optional auf den unten stehenden Link klicken, um sich von ORCID abzumelden. Beachten Sie, dass ORCID Sie zur ORCID-Anmeldeseite weiterleitet. Sie können dies ignorieren, da Ihre Authentifizierungssitzung mit ORCID zuerst gelöscht wurde."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2772
+msgid "(Optional) Log out from ORCID"
+msgstr "(Optional) Von ORCID abmelden"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2780
+msgid "You can optionally click the link below to log out of Microsoft.However, this will log you out from ALL of your Microsoft accounts.Any current Microsoft sessions in other tabs/windows may be invalidated."
+msgstr "Sie können optional auf den unten stehenden Link klicken, um sich von Microsoft abzumelden. Dadurch werden Sie jedoch von ALLEN Ihren Microsoft-Konten abgemeldet. Alle aktuellen Microsoft-Sitzungen in anderen Tabs/Fenstern können ungültig werden."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2790
+msgid "(Optional) Log out from Microsoft"
+msgstr "(Optional) Melden Sie sich von Microsoft ab"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2796
+msgid "your Identity Provider"
+msgstr "Ihr Identity Provider"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2804
+msgid "You may still be logged in to"
+msgstr "Möglicherweise sind Sie immer noch angemeldet bei"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2805
+msgid "Close your web browser or"
+msgstr "Schließen Sie Ihren Webbrowser oder"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2808
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2822
+msgid "clear your cookies"
+msgstr "lösche deine Cookies"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2809
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2823
+msgid "to clear your authentication session."
+msgstr "um Ihre Authentifizierungssitzung zu löschen."
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2816
+msgid "You can optionally click the link below to log out of"
+msgstr "Sie können optional auf den unten stehenden Link klicken, um sich abzumelden"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2818
+msgid "Note that some Identity Providers do not support log out. If you receive an error, close your web browser or"
+msgstr "Beachten Sie, dass einige Identitätsanbieter das Abmelden nicht unterstützen. Wenn Sie eine Fehlermeldung erhalten, schließen Sie Ihren Webbrowser oder"
+
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:2830
+msgid "(Optional) Log out from"
+msgstr "(Optional) Abmelden von"
+
+#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:201
+msgid "The CILogon Service has encountered a Shibboleth error."
+msgstr "Beim CIlogon-Dienst ist ein Shibboleth-Fehler aufgetreten."
+
+#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:211
+msgid "This may be a temporary error. Please try again later,  or contact us at the email address at the bottom of the page."
+msgstr "Dies kann ein temporärer Fehler sein. Bitte versuchen Sie es später erneut oder kontaktieren Sie uns unter der E-Mail-Adresse unten auf der Seite."
+
+#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:223
+msgid "Note that this error may be due to your selected Identity Provider (IdP) not fully supporting forced reauthentication. This setting forces users to log in at the IdP every time, thus bypassing Single Sign-On (SSO)."
+msgstr "Beachten Sie, dass dieser Fehler möglicherweise darauf zurückzuführen ist, dass Ihr ausgewählter Identity Provider (IdP) die erzwungene Neuauthentifizierung nicht vollständig unterstützt. Diese Einstellung zwingt Benutzer, sich jedes Mal beim IdP anzumelden, wodurch Single Sign-On (SSO) umgangen wird."
+
+#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:247
+msgid "Request Help"
+msgstr "Hilfe anfordern"

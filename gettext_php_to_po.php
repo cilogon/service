@@ -1,8 +1,15 @@
 <?php
 
-// Before you run this script you must run:
-//
-//     composer update
+/***
+ * This script scans all PHP files for gettext() / _() function calls and
+ * generates .po files for multiple languages. You can specify the target
+ * languages for translation by changing the TARGET_LANGS define below.
+ * 
+ * This script uses the AWS Translate API for translation. This API requires
+ * AWS authentication. See https://github.com/cilogon/aws-cli-setup
+ * for how to authenticate with your UIUC account, then log in to AWS Ohio
+ * (us-east-2). You must have an active AWS authn session.
+ */
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -11,7 +18,17 @@ use Gettext\Translations;
 use Gettext\Loader\PoLoader;
 use Gettext\Generator\PoGenerator;
 use Gettext\Generator\MoGenerator;
+use Aws\Exception\AwsException;
 
+// A list of target languages for tranlation.
+// NOTE: 'en' (English) must ALWAYS be a target.
+// 've' is the upside-down English version (optional).
+define('TARGET_LANGS', array('en', 've', 'fr', 'de'));
+
+/***
+ * This function takes a string and rotates it 180 degrees so it looks like
+ * it has been flipped upside-down.
+ */
 function flipString($strtoflip)
 {
     $retstr = '';
@@ -21,8 +38,12 @@ function flipString($strtoflip)
     return $retstr;
 }
 
-/*
-"Ɐ ꓭ Ɔ ꓷ Ǝ Ⅎ ꓨ H I ſ ꓘ ꓶ Ā N O Ԁ Ꝺ ꓤ S ꓕ ꓵ ꓥ M X ⅄ Z ɐ ā ɔ Ă ǝ ɟ ƃ ɥ ı̣ ɾ̣ ʞ ן ɯ ă o d b ɹ s ʇ n ʌ ʍ x ʎ z W q p u ' ¡ ⅋ ‾"
+/***
+ * This function takes a single character and rotates it 180 degrees to it
+ * looks like it has been flipped upside-down. The following characters are
+ * used for the flip:
+ *
+ * Ɐ ꓭ Ɔ ꓷ Ǝ Ⅎ ꓨ H I ſ ꓘ ꓶ Ā N O Ԁ Ꝺ ꓤ S ꓕ ꓵ ꓥ M X ⅄ Z ɐ ā ɔ Ă ǝ ɟ ƃ ɥ ı̣ ɾ̣ ʞ ן ɯ ă o d b ɹ s ʇ n ʌ ʍ x ʎ z W q p u ' ¡ ⅋ ‾
  */
 
 function flipChar($chartoflip)
@@ -190,7 +211,7 @@ function flipChar($chartoflip)
     }
 }
 
-// Run this script only from the command line
+// Ensure that this script runs only from the command line
 if (strlen($_SERVER['DOCUMENT_ROOT']) > 0) {
     exit;
 }
@@ -223,6 +244,24 @@ if (!is_link('service-lib')) {
 }
 chdir('../..');
 
+// Run 'composer update' to pull in any library dependencies
+$output = null;
+if (
+    (exec('composer -V', $output, $result_code) === false) ||
+    ($result_code != 0)
+) {
+    echo "Unable to find 'composer' command.\n";
+    echo "Please see https://getcomposer.org/doc/00-intro.md for installation.\n";
+    exit;
+}
+exec('composer update');
+
+// Create a new AWS TranslateClient - requires AWS authentication
+$awsclient = new Aws\Translate\TranslateClient([
+    'profile' => 'us-east-2',
+    'region' => 'us-east-2',
+    'version' => '2017-07-01'
+]);
 
 // Scan all php files for gettext() / _() function calls
 $phpScanner = new PhpScanner(
@@ -241,29 +280,38 @@ foreach (glob('./{*,*/*,*/*/*,*/*/*/*,*/*/*/*/*,*/*/*/*/*/*}.php', GLOB_BRACE) a
 }
 list('cilogon' => $translations) = $phpScanner->getTranslations();
 
-// First, just copy original to translation for en
-foreach ($translations as $translation) {
-    $translation->translate($translation->getOriginal());
-}
-$poGenerator_en = new PoGenerator();
-$moGenerator_en = new MoGenerator();
-if (!is_dir('locale/en/LC_MESSAGES')) {
-    mkdir('locale/en/LC_MESSAGES', 0755, true);
-}
-$poGenerator_en->generateFile($translations, 'locale/en/LC_MESSAGES/cilogon.po');
-$moGenerator_en->generateFile($translations, 'locale/en/LC_MESSAGES/cilogon.mo');
+// Loop through the TARGET_LANGS array, creating .po files for each
+foreach (TARGET_LANGS as $lang) {
+    echo "Translating to '$lang'\n";
+    $translatedString = '';
 
-// Next, flip the text upside down
-foreach ($translations as $translation) {
-    $translation->translate(flipString($translation->getOriginal()));
+    foreach ($translations as $translation) {
+        if ($lang == 'en') { // For English, just copy the source string
+            $translatedString = $translation->getOriginal();
+        } elseif ($lang == 've') { // For upside-down, flip the source string
+            $translatedString = flipString($translation->getOriginal());
+        } else { // Use AWS Translate API for all other languages
+            try {
+                $result = $awsclient->translateText([
+                    'SourceLanguageCode' => 'en',
+                    'TargetLanguageCode' => $lang,
+                    'Text' => $translation->getOriginal(),
+                ]);
+                $translatedString = $result->get('TranslatedText');
+            } catch (AwsException $e) {
+                echo $e->getMessage() . "\n";
+                exit;
+            }
+        }
+
+        $translation->translate($translatedString);
+    }
+
+    $poGenerator = new PoGenerator();
+    if (!is_dir('locale/' . $lang . '/LC_MESSAGES')) {
+        mkdir('locale/' . $lang . '/LC_MESSAGES', 0755, true);
+    }
+    $poGenerator->generateFile($translations, 'locale/' . $lang . '/LC_MESSAGES/cilogon.po');
 }
-$poGenerator_ru = new PoGenerator();
-$moGenerator_ru = new MoGenerator();
-if (!is_dir('locale/ru/LC_MESSAGES')) {
-    mkdir('locale/ru/LC_MESSAGES', 0755, true);
-}
-$poGenerator_ru->generateFile($translations, 'locale/ru/LC_MESSAGES/cilogon.po');
-$moGenerator_ru->generateFile($translations, 'locale/ru/LC_MESSAGES/cilogon.mo');
 
-
-
+echo "Done!\n";

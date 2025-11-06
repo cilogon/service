@@ -10,3 +10,4 @@ getoidc/
 config.secrets.php
 .last_checked
 !vendor/index.html
+cilogon.mo
