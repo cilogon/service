@@ -177,3 +177,19 @@ table tr td {
 :focus-visible {
   box-shadow: 0 0 2px 2px #888;
 } 
+#langMenu {
+  position: fixed;
+  bottom : 1px;
+  left: 1px;
+  z-index: 1000;
+}
+#langMenuDropdownButton {
+  background-color: transparent;
+  color: #000;
+  border: none;
+  outline: none
+}
+#langMenuDropdownContent {
+  margin-left: -5px;
+  min-width: 4rem;
+}

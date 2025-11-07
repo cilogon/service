@@ -40,12 +40,12 @@ if (strlen($submit) > 0) {
 // Depending on the value of the clicked 'submit' button or the
 // equivalent PHP session variable, take action or print out HTML.
 switch ($submit) {
-    case _('Log On'): // Check for OpenID or InCommon usage.
-    case _('Continue'): // For OOI
+    case 'Log On': // Check for OpenID or InCommon usage.
+    case 'Continue': // For OOI
         Content::handleLogOnButtonClicked();
         break; // End case 'Log On'
 
-    case _('Log Off'):   // Click the 'Log Off' button
+    case 'Log Off':   // Click the 'Log Off' button
         printLogonPage(true);
         break; // End case 'Log Off'
 
@@ -53,12 +53,12 @@ switch ($submit) {
         Content::handleGotUser();
         break; // End case 'gotuser'
 
-    case _('Go Back'): // Return to the Main page
-    case _('Proceed'): // Proceed after Error page
+    case 'Go Back': // Return to the Main page
+    case 'Proceed': // Proceed after Error page
         Util::verifySessionAndCall('printMainPage');
         break; // End case 'Go Back' / 'Proceed'
 
-    case _('Cancel'): // Cancel button on WAYF page - go to CILogon Info Page
+    case 'Cancel': // Cancel button on WAYF page - go to CILogon Info Page
         header('Location: https://www.cilogon.org');
         exit; // No further processing necessary
         break;

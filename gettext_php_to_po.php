@@ -23,7 +23,7 @@ use Aws\Exception\AwsException;
 // A list of target languages for tranlation.
 // NOTE: 'en' (English) must ALWAYS be a target.
 // 've' is the upside-down English version (optional).
-define('TARGET_LANGS', array('en', 've', 'fr', 'de'));
+define('TARGET_LANGS', array('en_US', 've_ZA', 'fr_FR', 'de_DE'));
 
 /***
  * This function takes a string and rotates it 180 degrees so it looks like
@@ -286,15 +286,15 @@ foreach (TARGET_LANGS as $lang) {
     $translatedString = '';
 
     foreach ($translations as $translation) {
-        if ($lang == 'en') { // For English, just copy the source string
+        if ($lang == 'en_US') { // For English, just copy the source string
             $translatedString = $translation->getOriginal();
-        } elseif ($lang == 've') { // For upside-down, flip the source string
+        } elseif ($lang == 've_ZA') { // For upside-down, flip the source string
             $translatedString = flipString($translation->getOriginal());
         } else { // Use AWS Translate API for all other languages
             try {
                 $result = $awsclient->translateText([
                     'SourceLanguageCode' => 'en',
-                    'TargetLanguageCode' => $lang,
+                    'TargetLanguageCode' => substr($lang, 0, 2),
                     'Text' => $translation->getOriginal(),
                 ]);
                 $translatedString = $result->get('TranslatedText');

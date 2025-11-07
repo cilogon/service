@@ -27,6 +27,7 @@ Util::unsetSessionVar('submit');
 
 // Get the URL to reply to after database query.
 $responseurl = Util::getSessionVar('responseurl');
+Util::unsetSessionVar('responseurl');
 
 $log = new Loggit();
 $log->info('In Shibboleth /getuser/ - submit="' . $submit . '" responseurl="' . $responseurl . '"');

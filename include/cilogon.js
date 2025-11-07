@@ -1,1 +1,1 @@
-cilogon-1.1.0.js
+cilogon-1.2.0.js

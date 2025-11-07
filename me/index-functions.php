@@ -74,7 +74,7 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
             ',
             _('This page enables you to view and delete various ' .
             'cookies associated with the'), ' ' ,
-            '<a target="_blank" href="..">', 
+            '<a target="_blank" href="..">',
             _('CILogon Service'), '</a>. ',
             _('There are three sections below.'), '
           </div> <!-- end card-text -->
@@ -140,36 +140,40 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
     if ($browsercount > 0) {
         echo '
             <div class="col-auto">
-              <input type="submit" name="submit"
+              <button type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="', _('Delete Browser Cookies'), '"
-              title="', _('Delete Browser Cookies'), '" />
+              value="Delete Browser Cookies"
+              title="', _('Delete Browser Cookies'), '">',
+              _('Delete Browser Cookies'), '</button>
             </div> <!-- end col-auto -->';
     }
     if ($sessioncount > 0) {
         echo '
             <div class="col-auto">
-              <input type="submit" name="submit"
+              <button type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="', _('Delete Session Variables'), '"
-              title="', _('Delete Session Variables'), '" />
+              value="Delete Session Variables"
+              title="', _('Delete Session Variables'), '">',
+              _('Delete Session Variables'), '</button>
             </div> <!-- end col-auto -->';
     }
     if (($browsercount > 0) || ($sessioncount > 0)) {
         echo '
             <div class="col-auto">
-              <input type="submit" name="submit"
+              <button type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="', _('Delete ALL'), '"
-              title="', _('Delete ALL'), '" />
+              value="Delete ALL"
+              title="', _('Delete ALL'), '">',
+              _('Delete ALL'), '</button>
             </div> <!-- end col-auto -->';
     }
     echo '
             <div class="col-auto">
-              <input type="submit" name="submit"
+              <button type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="', _('Reload Page'), '"
-              title="', _('Reload Page'), '" />
+              value="Reload Page"
+              title="', _('Reload Page'), '">',
+              _('Reload Page'), '</button>
             </div> <!-- end col-auto -->
           </div> <!-- end row align-items-center -->
         </div> <!-- end card-body --> ';
@@ -227,10 +231,11 @@ function printBrowserCookies($browsercount, $collapsed = false)
 
           <div class="row align-items-center justify-content-center">
             <div class="col-auto">
-              <input type="submit" name="submit"
+              <button type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="', _('Delete Checked'), '"
-              title="', _('Delete Checked'), '" />
+              value="Delete Checked"
+              title="', _('Delete Checked'), '">',
+              _('Delete Checked'), '</button>
             </div> <!-- end col-auto -->
           </div> <!-- end row align-items-center -->';
     } else {
@@ -295,10 +300,11 @@ function printSessionVariables($sessioncount, $collapsed = false)
 
           <div class="row align-items-center justify-content-center">
             <div class="col-auto">
-              <input type="submit" name="submit"
+              <button type="submit" name="submit"
               class="btn btn-primary submit form-control"
-              value="', _('Delete Checked'), '"
-              title="', _('Delete Checked'), '" />
+              value="Delete Checked"
+              title="', _('Delete Checked'), '">',
+              _('Delete Checked'), '</button>
             </div> <!-- end col-auto -->
           </div> <!-- end row align-items-center -->';
     } else {

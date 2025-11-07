@@ -269,6 +269,20 @@ function statusEmbed()
     window.statusEmbedTest = actions.showFrame;
 }
 
+/***************************************************************************
+ * Function  : setLang                                                     *
+ * When multi-language support is configured for a skin, a dropdown menu   *
+ * is shown to the user. When the user selects one of the language         *
+ * options, set a "lang" cookie and reload the page.                       *
+ ***************************************************************************/
+function setLang(lang)
+{
+    var expires = (new Date(Date.now() + 31536000)).toUTCString();
+    document.cookie = 'lang=' + lang + '; expires=' + expires +
+                      '; path=/; secure; samesite=lax';
+    window.location = window.location; // Reload without POST
+}
+
 addLoadEvent(updateIdPList);
 addLoadEvent(focusOnElement);
 addLoadEvent(enterKeySubmit);

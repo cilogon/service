@@ -119,10 +119,11 @@ function printUserCodePage()
         <div class="form-group">
           <div class="form-row align-items-center">
             <div class="col text-center">
-              <input type="submit" name="submit"
+              <button type="submit" name="submit"
               class="btn btn-primary submit"
-              value="', _('Enter User Code'), '"
-              title="', _('Enter User Code'), '" />
+              value="Enter User Code"
+              title="', _('Enter User Code'), '">',
+              _('Enter User Code'), '</button>
             </div>
           </div>
         </div> <!-- end form-group -->
