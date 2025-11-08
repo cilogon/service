@@ -280,7 +280,12 @@ function setLang(lang)
     var expires = (new Date(Date.now() + 31536000)).toUTCString();
     document.cookie = 'lang=' + lang + '; expires=' + expires +
                       '; path=/; secure; samesite=lax';
-    window.location = window.location; // Reload without POST
+    // Change browser history, then refresh the window.
+    // Taken from https://stackoverflow.com/a/570069/12381604
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+    window.location = window.location.href;
 }
 
 addLoadEvent(updateIdPList);
