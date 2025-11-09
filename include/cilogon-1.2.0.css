@@ -91,10 +91,10 @@ a.btn.btn-primary:active {
 .card-header {
     background-color: rgba(0,192,0,.02);
 }
-.card-header .fa {
+.card-header .fa-solid {
     transition: .3s transform ease-in-out;
 }
-.card-header .collapsed .fa {
+.card-header .collapsed .fa-solid {
     transform: rotate(90deg);
 }
 .card-header .collapsed .nocollapse {
