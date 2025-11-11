@@ -502,8 +502,8 @@ function getTitleText($cookie)
     // _shibsession...). Thus, it is important that longer strings
     // appear before shorter strings with the same prefix.
     $explain = array(
-        "acr" => "Authentication Context Class Ref",
-        "amr" => "Authentication Method Ref",
+        "acr" => _("Authentication Context Class Reference"),
+        "amr" => _("Authentication Method Reference"),
         "affiliation" => _("A list of attributes describing your affiliations at your Identity Provider."),
         "authntime" => _("The Unix timestamp of the last successful user authentication."),
         "callbackuri" => _("The URL of the callback servlet used by " .
@@ -525,6 +525,7 @@ function getTitleText($cookie)
         "itrustuin" => _("Your university ID number."),
         "keepidp" => _("Remember if you checked the 'Remember this " .
             "selection' checkbox when you selected and Identity Provider."),
+        "lang" => _("The interface language."),
         "last_name" => _("Your surname set by your Identity Provider."),
         "loa" => _("Level of Assurance set by your Identity Provider."),
         "logonerror" => _("A text message of the reason for the last authentication error."),
@@ -543,12 +544,14 @@ function getTitleText($cookie)
         "preferred_username" => _("The GitHub login name. Should not be used as a persistent identifier."),
         "providerId" => _("The previously selected Identity Provider."),
         "recentidps" => _("A list of the most recently selected Identity Providers."),
+        "remote_user" => _("The remote user asserted by Shibboleth."),
         "responsesubmit" => _("The name of the page to return to after " .
             "authentication at your chosen Identity Provider."),
         "responseurl" => _("The URL to return to after authentication at your chosen Identity Provider."),
         "_shibsession" => _("A shibboleth session token set by an InCommon Identity Provider."),
         "showhidden" => _("Always show any hidden IdPs."),
         "sso_idp_array" => _("Keep track of IdPs used for Single Sign On (SSO)."),
+        "stage" => _("The browser stage."),
         "status" => _("An internal return code when fetching user data from the datastore."),
         "subject_id" => _("The subject identifier provided by the Identity Provider"),
         "submit" => _("The name of the 'submit' button clicked."),

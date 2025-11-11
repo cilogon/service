@@ -23,7 +23,6 @@ use CILogon\Service\Content;
  */
 function printLogonPage($clearcookies = false)
 {
-    Util::setSessionVar('cilogon_skin', 'orcidfirst');
     Util::getSkin();
     if ($clearcookies) {
         Util::removeShibCookies();
@@ -66,6 +65,7 @@ function printMainPage()
 
     // CIL-626 Allow browser 'reload page' by adding CSRF to the PHP session
     Util::setSessionVar('submit', 'Proceed');
+    Util::setSessionVar('stage', 'MainPage');
     Util::getCsrf()->setTheSession();
 
     Content::printHeader(_('Test Identity Provider'));

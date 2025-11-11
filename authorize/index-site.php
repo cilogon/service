@@ -94,6 +94,13 @@ if (verifyOIDCParams()) {
             exit; // No further processing necessary
             break; // End case 'Cancel'
 
+        // A language was chosen from the language dropdown menu
+        // E.g., en_US (2 lowercase, underscore, 2 uppercase)
+        case (preg_match('/^[a-z]{2}_[A-Z]{2}$/', $submit) ? true : false):
+            Util::setSessionVar('lang', $submit);
+            Content::handleNoSubmitButtonClicked();
+            break;
+
         default: // No submit button clicked nor PHP session submit variable set
             Content::handleNoSubmitButtonClicked();
             break; // End default case

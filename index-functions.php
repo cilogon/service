@@ -52,7 +52,8 @@ function printMainPage()
     $log->info('Get And Use Certificate page hit.', false, false);
 
     // CIL-626 Allow browser 'reload page' by adding CSRF to the PHP session
-    Util::setSessionVar('submit', _('Proceed'));
+    Util::setSessionVar('submit', 'Proceed');
+    Util::setSessionVar('stage', 'MainPage');
     Util::getCsrf()->setTheSession();
 
     Content::printHeader('CILogon Service');

@@ -31,6 +31,10 @@ Util::unsetSessionVar('submit');
 // flows at the top-level index.php file.
 Util::setSessionVar('storeattributes', '1'); // Used only by /testidp/
 
+// Get the 'stage' (used when changing languages)
+$stage = Util::getSessionVar('stage');
+Util::unsetSessionVar('stage');
+
 // Depending on the value of the clicked 'submit' button or the
 // equivalent PHP session variable, take action or print out HTML.
 switch ($submit) {
@@ -64,6 +68,17 @@ switch ($submit) {
     case 'Cancel': // Cancel button on WAYF page - go to www.cilogon.org
         header('Location: https://www.cilogon.org/');
         exit; // No further processing necessary
+        break;
+
+    // A language was chosen from the language dropdown menu
+    // E.g., en_US (2 lowercase, underscore, 2 uppercase)
+    case (preg_match('/^[a-z]{2}_[A-Z]{2}$/', $submit) ? true : false):
+        Util::setSessionVar('lang', $submit);
+        if ($stage == 'MainPage') {
+            printMainPage();
+        } else {
+            printLogonPage();
+        }
         break;
 
     default: // No submit button clicked nor PHP session submit variable set

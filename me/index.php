@@ -45,6 +45,13 @@ switch ($submit) {
         deleteBrowserCookies();
         deleteSessionVariables();
         break; // End case 'Delete ALL'
+
+    // A language was chosen from the language dropdown menu
+    // E.g., en_US (2 lowercase, underscore, 2 uppercase)
+    case (preg_match('/^[a-z]{2}_[A-Z]{2}$/', $submit) ? true : false):
+        Util::setSessionVar('lang', $submit);
+        break;
+
 } // End switch($submit)
 
 printMainCookiesPage();
