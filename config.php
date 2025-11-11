@@ -327,8 +327,29 @@ define('DISABLE_LIGO_ALERTS', false);
 //define('EPTID_MISMATCH_IS_WARNING', true);
 
 /**
- * CIL-2178 IF OMIT_IDP is set to true, the "idp" parameter is NOT sent to the
+ * CIL-2178 If OMIT_IDP is set to true, the "idp" parameter is NOT sent to the
  * dbService for SAML-based IdPs. This would allow IdPs to change their
  * entityIDs without adverse effects on their users.
  */
 //define('OMIT_IDP', true);
+
+/**
+ * CIL-2123 i18n support for all users. If SITE_LANGUAGES is set, then those
+ * languages are available to all users. However, if languages are configured
+ * in a skin, those take precedence. SITE_LANGUAGES is an array of 5
+ * character languages, e.g,. en_US. The languages are shown to the user
+ * IN ORDER listed here.
+ */
+/*
+define('SITE_LANGUAGES', array(
+    'en_US',
+    'fr_FR'
+));
+*/
+
+/**
+ * If SITE_LANGUAGES is defined, you can optionally specify
+ * SITE_DEFAULT_LANGUAGE from one of the languages listed in
+ * SITE_LANGUAGES. If not specified, the default language is English.
+ */
+//define('SITE_DEFAULT_LANGUAGE', 'fr_FR');
