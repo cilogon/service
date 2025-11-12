@@ -476,11 +476,11 @@
   -->
 
   <!-- <defaultlanguage>
-       (Optional) If multiple languages are available for the CILogon web
-       front-end and the user has not yet selected a language, this is the
-       default language for the GUI. It must match one of the configured
-       <languages> above. If not set, default to the literal text in the
-       gettext() function calls (i.e., English).
+       (Optional but Recommended) If multiple languages are available for the
+       CILogon web front-end and the user has not yet selected a language,
+       this is the default language for the GUI. It must match one of the
+       configured <languages> above. If not set, default to the literal text
+       in the gettext() function calls (i.e., English).
   -->
   <!--
   <defaultlanguage>en_US</defaultlanguage>
