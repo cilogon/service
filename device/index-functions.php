@@ -380,7 +380,10 @@ function verifyUserCodeParam()
                     );
                 }
             } else {
-                Util::setSessionVar('user_code_error_msg', _('Unable to find a client matching the user code.'));
+                Util::setSessionVar(
+                    'user_code_error_msg',
+                    _('Unable to find a client matching the user code.')
+                );
             }
         } else { // STATUS_ERROR code returned
             $errstr = getDeviceErrorStr($dbs->status);

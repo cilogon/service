@@ -23,6 +23,14 @@ use CILogon\Service\Content;
  */
 function printLogonPage($clearcookies = false)
 {
+    // Note: Before multi-language support was implemented,
+    // there was a call to:
+    //     Util::setSessionVar('cilogon_skin', 'orcidfirst');
+    // which would force all IdPs to be shown. However, this
+    // also removed the language selector if languages were
+    // configured for a given 'skin'. So now we need to tell
+    // users to visit https://cilogon.or/me and "Delete ALL"
+    // if they don't see all IdPs.
     Util::getSkin();
     if ($clearcookies) {
         Util::removeShibCookies();
@@ -106,9 +114,9 @@ function printMainPage()
             <div class="col">
               ',
               _('All required attributes have been released by your ' .
-              'IdP. For details of the various attributes utilized ' .
+              'IdP. For details of the various attributes used ' .
               'by the CILogon Service and their current values, ' .
-              'see the sections below.'), '
+              'see below.'), '
             </div>
           </div> <!-- end row -->
           <div class="row align-items-center justify-content-center">
@@ -128,8 +136,8 @@ function printMainPage()
             <div class="col">
               ',
               _('One or more of the attributes required by the CILogon ' .
-              'Service are not available. Please see the sections below ' .
-              'for details. For additional information and assistance, ' .
+              'Service are not available. Please see below for ' .
+              'details. For additional information and assistance, ' .
               'please contact'),
               ' <a href="mailto:', EMAIL_HELP, '">', EMAIL_HELP, '</a>',
               '

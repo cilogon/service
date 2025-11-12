@@ -11,8 +11,16 @@ use CILogon\Service\Content;
 
 Util::cilogonInit();
 
-Content::printHeader('CILogon Delegation Service');
-Content::printCollapseBegin('maint', 'OAuth1 Service Retired', false);
+// Handle the rare case that the language chooser is shown
+// and the user selects a different language.
+$submit = Util::getPostVar('submit');
+Util::unsetSessionVar('submit');
+if (preg_match('/^[a-z]{2}_[A-Z]{2}$/', $submit)) {
+    Util::setSessionVar('lang', $submit);
+}
+
+Content::printHeader(_('CILogon Delegation Service'));
+Content::printCollapseBegin('maint', _('OAuth1 Service Retired'), false);
 
 echo '
     <div class="card-body px-5">
@@ -22,17 +30,19 @@ echo '
         </div> <!-- end col-1 -->
         <div class="col">
           <div class="card-text my-2">
-            The CILogon OAuth 1.0a Delegation Service has been
-            retired as of October 1, 2021.
+            ',
+            _('The CILogon OAuth 1.0a Delegation Service was ' .
+            'retired on October 1, 2021.'), '
           </div> <!-- end card-text -->
           <div class="card-text my-2">
-            Please visit <a target="_blank"
-            href="https://www.cilogon.org/oidc">www.cilogon.org/oidc</a> for
-            information on using CILogon\'s OpenID Connect (OIDC) service.
+            ',
+            _('For information on using CILogon\'s OpenID Connect (OIDC)' .
+            ' service, please visit'), ' <a target="_blank"
+            href="https://www.cilogon.org/oidc">www.cilogon.org/oidc</a>.
           </div> <!-- end card-text -->
         </div> <!-- end col -->
        </div> <!-- end row -->
-    </div> <!-- end card-body -->   
+    </div> <!-- end card-body -->
 ';
 
 Content::printCollapseEnd();

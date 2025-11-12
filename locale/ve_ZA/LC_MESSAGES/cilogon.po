@@ -6,18 +6,18 @@ msgstr ""
 msgid "Welcome To The CILogon Service"
 msgstr "ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥꓕ oꓕ ǝɯoɔןǝM"
 
-#: ./index-maint.php:15
-#: ./index-maint.php:16
+#: ./index-maint.php:23
+#: ./index-maint.php:24
 msgid "Site Maintenance"
 msgstr "ǝɔuɐuǝʇuᴉɐW ǝʇᴉS"
 
-#: ./index-maint.php:27
+#: ./index-maint.php:35
 msgid "The CILogon Service is currently undergoing maintenance. Please try again in a few minutes."
 msgstr "˙sǝʇnuᴉɯ ʍǝɟ ɐ uᴉ uᴉɐƃɐ ʎɹʇ ǝsɐǝןԀ ˙ǝɔuɐuǝʇuᴉɐɯ ƃuᴉoƃɹǝpun ʎןʇuǝɹɹnɔ sᴉ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥꓕ"
 
-#: ./index-maint.php:31
-msgid "For more information, please see"
-msgstr "ǝǝs ǝsɐǝןd 'uoᴉʇɐɯɹoɟuᴉ ǝɹoɯ ɹoℲ"
+#: ./index-maint.php:40
+msgid "For more information, see"
+msgstr "ǝǝs 'uoᴉʇɐɯɹoɟuᴉ ǝɹoɯ ɹoℲ"
 
 #: ./authorize/index-functions.php:28
 msgid "Welcome To The CILogon OpenID Connect Authorization Service"
@@ -35,73 +35,89 @@ msgstr "ʇuᴉodpuƎ uoᴉʇɐzᴉɹoɥʇn∀ ƆꓷIO uoƃoꓶIƆ"
 msgid "You have reached the CILogon OAuth2/OpenID Connect (OIDC) Authorization Endpoint. This service is for use by OAuth2/OIDC Relying Parties (RPs) to authorize users of the CILogon Service. End users should not normally see this page."
 msgstr "˙ǝƃɐd sᴉɥʇ ǝǝs ʎןןɐɯɹou ʇou pןnoɥs sɹǝsn puƎ ˙ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ɟo sɹǝsn ǝzᴉɹoɥʇnɐ oʇ (sԀꓤ) sǝᴉʇɹɐԀ ƃuᴉʎןǝꓤ ƆꓷIO/ᄅɥʇn∀O ʎq ǝsn ɹoɟ sᴉ ǝɔᴉʌɹǝs sᴉɥꓕ ˙ʇuᴉodpuƎ uoᴉʇɐzᴉɹoɥʇn∀ (ƆꓷIO) ʇɔǝuuoƆ ꓷIuǝdO/ᄅɥʇn∀O uoƃoꓶIƆ ǝɥʇ pǝɥɔɐǝɹ ǝʌɐɥ no⅄"
 
-#: ./authorize/index-functions.php:84
+#: ./authorize/index-functions.php:87
 msgid "Possible reasons for seeing this page include"
 msgstr "ǝpnןɔuᴉ ǝƃɐd sᴉɥʇ ƃuᴉǝǝs ɹoɟ suosɐǝɹ ǝןqᴉssoԀ"
 
-#: ./authorize/index-functions.php:88
+#: ./authorize/index-functions.php:91
 msgid "You navigated directly to this page."
 msgstr "˙ǝƃɐd sᴉɥʇ oʇ ʎןʇɔǝɹᴉp pǝʇɐƃᴉʌɐu no⅄"
 
-#: ./authorize/index-functions.php:89
+#: ./authorize/index-functions.php:92
 msgid "You clicked your browser's Back button."
 msgstr "˙uoʇʇnq ʞɔɐꓭ s,ɹǝsʍoɹq ɹnoʎ pǝʞɔᴉןɔ no⅄"
 
-#: ./authorize/index-functions.php:90
+#: ./authorize/index-functions.php:93
 msgid "There was a problem with the OpenID Connect client."
 msgstr "˙ʇuǝᴉןɔ ʇɔǝuuoƆ ꓷIuǝdO ǝɥʇ ɥʇᴉʍ ɯǝןqoɹd ɐ sɐʍ ǝɹǝɥꓕ"
 
-#: ./authorize/index-functions.php:99
+#: ./authorize/index-functions.php:102
 msgid "For assistance, please contact us at the email address at the bottom of the page."
 msgstr "˙ǝƃɐd ǝɥʇ ɟo ɯoʇʇoq ǝɥʇ ʇɐ ssǝɹppɐ ןᴉɐɯǝ ǝɥʇ ʇɐ sn ʇɔɐʇuoɔ ǝsɐǝןd 'ǝɔuɐʇsᴉssɐ ɹoℲ"
 
-#: ./authorize/index-functions.php:103
-msgid "Note: You must enable cookies in your web browser to use this site."
-msgstr "˙ǝʇᴉs sᴉɥʇ ǝsn oʇ ɹǝsʍoɹq qǝʍ ɹnoʎ uᴉ sǝᴉʞooɔ ǝןqɐuǝ ʇsnɯ no⅄ :ǝʇoN"
+#: ./authorize/index-functions.php:107
+msgid "Note: You must enable browser cookies to use this site."
+msgstr "˙ǝʇᴉs sᴉɥʇ ǝsn oʇ sǝᴉʞooɔ ɹǝsʍoɹq ǝןqɐuǝ ʇsnɯ no⅄ :ǝʇoN"
 
-#: ./authorize/index-functions.php:427
+#: ./authorize/index-functions.php:431
 msgid "There was an unrecoverable error during the transaction."
 msgstr "˙uoᴉʇɔɐsuɐɹʇ ǝɥʇ ƃuᴉɹnp ɹoɹɹǝ ǝןqɐɹǝʌoɔǝɹun uɐ sɐʍ ǝɹǝɥꓕ"
 
-#: ./authorize/index-functions.php:561
+#: ./authorize/index-functions.php:565
 msgid "There was an unrecoverable error during the transaction. CILogon system administrators have been notified."
 msgstr "˙pǝᴉɟᴉʇou uǝǝq ǝʌɐɥ sɹoʇɐɹʇsᴉuᴉɯpɐ ɯǝʇsʎs uoƃoꓶIƆ ˙uoᴉʇɔɐsuɐɹʇ ǝɥʇ ƃuᴉɹnp ɹoɹɹǝ ǝןqɐɹǝʌoɔǝɹun uɐ sɐʍ ǝɹǝɥꓕ"
 
-#: ./authorize/index-functions.php:633
+#: ./authorize/index-functions.php:625
 msgid "It appears that an OpenID Connect client attempted to initiate a session with the CILogon Service, but at least one of the requried parameters was missing."
 msgstr "˙ƃuᴉssᴉɯ sɐʍ sɹǝʇǝɯɐɹɐd pǝᴉɹnbǝɹ ǝɥʇ ɟo ǝuo ʇsɐǝן ʇɐ ʇnq 'ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ɥʇᴉʍ uoᴉssǝs ɐ ǝʇɐᴉʇᴉuᴉ oʇ pǝʇdɯǝʇʇɐ ʇuǝᴉןɔ ʇɔǝuuoƆ ꓷIuǝdO uɐ ʇɐɥʇ sɹɐǝddɐ ʇI"
 
-#: ./authorize/index-functions.php:738
+#: ./authorize/index-functions.php:730
 msgid "Missing or empty scope parameter."
 msgstr "˙ɹǝʇǝɯɐɹɐd ǝdoɔs ʎʇdɯǝ ɹo ƃuᴉssᴉW"
 
-#: ./authorize/index-functions.php:741
+#: ./authorize/index-functions.php:733
 msgid "Missing or empty client_id parameter."
 msgstr "˙ɹǝʇǝɯɐɹɐd pᴉ‾ʇuǝᴉןɔ ʎʇdɯǝ ɹo ƃuᴉssᴉW"
 
-#: ./authorize/index-functions.php:744
+#: ./authorize/index-functions.php:736
 msgid "Missing or empty response_type parameter."
 msgstr "˙ɹǝʇǝɯɐɹɐd ǝdʎʇ‾ǝsuodsǝɹ ʎʇdɯǝ ɹo ƃuᴉssᴉW"
 
-#: ./authorize/index-functions.php:747
-msgid "Invalid characters found in scope parameter, may be URL encoded twice."
-msgstr "˙ǝɔᴉʍʇ pǝpoɔuǝ ꓶꓤꓵ ǝq ʎɐɯ 'ɹǝʇǝɯɐɹɐd ǝdoɔs uᴉ punoɟ sɹǝʇɔɐɹɐɥɔ pᴉןɐʌuI"
+#: ./authorize/index-functions.php:739
+msgid "Invalid characters found in scope parameter, maybe URL encoded twice."
+msgstr "˙ǝɔᴉʍʇ pǝpoɔuǝ ꓶꓤꓵ ǝqʎɐɯ 'ɹǝʇǝɯɐɹɐd ǝdoɔs uᴉ punoɟ sɹǝʇɔɐɹɐɥɔ pᴉןɐʌuI"
 
-#: ./authorize/index-functions.php:750
+#: ./authorize/index-functions.php:742
 msgid "Upper case characters found in scope parameter."
 msgstr "˙ɹǝʇǝɯɐɹɐd ǝdoɔs uᴉ punoɟ sɹǝʇɔɐɹɐɥɔ ǝsɐɔ ɹǝddꓵ"
 
-#: ./authorize/index-functions.php:753
+#: ./authorize/index-functions.php:745
 msgid "Unsupported response_type parameter. Only code is supported."
 msgstr "˙pǝʇɹoddns sᴉ ǝpoɔ ʎןuO ˙ɹǝʇǝɯɐɹɐd ǝdʎʇ‾ǝsuodsǝɹ pǝʇɹoddnsuꓵ"
 
-#: ./authorize/index-functions.php:756
+#: ./authorize/index-functions.php:748
 msgid "Unsupported prompt parameter. Only login and select_account are supported."
 msgstr "˙pǝʇɹoddns ǝɹɐ ʇunoɔɔɐ‾ʇɔǝןǝs puɐ uᴉƃoן ʎןuO ˙ɹǝʇǝɯɐɹɐd ʇdɯoɹd pǝʇɹoddnsuꓵ"
 
-#: ./authorize/index-functions.php:764
+#: ./authorize/index-functions.php:756
 msgid "Unsupported response_mode parameter."
 msgstr "˙ɹǝʇǝɯɐɹɐd ǝpoɯ‾ǝsuodsǝɹ pǝʇɹoddnsuꓵ"
+
+#: ./delegate/index.php:22
+msgid "CILogon Delegation Service"
+msgstr "ǝɔᴉʌɹǝS uoᴉʇɐƃǝןǝꓷ uoƃoꓶIƆ"
+
+#: ./delegate/index.php:23
+msgid "OAuth1 Service Retired"
+msgstr "pǝɹᴉʇǝꓤ ǝɔᴉʌɹǝS Ɩɥʇn∀O"
+
+#: ./delegate/index.php:34
+msgid "The CILogon OAuth 1.0a Delegation Service was retired on October 1, 2021."
+msgstr "˙Ɩᄅ0ᄅ 'Ɩ ɹǝqoʇɔO uo pǝɹᴉʇǝɹ sɐʍ ǝɔᴉʌɹǝS uoᴉʇɐƃǝןǝꓷ ɐ0˙Ɩ ɥʇn∀O uoƃoꓶIƆ ǝɥꓕ"
+
+#: ./delegate/index.php:39
+msgid "For information on using CILogon's OpenID Connect (OIDC) service, please visit"
+msgstr "ʇᴉsᴉʌ ǝsɐǝןd 'ǝɔᴉʌɹǝs (ƆꓷIO) ʇɔǝuuoƆ ꓷIuǝdO s,uoƃoꓶIƆ ƃuᴉsn uo uoᴉʇɐɯɹoɟuᴉ ɹoℲ"
 
 #: ./device/index-functions.php:36
 #: ./device/index-functions.php:58
@@ -182,7 +198,7 @@ msgstr "˙punoɟ ʇou ǝpoɔ ɹǝsꓵ :ɹoɹɹƎ"
 msgid "Error: User code expired."
 msgstr "˙pǝɹᴉdxǝ ǝpoɔ ɹǝsꓵ :ɹoɹɹƎ"
 
-#: ./device/index-functions.php:383
+#: ./device/index-functions.php:385
 msgid "Unable to find a client matching the user code."
 msgstr "˙ǝpoɔ ɹǝsn ǝɥʇ ƃuᴉɥɔʇɐɯ ʇuǝᴉןɔ ɐ puᴉɟ oʇ ǝןqɐuꓵ"
 
@@ -270,8 +286,8 @@ msgstr "uoʇʇnq ;ʇonb⅋ꓶꓶ∀ ǝʇǝןǝꓷ;ʇonb⅋ ǝɥʇ ɹo "
 
 #: ./me/index-functions.php:130
 #: ./me/index-functions.php:131
-#: ./testidp/index-functions.php:117
-#: ./testidp/index-functions.php:118
+#: ./testidp/index-functions.php:125
+#: ./testidp/index-functions.php:126
 msgid "Proceed to the CILogon Service"
 msgstr "ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ oʇ pǝǝɔoɹԀ"
 
@@ -506,44 +522,44 @@ msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ǝɥʇ ʎq pǝpᴉʌoɹd ɹǝqɯnu uo�
 msgid "The unique CILogon user identifier."
 msgstr "˙ɹǝᴉɟᴉʇuǝpᴉ ɹǝsn uoƃoꓶIƆ ǝnbᴉun ǝɥꓕ"
 
-#: ./testidp/index-functions.php:32
+#: ./testidp/index-functions.php:40
 msgid "Test Your Identity Provider With CILogon"
 msgstr "uoƃoꓶIƆ ɥʇᴉM ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹno⅄ ʇsǝꓕ"
 
-#: ./testidp/index-functions.php:33
+#: ./testidp/index-functions.php:41
 msgid "Test Your Identity Provider"
 msgstr "ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹno⅄ ʇsǝꓕ"
 
-#: ./testidp/index-functions.php:39
+#: ./testidp/index-functions.php:47
 msgid "To test that your identity provider works with CILogon, please select it from the list below and Log On."
 msgstr "˙uO ƃoꓶ puɐ ʍoןǝq ʇsᴉן ǝɥʇ ɯoɹɟ ʇᴉ ʇɔǝןǝs ǝsɐǝןd 'uoƃoꓶIƆ ɥʇᴉʍ sʞɹoʍ ɹǝpᴉʌoɹd ʎʇᴉʇuǝpᴉ ɹnoʎ ʇɐɥʇ ʇsǝʇ oꓕ"
 
-#: ./testidp/index-functions.php:71
+#: ./testidp/index-functions.php:79
 msgid "Test Identity Provider"
 msgstr "ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ʇsǝꓕ"
 
-#: ./testidp/index-functions.php:73
+#: ./testidp/index-functions.php:81
 msgid "Verify Attribute Release"
 msgstr "ǝsɐǝןǝꓤ ǝʇnqᴉɹʇʇ∀ ʎɟᴉɹǝΛ"
 
-#: ./testidp/index-functions.php:79
+#: ./testidp/index-functions.php:87
 msgid "Thank you for your interest in the CILogon Service. This page enables you to verify that all necessary attributes have been released to the CILogon Service Provider (SP) by your selected Identity Provider (IdP). Below you will see the various attributes required by the CILogon Service and their values as released by your IdP."
 msgstr "˙ԀpI ɹnoʎ ʎq pǝsɐǝןǝɹ sɐ sǝnןɐʌ ɹᴉǝɥʇ puɐ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ʎq pǝɹᴉnbǝɹ sǝʇnqᴉɹʇʇɐ snoᴉɹɐʌ ǝɥʇ ǝǝs ןןᴉʍ noʎ ʍoןǝꓭ ˙(ԀpI) ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI pǝʇɔǝןǝs ɹnoʎ ʎq (ԀS) ɹǝpᴉʌoɹԀ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ oʇ pǝsɐǝןǝɹ uǝǝq ǝʌɐɥ sǝʇnqᴉɹʇʇɐ ʎɹɐssǝɔǝu ןןɐ ʇɐɥʇ ʎɟᴉɹǝʌ oʇ noʎ sǝןqɐuǝ ǝƃɐd sᴉɥꓕ ˙ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ uᴉ ʇsǝɹǝʇuᴉ ɹnoʎ ɹoɟ noʎ ʞuɐɥꓕ"
 
-#: ./testidp/index-functions.php:108
-msgid "All required attributes have been released by your IdP. For details of the various attributes utilized by the CILogon Service and their current values, see the sections below."
-msgstr "˙ʍoןǝq suoᴉʇɔǝs ǝɥʇ ǝǝs 'sǝnןɐʌ ʇuǝɹɹnɔ ɹᴉǝɥʇ puɐ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ʎq pǝzᴉןᴉʇn sǝʇnqᴉɹʇʇɐ snoᴉɹɐʌ ǝɥʇ ɟo sןᴉɐʇǝp ɹoℲ ˙ԀpI ɹnoʎ ʎq pǝsɐǝןǝɹ uǝǝq ǝʌɐɥ sǝʇnqᴉɹʇʇɐ pǝɹᴉnbǝɹ ןן∀"
+#: ./testidp/index-functions.php:116
+msgid "All required attributes have been released by your IdP. For details of the various attributes used by the CILogon Service and their current values, see below."
+msgstr "˙ʍoןǝq ǝǝs 'sǝnןɐʌ ʇuǝɹɹnɔ ɹᴉǝɥʇ puɐ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ʎq pǝsn sǝʇnqᴉɹʇʇɐ snoᴉɹɐʌ ǝɥʇ ɟo sןᴉɐʇǝp ɹoℲ ˙ԀpI ɹnoʎ ʎq pǝsɐǝןǝɹ uǝǝq ǝʌɐɥ sǝʇnqᴉɹʇʇɐ pǝɹᴉnbǝɹ ןן∀"
 
-#: ./testidp/index-functions.php:125
+#: ./testidp/index-functions.php:133
 msgid "Missing one or more attributes."
 msgstr "˙sǝʇnqᴉɹʇʇɐ ǝɹoɯ ɹo ǝuo ƃuᴉssᴉW"
 
-#: ./testidp/index-functions.php:130
-msgid "One or more of the attributes required by the CILogon Service are not available. Please see the sections below for details. For additional information and assistance, please contact"
-msgstr "ʇɔɐʇuoɔ ǝsɐǝןd 'ǝɔuɐʇsᴉssɐ puɐ uoᴉʇɐɯɹoɟuᴉ ןɐuoᴉʇᴉppɐ ɹoℲ ˙sןᴉɐʇǝp ɹoɟ ʍoןǝq suoᴉʇɔǝs ǝɥʇ ǝǝs ǝsɐǝןԀ ˙ǝןqɐןᴉɐʌɐ ʇou ǝɹɐ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ʎq pǝɹᴉnbǝɹ sǝʇnqᴉɹʇʇɐ ǝɥʇ ɟo ǝɹoɯ ɹo ǝuO"
+#: ./testidp/index-functions.php:138
+msgid "One or more of the attributes required by the CILogon Service are not available. Please see below for details. For additional information and assistance, please contact"
+msgstr "ʇɔɐʇuoɔ ǝsɐǝןd 'ǝɔuɐʇsᴉssɐ puɐ uoᴉʇɐɯɹoɟuᴉ ןɐuoᴉʇᴉppɐ ɹoℲ ˙sןᴉɐʇǝp ɹoɟ ʍoןǝq ǝǝs ǝsɐǝןԀ ˙ǝןqɐןᴉɐʌɐ ʇou ǝɹɐ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ʎq pǝɹᴉnbǝɹ sǝʇnqᴉɹʇʇɐ ǝɥʇ ɟo ǝɹoɯ ɹo ǝuO"
 
-#: ./testidp/index-functions.php:144
-#: ./testidp/index-functions.php:145
+#: ./testidp/index-functions.php:152
+#: ./testidp/index-functions.php:153
 msgid "Logout"
 msgstr "ʇnoƃoꓶ"
 
@@ -561,8 +577,8 @@ msgid "or send email to"
 msgstr "oʇ ןᴉɐɯǝ puǝs ɹo"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:208
-msgid "When using the CILogon Service, be aware of"
-msgstr "ɟo ǝɹɐʍɐ ǝq 'ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ƃuᴉsn uǝɥM"
+msgid "When using the CILogon Service, be mindful of"
+msgstr "ɟo ןnɟpuᴉɯ ǝq 'ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ƃuᴉsn uǝɥM"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:211
 msgid "your responsibilities"
@@ -649,8 +665,8 @@ msgid "CILogon User Identifier"
 msgstr "ɹǝᴉɟᴉʇuǝpI ɹǝsꓵ uoƃoꓶIƆ"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:726
-msgid "Identity Provider (entityID)"
-msgstr "(ꓷIʎʇᴉʇuǝ) ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI"
+msgid "Identity Provider"
+msgstr "ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:734
 msgid "Missing the entityID of the IdP."
@@ -658,56 +674,60 @@ msgstr "˙ԀpI ǝɥʇ ɟo ꓷIʎʇᴉʇuǝ ǝɥʇ ƃuᴉssᴉW"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:754
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:771
-msgid "Must have one of ePPN, ePTID, Subject ID, or Pairwise ID."
-msgstr "˙ꓷI ǝsᴉʍɹᴉɐԀ ɹo 'ꓷI ʇɔǝɾqnS 'ꓷIꓕԀǝ 'NԀԀǝ ɟo ǝuo ǝʌɐɥ ʇsnW"
+msgid "Must have one of the following"
+msgstr "ƃuᴉʍoןןoɟ ǝɥʇ ɟo ǝuo ǝʌɐɥ ʇsnW"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:789
-msgid "Subject ID (subject-id)"
-msgstr "(pᴉ-ʇɔǝɾqns) ꓷI ʇɔǝɾqnS"
+msgid "Subject ID"
+msgstr "ꓷI ʇɔǝɾqnS"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:798
-msgid "Pairwise ID (pairwise-id)"
-msgstr "(pᴉ-ǝsᴉʍɹᴉɐd) ꓷI ǝsᴉʍɹᴉɐԀ"
+msgid "Pairwise ID"
+msgstr "ꓷI ǝsᴉʍɹᴉɐԀ"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:816
 msgid "Missing the OpenID identifier."
 msgstr "˙ɹǝᴉɟᴉʇuǝpᴉ ꓷIuǝdO ǝɥʇ ƃuᴉssᴉW"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:829
-msgid "First Name (givenName)"
-msgstr "(ǝɯɐNuǝʌᴉƃ) ǝɯɐN ʇsɹᴉℲ"
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1425
+msgid "First Name"
+msgstr "ǝɯɐN ʇsɹᴉℲ"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:842
-msgid "Last Name (sn)"
-msgstr "(us) ǝɯɐN ʇsɐꓶ"
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1431
+msgid "Last Name"
+msgstr "ǝɯɐN ʇsɐꓶ"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:855
-msgid "Display Name (displayName)"
-msgstr "(ǝɯɐNʎɐןdsᴉp) ǝɯɐN ʎɐןdsᴉꓷ"
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1440
+msgid "Display Name"
+msgstr "ǝɯɐN ʎɐןdsᴉꓷ"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:867
-msgid "Email Address (email)"
-msgstr "(ןᴉɐɯǝ) ssǝɹpp∀ ןᴉɐɯƎ"
+#: ./vendor/cilogon/service-lib/src/Service/Content.php:1447
+msgid "Email Address"
+msgstr "ssǝɹpp∀ ןᴉɐɯƎ"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:878
-msgid "Level of Assurance (assurance)"
-msgstr "(ǝɔuɐɹnssɐ) ǝɔuɐɹnss∀ ɟo ןǝʌǝꓶ"
+msgid "Level of Assurance"
+msgstr "ǝɔuɐɹnss∀ ɟo ןǝʌǝꓶ"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:905
-msgid "Affiliation (affiliation)"
-msgstr "(uoᴉʇɐᴉןᴉɟɟɐ) uoᴉʇɐᴉןᴉɟɟ∀"
+msgid "Affiliation"
+msgstr "uoᴉʇɐᴉןᴉɟɟ∀"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:914
-msgid "Entitlement (entitlement)"
-msgstr "(ʇuǝɯǝןʇᴉʇuǝ) ʇuǝɯǝןʇᴉʇuƎ"
+msgid "Entitlement"
+msgstr "ʇuǝɯǝןʇᴉʇuƎ"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:923
-msgid "Organizational Unit (ou)"
-msgstr "(no) ʇᴉuꓵ ןɐuoᴉʇɐzᴉuɐƃɹO"
+msgid "Organizational Unit"
+msgstr "ʇᴉuꓵ ןɐuoᴉʇɐzᴉuɐƃɹO"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:932
-msgid "Member (member)"
-msgstr "(ɹǝqɯǝɯ) ɹǝqɯǝW"
+msgid "Member"
+msgstr "ɹǝqɯǝW"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:959
 msgid "Preferred Username"
@@ -835,22 +855,6 @@ msgstr "˙uoᴉʇɐɯɹoɟuᴉ pǝɹᴉnbǝɹ ɥʇᴉʍ uoƃoꓶIƆ pǝpᴉʌoɹ
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1449
 msgid "MISSING"
 msgstr "ꓨNISSIW"
-
-#: ./vendor/cilogon/service-lib/src/Service/Content.php:1425
-msgid "First Name"
-msgstr "ǝɯɐN ʇsɹᴉℲ"
-
-#: ./vendor/cilogon/service-lib/src/Service/Content.php:1431
-msgid "Last Name"
-msgstr "ǝɯɐN ʇsɐꓶ"
-
-#: ./vendor/cilogon/service-lib/src/Service/Content.php:1440
-msgid "Display Name"
-msgstr "ǝɯɐN ʎɐןdsᴉꓷ"
-
-#: ./vendor/cilogon/service-lib/src/Service/Content.php:1447
-msgid "Email Address"
-msgstr "ssǝɹpp∀ ןᴉɐɯƎ"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1449
 msgid "INVALID"

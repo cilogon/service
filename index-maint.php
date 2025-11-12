@@ -12,6 +12,14 @@ use CILogon\Service\Content;
 
 Util::cilogonInit();
 
+// Handle the rare case that the language chooser is shown
+// and the user selects a different language.
+$submit = Util::getPostVar('submit');
+Util::unsetSessionVar('submit');
+if (preg_match('/^[a-z]{2}_[A-Z]{2}$/', $submit)) {
+    Util::setSessionVar('lang', $submit);
+}
+
 Content::printHeader(_('Site Maintenance'));
 Content::printCollapseBegin('maint', _('Site Maintenance'), false);
 
@@ -24,11 +32,12 @@ echo '
         <div class="col">
           <div class="card-text my-2" id="id=maint-1">
             ',
-            _('The CILogon Service is currently undergoing maintenance. Please try again in a few minutes.'), '
+            _('The CILogon Service is currently undergoing maintenance. ' .
+            'Please try again in a few minutes.'), '
           </div> <!-- end card-text -->
           <div class="card-text my-2" id="id=maint-2">
             ',
-            _('For more information, please see'),
+            _('For more information, see'),
             ' <a target="_blank" href="https://cilogon.statuspage.io/">cilogon.statuspage.io</a> .
           </div> <!-- end card-text -->
         </div> <!-- end col -->

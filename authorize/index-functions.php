@@ -69,7 +69,10 @@ function printOIDCErrorPage()
         <div class="card-body px-5">
           <div class="card-text my-2" id="id-oidc-error-1">
             ',
-            _('You have reached the CILogon OAuth2/OpenID Connect (OIDC) Authorization Endpoint. This service is for use by OAuth2/OIDC Relying Parties (RPs) to authorize users of the CILogon Service. End users should not normally see this page.'), '
+            _('You have reached the CILogon OAuth2/OpenID Connect (OIDC) ' .
+            'Authorization Endpoint. This service is for use by OAuth2/OIDC ' .
+            'Relying Parties (RPs) to authorize users of the CILogon Service. ' .
+            'End users should not normally see this page.'), '
           </div> <!-- end row -->
     ';
 
@@ -96,11 +99,12 @@ function printOIDCErrorPage()
     echo '
           <div class="card-text my-2" id="id-oidc-error-4">
             ',
-            _('For assistance, please contact us at the email address at the bottom of the page.'), '
+            _('For assistance, please contact us at the email address at the ' .
+            'bottom of the page.'), '
           </div>
           <div class="card-text my-2" id="id-oidc-error-5">
             ',
-            _('Note: You must enable cookies in your web browser to use this site.'), '
+            _('Note: You must enable browser cookies to use this site.'), '
           </div>
         </div> <!-- end card-body -->
     ';
@@ -616,18 +620,6 @@ function verifyOIDCParams()
             'from an OIDC client, but at least one of the required ' .
             'parameters (' . $missing . ') was missing. ' .
             'clientparams = ' . json_encode($clientparams, JSON_UNESCAPED_SLASHES));
-        // CIL-1098 Don't send errors for client-initiated errors
-        /*
-        Util::sendErrorAlert(
-            'CILogon OIDC authz endpoint error',
-            'The CILogon OIDC authorization endpoint received a request ' .
-            'from an OIDC client, but at least one of the required ' .
-            'parameters (' . $missing . ') was missing. ' .
-            "\n\n" .
-            'clientparams = ' . print_r($clientparams, true) .
-            "\n"
-        );
-         */
         Util::setSessionVar(
             'client_error_msg',
             _('It appears that an OpenID Connect client attempted to ' .
@@ -744,7 +736,7 @@ function getErrorStatusAndText($output, $clientparams)
             $errtxt = _('Missing or empty response_type parameter.');
         } elseif (preg_match('/[\+%"\']/', $scope)) {
             $error = 'invalid_scope';
-            $errtxt = _('Invalid characters found in scope parameter, may be URL encoded twice.');
+            $errtxt = _('Invalid characters found in scope parameter, maybe URL encoded twice.');
         } elseif (preg_match('/[A-Z]/', $scope)) {
             $error = 'invalid_scope';
             $errtxt = _('Upper case characters found in scope parameter.');
