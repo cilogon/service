@@ -11,6 +11,63 @@
  * (us-east-2). You must have an active AWS authn session.
  */
 
+// A list of target languages for tranlation.
+// NOTE: 'en' (English) must ALWAYS be a target.
+// 've' is the upside-down English version (optional).
+define('TARGET_LANGS', array('en_US', 've_ZA', 'fr_FR', 'de_DE'));
+
+if ((!defined('TARGET_LANGS')) || empty(TARGET_LANGS)) {
+    echo "Please add at least one language to the TARGET_LANGS array.\n";
+    exit;
+}
+
+// Ensure that this script runs only from the command line
+if (strlen($_SERVER['DOCUMENT_ROOT']) > 0) {
+    exit;
+}
+
+// Run this script only from the script directory
+if (__DIR__ != getcwd()) {
+    echo 'Please run this script from the ' . __DIR__ . ' directory.' . "\n";
+    exit;
+}
+
+// Check if the service-lib repo exists at the same dir level
+if (!file_exists('../service-lib/composer.json')) {
+    echo "Please run the following commands to check out the service-lib";
+    echo "repository at the same directory level as this repository.";
+    echo "    pushd ..";
+    echo "    git clone git@github.com:cilogon/service-lib.git";
+    echo "    popd";
+    echo "Then run this script again.";
+    exit;
+}
+
+// Run 'composer update' to pull in library dependencies
+$output = null;
+if (
+    (exec('composer -V', $output, $result_code) === false) ||
+    ($result_code != 0)
+) {
+    echo "Unable to find 'composer' command.\n";
+    echo "Please see https://getcomposer.org/doc/00-intro.md for installation.\n";
+    exit;
+}
+exec('composer update');
+
+// Create symlink to the cloned service-lib
+if (!is_dir('vendor/cilogon')) {
+    mkdir('vendor/cilogon', 0755, true);
+}
+chdir('vendor/cilogon');
+if (!is_link('service-lib')) {
+    system('rm -rf service-lib');
+    symlink('../../../service-lib', 'service-lib');
+}
+chdir('../..');
+
+// Setup done! Now run the actual program to generate the translation files
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Gettext\Scanner\PhpScanner;
@@ -20,10 +77,65 @@ use Gettext\Generator\PoGenerator;
 use Gettext\Generator\MoGenerator;
 use Aws\Exception\AwsException;
 
-// A list of target languages for tranlation.
-// NOTE: 'en' (English) must ALWAYS be a target.
-// 've' is the upside-down English version (optional).
-define('TARGET_LANGS', array('en_US', 've_ZA', 'fr_FR', 'de_DE'));
+// Create a new AWS TranslateClient - requires AWS authentication
+$awsclient = new Aws\Translate\TranslateClient([
+    'profile' => 'us-east-2',
+    'region' => 'us-east-2',
+    'version' => '2017-07-01'
+]);
+
+// Scan all php files for gettext() / _() function calls
+$phpScanner = new PhpScanner(
+    Translations::create('cilogon')
+);
+$phpScanner->setDefaultDomain('cilogon');
+foreach (glob('./{*,*/*,*/*/*,*/*/*/*,*/*/*/*/*,*/*/*/*/*/*}.php', GLOB_BRACE) as $file) {
+    // Skip non-cilogon vendor libraries
+    if (
+        (preg_match('%\./vendor/%', $file)) &&
+        (!preg_match('%\./vendor/cilogon/%', $file))
+    ) {
+        continue;
+    }
+    $phpScanner->scanFile($file);
+}
+list('cilogon' => $translations) = $phpScanner->getTranslations();
+
+// Loop through the TARGET_LANGS array, creating .po files for each
+foreach (TARGET_LANGS as $lang) {
+    echo "Translating to '$lang'\n";
+    $translatedString = '';
+
+    foreach ($translations as $translation) {
+        if ($lang == 'en_US') { // For English, just copy the source string
+            $translatedString = $translation->getOriginal();
+        } elseif ($lang == 've_ZA') { // For upside-down, flip the source string
+            $translatedString = flipString($translation->getOriginal());
+        } else { // Use AWS Translate API for all other languages
+            try {
+                $result = $awsclient->translateText([
+                    'SourceLanguageCode' => 'en',
+                    'TargetLanguageCode' => substr($lang, 0, 2),
+                    'Text' => $translation->getOriginal(),
+                ]);
+                $translatedString = $result->get('TranslatedText');
+            } catch (AwsException $e) {
+                echo $e->getMessage() . "\n";
+                exit;
+            }
+        }
+
+        $translation->translate($translatedString);
+    }
+
+    $poGenerator = new PoGenerator();
+    if (!is_dir('locale/' . $lang . '/LC_MESSAGES')) {
+        mkdir('locale/' . $lang . '/LC_MESSAGES', 0755, true);
+    }
+    $poGenerator->generateFile($translations, 'locale/' . $lang . '/LC_MESSAGES/cilogon.po');
+}
+
+echo "Done!\n";
 
 /***
  * This function takes a string and rotates it 180 degrees so it looks like
@@ -211,107 +323,3 @@ function flipChar($chartoflip)
     }
 }
 
-// Ensure that this script runs only from the command line
-if (strlen($_SERVER['DOCUMENT_ROOT']) > 0) {
-    exit;
-}
-
-// Run this script only from the script directory
-if (__DIR__ != getcwd()) {
-    echo 'Please run this script from the ' . __DIR__ . ' directory.' . "\n";
-    exit;
-}
-
-// Check if the service-lib repo exists at the same dir level
-if (!file_exists('../service-lib/composer.json')) {
-    echo "Please run the following commands to check out the service-lib";
-    echo "repository at the same directory level as this repository.";
-    echo "    pushd ..";
-    echo "    git clone git@github.com:cilogon/service-lib.git";
-    echo "    popd";
-    echo "Then run this script again.";
-    exit;
-}
-
-// Create symlink to service-lib if it doesn't exist
-if (!is_dir('vendor/cilogon')) {
-    mkdir('vendor/cilogon', 0755, true);
-}
-chdir('vendor/cilogon');
-if (!is_link('service-lib')) {
-    system('rm -rf service-lib');
-    symlink('../../../service-lib', 'service-lib');
-}
-chdir('../..');
-
-// Run 'composer update' to pull in any library dependencies
-$output = null;
-if (
-    (exec('composer -V', $output, $result_code) === false) ||
-    ($result_code != 0)
-) {
-    echo "Unable to find 'composer' command.\n";
-    echo "Please see https://getcomposer.org/doc/00-intro.md for installation.\n";
-    exit;
-}
-exec('composer update');
-
-// Create a new AWS TranslateClient - requires AWS authentication
-$awsclient = new Aws\Translate\TranslateClient([
-    'profile' => 'us-east-2',
-    'region' => 'us-east-2',
-    'version' => '2017-07-01'
-]);
-
-// Scan all php files for gettext() / _() function calls
-$phpScanner = new PhpScanner(
-    Translations::create('cilogon')
-);
-$phpScanner->setDefaultDomain('cilogon');
-foreach (glob('./{*,*/*,*/*/*,*/*/*/*,*/*/*/*/*,*/*/*/*/*/*}.php', GLOB_BRACE) as $file) {
-    // Skip non-cilogon vendor libraries
-    if (
-        (preg_match('%\./vendor/%', $file)) &&
-        (!preg_match('%\./vendor/cilogon/%', $file))
-    ) {
-        continue;
-    }
-    $phpScanner->scanFile($file);
-}
-list('cilogon' => $translations) = $phpScanner->getTranslations();
-
-// Loop through the TARGET_LANGS array, creating .po files for each
-foreach (TARGET_LANGS as $lang) {
-    echo "Translating to '$lang'\n";
-    $translatedString = '';
-
-    foreach ($translations as $translation) {
-        if ($lang == 'en_US') { // For English, just copy the source string
-            $translatedString = $translation->getOriginal();
-        } elseif ($lang == 've_ZA') { // For upside-down, flip the source string
-            $translatedString = flipString($translation->getOriginal());
-        } else { // Use AWS Translate API for all other languages
-            try {
-                $result = $awsclient->translateText([
-                    'SourceLanguageCode' => 'en',
-                    'TargetLanguageCode' => substr($lang, 0, 2),
-                    'Text' => $translation->getOriginal(),
-                ]);
-                $translatedString = $result->get('TranslatedText');
-            } catch (AwsException $e) {
-                echo $e->getMessage() . "\n";
-                exit;
-            }
-        }
-
-        $translation->translate($translatedString);
-    }
-
-    $poGenerator = new PoGenerator();
-    if (!is_dir('locale/' . $lang . '/LC_MESSAGES')) {
-        mkdir('locale/' . $lang . '/LC_MESSAGES', 0755, true);
-    }
-    $poGenerator->generateFile($translations, 'locale/' . $lang . '/LC_MESSAGES/cilogon.po');
-}
-
-echo "Done!\n";
