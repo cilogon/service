@@ -80,17 +80,17 @@ function printAboutThisPage($browsercount, $sessioncount, $gethide = '')
           </div> <!-- end card-text -->
           <ol>
             <li><b>', _('Browser Cookies'), '</b> - ', _('These are ' .
-            'cookies which are stored in your browser. ' .
+            'cookies which are stored in your web browser. ' .
             'They are used as preferences for the CILogon Service.'), '
             </li>
             <li><b>', _('Session Variables'), '</b> - ', _('These are ' .
             'short-lived values related to your current ' .
             'CILogon session. Deleting any of these values may require ' .
-            'you to re-logon.'), '
+            'you to log on again.'), '
             </li>
             <li><b>', _('Environment Variables'), '</b> - ', _('These are ' .
-            'values set by the interaction between your browser and the web ' .
-            'server. These are displayed mainly for information purposes.'), '
+            'values set by the interaction between your web browser and the ' .
+            'web server. These are displayed for informational purposes.'), '
             </li>
           </ol>
     ';
@@ -505,7 +505,7 @@ function getTitleText($cookie)
         "acr" => _("Authentication Context Class Reference"),
         "amr" => _("Authentication Method Reference"),
         "affiliation" => _("A list of attributes describing your affiliations at your Identity Provider."),
-        "authntime" => _("The Unix timestamp of the last successful user authentication."),
+        "authntime" => _("The Unix timestamp of the last successful authentication."),
         "callbackuri" => _("The URL of the callback servlet used by " .
             "portals connecting to the CILogon Delegate service."),
         "cilogon_skin" => _("The skin affects the look-and-feel and " .
@@ -524,16 +524,16 @@ function getTitleText($cookie)
         "idp" => _("The authentication URI of your chosen Identity Provider."),
         "itrustuin" => _("Your university ID number."),
         "keepidp" => _("Remember if you checked the 'Remember this " .
-            "selection' checkbox when you selected and Identity Provider."),
-        "lang" => _("The interface language."),
+            "selection' checkbox when you selected an Identity Provider."),
+        "lang" => _("The user interface language."),
         "last_name" => _("Your surname set by your Identity Provider."),
-        "loa" => _("Level of Assurance set by your Identity Provider."),
+        "loa" => _("Your Level of Assurance set by your Identity Provider."),
         "logonerror" => _("A text message of the reason for the last authentication error."),
         "member_of" => _("Groups of which you are a member."),
         "oidc" => _("Your user identifier set by the OpenID Connect Identity Provider."),
         "open_id" => _("Your user identifier set by the OpenID Identity Provider."),
         "ou" => _("Your organizational unit set by your Identity Provider."),
-        "pairwise_id" => _("The pairwise subject identifier provided by the Identity Provider."),
+        "pairwise_id" => _("Your pairwise subject identifier provided by the Identity Provider."),
         "portalcookie" => _("Contains certificate lifetimes for all " .
             "portals you have used with the CILogon Delegate service."),
         "portalname" => _("The display name of the portal connected to the CILogon Delegate service."),
@@ -541,24 +541,24 @@ function getTitleText($cookie)
             "Delegate service, this is the saved lifetime of the " .
             "delegated certificate."),
         "portalstatus" => _("An internal return code when fetching portal parameters from the datastore."),
-        "preferred_username" => _("The GitHub login name. Should not be used as a persistent identifier."),
+        "preferred_username" => _("The GitHub login name. This should not be used as a persistent identifier."),
         "providerId" => _("The previously selected Identity Provider."),
         "recentidps" => _("A list of the most recently selected Identity Providers."),
         "remote_user" => _("The remote user asserted by Shibboleth."),
         "responsesubmit" => _("The name of the page to return to after " .
             "authentication at your chosen Identity Provider."),
         "responseurl" => _("The URL to return to after authentication at your chosen Identity Provider."),
-        "_shibsession" => _("A shibboleth session token set by an InCommon Identity Provider."),
+        "_shibsession" => _("A shibboleth session token set for an Identity Provider."),
         "showhidden" => _("Always show any hidden IdPs."),
         "sso_idp_array" => _("Keep track of IdPs used for Single Sign On (SSO)."),
         "stage" => _("The browser stage."),
         "status" => _("An internal return code when fetching user data from the datastore."),
-        "subject_id" => _("The subject identifier provided by the Identity Provider"),
+        "subject_id" => _("Your subject identifier provided by the Identity Provider"),
         "submit" => _("The name of the 'submit' button clicked."),
         "successuri" => _("A URL used by portals for redirection after successful issuance of a certificate."),
-        "tempcred" => _("An OAUTH identifier used to track portal sessions."),
-        "uidNumber" => _("The user integer identification number provided by the Identity Provider."),
-        "user_uid" => _("The unique CILogon user identifier."),
+        "tempcred" => _("An OAuth identifier used to track portal sessions."),
+        "uidNumber" => _("Your user integer identification number provided by the Identity Provider."),
+        "user_uid" => _("Your unique CILogon user identifier."),
     );
 
     foreach ($explain as $key => $value) {

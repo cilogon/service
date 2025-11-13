@@ -24,13 +24,15 @@ use CILogon\Service\Content;
 function printLogonPage($clearcookies = false)
 {
     // Note: Before multi-language support was implemented,
-    // there was a call to:
+    // there was a call here to:
     //     Util::setSessionVar('cilogon_skin', 'orcidfirst');
     // which would force all IdPs to be shown. However, this
     // also removed the language selector if languages were
     // configured for a given 'skin'. So now we need to tell
     // users to visit https://cilogon.or/me and "Delete ALL"
-    // if they don't see all IdPs.
+    // if they don't see all IdPs. Alternatively, users
+    // can visit https://cilogon.org/?skin=none to clear
+    // any skin with a limited list of IdPs.
     Util::getSkin();
     if ($clearcookies) {
         Util::removeShibCookies();
@@ -45,7 +47,7 @@ function printLogonPage($clearcookies = false)
           <div class="card-text my-2" id="id-testidp-1">
             ',
             _('To test that your identity provider works with CILogon, ' .
-            'please select it from the list below and Log On.'), '
+            'please select it from the list below and log on.'), '
           </div> <!-- end card-text -->
         </div> <!-- end card-body -->
     ';
@@ -87,7 +89,7 @@ function printMainPage()
             _('Thank you for your interest in the CILogon Service. ' .
             'This page enables you to verify that all necessary ' .
             'attributes have been released to the CILogon Service Provider ' .
-            '(SP) by your selected Identity Provider (IdP). ' .
+            '(SP) from your selected Identity Provider (IdP). ' .
             'Below you will see the various attributes required by the ' .
             'CILogon Service and their values as released by your IdP.'), '
           </div> <!-- end card-text -->

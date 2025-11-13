@@ -221,7 +221,7 @@ function printMainPage()
         }
     } else { // No user_code+grant in PHP session - weird error!
         $errstr = _('Error confirming user code: Code not found. ' .
-            'Please enable cookies in your web browser.');
+            'Please enable web browser cookies.');
     }
 
     // If no error so far, call userCodeApproved to complete the transaction
