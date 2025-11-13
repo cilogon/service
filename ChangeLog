@@ -1,3 +1,39 @@
+9f9fec4 2025-11-13 CIL-2123 Use service-lib 3.1.0 for i18n support
+c781d7d 2025-11-13 Reorder comands in gettext_po_to_mo.php script
+ff0cb08 2025-11-13 Update translation files
+2aa981c 2025-11-13 Reorder comands in gettext_php_to_po.php script for freshly cloned repos
+cf4a23d 2025-11-13 Fix typos
+d574e6c 2025-11-13 Update README with info on i18n support
+54d644e 2025-11-13 Minor text changes
+05b3881 2025-11-12 Update comment for default skin
+0042dfa 2025-11-12 Update .po files
+b90a756 2025-11-11 CIL-2123 Enable lang selection on aux pages like 'logout'
+4a6ad02 2025-11-11 CIL-2123 Allow for site-wide language configuration
+c8d0995 2025-11-11 CIL-2123 Update .po lang files
+ac32b05 2025-11-11 CIL-2123 Use form submit instead of JavaScript for setting languages
+127fbda 2025-11-11 Remove 'brands' fonts for Font Awesome
+43bbf58 2025-11-09 Update to Font Awesome 7
+cccdfa6 2025-11-09 Add files for Bootstrap sourceMappingURLs
+3e4a1cb 2025-11-08 Tweak JS code to refresh window on lang change
+1f7efdd 2025-11-07 CIL-2123 Bug Fixes
+564041f 2025-11-06 Update scripts for gettext() strings.
+aeb2834 2025-10-30 CIL-2349 Change 'SELECT *' to 'SELECT col1,col2,col3'
+b369782 2025-10-17 Use basic country codes
+82a4983 2025-10-17 Changes for multi-language support.
+887f114 2025-10-16 Tweaks for better log messages.
+40bcdc9 2025-10-16 Don't log when 'submit' is empty
+d733891 2025-10-16 Generate both .po and .mo files for gettext
+fc700a8 2025-07-31 Update gettext language files
+2ea7b09 2025-07-31 CIL-2291 Add a few more id attributes
+8dc2396 2025-07-31 Remove unnecessary png
+54cdd4f 2025-07-31 Remove blank linke from EOF
+41cec0a 2025-07-31 Simplify a few gettext strings
+79b5a78 2025-07-31 Fix typo
+627f8e1 2025-07-24 CIL-2294 Fix docs about <regauthgreenlit>/<regauthredlit> and OAuth2 IdPs
+079f88a 2025-06-24 Add back myproxyinfo stuff
+525a577 2025-06-24 Use service-lib 3.0.2
+473bbdd 2025-06-23 CIL-2272 Add skin config 'initialrecentidps'
+dda28c2 2025-06-23 Update ChangeLog
 ff614e2 2025-06-23 Use service-lib 3.0.1
 a4e406b 2025-06-23 Update ChangeLog
 64fbd01 2025-06-23 Use service-lib 3.0.0
@@ -14,9 +50,19 @@ b0aada4 2025-04-23 Add symlinks for legacy cilogon.{css,js} files
 ca72017 2025-04-03 Update Changelog
 fb290fc 2025-04-03 Update to service-lib 2.7.0
 55fe9af 2025-04-02 Update README and LICENSE files
+7d2d6f2 2025-03-28 Add script gen_gettext_php to generate gettext translations
+aed764f 2025-03-28 Remove trailing slash
+b1ace40 2025-03-28 Missed a few strings
+33973f1 2025-03-28 Rephrase text so no HTML tags in gettext strings
+519976c 2025-03-27 Add gen_gettext.sh script to create .pot file
+19b1858 2025-03-27 CIL-2123 Skin config used by new setLang() function
 4176171 2025-03-27 Add comment to cilogon.{css,js} about HTTP cache
+ab589ea 2025-03-25 Add gettext to aria-labels
 b2c74e8 2025-03-19 CIL-2213 Local Font Awesome requires "fonts" directory
 60585c1 2025-03-19 CIL-2213 Host CSS/JavaScript files on cilogon.org
+e5947c3 2025-03-14 Found a few more gettext strings
+14b2f94 2025-03-07 Initial batch of gettext strings
+24ac991 2025-03-07 Add logo image to prevent symlink error
 bf0cb42 2025-02-27 Update to service-lib 2.6.0
 490c113 2025-02-27 Update ChangeLog
 1d19eaf 2025-02-27 Change comment style for 2 constants
