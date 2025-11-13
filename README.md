@@ -48,18 +48,17 @@ script which generates `cilogon.po` (Portable Object) files (stored in the
 `locale` subdirectory) for all configured languages. Anytime text in this
 repository or in the
 [service-lib](https://github.com/cilogon/service-lib) repository is updated,
-the  
-[gettext\_php\_to\_po.php](https://github.com/cilogon/service/blob/main/gettext_php_to_po.php)
-must be re-run to generate updated `cilogon.po` files.
+the [gettext\_php\_to\_po.php](https://github.com/cilogon/service/blob/main/gettext_php_to_po.php)
+script must be re-run to generate updated `cilogon.po` files.
 
-The languages to be used for translation are configured in the
-`gettext_php_to_po.php` script as follows;
+The target languages for translation are configured in the `TARGET_LANGS`
+variable of the `gettext_php_to_po.php` script as follows;
 
 ```
 define('TARGET_LANGS', array('en_US', 've_ZA', 'fr_FR', 'de_DE'));
 ```
 
-Values are 5 character strings consisting of a lower-case
+Language values are 5 character strings consisting of a lower-case
 [language
 code](https://www.gnu.org/software/gettext/manual/html_node/Usual-Language-Codes.html)
 and an upper-case [country
@@ -74,7 +73,7 @@ this Translate API requires an authenticated user. For the sake of simplicity,
 it is assumed that you are authenticating using `aws login` with assistance
 from the [aws-cli-setup](https://github.com/cilogon/aws-cli-setup) repository.
 
-Update the `cilogon.po` files, do the following:
+To update the `cilogon.po` files, do the following:
 
 1. Ensure that this repository and the
    [service-lib](https://github.com/cilogon/service-lib) repository are cloned
@@ -94,7 +93,7 @@ Update the `cilogon.po` files, do the following:
    typically be given to human translators to translate each text string
    line-by-line. The `gettext_php_to_po.php` script uses the AWS
    Translate API to generate the translated files. However, if the resulting
-   translations are "not good", a humam could update the "bad" translations by
+   translations are "not good", a human could update the "bad" translations by
    hand. In this case, care would need to be taken when updating/adding text
    in the future since re-running the `gettext_php_to_po.php` script would
    overwrite any manually translated strings.
