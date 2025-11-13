@@ -6,11 +6,6 @@
  * .mo (machine-readable) translation files for use by gettext().
  */
 
-require_once __DIR__ . '/vendor/autoload.php';
-
-use Gettext\Loader\PoLoader;
-use Gettext\Generator\MoGenerator;
-
 // Ensure that this script runs only from the command line
 if (strlen($_SERVER['DOCUMENT_ROOT']) > 0) {
     exit;
@@ -33,6 +28,13 @@ if (
     exit;
 }
 exec('composer update');
+
+// Setup done! Now run the actual program to generate the translation files
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Gettext\Loader\PoLoader;
+use Gettext\Generator\MoGenerator;
 
 // Scan for all .po files and generate machine-readable .mo files
 foreach (glob('./{*,*/*,*/*/*,*/*/*/*,*/*/*/*/*,*/*/*/*/*/*}.po', GLOB_BRACE) as $file) {
