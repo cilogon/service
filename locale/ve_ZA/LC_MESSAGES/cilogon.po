@@ -159,8 +159,8 @@ msgid "Enter the user code displayed on your device."
 msgstr "˙ǝɔᴉʌǝp ɹnoʎ uo pǝʎɐןdsᴉp ǝpoɔ ɹǝsn ǝɥʇ ɹǝʇuƎ"
 
 #: ./device/index-functions.php:223
-msgid "Error confirming user code: Code not found. Please enable cookies in your web browser."
-msgstr "˙ɹǝsʍoɹq qǝʍ ɹnoʎ uᴉ sǝᴉʞooɔ ǝןqɐuǝ ǝsɐǝןԀ ˙punoɟ ʇou ǝpoƆ :ǝpoɔ ɹǝsn ƃuᴉɯɹᴉɟuoɔ ɹoɹɹƎ"
+msgid "Error confirming user code: Code not found. Please enable web browser cookies."
+msgstr "˙sǝᴉʞooɔ ɹǝsʍoɹq qǝʍ ǝןqɐuǝ ǝsɐǝןԀ ˙punoɟ ʇou ǝpoƆ :ǝpoɔ ɹǝsn ƃuᴉɯɹᴉɟuoɔ ɹoɹɹƎ"
 
 #: ./device/index-functions.php:246
 msgid "User Code Approval"
@@ -245,8 +245,8 @@ msgid "Browser Cookies"
 msgstr "sǝᴉʞooƆ ɹǝsʍoɹꓭ"
 
 #: ./me/index-functions.php:82
-msgid "These are cookies which are stored in your browser. They are used as preferences for the CILogon Service."
-msgstr "˙ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ɹoɟ sǝɔuǝɹǝɟǝɹd sɐ pǝsn ǝɹɐ ʎǝɥꓕ ˙ɹǝsʍoɹq ɹnoʎ uᴉ pǝɹoʇs ǝɹɐ ɥɔᴉɥʍ sǝᴉʞooɔ ǝɹɐ ǝsǝɥꓕ"
+msgid "These are cookies which are stored in your web browser. They are used as preferences for the CILogon Service."
+msgstr "˙ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ɹoɟ sǝɔuǝɹǝɟǝɹd sɐ pǝsn ǝɹɐ ʎǝɥꓕ ˙ɹǝsʍoɹq qǝʍ ɹnoʎ uᴉ pǝɹoʇs ǝɹɐ ɥɔᴉɥʍ sǝᴉʞooɔ ǝɹɐ ǝsǝɥꓕ"
 
 #: ./me/index-functions.php:86
 #: ./me/index-functions.php:273
@@ -255,8 +255,8 @@ msgid "Session Variables"
 msgstr "sǝןqɐᴉɹɐΛ uoᴉssǝS"
 
 #: ./me/index-functions.php:86
-msgid "These are short-lived values related to your current CILogon session. Deleting any of these values may require you to re-logon."
-msgstr "˙uoƃoן-ǝɹ oʇ noʎ ǝɹᴉnbǝɹ ʎɐɯ sǝnןɐʌ ǝsǝɥʇ ɟo ʎuɐ ƃuᴉʇǝןǝꓷ ˙uoᴉssǝs uoƃoꓶIƆ ʇuǝɹɹnɔ ɹnoʎ oʇ pǝʇɐןǝɹ sǝnןɐʌ pǝʌᴉן-ʇɹoɥs ǝɹɐ ǝsǝɥꓕ"
+msgid "These are short-lived values related to your current CILogon session. Deleting any of these values may require you to log on again."
+msgstr "˙uᴉɐƃɐ uo ƃoן oʇ noʎ ǝɹᴉnbǝɹ ʎɐɯ sǝnןɐʌ ǝsǝɥʇ ɟo ʎuɐ ƃuᴉʇǝןǝꓷ ˙uoᴉssǝs uoƃoꓶIƆ ʇuǝɹɹnɔ ɹnoʎ oʇ pǝʇɐןǝɹ sǝnןɐʌ pǝʌᴉן-ʇɹoɥs ǝɹɐ ǝsǝɥꓕ"
 
 #: ./me/index-functions.php:91
 #: ./me/index-functions.php:338
@@ -265,8 +265,8 @@ msgid "Environment Variables"
 msgstr "sǝןqɐᴉɹɐΛ ʇuǝɯuoɹᴉʌuƎ"
 
 #: ./me/index-functions.php:91
-msgid "These are values set by the interaction between your browser and the web server. These are displayed mainly for information purposes."
-msgstr "˙sǝsodɹnd uoᴉʇɐɯɹoɟuᴉ ɹoɟ ʎןuᴉɐɯ pǝʎɐןdsᴉp ǝɹɐ ǝsǝɥꓕ ˙ɹǝʌɹǝs qǝʍ ǝɥʇ puɐ ɹǝsʍoɹq ɹnoʎ uǝǝʍʇǝq uoᴉʇɔɐɹǝʇuᴉ ǝɥʇ ʎq ʇǝs sǝnןɐʌ ǝɹɐ ǝsǝɥꓕ"
+msgid "These are values set by the interaction between your web browser and the web server. These are displayed for informational purposes."
+msgstr "˙sǝsodɹnd ןɐuoᴉʇɐɯɹoɟuᴉ ɹoɟ pǝʎɐןdsᴉp ǝɹɐ ǝsǝɥꓕ ˙ɹǝʌɹǝs qǝʍ ǝɥʇ puɐ ɹǝsʍoɹq qǝʍ ɹnoʎ uǝǝʍʇǝq uoᴉʇɔɐɹǝʇuᴉ ǝɥʇ ʎq ʇǝs sǝnןɐʌ ǝɹɐ ǝsǝɥꓕ"
 
 #: ./me/index-functions.php:104
 msgid "You can delete cookies individually by checking the associated checkbox(es) and clicking the &quot;Delete Checked&quot; button. You can also delete groups of cookies by clicking"
@@ -286,8 +286,8 @@ msgstr "uoʇʇnq ;ʇonb⅋ꓶꓶ∀ ǝʇǝןǝꓷ;ʇonb⅋ ǝɥʇ ɹo "
 
 #: ./me/index-functions.php:130
 #: ./me/index-functions.php:131
-#: ./testidp/index-functions.php:125
-#: ./testidp/index-functions.php:126
+#: ./testidp/index-functions.php:127
+#: ./testidp/index-functions.php:128
 msgid "Proceed to the CILogon Service"
 msgstr "ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ oʇ pǝǝɔoɹԀ"
 
@@ -339,8 +339,8 @@ msgid "A list of attributes describing your affiliations at your Identity Provid
 msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹnoʎ ʇɐ suoᴉʇɐᴉןᴉɟɟɐ ɹnoʎ ƃuᴉqᴉɹɔsǝp sǝʇnqᴉɹʇʇɐ ɟo ʇsᴉן ∀"
 
 #: ./me/index-functions.php:508
-msgid "The Unix timestamp of the last successful user authentication."
-msgstr "˙uoᴉʇɐɔᴉʇuǝɥʇnɐ ɹǝsn ןnɟssǝɔɔns ʇsɐן ǝɥʇ ɟo dɯɐʇsǝɯᴉʇ xᴉuꓵ ǝɥꓕ"
+msgid "The Unix timestamp of the last successful authentication."
+msgstr "˙uoᴉʇɐɔᴉʇuǝɥʇnɐ ןnɟssǝɔɔns ʇsɐן ǝɥʇ ɟo dɯɐʇsǝɯᴉʇ xᴉuꓵ ǝɥꓕ"
 
 #: ./me/index-functions.php:509
 msgid "The URL of the callback servlet used by portals connecting to the CILogon Delegate service."
@@ -399,20 +399,20 @@ msgid "Your university ID number."
 msgstr "˙ɹǝqɯnu ꓷI ʎʇᴉsɹǝʌᴉun ɹno⅄"
 
 #: ./me/index-functions.php:526
-msgid "Remember if you checked the 'Remember this selection' checkbox when you selected and Identity Provider."
-msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI puɐ pǝʇɔǝןǝs noʎ uǝɥʍ xoqʞɔǝɥɔ ,uoᴉʇɔǝןǝs sᴉɥʇ ɹǝqɯǝɯǝꓤ, ǝɥʇ pǝʞɔǝɥɔ noʎ ɟᴉ ɹǝqɯǝɯǝꓤ"
+msgid "Remember if you checked the 'Remember this selection' checkbox when you selected an Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI uɐ pǝʇɔǝןǝs noʎ uǝɥʍ xoqʞɔǝɥɔ ,uoᴉʇɔǝןǝs sᴉɥʇ ɹǝqɯǝɯǝꓤ, ǝɥʇ pǝʞɔǝɥɔ noʎ ɟᴉ ɹǝqɯǝɯǝꓤ"
 
 #: ./me/index-functions.php:528
-msgid "The interface language."
-msgstr "˙ǝƃɐnƃuɐן ǝɔɐɟɹǝʇuᴉ ǝɥꓕ"
+msgid "The user interface language."
+msgstr "˙ǝƃɐnƃuɐן ǝɔɐɟɹǝʇuᴉ ɹǝsn ǝɥꓕ"
 
 #: ./me/index-functions.php:529
 msgid "Your surname set by your Identity Provider."
 msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹnoʎ ʎq ʇǝs ǝɯɐuɹns ɹno⅄"
 
 #: ./me/index-functions.php:530
-msgid "Level of Assurance set by your Identity Provider."
-msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹnoʎ ʎq ʇǝs ǝɔuɐɹnss∀ ɟo ןǝʌǝꓶ"
+msgid "Your Level of Assurance set by your Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹnoʎ ʎq ʇǝs ǝɔuɐɹnss∀ ɟo ןǝʌǝꓶ ɹno⅄"
 
 #: ./me/index-functions.php:531
 msgid "A text message of the reason for the last authentication error."
@@ -435,8 +435,8 @@ msgid "Your organizational unit set by your Identity Provider."
 msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹnoʎ ʎq ʇǝs ʇᴉun ןɐuoᴉʇɐzᴉuɐƃɹo ɹno⅄"
 
 #: ./me/index-functions.php:536
-msgid "The pairwise subject identifier provided by the Identity Provider."
-msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ǝɥʇ ʎq pǝpᴉʌoɹd ɹǝᴉɟᴉʇuǝpᴉ ʇɔǝɾqns ǝsᴉʍɹᴉɐd ǝɥꓕ"
+msgid "Your pairwise subject identifier provided by the Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ǝɥʇ ʎq pǝpᴉʌoɹd ɹǝᴉɟᴉʇuǝpᴉ ʇɔǝɾqns ǝsᴉʍɹᴉɐd ɹno⅄"
 
 #: ./me/index-functions.php:537
 msgid "Contains certificate lifetimes for all portals you have used with the CILogon Delegate service."
@@ -455,8 +455,8 @@ msgid "An internal return code when fetching portal parameters from the datastor
 msgstr "˙ǝɹoʇsɐʇɐp ǝɥʇ ɯoɹɟ sɹǝʇǝɯɐɹɐd ןɐʇɹod ƃuᴉɥɔʇǝɟ uǝɥʍ ǝpoɔ uɹnʇǝɹ ןɐuɹǝʇuᴉ u∀"
 
 #: ./me/index-functions.php:544
-msgid "The GitHub login name. Should not be used as a persistent identifier."
-msgstr "˙ɹǝᴉɟᴉʇuǝpᴉ ʇuǝʇsᴉsɹǝd ɐ sɐ pǝsn ǝq ʇou pןnoɥS ˙ǝɯɐu uᴉƃoן qnHʇᴉꓨ ǝɥꓕ"
+msgid "The GitHub login name. This should not be used as a persistent identifier."
+msgstr "˙ɹǝᴉɟᴉʇuǝpᴉ ʇuǝʇsᴉsɹǝd ɐ sɐ pǝsn ǝq ʇou pןnoɥs sᴉɥꓕ ˙ǝɯɐu uᴉƃoן qnHʇᴉꓨ ǝɥꓕ"
 
 #: ./me/index-functions.php:545
 msgid "The previously selected Identity Provider."
@@ -479,8 +479,8 @@ msgid "The URL to return to after authentication at your chosen Identity Provide
 msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI uǝsoɥɔ ɹnoʎ ʇɐ uoᴉʇɐɔᴉʇuǝɥʇnɐ ɹǝʇɟɐ oʇ uɹnʇǝɹ oʇ ꓶꓤꓵ ǝɥꓕ"
 
 #: ./me/index-functions.php:551
-msgid "A shibboleth session token set by an InCommon Identity Provider."
-msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI uoɯɯoƆuI uɐ ʎq ʇǝs uǝʞoʇ uoᴉssǝs ɥʇǝןoqqᴉɥs ∀"
+msgid "A shibboleth session token set for an Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI uɐ ɹoɟ ʇǝs uǝʞoʇ uoᴉssǝs ɥʇǝןoqqᴉɥs ∀"
 
 #: ./me/index-functions.php:552
 msgid "Always show any hidden IdPs."
@@ -499,8 +499,8 @@ msgid "An internal return code when fetching user data from the datastore."
 msgstr "˙ǝɹoʇsɐʇɐp ǝɥʇ ɯoɹɟ ɐʇɐp ɹǝsn ƃuᴉɥɔʇǝɟ uǝɥʍ ǝpoɔ uɹnʇǝɹ ןɐuɹǝʇuᴉ u∀"
 
 #: ./me/index-functions.php:556
-msgid "The subject identifier provided by the Identity Provider"
-msgstr "ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ǝɥʇ ʎq pǝpᴉʌoɹd ɹǝᴉɟᴉʇuǝpᴉ ʇɔǝɾqns ǝɥꓕ"
+msgid "Your subject identifier provided by the Identity Provider"
+msgstr "ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ǝɥʇ ʎq pǝpᴉʌoɹd ɹǝᴉɟᴉʇuǝpᴉ ʇɔǝɾqns ɹno⅄"
 
 #: ./me/index-functions.php:557
 msgid "The name of the 'submit' button clicked."
@@ -511,55 +511,55 @@ msgid "A URL used by portals for redirection after successful issuance of a cert
 msgstr "˙ǝʇɐɔᴉɟᴉʇɹǝɔ ɐ ɟo ǝɔuɐnssᴉ ןnɟssǝɔɔns ɹǝʇɟɐ uoᴉʇɔǝɹᴉpǝɹ ɹoɟ sןɐʇɹod ʎq pǝsn ꓶꓤꓵ ∀"
 
 #: ./me/index-functions.php:559
-msgid "An OAUTH identifier used to track portal sessions."
-msgstr "˙suoᴉssǝs ןɐʇɹod ʞɔɐɹʇ oʇ pǝsn ɹǝᴉɟᴉʇuǝpᴉ Hꓕꓵ∀O u∀"
+msgid "An OAuth identifier used to track portal sessions."
+msgstr "˙suoᴉssǝs ןɐʇɹod ʞɔɐɹʇ oʇ pǝsn ɹǝᴉɟᴉʇuǝpᴉ ɥʇn∀O u∀"
 
 #: ./me/index-functions.php:560
-msgid "The user integer identification number provided by the Identity Provider."
-msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ǝɥʇ ʎq pǝpᴉʌoɹd ɹǝqɯnu uoᴉʇɐɔᴉɟᴉʇuǝpᴉ ɹǝƃǝʇuᴉ ɹǝsn ǝɥꓕ"
+msgid "Your user integer identification number provided by the Identity Provider."
+msgstr "˙ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ǝɥʇ ʎq pǝpᴉʌoɹd ɹǝqɯnu uoᴉʇɐɔᴉɟᴉʇuǝpᴉ ɹǝƃǝʇuᴉ ɹǝsn ɹno⅄"
 
 #: ./me/index-functions.php:561
-msgid "The unique CILogon user identifier."
-msgstr "˙ɹǝᴉɟᴉʇuǝpᴉ ɹǝsn uoƃoꓶIƆ ǝnbᴉun ǝɥꓕ"
+msgid "Your unique CILogon user identifier."
+msgstr "˙ɹǝᴉɟᴉʇuǝpᴉ ɹǝsn uoƃoꓶIƆ ǝnbᴉun ɹno⅄"
 
-#: ./testidp/index-functions.php:40
+#: ./testidp/index-functions.php:42
 msgid "Test Your Identity Provider With CILogon"
 msgstr "uoƃoꓶIƆ ɥʇᴉM ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹno⅄ ʇsǝꓕ"
 
-#: ./testidp/index-functions.php:41
+#: ./testidp/index-functions.php:43
 msgid "Test Your Identity Provider"
 msgstr "ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ɹno⅄ ʇsǝꓕ"
 
-#: ./testidp/index-functions.php:47
-msgid "To test that your identity provider works with CILogon, please select it from the list below and Log On."
-msgstr "˙uO ƃoꓶ puɐ ʍoןǝq ʇsᴉן ǝɥʇ ɯoɹɟ ʇᴉ ʇɔǝןǝs ǝsɐǝןd 'uoƃoꓶIƆ ɥʇᴉʍ sʞɹoʍ ɹǝpᴉʌoɹd ʎʇᴉʇuǝpᴉ ɹnoʎ ʇɐɥʇ ʇsǝʇ oꓕ"
+#: ./testidp/index-functions.php:49
+msgid "To test that your identity provider works with CILogon, please select it from the list below and log on."
+msgstr "˙uo ƃoן puɐ ʍoןǝq ʇsᴉן ǝɥʇ ɯoɹɟ ʇᴉ ʇɔǝןǝs ǝsɐǝןd 'uoƃoꓶIƆ ɥʇᴉʍ sʞɹoʍ ɹǝpᴉʌoɹd ʎʇᴉʇuǝpᴉ ɹnoʎ ʇɐɥʇ ʇsǝʇ oꓕ"
 
-#: ./testidp/index-functions.php:79
+#: ./testidp/index-functions.php:81
 msgid "Test Identity Provider"
 msgstr "ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI ʇsǝꓕ"
 
-#: ./testidp/index-functions.php:81
+#: ./testidp/index-functions.php:83
 msgid "Verify Attribute Release"
 msgstr "ǝsɐǝןǝꓤ ǝʇnqᴉɹʇʇ∀ ʎɟᴉɹǝΛ"
 
-#: ./testidp/index-functions.php:87
-msgid "Thank you for your interest in the CILogon Service. This page enables you to verify that all necessary attributes have been released to the CILogon Service Provider (SP) by your selected Identity Provider (IdP). Below you will see the various attributes required by the CILogon Service and their values as released by your IdP."
-msgstr "˙ԀpI ɹnoʎ ʎq pǝsɐǝןǝɹ sɐ sǝnןɐʌ ɹᴉǝɥʇ puɐ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ʎq pǝɹᴉnbǝɹ sǝʇnqᴉɹʇʇɐ snoᴉɹɐʌ ǝɥʇ ǝǝs ןןᴉʍ noʎ ʍoןǝꓭ ˙(ԀpI) ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI pǝʇɔǝןǝs ɹnoʎ ʎq (ԀS) ɹǝpᴉʌoɹԀ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ oʇ pǝsɐǝןǝɹ uǝǝq ǝʌɐɥ sǝʇnqᴉɹʇʇɐ ʎɹɐssǝɔǝu ןןɐ ʇɐɥʇ ʎɟᴉɹǝʌ oʇ noʎ sǝןqɐuǝ ǝƃɐd sᴉɥꓕ ˙ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ uᴉ ʇsǝɹǝʇuᴉ ɹnoʎ ɹoɟ noʎ ʞuɐɥꓕ"
+#: ./testidp/index-functions.php:89
+msgid "Thank you for your interest in the CILogon Service. This page enables you to verify that all necessary attributes have been released to the CILogon Service Provider (SP) from your selected Identity Provider (IdP). Below you will see the various attributes required by the CILogon Service and their values as released by your IdP."
+msgstr "˙ԀpI ɹnoʎ ʎq pǝsɐǝןǝɹ sɐ sǝnןɐʌ ɹᴉǝɥʇ puɐ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ʎq pǝɹᴉnbǝɹ sǝʇnqᴉɹʇʇɐ snoᴉɹɐʌ ǝɥʇ ǝǝs ןןᴉʍ noʎ ʍoןǝꓭ ˙(ԀpI) ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI pǝʇɔǝןǝs ɹnoʎ ɯoɹɟ (ԀS) ɹǝpᴉʌoɹԀ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ oʇ pǝsɐǝןǝɹ uǝǝq ǝʌɐɥ sǝʇnqᴉɹʇʇɐ ʎɹɐssǝɔǝu ןןɐ ʇɐɥʇ ʎɟᴉɹǝʌ oʇ noʎ sǝןqɐuǝ ǝƃɐd sᴉɥꓕ ˙ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ uᴉ ʇsǝɹǝʇuᴉ ɹnoʎ ɹoɟ noʎ ʞuɐɥꓕ"
 
-#: ./testidp/index-functions.php:116
+#: ./testidp/index-functions.php:118
 msgid "All required attributes have been released by your IdP. For details of the various attributes used by the CILogon Service and their current values, see below."
 msgstr "˙ʍoןǝq ǝǝs 'sǝnןɐʌ ʇuǝɹɹnɔ ɹᴉǝɥʇ puɐ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ʎq pǝsn sǝʇnqᴉɹʇʇɐ snoᴉɹɐʌ ǝɥʇ ɟo sןᴉɐʇǝp ɹoℲ ˙ԀpI ɹnoʎ ʎq pǝsɐǝןǝɹ uǝǝq ǝʌɐɥ sǝʇnqᴉɹʇʇɐ pǝɹᴉnbǝɹ ןן∀"
 
-#: ./testidp/index-functions.php:133
+#: ./testidp/index-functions.php:135
 msgid "Missing one or more attributes."
 msgstr "˙sǝʇnqᴉɹʇʇɐ ǝɹoɯ ɹo ǝuo ƃuᴉssᴉW"
 
-#: ./testidp/index-functions.php:138
+#: ./testidp/index-functions.php:140
 msgid "One or more of the attributes required by the CILogon Service are not available. Please see below for details. For additional information and assistance, please contact"
 msgstr "ʇɔɐʇuoɔ ǝsɐǝןd 'ǝɔuɐʇsᴉssɐ puɐ uoᴉʇɐɯɹoɟuᴉ ןɐuoᴉʇᴉppɐ ɹoℲ ˙sןᴉɐʇǝp ɹoɟ ʍoןǝq ǝǝs ǝsɐǝןԀ ˙ǝןqɐןᴉɐʌɐ ʇou ǝɹɐ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ʎq pǝɹᴉnbǝɹ sǝʇnqᴉɹʇʇɐ ǝɥʇ ɟo ǝɹoɯ ɹo ǝuO"
 
-#: ./testidp/index-functions.php:152
-#: ./testidp/index-functions.php:153
+#: ./testidp/index-functions.php:154
+#: ./testidp/index-functions.php:155
 msgid "Logout"
 msgstr "ʇnoƃoꓶ"
 
@@ -823,8 +823,8 @@ msgid "General Error"
 msgstr "ɹoɹɹƎ ןɐɹǝuǝꓨ"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1307
-msgid "An error has occurred. This may be a temporary error. Please try again later, or contact us at the the email address at the bottom of the page."
-msgstr "˙ǝƃɐd ǝɥʇ ɟo ɯoʇʇoq ǝɥʇ ʇɐ ssǝɹppɐ ןᴉɐɯǝ ǝɥʇ ǝɥʇ ʇɐ sn ʇɔɐʇuoɔ ɹo 'ɹǝʇɐן uᴉɐƃɐ ʎɹʇ ǝsɐǝןԀ ˙ɹoɹɹǝ ʎɹɐɹodɯǝʇ ɐ ǝq ʎɐɯ sᴉɥꓕ ˙pǝɹɹnɔɔo sɐɥ ɹoɹɹǝ u∀"
+msgid "An error has occurred. This may be a temporary error. Please try again later, or contact us at the email address at the bottom of the page."
+msgstr "˙ǝƃɐd ǝɥʇ ɟo ɯoʇʇoq ǝɥʇ ʇɐ ssǝɹppɐ ןᴉɐɯǝ ǝɥʇ ʇɐ sn ʇɔɐʇuoɔ ɹo 'ɹǝʇɐן uᴉɐƃɐ ʎɹʇ ǝsɐǝןԀ ˙ɹoɹɹǝ ʎɹɐɹodɯǝʇ ɐ ǝq ʎɐɯ sᴉɥꓕ ˙pǝɹɹnɔɔo sɐɥ ɹoɹɹǝ u∀"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1323
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1324
@@ -832,8 +832,8 @@ msgstr "˙ǝƃɐd ǝɥʇ ɟo ɯoʇʇoq ǝɥʇ ʇɐ ssǝɹppɐ ןᴉɐɯǝ ǝɥʇ
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1589
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1737
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1738
-#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:256
-#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:258
+#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:255
+#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:257
 msgid "Proceed"
 msgstr "pǝǝɔoɹԀ"
 
@@ -891,8 +891,8 @@ msgid "Google's Personal Info page"
 msgstr "ǝƃɐd oɟuI ןɐuosɹǝԀ s,ǝןƃooꓨ"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1641
-msgid "and enter your first name, last name, and email address.  (All other Google account information is not required by the CILogon Service.)"
-msgstr "(˙ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ʎq pǝɹᴉnbǝɹ ʇou sᴉ uoᴉʇɐɯɹoɟuᴉ ʇunoɔɔɐ ǝןƃooꓨ ɹǝɥʇo ןן∀)  ˙ssǝɹppɐ ןᴉɐɯǝ puɐ 'ǝɯɐu ʇsɐן 'ǝɯɐu ʇsɹᴉɟ ɹnoʎ ɹǝʇuǝ puɐ"
+msgid "and enter your first name, last name, and email address. (All other Google account information is not required by the CILogon Service.)"
+msgstr "(˙ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥʇ ʎq pǝɹᴉnbǝɹ ʇou sᴉ uoᴉʇɐɯɹoɟuᴉ ʇunoɔɔɐ ǝןƃooꓨ ɹǝɥʇo ןן∀) ˙ssǝɹppɐ ןᴉɐɯǝ puɐ 'ǝɯɐu ʇsɐן 'ǝɯɐu ʇsɹᴉɟ ɹnoʎ ɹǝʇuǝ puɐ"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1647
 msgid "After you have updated your Google account profile, click the \"Proceed\" button below and attempt to log on with your Google account again. If you have any questions, please contact us at the email address at the bottom of the page."
@@ -935,8 +935,8 @@ msgid "There was a problem logging on. It appears that you have attempted to use
 msgstr "oʇ oƃ 'ɯǝןqoɹd sᴉɥʇ ʎɟᴉʇɔǝɹ oꓕ ˙ƃuᴉssᴉɯ sɐʍ ssǝɹppɐ ןᴉɐɯǝ ɹo ǝɯɐu ɹnoʎ ʇnq 'ɹǝpᴉʌoɹd ʎʇᴉʇuǝpᴉ ɹnoʎ sɐ ʇɟosoɹɔᴉW ǝsn oʇ pǝʇdɯǝʇʇɐ ǝʌɐɥ noʎ ʇɐɥʇ sɹɐǝddɐ ʇI ˙uo ƃuᴉƃƃoן ɯǝןqoɹd ɐ sɐʍ ǝɹǝɥꓕ"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1707
-msgid "Microsoft's Account page"
-msgstr "ǝƃɐd ʇunoɔɔ∀ s,ʇɟosoɹɔᴉW"
+msgid "Microsoft's Profile page"
+msgstr "ǝƃɐd ǝןᴉɟoɹԀ s,ʇɟosoɹɔᴉW"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:1708
 msgid "and enter your name and email address. (All other Microsfot account information is not required by the CILogon Service.)"
@@ -1027,8 +1027,8 @@ msgid "(Optional) Log out from GitHub"
 msgstr "qnHʇᴉꓨ ɯoɹɟ ʇno ƃoꓶ (ןɐuoᴉʇdO)"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:2812
-msgid "You can optionally click the link below to log out of ORCID. Note that ORCID will redirect you to the ORCID Sign In page. You can ignore this as your authentication session with ORCID will have been cleared first."
-msgstr "˙ʇsɹᴉɟ pǝɹɐǝןɔ uǝǝq ǝʌɐɥ ןןᴉʍ ꓷIƆꓤO ɥʇᴉʍ uoᴉssǝs uoᴉʇɐɔᴉʇuǝɥʇnɐ ɹnoʎ sɐ sᴉɥʇ ǝɹouƃᴉ uɐɔ no⅄ ˙ǝƃɐd uI uƃᴉS ꓷIƆꓤO ǝɥʇ oʇ noʎ ʇɔǝɹᴉpǝɹ ןןᴉʍ ꓷIƆꓤO ʇɐɥʇ ǝʇoN ˙ꓷIƆꓤO ɟo ʇno ƃoן oʇ ʍoןǝq ʞuᴉן ǝɥʇ ʞɔᴉןɔ ʎןןɐuoᴉʇdo uɐɔ no⅄"
+msgid "You can optionally click the link below to log out of ORCID. Note that ORCID will redirect you to the ORCID Sign In page. You can ignore this as your authentication session with ORCID will be cleared first."
+msgstr "˙ʇsɹᴉɟ pǝɹɐǝןɔ ǝq ןןᴉʍ ꓷIƆꓤO ɥʇᴉʍ uoᴉssǝs uoᴉʇɐɔᴉʇuǝɥʇnɐ ɹnoʎ sɐ sᴉɥʇ ǝɹouƃᴉ uɐɔ no⅄ ˙ǝƃɐd uI uƃᴉS ꓷIƆꓤO ǝɥʇ oʇ noʎ ʇɔǝɹᴉpǝɹ ןןᴉʍ ꓷIƆꓤO ʇɐɥʇ ǝʇoN ˙ꓷIƆꓤO ɟo ʇno ƃoן oʇ ʍoןǝq ʞuᴉן ǝɥʇ ʞɔᴉןɔ ʎןןɐuoᴉʇdo uɐɔ no⅄"
 
 #: ./vendor/cilogon/service-lib/src/Service/Content.php:2822
 msgid "(Optional) Log out from ORCID"
@@ -1080,14 +1080,14 @@ msgstr "ɯoɹɟ ʇno ƃoꓶ (ןɐuoᴉʇdO)"
 msgid "The CILogon Service has encountered a Shibboleth error."
 msgstr "˙ɹoɹɹǝ ɥʇǝןoqqᴉɥS ɐ pǝɹǝʇunoɔuǝ sɐɥ ǝɔᴉʌɹǝS uoƃoꓶIƆ ǝɥꓕ"
 
-#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:211
-msgid "This may be a temporary error. Please try again later,  or contact us at the email address at the bottom of the page."
-msgstr "˙ǝƃɐd ǝɥʇ ɟo ɯoʇʇoq ǝɥʇ ʇɐ ssǝɹppɐ ןᴉɐɯǝ ǝɥʇ ʇɐ sn ʇɔɐʇuoɔ ɹo  'ɹǝʇɐן uᴉɐƃɐ ʎɹʇ ǝsɐǝןԀ ˙ɹoɹɹǝ ʎɹɐɹodɯǝʇ ɐ ǝq ʎɐɯ sᴉɥꓕ"
+#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:210
+msgid "This may be a temporary error. Please try again later, or contact us at the email address at the bottom of the page."
+msgstr "˙ǝƃɐd ǝɥʇ ɟo ɯoʇʇoq ǝɥʇ ʇɐ ssǝɹppɐ ןᴉɐɯǝ ǝɥʇ ʇɐ sn ʇɔɐʇuoɔ ɹo 'ɹǝʇɐן uᴉɐƃɐ ʎɹʇ ǝsɐǝןԀ ˙ɹoɹɹǝ ʎɹɐɹodɯǝʇ ɐ ǝq ʎɐɯ sᴉɥꓕ"
 
-#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:223
+#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:222
 msgid "Note that this error may be due to your selected Identity Provider (IdP) not fully supporting forced reauthentication. This setting forces users to log in at the IdP every time, thus bypassing Single Sign-On (SSO)."
 msgstr "˙(OSS) uO-uƃᴉS ǝןƃuᴉS ƃuᴉssɐdʎq snɥʇ 'ǝɯᴉʇ ʎɹǝʌǝ ԀpI ǝɥʇ ʇɐ uᴉ ƃoן oʇ sɹǝsn sǝɔɹoɟ ƃuᴉʇʇǝs sᴉɥꓕ ˙uoᴉʇɐɔᴉʇuǝɥʇnɐǝɹ pǝɔɹoɟ ƃuᴉʇɹoddns ʎןןnɟ ʇou (ԀpI) ɹǝpᴉʌoɹԀ ʎʇᴉʇuǝpI pǝʇɔǝןǝs ɹnoʎ oʇ ǝnp ǝq ʎɐɯ ɹoɹɹǝ sᴉɥʇ ʇɐɥʇ ǝʇoN"
 
-#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:247
+#: ./vendor/cilogon/service-lib/src/Service/ShibError.php:246
 msgid "Request Help"
 msgstr "dןǝH ʇsǝnbǝꓤ"
