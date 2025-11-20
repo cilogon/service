@@ -1,3 +1,5 @@
+ef1c06d 2025-11-20 CIL-2361 Use service-lib 3.2.0 - Optional 'skin.css' for default skin
+2aeb748 2025-11-13 Update Changelog
 9f9fec4 2025-11-13 CIL-2123 Use service-lib 3.1.0 for i18n support
 c781d7d 2025-11-13 Reorder comands in gettext_po_to_mo.php script
 ff0cb08 2025-11-13 Update translation files
