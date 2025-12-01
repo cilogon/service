@@ -81,7 +81,7 @@ To update the `cilogon.po` files, do the following:
    necessary for [PHP Composer](https://getcomposer.org/) to use the latest
    service-lib code in GitHub.
 1. Ensure the PHP `composer` command is installed.
-1. Log in to AWS from the console (see
+1. Log in to AWS from the command line (see
    [aws-cli-setup](https://github.com/cilogon/aws-cli-setup) for help).
 1. Run `php gettext_php_to_po.php` .
 1. Commit any updated `cilogon.po` files to GitHub, e.g., 
