@@ -170,7 +170,7 @@ function printMainPage()
         // If user logged in, call setTransactionState to associate
         // the user_uid with the 'grant' (a.k.a., 'code').
         if ($user_code_approved) {
-            $log->info('Calling setTransactionState dbService method...'. false, false);
+            $log->info('Calling setTransactionState dbService method...', false, false);
             $dbs = new DBService();
             if (
                 ($dbs->setTransactionState(
@@ -182,6 +182,7 @@ function printMainPage()
                 )) && (!($dbs->status & 1))
             ) { // STATUS_OK codes are even
                 // Successfully associated user_uid with code
+                $log->info('setTransactionState succeeded for device flow');
             } else { // dbService returned error for setTransactionState
                 // CIL-1342 Redirect to custom error uri on QDL errors
                 if (($dbs->error == 'qdl_error') && (strlen($dbs->custom_error_uri) > 0)) {
@@ -233,9 +234,20 @@ function printMainPage()
             (!($dbs->status & 1))
         ) { // STATUS_OK codes are even
             // SUCCESSFULLY told database about decision to approve/deny
+            $log->info('userCodeApproved succeeded');
         } else { // STATUS_ERROR code returned
             // There was a problem with the user_code
             $errstr = getDeviceErrorStr($dbs->status);
+            $errcode = 'error=' . ($dbs->error ?? 'server_error');
+            $errdesc = 'error_description=' . ($dbs->error_description ??
+                'Unable to call userCodeApproved');
+            $log->error(
+                'Error in device::printMainPage(): ' .
+                'Error calling dbservice action "userCodeApproved". ' .
+                $errstr . ', ' . $errcode . ', ' . $errdesc .
+                '. Input to dbService: ' . $dbs->call_input .
+                ', Output from dbService: ' . $dbs->call_output
+            );
         }
     }
 
