@@ -353,3 +353,19 @@ define('SITE_LANGUAGES', array(
  * SITE_LANGUAGES. If not specified, the default language is English.
  */
 //define('SITE_DEFAULT_LANGUAGE', 'fr_FR');
+
+/**
+ * If OMIT_CILOGON_INFO is set to true, the "cilogon_info" parameter is NOT
+ * sent to dbService?action=setTransactionState . (Defaults to false.) The
+ * "cilogon_info" parameter is the same as the "myproxyinfo" session variable,
+ * which should no longer be needed since MyProxy is no longer supported.
+ * However, it was discovered in CIL-2274 that omitting "cilogon_info" from
+ * the setTransactionState dbService call caused issues for ORCID users
+ * without a public email address. This issue was addressed in OA4MP v6.2.x,
+ * but it's possible that there was an edge case not found. The
+ * OMIT_CILOGON_INFO variable allows for quickly diabling/enabling the
+ * cilogon_info parameter.  If cilogon_info is found to be unnecessary, the
+ * PHP code should be updated to remove all references to cilogon_info and
+ * myproxyinfo.
+ */
+//define('OMIT_CILOGON_INFO', true);
