@@ -17,7 +17,7 @@ Util::cilogonInit();
 $submit = Util::getPostVar('submit');
 Util::unsetSessionVar('submit');
 if (preg_match('/^[a-z]{2}_[A-Z]{2}$/', $submit)) {
-    Util::setSessionVar('lang', $submit);
+    Util::changeLanguage($submit);
 }
 
 Content::printHeader(_('Site Maintenance'));
