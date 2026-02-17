@@ -369,3 +369,22 @@ define('SITE_LANGUAGES', array(
  * myproxyinfo.
  */
 //define('OMIT_CILOGON_INFO', true);
+
+/**
+ * When ERROR_EMAIL_THROTTLE_DURATION is set to greater than 0 (seconds),
+ * identical error emails are limited to one every X seconds. By default, each
+ * identical email that would be sent (but is instead "throttled") resets the
+ * clock for that message. In other words, at least X seconds needs to pass
+ * without any error messages (of a given content) before the email is
+ * actually sent. To change this behavior, set ERROR_EMAIL_THROTTLE_ABSOLUTE
+ * below to 'true'.
+ */
+//define('ERROR_EMAIL_THROTTLE_DURATION', 0);
+
+/**
+ * When ERROR_EMAIL_THROTTLE_DURATION is set to greater than zero (0), you can
+ * optionally set ERROR_EMAIL_THROTTLE_ABSOLUTE to true to allow identical
+ * error emails to be sent every X seconds. The default is to use a RELATIVE
+ * timer where email with identical content resets the timer.
+ */
+//define('ERROR_EMAIL_THROTTLE_ABSOLUTE', false);
