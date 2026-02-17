@@ -388,3 +388,11 @@ define('SITE_LANGUAGES', array(
  * timer where email with identical content resets the timer.
  */
 //define('ERROR_EMAIL_THROTTLE_ABSOLUTE', false);
+
+/**
+ * ERROR_EMAIL_THROTTLE_HASH_PREFIX is a string that is prefixed to the hash
+ * of the error email. By default, this is 'THROTTLE_' which means that
+ * DEV/TEST/PROD might very rarely have the same hash. You can change this per
+ * tier if you want to ensure zero collisions.
+ */
+//define('ERROR_EMAIL_THROTTLE_HASH_PREFIX', 'THROTTLE_');
