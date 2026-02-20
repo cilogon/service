@@ -519,7 +519,8 @@
        CIL-2378 The initial list of recent IdPs can also be disabled by
        specifying NONE as one of the options, e.g.:
            <initialrecentidps>NONE</initialrecentidps>
-       This is useful when the <disableinitialidp> option is used.
+       Note: If <disableinitialidp> option is set, <initialrecentidps>
+       is ignored.
   -->
   <!--
   <initialrecentidps>http://orcid.org/oauth/authorize,http://google.com/accounts/o8/id,http://login.microsoftonline.com/common/oauth2/v2.0/authorize,http://github.com/login/oauth/authorize</initialrecentidps>
