@@ -44,6 +44,27 @@
   -->
 
 
+  <!-- <disableinitialidp>
+       CIL-2378 If this option is set, new visitors to cilogon.org will
+       see a list of IdPs with nothing selected by default.
+       This option should not be used with <initialidp>.
+       This option overrides <initialrecentidps>.
+  -->
+  <!--
+  <disableinitialidp>1</disableinitialidp>
+  -->
+
+
+  <!-- <disableinitialidptext>
+       If <disableinitialidp> is set, you can optionally set the
+       placeholder text that gets displayed for the "blank" IdP.
+       If not specified, this defaults to "Select an IdP".
+  -->
+  <!--
+  <disableinitialidptext>Select an IdP</disableinitialidptext>
+  -->
+
+
   <!-- <forceinitialidp>
        This option can be used in conjunction with <initialidp> or
        "selected_idp" (an OIDC optional URL query parameter). This
@@ -495,6 +516,10 @@
        promote the social IdPs to new users. TIP: if you don't want any
        IdPs to appear in the list of recent IdPs for new users, then set
        this option to the be the same as <initialidp> .
+       CIL-2378 The initial list of recent IdPs can also be disabled by
+       specifying NONE as one of the options, e.g.:
+           <initialrecentidps>NONE</initialrecentidps>
+       This is useful when the <disableinitialidp> option is used.
   -->
   <!--
   <initialrecentidps>http://orcid.org/oauth/authorize,http://google.com/accounts/o8/id,http://login.microsoftonline.com/common/oauth2/v2.0/authorize,http://github.com/login/oauth/authorize</initialrecentidps>
