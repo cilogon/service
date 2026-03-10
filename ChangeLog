@@ -1,3 +1,16 @@
+d0559ff 2026-03-10 CIL-2406 Deploy cilogon-web 3.3.0
+4addb18 2026-03-10 Require PHP 8.3 due to json_validate
+d923a2b 2026-02-20 Update language .po files
+d0afea8 2026-02-20 Update comment
+161cc06 2026-02-20 CIL-2378 Skin options for no default IdP for new visitors
+8075e1d 2026-02-17 CIL-2040 Add define to allow ensure no collisions among DEV/TEST/PROD
+37c3d4d 2026-02-17 CIL-2040 Optionally throttle error emails
+18715fe 2026-02-12 CIL-2387 Log when the language is changed
+3d1d231 2025-12-12 CIL-2274 Add OMIT_CILOGON_INFO to omit sending cilogon_info to dbService?action=setTransactionState
+ef5ca5e 2025-12-05 CIL-2363 Log errors for dbService calls during device flow
+24b6196 2025-12-01 Fix typo in README
+fe9784b 2025-11-20 CIL-2361 Use service-lib 3.2.1 - Optional 'skin.css' for default skin
+8503a6e 2025-11-20 Update Changelog
 ef1c06d 2025-11-20 CIL-2361 Use service-lib 3.2.0 - Optional 'skin.css' for default skin
 2aeb748 2025-11-13 Update Changelog
 9f9fec4 2025-11-13 CIL-2123 Use service-lib 3.1.0 for i18n support
