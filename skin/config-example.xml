@@ -22,7 +22,7 @@
      new skins. When you are satisified with the new skin, you can write it
      to the database using /var/www/html/util/skintodb.php which reads all
      subdirectories in the 'skin' directory and writes them to the database.
-     Note that the filesystem skin configs are preferred over the dataabase
+     Note that the filesystem skin configs are preferred over the database
      configs, so be sure to delete the filesystem configs after you have
      loaded them into the database.
 -->
@@ -58,7 +58,7 @@
   <!-- <disableinitialidptext>
        If <disableinitialidp> is set, you can optionally set the
        placeholder text that gets displayed for the "blank" IdP.
-       If not specified, this defaults to "Select an IdP".
+       If not specified, this text defaults to "Select an IdP".
   -->
   <!--
   <disableinitialidptext>Select an IdP</disableinitialidptext>
@@ -66,6 +66,11 @@
 
 
   <!-- <forceinitialidp>
+       (NOTE: This option isn't used much anymore. The preferred method
+       is bypassing the "Select an Identity Provider" page as documented at
+       https://github.com/cilogon/operational-info/blob/main/cilogon/bypass-idp.md
+       which must be done by a CILogon administrator.)
+
        This option can be used in conjunction with <initialidp> or
        "selected_idp" (an OIDC optional URL query parameter). This
        option is functionally equivalent to having the "Remember this
@@ -86,6 +91,10 @@
 
 
   <!-- <registeredbyincommonidps>
+       (NOTE: This option isn't used much anymore. The preferred method
+       is using <regauthgreelit> with <regauth> https://incommon.org
+       and adding the OAuth2 "social" IdPs with <idpgreenlit>.)
+
        This restricts the list of SAML-based IdPs to those that have the
       "Registered_By_InCommon" tag. Note that the OAuth2-based IdPs are
        still included unless explicitly put in <idpredlit>.
@@ -173,6 +182,9 @@
   <!-- <idppreferred>
        This is a list of "preferred" IdPs which appear at the top of the
        "Select an Identity Provider" list, in the order specified.
+       Note that the IdPs must first be available in the listing in order
+       to be eligible for "preferred", e.g., using <idppreferred> on an
+       <idpredlit> IdP does not magically add the IdP to the list.
   -->
   <!--
   <idppreferred>
@@ -245,11 +257,11 @@
   <!-- <favicon> and <favicontype>
        If specified, <favicon> is the web-relative path of the favorite icon
        which appears in tabs and bookmarks. It is assumed that the file type
-       is .ico which has a type of "image/ico". If the file type is something
-       else such as png or gif, you must also set <favicontype> to be
-       image/ico to let the browser know the different type. Otherwise, the
-       favicon type defaults to image/x-icon which is appropriate for .ico
-       files.
+       is .ico which has a MIME type of "image/ico". If the file type is
+       something else such as png or gif, you must also set <favicontype> to
+       be image/ico to let the browser know the different type. Otherwise,
+       the favicon type defaults to image/x-icon which is appropriate for
+       .ico files.
   -->
   <!--
   <favicon>/images/favicon-xsede.ico</favicon>
@@ -401,9 +413,13 @@
   &lt;p&gt;
     If you are a faculty, staff, or student member of a university
     or college, please select it for your identity provider.
-    If your school is not listed, please contact &lt;a
-    href=\'mailto:' . EMAIL_HELP . '\'&gt;' . EMAIL_HELP . '&lt;/a&gt;,
-    and we will try to add your school in the future.
+    If your school is not listed, please see &lt;a target="_blank"
+    href="https://www.cilogon.org/selectidp"&gt;How to Select
+    an Identity Provider&lt;/a&gt;.
+  &lt;/p&gt;
+  &lt;p&gt;
+    If available, you can also try one of the social identity
+    providers such as ORCID or Google.
   &lt;/p&gt;
   </selecthelp>
   -->
@@ -411,7 +427,7 @@
 
   <!-- <maxrecentidps>
        The maximum number of recent IdPs to show at the top of the "Select
-       an Identity Provider" list. Valid values are 1 to 10. Defaults to 5.
+       an Identity Provider" list. Valid values are 1 to 10. Default is 5.
        Set to 1 to essentially disable the recent IdPs from showing at the
        top (since the "default" IdP counts as one of the recent IdPs).
   -->
@@ -513,13 +529,14 @@
        first visits cilogon.org. If not configured, this defaults to the
        'social' Identity providers ORCID, Google, Microsoft, and GitHub.
        This option was requested by ACCESS since they did not want to
-       promote the social IdPs to new users. TIP: if you don't want any
-       IdPs to appear in the list of recent IdPs for new users, then set
-       this option to the be the same as <initialidp> .
-       CIL-2378 The initial list of recent IdPs can also be disabled by
-       specifying NONE as one of the options, e.g.:
+       promote the social IdPs to new users.
+       CIL-2378 The initial list of recent IdPs can be disabled by
+       specifying NONE as an options, e.g.:
            <initialrecentidps>NONE</initialrecentidps>
-       Note: If <disableinitialidp> option is set, <initialrecentidps>
+       Alternatively, if you don't want any IdPs to appear in the list of
+       recent IdPs for new users, then set this option to the be the same
+       as <initialidp> .
+       NOTE: If <disableinitialidp> option is set, <initialrecentidps>
        is ignored.
   -->
   <!--
