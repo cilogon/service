@@ -17,6 +17,8 @@ a patch via pull request.
 The following versions of PHP are supported.
 
 * PHP 8.3
+* PHP 8.4
+* PHP 8.5
 
 ## Installation
 
